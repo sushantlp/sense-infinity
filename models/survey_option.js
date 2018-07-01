@@ -5,20 +5,19 @@ const mysql = require("mysql2/promise");
 const dotEnv = require("dotenv");
 
 module.exports = (sequelize, DataTypes) => {
-  var city = sequelize.define(
-    "city",
+  var survey_option = sequelize.define(
+    "survey_option",
     {
-      city_name: DataTypes.STRING,
-      longitude: DataTypes.DOUBLE,
-      latitude: DataTypes.DOUBLE,
+      option_value: DataTypes.STRING,
+      survey_ques_id: DataTypes.INTEGER,
       status: DataTypes.BOOLEAN
     },
     {}
   );
-  city.associate = function(models) {
+  survey_option.associate = function(models) {
     // associations can be defined here
   };
-  return city;
+  return survey_option;
 };
 
 // Current Date and Time
@@ -30,8 +29,8 @@ const now = moment()
  * Start Database Read and Write
  */
 
-// Read City Record
-module.exports.readCityRecord = async (select, status) => {
+// Read Admin Survey Option
+module.exports.readAdminSurveyOption = async (select, quesId, status) => {
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
@@ -42,7 +41,7 @@ module.exports.readCityRecord = async (select, status) => {
     });
 
     // Query
-    const query = `SELECT ${select} FROM cities WHERE status=?`;
+    const query = `SELECT ${select} FROM survey_options WHERE survey_ques_id=? AND status=?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [status]);
@@ -55,14 +54,13 @@ module.exports.readCityRecord = async (select, status) => {
   }
 };
 
-// // Get All City Record
-// module.exports.getAllCity = status => {
-//   // Query
+// Get Admin Survey Option
+// module.exports.getAdminSurveyOption = (quesId, status) => {
 //   const query =
-//     "SELECT city_id AS city_unique, city_name AS city, longitude AS lon, latitude AS lat FROM `Cities` WHERE `status`=?";
+//     "SELECT * FROM `SurveyOptions` WHERE `survey_ques_id`=? AND `status`=?";
 
 //   return new Promise(function(resolve, reject) {
-//     mysqlObject.execute(query, [status], function(err, row) {
+//     mysqlObject.execute(query, [quesId, status], function(err, row) {
 //       if (err) {
 //         return reject(err);
 //       }
@@ -70,7 +68,6 @@ module.exports.readCityRecord = async (select, status) => {
 //     });
 //   });
 // };
-
 /**
  * End Database Read and Write
  */

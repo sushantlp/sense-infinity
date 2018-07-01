@@ -5,20 +5,21 @@ const mysql = require("mysql2/promise");
 const dotEnv = require("dotenv");
 
 module.exports = (sequelize, DataTypes) => {
-  var city = sequelize.define(
-    "city",
+  var sense_constant = sequelize.define(
+    "sense_constant",
     {
-      city_name: DataTypes.STRING,
-      longitude: DataTypes.DOUBLE,
-      latitude: DataTypes.DOUBLE,
+      name: DataTypes.STRING,
+      value: DataTypes.STRING,
+      comment: DataTypes.STRING,
+      complain: DataTypes.STRING,
       status: DataTypes.BOOLEAN
     },
     {}
   );
-  city.associate = function(models) {
+  sense_constant.associate = function(models) {
     // associations can be defined here
   };
-  return city;
+  return sense_constant;
 };
 
 // Current Date and Time
@@ -30,8 +31,8 @@ const now = moment()
  * Start Database Read and Write
  */
 
-// Read City Record
-module.exports.readCityRecord = async (select, status) => {
+// Read Sense Constant Value
+module.exports.readSenseConstant = async (select, name, status) => {
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
@@ -42,10 +43,10 @@ module.exports.readCityRecord = async (select, status) => {
     });
 
     // Query
-    const query = `SELECT ${select} FROM cities WHERE status=?`;
+    const query = `SELECT ${select} FROM sense_constants WHERE name=? AND status=?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [status]);
+    const [rows, fields] = await connection.execute(query, [name, status]);
 
     connection.close();
 
@@ -55,14 +56,12 @@ module.exports.readCityRecord = async (select, status) => {
   }
 };
 
-// // Get All City Record
-// module.exports.getAllCity = status => {
-//   // Query
-//   const query =
-//     "SELECT city_id AS city_unique, city_name AS city, longitude AS lon, latitude AS lat FROM `Cities` WHERE `status`=?";
+//Get Sense Constant Value
+// module.exports.getSenseConstant = (name, status) => {
+//   const query = "SELECT * FROM `SenseConstants` WHERE `name`=? AND `status`=?";
 
 //   return new Promise(function(resolve, reject) {
-//     mysqlObject.execute(query, [status], function(err, row) {
+//     mysqlObject.execute(query, [name, status], function(err, row) {
 //       if (err) {
 //         return reject(err);
 //       }

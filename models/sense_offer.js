@@ -5,20 +5,18 @@ const mysql = require("mysql2/promise");
 const dotEnv = require("dotenv");
 
 module.exports = (sequelize, DataTypes) => {
-  var city = sequelize.define(
-    "city",
+  var sense_offer = sequelize.define(
+    "sense_offer",
     {
-      city_name: DataTypes.STRING,
-      longitude: DataTypes.DOUBLE,
-      latitude: DataTypes.DOUBLE,
+      offer_name: DataTypes.STRING,
       status: DataTypes.BOOLEAN
     },
     {}
   );
-  city.associate = function(models) {
+  sense_offer.associate = function(models) {
     // associations can be defined here
   };
-  return city;
+  return sense_offer;
 };
 
 // Current Date and Time
@@ -30,8 +28,24 @@ const now = moment()
  * Start Database Read and Write
  */
 
-// Read City Record
-module.exports.readCityRecord = async (select, status) => {
+// Get Sense Offer
+// module.exports.getSenseOffer = (name, status) => {
+//   return new Promise(function(resolve, reject) {
+//     mysqlObject.execute(
+//       "SELECT * FROM `SenseOffers` WHERE `offer_name`=? AND `status`=?",
+//       [name, status],
+//       function(err, row) {
+//         if (err) {
+//           return reject(err);
+//         }
+//         return resolve(row);
+//       }
+//     );
+//   });
+// };
+
+// Read Gender Record
+module.exports.readSenseOffer = async (select, name, status) => {
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
@@ -42,7 +56,7 @@ module.exports.readCityRecord = async (select, status) => {
     });
 
     // Query
-    const query = `SELECT ${select} FROM cities WHERE status=?`;
+    const query = `SELECT ${select} FROM sense_offers WHERE offer_name=? AND status=?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [status]);
@@ -54,23 +68,6 @@ module.exports.readCityRecord = async (select, status) => {
     return Promise.reject(error);
   }
 };
-
-// // Get All City Record
-// module.exports.getAllCity = status => {
-//   // Query
-//   const query =
-//     "SELECT city_id AS city_unique, city_name AS city, longitude AS lon, latitude AS lat FROM `Cities` WHERE `status`=?";
-
-//   return new Promise(function(resolve, reject) {
-//     mysqlObject.execute(query, [status], function(err, row) {
-//       if (err) {
-//         return reject(err);
-//       }
-//       return resolve(row);
-//     });
-//   });
-// };
-
 /**
  * End Database Read and Write
  */
