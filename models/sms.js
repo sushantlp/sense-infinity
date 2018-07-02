@@ -106,7 +106,7 @@ module.exports.dailySmsLimit = async (select, mobile) => {
     const [rows, fields] = await connection.execute(query, [mobile]);
 
     connection.close();
-
+    console.log("Start");
     return rows;
   } catch (error) {
     return Promise.reject(error);

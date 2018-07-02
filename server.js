@@ -25,8 +25,7 @@ const app = express();
 
 // Controllers (route handlers).
 const database = require("./controllers/databaseController");
-const youtube = require("./controllers/youtubeController");
-const cron = require("./controllers/cronController");
+const signup = require("./controllers/signupController");
 
 // Use morgan to log requests to the console
 app.use(morgan("dev"));
@@ -70,22 +69,11 @@ app.get("/", (req, res) => {
 
 // Version 1 API
 app.group("/api/v1", router => {
-  // Youtube Search API
-  router.get("/search", youtube.requestSearchData);
-
-  // Youtube Playlist API
-  router.get("/playlist", youtube.requestPlaylistData);
-
-  // Youtube Trending API
-  router.get("/trending", youtube.requestTrendingData);
-
-  router.get("/stream", youtube.requestStreamData);
-
-  // Youtube Related Video Search
-  router.get("/suggest", youtube.requestRelatedData);
-
-  // Youtube Audio Download
-  router.get("/download", youtube.requestRelatedData);
+  // Merchant Route
+  router.group("/merchant", api => {
+    // Merchant APP Signup
+    api.get("/signup", signup.requestAppSignup);
+  });
 });
 
 // Call Sequelize Connection
