@@ -2,6 +2,7 @@
 
 // Import Controller
 const validateController = require("./validateController");
+const shareController = require("./shareController");
 
 // Import Model
 const smsModel = require("../models/sms");
@@ -24,17 +25,24 @@ module.exports.requestAppSignup = (req, res) => {
 
     // Logic App Signup
     return logicAppSignup(mobile)
-      .then(result => {
+      .then(response => {
         // Intialize
-        // let metadata = { count: Object.keys(result).length, type: search };
+        const metadata = { type: mobile };
 
         return res
           .status(200)
-          .send(createJsonObject(result, "api/v1/trending", 200, "Hello"));
+          .send(
+            createJsonObject(
+              response.msg,
+              "/api/v1/merchant/signup",
+              200,
+              response.sucess,
+              metadata
+            )
+          );
       })
       .catch(error => {
-        console.log(error);
-        return res.status(400).send("Oops our bad!!!");
+        return res.status(500).send("Oops our bad!!!");
       });
   } else {
     return res.status(400).send("Not a good api call");
@@ -44,20 +52,82 @@ module.exports.requestAppSignup = (req, res) => {
 // Logic App Signup
 const logicAppSignup = async mobile => {
   try {
+    // Intialize
+    let responsedata = {};
+
     // Read Youtube Playlist All Data
     const limit = await smsModel.dailySmsLimit("*", mobile);
 
     // Check Sms Limit Per Day
     if (limit.length > 3) {
-      return "You have exceeded your OTP request limit, please try again 24 hour";
+      return (responsedata = {
+        sucess: false,
+        msg:
+          "You have exceeded your OTP request limit, please try again 24 hour"
+      });
     }
-    return "Succesful";
+
+    // Generate OTP
+    const random = shareController.generateRandomNumber(4);
+
+    // Update Sms Record
+    await smsModel.updateSmsOtp(mobile, null, 0);
+
+    // Keep Sms Record
+    await smsModel.keepSmsOtp(mobile, random, 1);
+
+    return (responsedata = {
+      sucess: true,
+      msg: "Otp send respective user mobile number"
+    });
   } catch (error) {
-    console.log(error);
     return Promise.reject(error);
   }
 };
 
+// Request Otp Verify
+module.exports.requestOtpVerify = (res, req) => {
+  if (
+    req.query.mobile !== undefined &&
+    req.query.mobile !== "" &&
+    req.query.otp !== undefined &&
+    req.query.otp !== "" &&
+    req.query.password !== undefined &&
+    req.query.password !== ""
+  ) {
+    // Extract Parameter
+    const mobile = req.query.mobile;
+    const otp = req.query.otp;
+    const password = req.query.password;
+
+    // Logic Otp Verify
+    return logicOtpVerify(mobile, otp, password)
+      .then(response => {
+        // Intialize
+        const metadata = { type: mobile };
+
+        return res
+          .status(200)
+          .send(
+            createJsonObject(
+              response.msg,
+              "/api/v1/otp/verify",
+              200,
+              response.sucess,
+              metadata
+            )
+          );
+      })
+      .catch(error => {
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else {
+    return res.status(400).send("Not a good api call");
+  }
+};
+
+// Logic Otp Verify
+const logicOtpVerify = async (mobile, otp, password) => {};
 // Create Json Object
 const createJsonObject = (data, location, code, bool, metadata) => {
   return JSON.stringify({

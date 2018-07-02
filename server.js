@@ -69,6 +69,9 @@ app.get("/", (req, res) => {
 
 // Version 1 API
 app.group("/api/v1", router => {
+  // Verify Otp
+  router.get("/otp/verify", signup.requestOtpVerify);
+
   // Merchant Route
   router.group("/merchant", api => {
     // Merchant APP Signup

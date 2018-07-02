@@ -30,7 +30,7 @@ const now = moment()
  * Start Database Read and Write
  */
 
-// Keep Into Sms
+// Keep Sms Record
 module.exports.keepSmsOtp = async (mobile, otp, status) => {
   try {
     const connection = await mysql.createConnection({
@@ -43,7 +43,7 @@ module.exports.keepSmsOtp = async (mobile, otp, status) => {
 
     // Query
     const query =
-      "INSERT INTO `sms` (`mobile`, `otp`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?)";
+      "INSERT INTO `sms` (`mobile`, `otp`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?)";
 
     // Query Database
     const row = await connection.execute(query, [
@@ -62,7 +62,7 @@ module.exports.keepSmsOtp = async (mobile, otp, status) => {
   }
 };
 
-// Update Into Sms
+// Update Sms Record
 module.exports.updateSmsOtp = async (mobile, gateway, status) => {
   try {
     const connection = await mysql.createConnection({
@@ -106,7 +106,7 @@ module.exports.dailySmsLimit = async (select, mobile) => {
     const [rows, fields] = await connection.execute(query, [mobile]);
 
     connection.close();
-    console.log("Start");
+
     return rows;
   } catch (error) {
     return Promise.reject(error);
