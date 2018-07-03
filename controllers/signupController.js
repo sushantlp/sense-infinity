@@ -36,7 +36,7 @@ module.exports.requestAppSignup = (req, res) => {
               response.msg,
               "/api/v1/merchant/signup",
               200,
-              response.sucess,
+              response.success,
               metadata
             )
           );
@@ -61,7 +61,7 @@ const logicAppSignup = async mobile => {
     // Check Sms Limit Per Day
     if (limit.length > 3) {
       return (responsedata = {
-        sucess: false,
+        success: false,
         msg:
           "You have exceeded your OTP request limit, please try again 24 hour"
       });
@@ -77,7 +77,7 @@ const logicAppSignup = async mobile => {
     await smsModel.keepSmsOtp(mobile, random, 1);
 
     return (responsedata = {
-      sucess: true,
+      success: true,
       msg: "Otp send respective user mobile number"
     });
   } catch (error) {
@@ -86,7 +86,7 @@ const logicAppSignup = async mobile => {
 };
 
 // Request Otp Verify
-module.exports.requestOtpVerify = (res, req) => {
+module.exports.requestOtpVerify = (req, res) => {
   if (
     req.query.mobile !== undefined &&
     req.query.mobile !== "" &&
@@ -99,13 +99,11 @@ module.exports.requestOtpVerify = (res, req) => {
     const mobile = req.query.mobile;
     const otp = req.query.otp;
     const password = req.query.password;
-
     // Logic Otp Verify
     return logicOtpVerify(mobile, otp, password)
       .then(response => {
         // Intialize
         const metadata = { type: mobile };
-
         return res
           .status(200)
           .send(
@@ -113,7 +111,7 @@ module.exports.requestOtpVerify = (res, req) => {
               response.msg,
               "/api/v1/otp/verify",
               200,
-              response.sucess,
+              response.success,
               metadata
             )
           );
@@ -127,7 +125,50 @@ module.exports.requestOtpVerify = (res, req) => {
 };
 
 // Logic Otp Verify
-const logicOtpVerify = async (mobile, otp, password) => {};
+const logicOtpVerify = async (mobile, otp, password) => {
+  try {
+    // Intialize
+    let responsedata = {};
+
+    // Validate Password
+    const passwordValidate = shareController.passwordAlgorthim(
+      mobile,
+      password
+    );
+
+    if (!passwordValidate.success) {
+      return passwordValidate;
+    }
+
+    // Parallel Read User Table Record And Validate Otp
+    const parallel = await Promise.all([
+      shareController.validateOtp(mobile, otp),
+      userModel.readUserRecord("*", mobile, 1, 1)
+    ]);
+
+    if (parallel.length > 0) {
+      if (!parallel[0].success) {
+        return parallel[0];
+      }
+
+      // Generate JWT Token
+      const token = shareController.generateToken(parallel[1]);
+
+      // Update Sms Record
+      smsModel.updateSmsOtp(mobile, null, 0);
+
+      return (responsedata = {
+        success: true,
+        msg: { token: token }
+      });
+    } else {
+      return Promise.reject("Oops our bad!!!");
+    }
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 // Create Json Object
 const createJsonObject = (data, location, code, bool, metadata) => {
   return JSON.stringify({

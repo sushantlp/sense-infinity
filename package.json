@@ -31,7 +31,7 @@
     "express-session": "^1.15.6",
     "express-status-monitor": "^1.0.1",
     "express-validator": "^4.3.0",
-    "jsonwebtoken": "^8.1.0",
+    "jsonwebtoken": "^8.3.0",
     "lodash": "^4.17.5",
     "lusca": "^1.5.2",
     "moment": "^2.19.2",

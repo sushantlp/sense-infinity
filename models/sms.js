@@ -125,7 +125,7 @@ module.exports.readSmsRecord = async (select, mobile, status) => {
     });
 
     // Query
-    const query = `SELECT ${select} FROM sms WHERE mobile=? AND status=?`;
+    const query = `SELECT ${select} FROM sms WHERE mobile=? AND status=? LIMIT 1`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [mobile, status]);
