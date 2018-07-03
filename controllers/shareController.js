@@ -41,6 +41,17 @@ module.exports.refreshToken = token => {
   return jwt.refresh(originalDecoded, 1500, process.env.JWT_SECRET);
 };
 
+// Create Json Object
+module.exports.createJsonObject = (data, location, code, bool, metadata) => {
+  return JSON.stringify({
+    results: data,
+    requestLocation: location,
+    status: code,
+    bool: bool,
+    metadata: metadata
+  });
+};
+
 // Validate Password
 module.exports.passwordAlgorthim = (mobile, password) => {
   // Intialize

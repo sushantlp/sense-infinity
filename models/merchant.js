@@ -59,22 +59,6 @@ module.exports.readMerchantByMobile = async (select, mobile, status) => {
   }
 };
 
-// Get Merchant Detail By Mobile
-// module.exports.getMerchantByMobile = (mobile, status) => {
-//   return new Promise(function(resolve, reject) {
-//     mysqlObject.execute(
-//       "SELECT * FROM `Merchants` WHERE `mobile` = ? AND `status` = ? LIMIT 1",
-//       [mobile, status],
-//       function(err, row) {
-//         if (err) {
-//           return reject(err);
-//         }
-//         return resolve(row);
-//       }
-//     );
-//   });
-// };
-
 /**
  * End Database Read and Write
  */

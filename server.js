@@ -26,6 +26,7 @@ const app = express();
 // Controllers (route handlers).
 const database = require("./controllers/databaseController");
 const signup = require("./controllers/signupController");
+const engage = require("./controllers/customerEngageController");
 
 // Use morgan to log requests to the console
 app.use(morgan("dev"));
@@ -72,10 +73,16 @@ app.group("/api/v1", router => {
   // Verify Otp
   router.get("/otp/verify", signup.requestOtpVerify);
 
+  // Refresh Token
+  router.post("/refresh/token", signup.requestRefreshToken);
+
   // Merchant Route
   router.group("/merchant", api => {
     // Merchant APP Signup
-    api.get("/signup", signup.requestAppSignup);
+    api.post("/signup", signup.requestAppSignup);
+
+    // Get Sense Static Data
+    api.get("/get/static", engage.requestSenseStatic);
   });
 });
 

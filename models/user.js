@@ -31,22 +31,6 @@ module.exports = (sequelize, DataTypes) => {
  * Start Database Read and Write
  */
 
-// Get User Table Record
-// module.exports.getUserRecord = (mobile, role, status) => {
-//   return new Promise(function(resolve, reject) {
-//     mysqlObject.execute(
-//       "SELECT * FROM `Users` WHERE `mobile`=? AND `role_id`=? AND `status`=?",
-//       [mobile, role, status],
-//       function(err, row) {
-//         if (err) {
-//           return reject(err);
-//         }
-//         return resolve(row);
-//       }
-//     );
-//   });
-// };
-
 // Read User Table Record
 module.exports.readUserRecord = async (select, mobile, role, status) => {
   try {

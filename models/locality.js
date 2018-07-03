@@ -1,4 +1,9 @@
 "use strict";
+
+// Import Package
+const mysql = require("mysql2/promise");
+const dotEnv = require("dotenv");
+
 module.exports = (sequelize, DataTypes) => {
   var locality = sequelize.define(
     "locality",
@@ -21,22 +26,6 @@ module.exports = (sequelize, DataTypes) => {
 /**
  * Start Database Read and Write
  */
-
-// // Get All Locality Record
-// module.exports.getAllLocality = status => {
-//   // Query
-//   const query =
-//     "SELECT locality_id AS locality_unique, city_id AS city_unique, locality_name AS locality, pincode, longitude AS lon, latitude AS lat FROM `Localities` WHERE `status`=?";
-
-//   return new Promise(function(resolve, reject) {
-//     mysqlObject.execute(query, [status], function(err, row) {
-//       if (err) {
-//         return reject(err);
-//       }
-//       return resolve(row);
-//     });
-//   });
-// };
 
 // Read Locality Record
 module.exports.readLocalityRecord = async (select, status) => {

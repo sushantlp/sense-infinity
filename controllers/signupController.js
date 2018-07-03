@@ -32,7 +32,7 @@ module.exports.requestAppSignup = (req, res) => {
         return res
           .status(200)
           .send(
-            createJsonObject(
+            shareController.createJsonObject(
               response.msg,
               "/api/v1/merchant/signup",
               200,
@@ -44,6 +44,69 @@ module.exports.requestAppSignup = (req, res) => {
       .catch(error => {
         return res.status(500).send("Oops our bad!!!");
       });
+  } else {
+    return res.status(400).send("Not a good api call");
+  }
+};
+
+// Request Otp Verify
+module.exports.requestOtpVerify = (req, res) => {
+  if (
+    req.query.mobile !== undefined &&
+    req.query.mobile !== "" &&
+    req.query.otp !== undefined &&
+    req.query.otp !== "" &&
+    req.query.password !== undefined &&
+    req.query.password !== ""
+  ) {
+    // Extract Parameter
+    const mobile = req.query.mobile;
+    const otp = req.query.otp;
+    const password = req.query.password;
+    // Logic Otp Verify
+    return logicOtpVerify(mobile, otp, password)
+      .then(response => {
+        // Intialize
+        const metadata = { type: mobile };
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.msg,
+              "/api/v1/otp/verify",
+              200,
+              response.success,
+              metadata
+            )
+          );
+      })
+      .catch(error => {
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else {
+    return res.status(400).send("Not a good api call");
+  }
+};
+
+// Request Refresh Token
+module.exports.requestRefreshToken = async (req, res) => {
+  if (
+    req.headers["authorization"] !== undefined &&
+    req.headers["authorization"] !== ""
+  ) {
+    // Refresh JWT Token
+    const token = shareController.refreshToken(req.headers["authorization"]);
+    return res
+      .status(200)
+      .send(
+        shareController.createJsonObject(
+          { token: token },
+          "/refresh/token",
+          200,
+          true,
+          null
+        )
+      );
   } else {
     return res.status(400).send("Not a good api call");
   }
@@ -85,45 +148,6 @@ const logicAppSignup = async mobile => {
   }
 };
 
-// Request Otp Verify
-module.exports.requestOtpVerify = (req, res) => {
-  if (
-    req.query.mobile !== undefined &&
-    req.query.mobile !== "" &&
-    req.query.otp !== undefined &&
-    req.query.otp !== "" &&
-    req.query.password !== undefined &&
-    req.query.password !== ""
-  ) {
-    // Extract Parameter
-    const mobile = req.query.mobile;
-    const otp = req.query.otp;
-    const password = req.query.password;
-    // Logic Otp Verify
-    return logicOtpVerify(mobile, otp, password)
-      .then(response => {
-        // Intialize
-        const metadata = { type: mobile };
-        return res
-          .status(200)
-          .send(
-            createJsonObject(
-              response.msg,
-              "/api/v1/otp/verify",
-              200,
-              response.success,
-              metadata
-            )
-          );
-      })
-      .catch(error => {
-        return res.status(500).send("Oops our bad!!!");
-      });
-  } else {
-    return res.status(400).send("Not a good api call");
-  }
-};
-
 // Logic Otp Verify
 const logicOtpVerify = async (mobile, otp, password) => {
   try {
@@ -143,7 +167,12 @@ const logicOtpVerify = async (mobile, otp, password) => {
     // Parallel Read User Table Record And Validate Otp
     const parallel = await Promise.all([
       shareController.validateOtp(mobile, otp),
-      userModel.readUserRecord("*", mobile, 1, 1)
+      userModel.readUserRecord(
+        "user_id,name,mobile,email,password,",
+        mobile,
+        1,
+        1
+      )
     ]);
 
     if (parallel.length > 0) {
@@ -167,15 +196,4 @@ const logicOtpVerify = async (mobile, otp, password) => {
   } catch (error) {
     return Promise.reject(error);
   }
-};
-
-// Create Json Object
-const createJsonObject = (data, location, code, bool, metadata) => {
-  return JSON.stringify({
-    results: data,
-    requestLocation: location,
-    status: code,
-    bool: bool,
-    metadata: metadata
-  });
 };

@@ -31,7 +31,7 @@ const now = moment()
  * Start Database Read and Write
  */
 
-// Read Sense Constant Value
+// Read Sense Constant Record
 module.exports.readSenseConstant = async (select, name, status) => {
   try {
     const connection = await mysql.createConnection({
@@ -43,7 +43,7 @@ module.exports.readSenseConstant = async (select, name, status) => {
     });
 
     // Query
-    const query = `SELECT ${select} FROM sense_constants WHERE name=? AND status=?`;
+    const query = `SELECT ${select} FROM sense_constants WHERE name=? AND status=? LIMIT 1`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [name, status]);
@@ -55,20 +55,6 @@ module.exports.readSenseConstant = async (select, name, status) => {
     return Promise.reject(error);
   }
 };
-
-//Get Sense Constant Value
-// module.exports.getSenseConstant = (name, status) => {
-//   const query = "SELECT * FROM `SenseConstants` WHERE `name`=? AND `status`=?";
-
-//   return new Promise(function(resolve, reject) {
-//     mysqlObject.execute(query, [name, status], function(err, row) {
-//       if (err) {
-//         return reject(err);
-//       }
-//       return resolve(row);
-//     });
-//   });
-// };
 
 /**
  * End Database Read and Write

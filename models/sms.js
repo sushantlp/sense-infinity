@@ -138,22 +138,6 @@ module.exports.readSmsRecord = async (select, mobile, status) => {
   }
 };
 
-// // Get Sms Table Record
-// module.exports.getSmsRecord = (mobile, status) => {
-//   return new Promise(function(resolve, reject) {
-//     mysqlObject.execute(
-//       "SELECT * FROM `Sms` WHERE `mobile`=? AND `status`=?",
-//       [mobile, status],
-//       function(err, row) {
-//         if (err) {
-//           return reject(err);
-//         }
-//         return resolve(row);
-//       }
-//     );
-//   });
-// };
-
 /**
  * End Database Read and Write
  */

@@ -78,23 +78,6 @@ module.exports.readGenderRecord = async (select, status) => {
     return Promise.reject(error);
   }
 };
-/*
-
-// Get All Gender Record
-module.exports.getAllGender = status => {
-  // Query
-  const query =
-    "SELECT gender_id AS gender_unique, name AS gender_name FROM `Genders` WHERE `status`=?";
-
-  return new Promise(function(resolve, reject) {
-    mysqlObject.execute(query, [status], function(err, row) {
-      if (err) {
-        return reject(err);
-      }
-      return resolve(row);
-    });
-  });
-}; */
 
 /**
  * End Database Read and Write
