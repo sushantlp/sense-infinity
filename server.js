@@ -83,6 +83,9 @@ app.group("/api/v1", router => {
 
     // Get Sense Static Data
     api.get("/get/static", engage.requestSenseStatic);
+
+    // Keep Device Information
+    api.post("/keep/device/data", engage.requestKeepDeviceData);
   });
 });
 

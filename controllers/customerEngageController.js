@@ -66,6 +66,75 @@ module.exports.requestSenseStatic = (req, res) => {
   }
 };
 
+// Request Keep Device Data
+module.exports.requestKeepDeviceData = (req, res) => {
+  // Check Paramter
+  if (
+    req.query.mobile !== undefined &&
+    req.query.mobile !== "" &&
+    req.query.store_id !== undefined &&
+    req.query.store_id !== "" &&
+    req.body.device_json !== undefined &&
+    req.body.device_json !== ""
+  ) {
+    // Extract Parameter
+    const deviceJson = req.body.device_json;
+    const mobile = req.query.mobile;
+    const storeId = req.query.store_id;
+
+    // Logic Device Data
+    return logicDeviceData(deviceJson, mobile, storeId)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.msg,
+              "/api/v1/merchant/keep/device/data",
+              200,
+              response.success,
+              null
+            )
+          );
+      })
+      .catch(error => {
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else {
+    return res.status(400).send("Not a good api call");
+  }
+};
+
+// Logic Device Data
+const logicDeviceData = async (deviceJson, mobile, storeId) => {
+  try {
+    // Intialize
+    let responsedata = {};
+
+    deviceJson.map((json, index) => {
+      if (
+        json.hasOwnProperty("latitude") &&
+        json.hasOwnProperty("longitude") &&
+        json.hasOwnProperty("brand") &&
+        json.hasOwnProperty("device") &&
+        json.hasOwnProperty("model") &&
+        json.hasOwnProperty("app_id") &&
+        json.hasOwnProperty("version_sdk") &&
+        json.hasOwnProperty("version_release") &&
+        json.hasOwnProperty("sense_version_number")
+      ) {
+      }
+    });
+
+    return (responsedata = {
+      success: true,
+      msg: "Succesful"
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 // Logic Sense Static
 const logicSenseStatic = async appVersion => {
   try {
