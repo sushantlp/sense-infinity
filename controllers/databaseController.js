@@ -406,9 +406,9 @@ module.exports.createFeedbackOptionTable = async (merchantMobile, storeId) => {
 
 // Read Merchant Feedback Question Record
 module.exports.readFeedbackQuestion = async (
+  status,
   merchantMobile,
-  storeId,
-  status
+  storeId
 ) => {
   try {
     const connection = await mysql.createConnection({
@@ -435,6 +435,507 @@ module.exports.readFeedbackQuestion = async (
     return Promise.reject(error);
   }
 };
+
+// Read Merchant Feedback Option Record
+module.exports.readFeedbackOption = async (
+  quesId,
+  status,
+  merchantMobile,
+  storeId
+) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const FeedbackOption = `${merchantMobile}_${storeId}_feedback_options`;
+
+    // Query
+    const query = `SELECT * FROM '${FeedbackOption}' WHERE 'feed_ques_id'=? AND 'status'=?`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [quesId, status]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Survey Question Table Exist
+module.exports.showSurveyQuestionTable = async (merchantMobile, storeId) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const SurveyQuestion = `${merchantMobile}_${storeId}_survey_questions`;
+
+    // Query
+    const query = `SHOW TABLES LIKE '${SurveyQuestion}'`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Survey Option Table Exist
+module.exports.showSurveyOptionTable = async (merchantMobile, storeId) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const SurveyOption = `${merchantMobile}_${storeId}_survey_options`;
+
+    // Query
+    const query = `SHOW TABLES LIKE '${SurveyOption}'`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Keep Merchant Survey Table Exist
+module.exports.showKeepSurveyTable = async (merchantMobile, storeId) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const KeepSurvey = `${merchantMobile}_${storeId}_keep_merchant_surveys`;
+
+    // Query
+    const query = `SHOW TABLES LIKE '${KeepSurvey}'`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Create Merchant Keep Survey Table
+module.exports.createKeepSurveyTable = async (merchantMobile, storeId) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const KeepSurvey = `${merchantMobile}_${storeId}_keep_merchant_surveys`;
+    const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
+
+    // Query
+    const query = `CREATE TABLE IF NOT EXISTS '${KeepSurvey}' ('keep_survey_id' INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, 'survey_ques_id' INTEGER NOT NULL, 'survey_option_id' INTEGER NOT NULL, 'cust_identity_id' INT(11) UNSIGNED NOT NULL, FOREIGN KEY ('cust_identity_id') REFERENCES '${CustomerIdentity}' ('cust_identity_id'), 'role_id' INTEGER NOT NULL, 'status' BOOL DEFAULT FALSE, 'created_at' DATETIME NOT NULL, 'updated_at' DATETIME NOT NULL, PRIMARY KEY('keep_survey_id'))`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Create Merchant Survey Question Table
+module.exports.createSurveyQuestionTable = async (merchantMobile, storeId) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const SurveyQuestion = `${merchantMobile}_${storeId}_survey_questions`;
+
+    // Query
+    const query = `CREATE TABLE IF NOT EXISTS '${SurveyQuestion}' (survey_ques_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, 'survey_question' VARCHAR(255) NOT NULL, 'input_id' INTEGER NOT NULL, 'status' BOOL DEFAULT FALSE, 'created_at' DATETIME NOT NULL ,'updated_at' DATETIME NOT NULL, PRIMARY KEY('survey_ques_id'))`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Create Merchant Survey Option Table
+module.exports.createSurveyOptionTable = async (merchantMobile, storeId) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const SurveyOption = `${merchantMobile}_${storeId}_survey_options`;
+    const SurveyQuestion = `${merchantMobile}_${storeId}_survey_questions`;
+
+    // Query
+    const query = `CREATE TABLE IF NOT EXISTS '${SurveyOption}' ('survey_option_id' INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, 'option_value' VARCHAR(255) NOT NULL, 'survey_ques_id' INT(11) UNSIGNED NOT NULL, FOREIGN KEY ('survey_ques_id') REFERENCES '${SurveyQuestion}' ('survey_ques_id'), 'status' BOOL DEFAULT FALSE, 'created_at' DATETIME NOT NULL, 'updated_at' DATETIME NOT NULL, PRIMARY KEY('survey_option_id'))`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Read Merchant Survey Question Record
+module.exports.readSurveyQuestion = async (status, merchantMobile, storeId) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const SurveyQuestion = `${merchantMobile}_${storeId}_survey_questions`;
+
+    // Query
+    const query = `SELECT '${SurveyQuestion}'.survey_ques_id,'${SurveyQuestion}'.survey_question,'${SurveyQuestion}'.input_id,InputTypes.input_name FROM '${SurveyQuestion}' LEFT JOIN 'InputTypes' ON '${SurveyQuestion}'.input_id = InputTypes.input_id WHERE '${SurveyQuestion}'.status = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [status]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Read Merchant Survey Option Record
+module.exports.readSurveyOption = async (
+  quesId,
+  status,
+  merchantMobile,
+  storeId
+) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const SurveyOption = `${merchantMobile}_${storeId}_survey_options`;
+
+    // Query
+    const query = `SELECT * FROM '${SurveyOption}' WHERE 'survey_ques_id'=? AND 'status'=?`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [quesId, status]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Create Customer Identity Table
+module.exports.createCustomerIdentityTable = async (
+  merchantMobile,
+  storeId
+) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
+
+    // Query
+    const query = `CREATE TABLE IF NOT EXISTS '${CustomerIdentity}' ('cust_identity_id' INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, 'first_name' VARCHAR(255) NULL, 'last_name' VARCHAR(255) NULL, 'email' VARCHAR(255) NULL, 'mobile' VARCHAR(10) UNIQUE, 'dob' VARCHAR(255) NULL, 'gender_id' INTEGER NOT NULL DEFAULT 0, FOREIGN KEY ('gender_id') REFERENCES Genders ('gender_id'), 'married' VARCHAR(255) NULL DEFAULT 0, 'spouse_name' VARCHAR(255) NULL, 'anniversary_date' VARCHAR(255) NULL, 'status' BOOL DEFAULT FALSE, 'created_at' DATETIME NOT NULL, 'updated_at' DATETIME NOT NULL, PRIMARY KEY('cust_identity_id'))`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Create Customer Identity Address Table
+module.exports.createCustomerAddressTable = async (merchantMobile, storeId) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
+    const CustomerAddress = `${merchantMobile}_${storeId}_customer_identity_address`;
+
+    // Query
+    const query = `CREATE TABLE IF NOT EXISTS '${CustomerAddress}' ('cust_address_id' INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, 'address_one' VARCHAR(255) NULL, 'address_two' VARCHAR(255) NULL, 'address_three' VARCHAR(255) NULL, 'landmark' VARCHAR(255) NULL, 'city_id' INTEGER NOT NULL, FOREIGN KEY ('city_id') REFERENCES Cities ('city_id'), 'locality_id' INTEGER NOT NULL, FOREIGN KEY ('locality_id') REFERENCES Localities ('locality_id'), 'cust_identity_id' INT(11) UNSIGNED NOT NULL, FOREIGN KEY ('cust_identity_id') REFERENCES '${CustomerIdentity}' ('cust_identity_id'), 'status' BOOL DEFAULT FALSE, 'created_at' DATETIME NOT NULL, 'updated_at' DATETIME NOT NULL, PRIMARY KEY('cust_address_id'))`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Read Merchant Customer Idenitity Record
+module.exports.readCustomerIdentityRecord = async (
+  merchantMobile,
+  storeId,
+  status
+) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
+
+    // Query
+    const query = `SELECT '${CustomerIdentity}'.cust_identity_id, '${CustomerIdentity}'.first_name, '${CustomerIdentity}'.last_name, '${CustomerIdentity}'.email, '${CustomerIdentity}'.mobile, '${CustomerIdentity}'.dob, '${CustomerIdentity}'.married, '${CustomerIdentity}'.spouse_name, '${CustomerIdentity}'.anniversary_date, Genders.name AS gender_name FROM '${CustomerIdentity}' LEFT JOIN 'Genders' ON '${CustomerIdentity}'.gender_id = Genders.gender_id WHERE '${CustomerIdentity}'.status = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [status]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Read Customer Identity By Mobile
+module.exports.readCustomerIdentityByMobile = async (
+  select,
+  merchantMobile,
+  storeId,
+  customerMobile,
+  status
+) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
+
+    // Query
+    const query = `SELECT ${select} FROM '${CustomerIdentity}' WHERE status = ? AND mobile = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [
+      status,
+      customerMobile
+    ]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Keep Merchant Customer Identity Record
+module.exports.keepCustomerIdentity = async (
+  merchantMobile,
+  storeId,
+  firstName,
+  lastName,
+  email,
+  mobile,
+  dob,
+  genderId,
+  married,
+  spouseName,
+  anniversaryDate,
+  status
+) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
+
+    // Query
+    const query = `INSERT INTO '${CustomerIdentity}' ('first_name', 'last_name', 'email', 'mobile', 'dob', 'gender_id', 'married', 'spouse_name', 'anniversary_date', 'status', 'created_at', 'updated_at') VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [
+      firstName,
+      lastName,
+      email,
+      mobile,
+      dob,
+      genderId,
+      married,
+      spouseName,
+      anniversaryDate,
+      status,
+      now,
+      now
+    ]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Update Merchant Customer Identity Record
+module.exports.updateCustomerIdentity = async (
+  merchantMobile,
+  storeId,
+  firstName,
+  lastName,
+  email,
+  mobile,
+  dob,
+  genderId,
+  married,
+  spouseName,
+  anniversaryDate,
+  status
+) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
+
+    // Query
+    const query = `UPDATE '${CustomerIdentity}' SET first_name = ?, last_name = ?, email = ?, dob = ?, gender_id = ?, married = ?, spouse_name = ?, anniversary_date = ?, status = ?, updated_at = ? WHERE mobile = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [
+      firstName,
+      lastName,
+      email,
+      dob,
+      genderId,
+      married,
+      spouseName,
+      anniversaryDate,
+      status,
+      now,
+      mobile
+    ]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 /**
  * End Database Read and Write
  */
