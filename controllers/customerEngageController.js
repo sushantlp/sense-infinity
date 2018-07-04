@@ -11,8 +11,6 @@ const localityModel = require("../models/locality");
 const cityModel = require("../models/city");
 const genderModel = require("../models/gender");
 const deviceModel = require("../models/device_detail");
-
-// Import Model
 const senseConstModel = require("../models/sense_constant");
 
 // Request Sense Infinity Static Data
@@ -107,11 +105,147 @@ module.exports.requestKeepDeviceData = (req, res) => {
   }
 };
 
-module.exports.demo = (req, res) => {
-  const mobile = req.query.mobile;
-  const storeId = req.query.store_id;
+// Request Feedback Data
+module.exports.requestReadFeedbackData = (req, res) => {
+  if (
+    req.query.mobile !== undefined &&
+    req.query.mobile !== "" &&
+    req.query.store_id !== undefined &&
+    req.query.store_id !== "" &&
+    req.query.sense_feed_version !== undefined &&
+    req.query.sense_feed_version !== "" &&
+    req.query.merchant_feed_version !== undefined &&
+    req.query.merchant_feed_version !== ""
+  ) {
+    // Extract Parameter
+    const mobile = req.query.mobile;
+    const storeId = req.query.store_id;
+    const merchantVersion = parseFloat(req.query.merchant_feed_version);
+    const senseVersion = parseFloat(req.query.sense_feed_version);
 
-  databaseController.showConstantTable(mobile, storeId);
+    // Logic Sense Static
+    return logicReadFeedback(merchantVersion, senseVersion, mobile, storeId)
+      .then(response => {
+        if (response.hasOwnProperty("version")) {
+          flag = true;
+        }
+
+        // Intialize
+        const metadata = {
+          version: flag ? response.version : appVersion,
+          count: flag ? Object.keys(response.msg).length : null
+        };
+
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.msg,
+              "/api/v1/merchant/get/static",
+              200,
+              response.success,
+              metadata
+            )
+          );
+      })
+      .catch(error => {
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else {
+  }
+};
+
+// Logic Read Feedback Data
+const logicReadFeedback = async (
+  merchantVersion,
+  senseVersion,
+  mobile,
+  storeId
+) => {
+  try {
+    // Intialize
+    let responsedata = {};
+
+    // Merchant Constant Table Exist
+    const senseConstant = await databaseController.showConstantTable(
+      mobile,
+      storeId
+    );
+
+    // Zero Means Empty Record
+    if (senseConstant.length === 0) {
+      // Create Merchant Constant Store Table
+      await databaseController.createConstantTable(mobile, storeId);
+
+      // Logic Keep Merchant Constant
+      await logicMerchantConstant(mobile, storeId);
+    }
+
+    // Parallel Merchant and Sense Constant
+    const parallel = await Promise.all([
+      databaseController.readConstantRecord(
+        "*",
+        mobile,
+        storeId,
+        "CUSTOMER_FEEDBACK_APP_VERSION",
+        1
+      ),
+      senseConstModel.readSenseConstant("*", "CUSTOMER_FEEDBACK_APP_VERSION", 1)
+    ]);
+
+    if (parallel.length === 0) {
+      return Promise.reject("Oops our bad!!!");
+    }
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Keep Merchant Constant
+const logicMerchantConstant = async (mobile, storeId) => {
+  try {
+    // Block Variable
+    const seed = [];
+    const responsedata = {};
+
+    seed.push({
+      name: "CUSTOMER_FEEDBACK_APP_VERSION",
+      value: "1.0",
+      comment: null,
+      status: 1
+    });
+    seed.push({
+      name: "CUSTOMER_SURVEY_APP_VERSION",
+      value: "1.0",
+      comment: null,
+      status: 1
+    });
+    seed.push({
+      name: "CUSTOMER_IDENTITY_APP_VERSION",
+      value: "1.0",
+      comment: null,
+      status: 1
+    });
+
+    seed.map(async (json, index) => {
+      // Keep Merchant Constant Table
+      await databaseController.keepMerchantConstantTable(
+        mobile,
+        storeId,
+        json.name,
+        json.value,
+        json.comment,
+        json.status
+      );
+    });
+
+    return (responsedata = {
+      success: true,
+      msg: "Succesful"
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
 };
 // Logic Device Data
 const logicDeviceData = async (deviceJson, mobile, storeId) => {

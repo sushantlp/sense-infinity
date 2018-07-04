@@ -76,18 +76,19 @@ app.group("/api/v1", router => {
   // Refresh Token
   router.post("/refresh/token", signup.requestRefreshToken);
 
-  router.get("/demo", engage.demo);
-
   // Merchant Route
   router.group("/merchant", api => {
     // Merchant APP Signup
     api.post("/signup", signup.requestAppSignup);
 
-    // Get Sense Static Data
-    api.get("/get/static", engage.requestSenseStatic);
-
     // Keep Device Information
     api.post("/keep/device/data", engage.requestKeepDeviceData);
+
+    // Get Static Data
+    api.get("/get/static", engage.requestSenseStatic);
+
+    // Get Feedback
+    api.get("/get/feedback", engage.requestReadFeedbackData);
   });
 });
 

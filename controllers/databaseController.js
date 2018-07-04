@@ -89,7 +89,7 @@ module.exports.createConstantTable = async (merchantMobile, storeId) => {
   }
 };
 
-// Constant Table Exist
+// Merchant Constant Table Exist
 module.exports.showConstantTable = async (merchantMobile, storeId) => {
   try {
     const connection = await mysql.createConnection({
