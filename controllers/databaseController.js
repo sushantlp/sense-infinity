@@ -936,6 +936,266 @@ module.exports.updateCustomerIdentity = async (
   }
 };
 
+// Read One Record Merchant Store Survey
+module.exports.readLimitMerchantSurvey = async (
+  select,
+  merchantMobile,
+  storeId,
+  customerId,
+  questionId,
+  roleId,
+  status
+) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const KeepSurvey = `${merchantMobile}_${storeId}_keep_merchant_surveys`;
+
+    // Query
+    const query = `SELECT ${select} FROM '${KeepSurvey}' WHERE cust_identity_id = ? AND survey_ques_id = ? AND role_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [
+      customerId,
+      questionId,
+      roleId,
+      status
+    ]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Read One Record Merchant Store Feedback
+module.exports.readLimitMerchantFeedback = async (
+  select,
+  merchantMobile,
+  storeId,
+  customerId,
+  questionId,
+  roleId,
+  status
+) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const KeepFeedback = `${merchantMobile}_${storeId}_keep_merchant_feedbacks`;
+
+    // Query
+    const query = `SELECT ${select} FROM '${KeepFeedback}' WHERE 'cust_identity_id' = ? AND 'feed_ques_id' = ? AND 'role_id' = ? AND 'status' = ? ORDER BY 'created_at' DESC LIMIT 1`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [
+      customerId,
+      questionId,
+      roleId,
+      status
+    ]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Keep Merchant Store Feedback Table
+module.exports.keepMerchantFeedbackTable = async (
+  merchantMobile,
+  storeId,
+  questionId,
+  optionId,
+  customerId,
+  roleId,
+  status
+) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const KeepFeedback = `${merchantMobile}_${storeId}_keep_merchant_feedbacks`;
+
+    // Query
+    const query = `INSERT INTO '${KeepFeedback}' ('feed_ques_id', 'feed_option_id', 'cust_identity_id', 'role_id', 'status', 'created_at', 'updated_at') VALUES (?,?,?,?,?,?,?)`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [
+      questionId,
+      optionId,
+      customerId,
+      roleId,
+      status,
+      now,
+      now
+    ]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Keep Merchant Store Survey Table
+module.exports.keepMerchantSurveyTable = async (
+  merchantMobile,
+  storeId,
+  questionId,
+  optionId,
+  customerId,
+  roleId,
+  status
+) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const KeepSurvey = `${merchantMobile}_${storeId}_keep_merchant_surveys`;
+
+    // Query
+    const query = `INSERT INTO '${KeepSurvey}' ('survey_ques_id', 'survey_option_id', 'cust_identity_id', 'role_id', 'status', 'created_at', 'updated_at') VALUES (?,?,?,?,?,?,?)`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [
+      questionId,
+      optionId,
+      customerId,
+      roleId,
+      status,
+      now,
+      now
+    ]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Update Merchant Store Feedback Table
+module.exports.updateMerchantFeedbackTable = async (
+  merchantMobile,
+  storeId,
+  keepFeedId,
+  questionId,
+  optionId,
+  customerId,
+  roleId,
+  status
+) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const KeepFeedback = `${merchantMobile}_${storeId}_keep_merchant_feedbacks`;
+
+    // Query
+    const query = `UPDATE '${KeepFeedback}' SET 'feed_ques_id' = ?, 'feed_option_id' = ?, 'cust_identity_id' = ?, 'role_id' = ?, 'status' = ?, 'updated_at' = ? WHERE 'keep_feed_id' = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [
+      questionId,
+      optionId,
+      customerId,
+      roleId,
+      status,
+      now,
+      keepFeedId
+    ]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Update Merchant Store Survey Table
+module.exports.updateMerchantSurveyTable = async (
+  merchantMobile,
+  storeId,
+  keepSurveyId,
+  questionId,
+  optionId,
+  customerId,
+  roleId,
+  status
+) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const KeepSurvey = `${merchantMobile}_${storeId}_keep_merchant_surveys`;
+
+    // Query
+    const query = `UPDATE '${KeepSurvey}' SET 'survey_ques_id' = ?, 'survey_option_id' = ?, 'cust_identity_id' = ?, 'role_id' = ?, 'status' = ?, 'updated_at' = ? WHERE 'keep_survey_id' = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [
+      questionId,
+      optionId,
+      customerId,
+      roleId,
+      status,
+      now,
+      keepSurveyId
+    ]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 /**
  * End Database Read and Write
  */
