@@ -80,18 +80,6 @@ module.exports.keepDeviceDetail = async (
   }
 };
 
-// Keep Device Detail
-//  module.exports.keepDeviceDetail = (mobile, storeId, longitude, latitude, brand, device, model, appId, versionSdk, versionRelease, senseVersionNumber) => {
-//   return new Promise(function(resolve, reject) {
-//       mysqlObject.execute('INSERT INTO `DeviceDetails` (`mobile`,`store_id`,`longitude`,`latitude`,`brand`,`device`,`model`,`app_id`,`version_sdk`,`version_release`,`sense_version_number`,`created_at`,`updated_at`) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)', [mobile, storeId, longitude, latitude, brand, device, model, appId, versionSdk, versionRelease, senseVersionNumber, now, now], function(err, row) {
-//           if (err) {
-//               return reject(err);
-//           }
-//           return resolve(row);
-//       });
-//   });
-// };
-
 /**
  * End Database Read and Write
  */

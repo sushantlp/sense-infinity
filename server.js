@@ -76,6 +76,8 @@ app.group("/api/v1", router => {
   // Refresh Token
   router.post("/refresh/token", signup.requestRefreshToken);
 
+  router.get("/demo", engage.demo);
+
   // Merchant Route
   router.group("/merchant", api => {
     // Merchant APP Signup

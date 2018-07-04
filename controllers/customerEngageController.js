@@ -4,11 +4,13 @@
 const dotEnv = require("dotenv");
 
 const shareController = require("./shareController");
+const databaseController = require("./databaseController");
 
 // Import Model
 const localityModel = require("../models/locality");
 const cityModel = require("../models/city");
 const genderModel = require("../models/gender");
+const deviceModel = require("../models/device_detail");
 
 // Import Model
 const senseConstModel = require("../models/sense_constant");
@@ -74,11 +76,11 @@ module.exports.requestKeepDeviceData = (req, res) => {
     req.query.mobile !== "" &&
     req.query.store_id !== undefined &&
     req.query.store_id !== "" &&
-    req.body.device_json !== undefined &&
-    req.body.device_json !== ""
+    req.body.device !== undefined &&
+    req.body.device !== ""
   ) {
     // Extract Parameter
-    const deviceJson = req.body.device_json;
+    const deviceJson = req.body.device;
     const mobile = req.query.mobile;
     const storeId = req.query.store_id;
 
@@ -105,6 +107,12 @@ module.exports.requestKeepDeviceData = (req, res) => {
   }
 };
 
+module.exports.demo = (req, res) => {
+  const mobile = req.query.mobile;
+  const storeId = req.query.store_id;
+
+  databaseController.showConstantTable(mobile, storeId);
+};
 // Logic Device Data
 const logicDeviceData = async (deviceJson, mobile, storeId) => {
   try {
@@ -123,6 +131,20 @@ const logicDeviceData = async (deviceJson, mobile, storeId) => {
         json.hasOwnProperty("version_release") &&
         json.hasOwnProperty("sense_version_number")
       ) {
+        // Keep Device Detail
+        deviceModel.keepDeviceDetail(
+          mobile,
+          storeId,
+          json.latitude,
+          json.longitude,
+          json.brand,
+          json.device,
+          json.model,
+          json.app_id,
+          json.version_sdk,
+          json.version_release,
+          json.sense_version_number
+        );
       }
     });
 
