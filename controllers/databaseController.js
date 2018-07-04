@@ -11,8 +11,8 @@ const Sequelize = require("sequelize");
 const bluebird = require("bluebird");
 const moment = require("moment");
 
-// Load Environment Variables from .env file.
-dotEnv.load({ path: ".env" });
+// // Load Environment Variables from .env file.
+// dotEnv.load({ path: ".env" });
 
 // Current Date and Time
 const now = moment()
@@ -76,7 +76,7 @@ module.exports.createConstantTable = async (merchantMobile, storeId) => {
     const MerchantConstant = `${merchantMobile}_${storeId}_constants`;
 
     // Query
-    const query = `CREATE TABLE IF NOT EXISTS '${MerchantConstant}' (constant_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL, value VARCHAR(255) NOT NULL, comment VARCHAR(255) NULL, status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(constant_id))`;
+    const query = `CREATE TABLE IF NOT EXISTS ${MerchantConstant} (constant_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL, value VARCHAR(255) NOT NULL, comment VARCHAR(255) NULL, status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(constant_id))`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query);
@@ -138,7 +138,7 @@ module.exports.readConstantRecord = async (
     const MerchantConstant = `${merchantMobile}_${storeId}_constants`;
 
     // Query
-    const query = `SELECT ${select} FROM '${MerchantConstant}' WHERE name=? AND status=?`;
+    const query = `SELECT ${select} FROM ${MerchantConstant} WHERE name=? AND status=?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [name, status]);
@@ -173,7 +173,7 @@ module.exports.keepMerchantConstantTable = async (
     const MerchantConstant = `${merchantMobile}_${storeId}_constants`;
 
     // Query
-    const query = `INSERT INTO '${MerchantConstant}' ('name','value','comment','status','created_at','updated_at') VALUES (?,?,?,?,?,?)`;
+    const query = `INSERT INTO ${MerchantConstant} (name, value, comment, status, created_at, updated_at) VALUES (?,?,?,?,?,?)`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
@@ -214,7 +214,7 @@ module.exports.updateMerchantConstantTable = async (
     const MerchantConstant = `${merchantMobile}_${storeId}_constants`;
 
     // Query
-    const query = `UPDATE '${MerchantConstant}' SET 'value'=?,'status'=?,'updated_at'=? WHERE 'constant_id'=?`;
+    const query = `UPDATE ${MerchantConstant} SET value = ?, status = ?, updated_at = ? WHERE constant_id = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
@@ -331,7 +331,7 @@ module.exports.createFeedbackStoreTable = async (merchantMobile, storeId) => {
     const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
 
     // Query
-    const query = `CREATE TABLE IF NOT EXISTS '${KeepFeedback}' ('keep_feed_id' INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, 'feed_ques_id' INTEGER NOT NULL,'feed_option_id' INTEGER NOT NULL,'cust_identity_id' INT(11) UNSIGNED NOT NULL, FOREIGN KEY ('cust_identity_id') REFERENCES '${CustomerIdentity}' ('cust_identity_id'), 'role_id' INTEGER NOT NULL,'status' BOOL DEFAULT FALSE,'created_at' DATETIME NOT NULL,'updated_at' DATETIME NOT NULL,PRIMARY KEY('keep_feed_id'))`;
+    const query = `CREATE TABLE IF NOT EXISTS ${KeepFeedback} (keep_feed_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, feed_ques_id INTEGER NOT NULL, feed_option_id INTEGER NOT NULL, cust_identity_id INT(11) UNSIGNED NOT NULL, FOREIGN KEY (cust_identity_id) REFERENCES ${CustomerIdentity} (cust_identity_id), role_id INTEGER NOT NULL, status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(keep_feed_id))`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query);
@@ -362,7 +362,7 @@ module.exports.createFeedbackQuestionTable = async (
     const FeedbackQuestion = `${merchantMobile}_${storeId}_feedback_questions`;
 
     // Query
-    const query = `CREATE TABLE IF NOT EXISTS '${FeedbackQuestion}' ('feed_ques_id' INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, 'feed_question' VARCHAR(255) NOT NULL, 'input_id' INTEGER NOT NULL, 'status' BOOL DEFAULT FALSE, 'created_at' DATETIME NOT NULL, 'updated_at' DATETIME NOT NULL, PRIMARY KEY('feed_ques_id'))`;
+    const query = `CREATE TABLE IF NOT EXISTS ${FeedbackQuestion} (feed_ques_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, feed_question VARCHAR(255) NOT NULL, input_id INTEGER NOT NULL, status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(feed_ques_id))`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query);
@@ -391,7 +391,7 @@ module.exports.createFeedbackOptionTable = async (merchantMobile, storeId) => {
     const FeedbackOption = `${merchantMobile}_${storeId}_feedback_options`;
 
     // Query
-    const query = `CREATE TABLE IF NOT EXISTS '${FeedbackOption}' ('feed_option_id' INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, 'option_value' VARCHAR(255) NOT NULL, 'feed_ques_id' INT(11) UNSIGNED NOT NULL, FOREIGN KEY ('feed_ques_id') REFERENCES '${FeedbackQuestion}' ('feed_ques_id'), 'status' BOOL DEFAULT FALSE, 'created_at' DATETIME NOT NULL, 'updated_at' DATETIME NOT NULL,PRIMARY KEY('feed_option_id'))`;
+    const query = `CREATE TABLE IF NOT EXISTS ${FeedbackOption} (feed_option_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, option_value VARCHAR(255) NOT NULL, feed_ques_id INT(11) UNSIGNED NOT NULL, FOREIGN KEY (feed_ques_id) REFERENCES ${FeedbackQuestion} (feed_ques_id), status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(feed_option_id))`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query);
@@ -423,7 +423,7 @@ module.exports.readFeedbackQuestion = async (
     const FeedbackQuestion = `${merchantMobile}_${storeId}_feedback_questions`;
 
     // Query
-    const query = `SELECT '${FeedbackQuestion}'.feed_ques_id,'${FeedbackQuestion}'.feed_question,'${FeedbackQuestion}'.input_id,InputTypes.input_name FROM '${FeedbackQuestion}' LEFT JOIN 'InputTypes' ON '${FeedbackQuestion}'.input_id = InputTypes.input_id WHERE '${FeedbackQuestion}'.status = ?`;
+    const query = `SELECT ${FeedbackQuestion}.feed_ques_id, ${FeedbackQuestion}.feed_question, ${FeedbackQuestion}.input_id, InputTypes.input_name FROM ${FeedbackQuestion} LEFT JOIN InputTypes ON ${FeedbackQuestion}.input_id = InputTypes.input_id WHERE ${FeedbackQuestion}.status = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [status]);
@@ -456,7 +456,7 @@ module.exports.readFeedbackOption = async (
     const FeedbackOption = `${merchantMobile}_${storeId}_feedback_options`;
 
     // Query
-    const query = `SELECT * FROM '${FeedbackOption}' WHERE 'feed_ques_id'=? AND 'status'=?`;
+    const query = `SELECT * FROM ${FeedbackOption} WHERE feed_ques_id = ? AND status = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [quesId, status]);
@@ -569,7 +569,7 @@ module.exports.createKeepSurveyTable = async (merchantMobile, storeId) => {
     const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
 
     // Query
-    const query = `CREATE TABLE IF NOT EXISTS '${KeepSurvey}' ('keep_survey_id' INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, 'survey_ques_id' INTEGER NOT NULL, 'survey_option_id' INTEGER NOT NULL, 'cust_identity_id' INT(11) UNSIGNED NOT NULL, FOREIGN KEY ('cust_identity_id') REFERENCES '${CustomerIdentity}' ('cust_identity_id'), 'role_id' INTEGER NOT NULL, 'status' BOOL DEFAULT FALSE, 'created_at' DATETIME NOT NULL, 'updated_at' DATETIME NOT NULL, PRIMARY KEY('keep_survey_id'))`;
+    const query = `CREATE TABLE IF NOT EXISTS ${KeepSurvey} (keep_survey_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, survey_ques_id INTEGER NOT NULL, survey_option_id INTEGER NOT NULL, cust_identity_id INT(11) UNSIGNED NOT NULL, FOREIGN KEY (cust_identity_id) REFERENCES ${CustomerIdentity} (cust_identity_id), role_id INTEGER NOT NULL, status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(keep_survey_id))`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query);
@@ -597,7 +597,7 @@ module.exports.createSurveyQuestionTable = async (merchantMobile, storeId) => {
     const SurveyQuestion = `${merchantMobile}_${storeId}_survey_questions`;
 
     // Query
-    const query = `CREATE TABLE IF NOT EXISTS '${SurveyQuestion}' (survey_ques_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, 'survey_question' VARCHAR(255) NOT NULL, 'input_id' INTEGER NOT NULL, 'status' BOOL DEFAULT FALSE, 'created_at' DATETIME NOT NULL ,'updated_at' DATETIME NOT NULL, PRIMARY KEY('survey_ques_id'))`;
+    const query = `CREATE TABLE IF NOT EXISTS ${SurveyQuestion} (survey_ques_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, survey_question VARCHAR(255) NOT NULL, input_id INTEGER NOT NULL, status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(survey_ques_id))`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query);
@@ -626,7 +626,7 @@ module.exports.createSurveyOptionTable = async (merchantMobile, storeId) => {
     const SurveyQuestion = `${merchantMobile}_${storeId}_survey_questions`;
 
     // Query
-    const query = `CREATE TABLE IF NOT EXISTS '${SurveyOption}' ('survey_option_id' INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, 'option_value' VARCHAR(255) NOT NULL, 'survey_ques_id' INT(11) UNSIGNED NOT NULL, FOREIGN KEY ('survey_ques_id') REFERENCES '${SurveyQuestion}' ('survey_ques_id'), 'status' BOOL DEFAULT FALSE, 'created_at' DATETIME NOT NULL, 'updated_at' DATETIME NOT NULL, PRIMARY KEY('survey_option_id'))`;
+    const query = `CREATE TABLE IF NOT EXISTS ${SurveyOption} (survey_option_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, option_value VARCHAR(255) NOT NULL, survey_ques_id INT(11) UNSIGNED NOT NULL, FOREIGN KEY (survey_ques_id) REFERENCES ${SurveyQuestion} (survey_ques_id), status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(survey_option_id))`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query);
@@ -654,7 +654,7 @@ module.exports.readSurveyQuestion = async (status, merchantMobile, storeId) => {
     const SurveyQuestion = `${merchantMobile}_${storeId}_survey_questions`;
 
     // Query
-    const query = `SELECT '${SurveyQuestion}'.survey_ques_id,'${SurveyQuestion}'.survey_question,'${SurveyQuestion}'.input_id,InputTypes.input_name FROM '${SurveyQuestion}' LEFT JOIN 'InputTypes' ON '${SurveyQuestion}'.input_id = InputTypes.input_id WHERE '${SurveyQuestion}'.status = ?`;
+    const query = `SELECT ${SurveyQuestion}.survey_ques_id, ${SurveyQuestion}.survey_question, ${SurveyQuestion}.input_id, InputTypes.input_name FROM ${SurveyQuestion} LEFT JOIN InputTypes ON ${SurveyQuestion}.input_id = InputTypes.input_id WHERE ${SurveyQuestion}.status = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [status]);
@@ -669,10 +669,11 @@ module.exports.readSurveyQuestion = async (status, merchantMobile, storeId) => {
 
 // Read Merchant Survey Option Record
 module.exports.readSurveyOption = async (
-  quesId,
-  status,
+  select,
   merchantMobile,
-  storeId
+  storeId,
+  quesId,
+  status
 ) => {
   try {
     const connection = await mysql.createConnection({
@@ -687,7 +688,7 @@ module.exports.readSurveyOption = async (
     const SurveyOption = `${merchantMobile}_${storeId}_survey_options`;
 
     // Query
-    const query = `SELECT * FROM '${SurveyOption}' WHERE 'survey_ques_id'=? AND 'status'=?`;
+    const query = `SELECT ${select} FROM ${SurveyOption} WHERE survey_ques_id = ? AND status = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [quesId, status]);
@@ -718,7 +719,7 @@ module.exports.createCustomerIdentityTable = async (
     const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
 
     // Query
-    const query = `CREATE TABLE IF NOT EXISTS '${CustomerIdentity}' ('cust_identity_id' INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, 'first_name' VARCHAR(255) NULL, 'last_name' VARCHAR(255) NULL, 'email' VARCHAR(255) NULL, 'mobile' VARCHAR(10) UNIQUE, 'dob' VARCHAR(255) NULL, 'gender_id' INTEGER NOT NULL DEFAULT 0, FOREIGN KEY ('gender_id') REFERENCES Genders ('gender_id'), 'married' VARCHAR(255) NULL DEFAULT 0, 'spouse_name' VARCHAR(255) NULL, 'anniversary_date' VARCHAR(255) NULL, 'status' BOOL DEFAULT FALSE, 'created_at' DATETIME NOT NULL, 'updated_at' DATETIME NOT NULL, PRIMARY KEY('cust_identity_id'))`;
+    const query = `CREATE TABLE IF NOT EXISTS ${CustomerIdentity} (cust_identity_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, first_name VARCHAR(255) NULL, last_name VARCHAR(255) NULL, email VARCHAR(255) NULL, mobile VARCHAR(10) UNIQUE, dob VARCHAR(255) NULL, gender_id INTEGER NOT NULL DEFAULT 0, FOREIGN KEY (gender_id) REFERENCES Genders (gender_id), married VARCHAR(255) NULL DEFAULT 0, spouse_name VARCHAR(255) NULL, anniversary_date VARCHAR(255) NULL, status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(cust_identity_id))`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query);
@@ -747,7 +748,7 @@ module.exports.createCustomerAddressTable = async (merchantMobile, storeId) => {
     const CustomerAddress = `${merchantMobile}_${storeId}_customer_identity_address`;
 
     // Query
-    const query = `CREATE TABLE IF NOT EXISTS '${CustomerAddress}' ('cust_address_id' INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, 'address_one' VARCHAR(255) NULL, 'address_two' VARCHAR(255) NULL, 'address_three' VARCHAR(255) NULL, 'landmark' VARCHAR(255) NULL, 'city_id' INTEGER NOT NULL, FOREIGN KEY ('city_id') REFERENCES Cities ('city_id'), 'locality_id' INTEGER NOT NULL, FOREIGN KEY ('locality_id') REFERENCES Localities ('locality_id'), 'cust_identity_id' INT(11) UNSIGNED NOT NULL, FOREIGN KEY ('cust_identity_id') REFERENCES '${CustomerIdentity}' ('cust_identity_id'), 'status' BOOL DEFAULT FALSE, 'created_at' DATETIME NOT NULL, 'updated_at' DATETIME NOT NULL, PRIMARY KEY('cust_address_id'))`;
+    const query = `CREATE TABLE IF NOT EXISTS ${CustomerAddress} (cust_address_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, address_one VARCHAR(255) NULL, address_two VARCHAR(255) NULL, address_three VARCHAR(255) NULL, landmark VARCHAR(255) NULL, city_id INTEGER NOT NULL, FOREIGN KEY (city_id) REFERENCES Cities (city_id), locality_id INTEGER NOT NULL, FOREIGN KEY (locality_id) REFERENCES Localities (locality_id), cust_identity_id INT(11) UNSIGNED NOT NULL, FOREIGN KEY (cust_identity_id) REFERENCES ${CustomerIdentity} (cust_identity_id), status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(cust_address_id))`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query);
@@ -779,7 +780,7 @@ module.exports.readCustomerIdentityRecord = async (
     const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
 
     // Query
-    const query = `SELECT '${CustomerIdentity}'.cust_identity_id, '${CustomerIdentity}'.first_name, '${CustomerIdentity}'.last_name, '${CustomerIdentity}'.email, '${CustomerIdentity}'.mobile, '${CustomerIdentity}'.dob, '${CustomerIdentity}'.married, '${CustomerIdentity}'.spouse_name, '${CustomerIdentity}'.anniversary_date, Genders.name AS gender_name FROM '${CustomerIdentity}' LEFT JOIN 'Genders' ON '${CustomerIdentity}'.gender_id = Genders.gender_id WHERE '${CustomerIdentity}'.status = ?`;
+    const query = `SELECT ${CustomerIdentity}.cust_identity_id, ${CustomerIdentity}.first_name, ${CustomerIdentity}.last_name, ${CustomerIdentity}.email, ${CustomerIdentity}.mobile, ${CustomerIdentity}.dob, ${CustomerIdentity}.married, ${CustomerIdentity}.spouse_name, ${CustomerIdentity}.anniversary_date, Genders.name AS gender_name FROM ${CustomerIdentity} LEFT JOIN Genders ON ${CustomerIdentity}.gender_id = Genders.gender_id WHERE ${CustomerIdentity}.status = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [status]);
@@ -813,7 +814,7 @@ module.exports.readCustomerIdentityByMobile = async (
     const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
 
     // Query
-    const query = `SELECT ${select} FROM '${CustomerIdentity}' WHERE status = ? AND mobile = ?`;
+    const query = `SELECT ${select} FROM ${CustomerIdentity} WHERE status = ? AND mobile = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
@@ -857,7 +858,7 @@ module.exports.keepCustomerIdentity = async (
     const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
 
     // Query
-    const query = `INSERT INTO '${CustomerIdentity}' ('first_name', 'last_name', 'email', 'mobile', 'dob', 'gender_id', 'married', 'spouse_name', 'anniversary_date', 'status', 'created_at', 'updated_at') VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`;
+    const query = `INSERT INTO ${CustomerIdentity} (first_name, last_name, email, mobile, dob, gender_id, married, spouse_name, anniversary_date, status, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
@@ -911,7 +912,7 @@ module.exports.updateCustomerIdentity = async (
     const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
 
     // Query
-    const query = `UPDATE '${CustomerIdentity}' SET first_name = ?, last_name = ?, email = ?, dob = ?, gender_id = ?, married = ?, spouse_name = ?, anniversary_date = ?, status = ?, updated_at = ? WHERE mobile = ?`;
+    const query = `UPDATE ${CustomerIdentity} SET first_name = ?, last_name = ?, email = ?, dob = ?, gender_id = ?, married = ?, spouse_name = ?, anniversary_date = ?, status = ?, updated_at = ? WHERE mobile = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
@@ -959,7 +960,7 @@ module.exports.readLimitMerchantSurvey = async (
     const KeepSurvey = `${merchantMobile}_${storeId}_keep_merchant_surveys`;
 
     // Query
-    const query = `SELECT ${select} FROM '${KeepSurvey}' WHERE cust_identity_id = ? AND survey_ques_id = ? AND role_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
+    const query = `SELECT ${select} FROM ${KeepSurvey} WHERE cust_identity_id = ? AND survey_ques_id = ? AND role_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
@@ -1000,7 +1001,7 @@ module.exports.readLimitMerchantFeedback = async (
     const KeepFeedback = `${merchantMobile}_${storeId}_keep_merchant_feedbacks`;
 
     // Query
-    const query = `SELECT ${select} FROM '${KeepFeedback}' WHERE 'cust_identity_id' = ? AND 'feed_ques_id' = ? AND 'role_id' = ? AND 'status' = ? ORDER BY 'created_at' DESC LIMIT 1`;
+    const query = `SELECT ${select} FROM ${KeepFeedback} WHERE cust_identity_id = ? AND feed_ques_id = ? AND role_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
@@ -1041,7 +1042,7 @@ module.exports.keepMerchantFeedbackTable = async (
     const KeepFeedback = `${merchantMobile}_${storeId}_keep_merchant_feedbacks`;
 
     // Query
-    const query = `INSERT INTO '${KeepFeedback}' ('feed_ques_id', 'feed_option_id', 'cust_identity_id', 'role_id', 'status', 'created_at', 'updated_at') VALUES (?,?,?,?,?,?,?)`;
+    const query = `INSERT INTO ${KeepFeedback} (feed_ques_id, feed_option_id, cust_identity_id, role_id, status, created_at, updated_at) VALUES (?,?,?,?,?,?,?)`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
@@ -1085,7 +1086,7 @@ module.exports.keepMerchantSurveyTable = async (
     const KeepSurvey = `${merchantMobile}_${storeId}_keep_merchant_surveys`;
 
     // Query
-    const query = `INSERT INTO '${KeepSurvey}' ('survey_ques_id', 'survey_option_id', 'cust_identity_id', 'role_id', 'status', 'created_at', 'updated_at') VALUES (?,?,?,?,?,?,?)`;
+    const query = `INSERT INTO ${KeepSurvey} (survey_ques_id, survey_option_id, cust_identity_id, role_id, status, created_at, updated_at) VALUES (?,?,?,?,?,?,?)`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
@@ -1130,7 +1131,7 @@ module.exports.updateMerchantFeedbackTable = async (
     const KeepFeedback = `${merchantMobile}_${storeId}_keep_merchant_feedbacks`;
 
     // Query
-    const query = `UPDATE '${KeepFeedback}' SET 'feed_ques_id' = ?, 'feed_option_id' = ?, 'cust_identity_id' = ?, 'role_id' = ?, 'status' = ?, 'updated_at' = ? WHERE 'keep_feed_id' = ?`;
+    const query = `UPDATE ${KeepFeedback} SET feed_ques_id = ?, feed_option_id = ?, cust_identity_id = ?, role_id = ?, status = ?, updated_at = ? WHERE keep_feed_id = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
@@ -1175,7 +1176,7 @@ module.exports.updateMerchantSurveyTable = async (
     const KeepSurvey = `${merchantMobile}_${storeId}_keep_merchant_surveys`;
 
     // Query
-    const query = `UPDATE '${KeepSurvey}' SET 'survey_ques_id' = ?, 'survey_option_id' = ?, 'cust_identity_id' = ?, 'role_id' = ?, 'status' = ?, 'updated_at' = ? WHERE 'keep_survey_id' = ?`;
+    const query = `UPDATE ${KeepSurvey} SET survey_ques_id = ?, survey_option_id = ?, cust_identity_id = ?, role_id = ?, status = ?, updated_at = ? WHERE keep_survey_id = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
