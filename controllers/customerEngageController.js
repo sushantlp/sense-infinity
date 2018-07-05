@@ -12,6 +12,8 @@ const cityModel = require("../models/city");
 const genderModel = require("../models/gender");
 const deviceModel = require("../models/device_detail");
 const senseConstModel = require("../models/sense_constant");
+const feedbackModel = require("../models/feedback_question");
+const feedbackOption = require("../models/feedback_option");
 
 // Request Sense Infinity Static Data
 module.exports.requestSenseStatic = (req, res) => {
@@ -123,16 +125,22 @@ module.exports.requestReadFeedbackData = (req, res) => {
     const merchantVersion = parseFloat(req.query.merchant_feed_version);
     const senseVersion = parseFloat(req.query.sense_feed_version);
 
-    // Logic Sense Static
-    return logicReadFeedback(merchantVersion, senseVersion, mobile, storeId)
+    // Variable
+    let flag = false;
+
+    // Logic Get Feedback Data
+    return logicGetFeedback(merchantVersion, senseVersion, mobile, storeId)
       .then(response => {
-        if (response.hasOwnProperty("version")) {
+        if (response.hasOwnProperty("sense_version")) {
           flag = true;
         }
 
         // Intialize
         const metadata = {
-          version: flag ? response.version : appVersion,
+          sense_feedback_version: flag ? response.sense_version : senseVersion,
+          merchant_feedback_version: flag
+            ? response.merchant_version
+            : merchantVersion,
           count: flag ? Object.keys(response.msg).length : null
         };
 
@@ -141,7 +149,7 @@ module.exports.requestReadFeedbackData = (req, res) => {
           .send(
             shareController.createJsonObject(
               response.msg,
-              "/api/v1/merchant/get/static",
+              "/api/v1/merchant/get/feedback",
               200,
               response.success,
               metadata
@@ -149,14 +157,15 @@ module.exports.requestReadFeedbackData = (req, res) => {
           );
       })
       .catch(error => {
+        console.log(error);
         return res.status(500).send("Oops our bad!!!");
       });
   } else {
   }
 };
 
-// Logic Read Feedback Data
-const logicReadFeedback = async (
+// Logic Get Feedback Data
+const logicGetFeedback = async (
   merchantVersion,
   senseVersion,
   mobile,
@@ -165,6 +174,8 @@ const logicReadFeedback = async (
   try {
     // Intialize
     let responsedata = {};
+    let merchantFlag = false;
+    let senseFlag = false;
 
     // Merchant Constant Table Exist
     const senseConstant = await databaseController.showConstantTable(
@@ -196,9 +207,174 @@ const logicReadFeedback = async (
     if (parallel.length === 0) {
       return Promise.reject("Oops our bad!!!");
     }
+
+    // Merchant app version
+    if (merchantVersion === parseFloat(parallel[0][0].value)) {
+      merchantFlag = true;
+    } else {
+      merchantVersion = parseFloat(parallel[0][0].value);
+    }
+
+    // Admin app version
+    if (senseVersion === parseFloat(parallel[1][0].value)) {
+      senseFlag = true;
+    } else {
+      senseVersion = parseFloat(parallel[1][0].value);
+    }
+
+    // Both flag true then return
+    if (merchantFlag && senseFlag) {
+      return (responsedata = {
+        success: true,
+        msg: "Upto date"
+      });
+    }
+
+    // Logic Read Feedback
+    const feedback = await logicReadFeedback(
+      mobile,
+      storeId,
+      merchantFlag,
+      senseFlag
+    );
+
+    return (responsedata = {
+      success: true,
+      msg: feedback,
+      sense_version: senseVersion,
+      merchant_version: merchantVersion
+    });
   } catch (error) {
     return Promise.reject(error);
   }
+};
+
+// Logic Read Feedback
+const logicReadFeedback = async (mobile, storeId, merchantFlag, senseFlag) => {
+  try {
+    // Variable
+    let jsonArray = [];
+
+    // Parallel
+    await Promise.all([
+      databaseController.createFeedbackQuestionTable(mobile, storeId),
+      databaseController.createFeedbackOptionTable(mobile, storeId),
+      databaseController.createCustomerIdentityTable(mobile, storeId),
+      databaseController.createCustomerAddressTable(mobile, storeId),
+      databaseController.createFeedbackStoreTable(mobile, storeId)
+    ]);
+
+    // Merchant Version
+    if (!merchantFlag) {
+      const merchantFeed = await databaseController.readFeedbackQuestion(
+        mobile,
+        storeId,
+        1
+      );
+
+      if (merchantFeed.length !== 0) {
+        // Create Feedback Json
+        jsonArray = await creatFeedbackJson(
+          merchantFeed,
+          1,
+          mobile,
+          storeId,
+          jsonArray
+        );
+      }
+    }
+
+    // Admin Version
+    if (!senseFlag) {
+      const adminFeed = await feedbackModel.readAdminFeedbackQuestion(
+        "feedback_questions.feed_ques_id, feedback_questions.feed_question, feedback_questions.input_id, input_types.input_name",
+        mobile,
+        1
+      );
+
+      if (adminFeed.length !== 0) {
+        // Create Feedback Json
+        jsonArray = await creatFeedbackJson(
+          adminFeed,
+          2,
+          undefined,
+          undefined,
+          jsonArray
+        );
+      }
+    }
+
+    return jsonArray;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Create Feedback Json
+const creatFeedbackJson = async (json, role, mobile, storeId, jsonArray) => {
+  try {
+    // Variable
+    let option = [];
+    json.map(async (feed, index) => {
+      // Block
+      let lowerObject = {};
+      if (role === 1) {
+        option = await databaseController.readFeedbackOption(
+          mobile,
+          storeId,
+          feed.feed_ques_id,
+          1
+        );
+      } else {
+        option = await feedbackOption.readAdminFeedbackOption(
+          "*",
+          feed.feed_ques_id,
+          1
+        );
+      }
+
+      lowerObject.feedback_id = feed.feed_ques_id;
+      lowerObject.feedback_question = feed.feed_question;
+      lowerObject.feedback_input_id = feed.input_id;
+      lowerObject.feedback_input_name = feed.input_name;
+      lowerObject.role_id = role;
+
+      // Zero Means No Record
+      if (option.length === 0) {
+        lowerObject.feedback_option = [];
+      } else {
+        // Create Feedback Option Json
+        lowerObject.Feedback_Option = createFeedbackOptionJson(option);
+      }
+
+      // Push Array
+      jsonArray.push(lowerObject);
+    });
+
+    return jsonArray;
+  } catch (error) {
+    console.log(error);
+    return Promise.reject(error);
+  }
+};
+
+// Create Feedback Option Json
+const createFeedbackOptionJson = json => {
+  // Variable
+  let upperArray = [];
+  json.map(async (option, index) => {
+    // Block Variable Declaration
+    let lowerobject = {};
+
+    lowerobject.feedback_option_id = option.feed_option_id;
+    lowerobject.feedback_option = option.option_value;
+    lowerobject.feedback_id = option.feed_ques_id;
+
+    // Push Array
+    upperArray.push(lowerobject);
+  });
+
+  return upperArray;
 };
 
 // Logic Keep Merchant Constant
@@ -206,7 +382,7 @@ const logicMerchantConstant = async (mobile, storeId) => {
   try {
     // Block Variable
     const seed = [];
-    const responsedata = {};
+    let responsedata = {};
 
     seed.push({
       name: "CUSTOMER_FEEDBACK_APP_VERSION",

@@ -55,21 +55,6 @@ module.exports.readAdminFeedbackQuestion = async (select, mobile, status) => {
   }
 };
 
-// Get Admin Feedback Question
-// module.exports.getAdminFeedbackQuestion = (status, mobile) => {
-//   const query =
-//     "SELECT FeedbackQuestions.feed_ques_id,FeedbackQuestions.feed_question,FeedbackQuestions.input_id,InputTypes.input_name FROM `FeedbackQuestions` LEFT JOIN `InputTypes` ON FeedbackQuestions.input_id=InputTypes.input_id LEFT JOIN `Merchants` ON FeedbackQuestions.category_id=Merchants.category_id WHERE FeedbackQuestions.status=? AND Merchants.mobile=?";
-
-//   return new Promise(function(resolve, reject) {
-//     mysqlObject.execute(query, [status, mobile], function(err, row) {
-//       if (err) {
-//         return reject(err);
-//       }
-//       return resolve(row);
-//     });
-//   });
-// };
-
 /**
  * End Database Read and Write
  */
