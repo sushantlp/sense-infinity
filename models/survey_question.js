@@ -42,7 +42,7 @@ module.exports.readAdminSurveyQuestion = async (select, mobile, status) => {
     });
 
     // Query
-    const query = `SELECT ${select} FROM survey_questions LEFT JOIN input_types ON survey_questions.input_id=input_types.input_id LEFT JOIN merchants ON survey_questions.category_id=merchants.category_id WHERE survey_questions.status=? AND merchants.mobile=?`;
+    const query = `SELECT ${select} FROM survey_questions LEFT JOIN input_types ON survey_questions.input_id = input_types.input_id LEFT JOIN merchants ON survey_questions.category_id = merchants.category_id WHERE survey_questions.status = ? AND merchants.mobile = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [status, mobile]);
@@ -54,21 +54,6 @@ module.exports.readAdminSurveyQuestion = async (select, mobile, status) => {
     return Promise.reject(error);
   }
 };
-
-// Get Admin Survey Question
-// module.exports.getAdminSurveyQuestion = (status, mobile) => {
-//   const query =
-//     "SELECT SurveyQuestions.survey_ques_id,SurveyQuestions.survey_question,SurveyQuestions.input_id,InputTypes.input_name FROM `SurveyQuestions` LEFT JOIN `InputTypes` ON SurveyQuestions.input_id=InputTypes.input_id LEFT JOIN `Merchants` ON SurveyQuestions.category_id=Merchants.category_id WHERE SurveyQuestions.status=? AND Merchants.mobile=?";
-
-//   return new Promise(function(resolve, reject) {
-//     mysqlObject.execute(query, [status, mobile], function(err, row) {
-//       if (err) {
-//         return reject(err);
-//       }
-//       return resolve(row);
-//     });
-//   });
-// };
 
 /**
  * End Database Read and Write

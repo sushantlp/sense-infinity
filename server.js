@@ -89,6 +89,9 @@ app.group("/api/v1", router => {
 
     // Get Feedback
     api.get("/get/feedback", engage.requestReadFeedbackData);
+
+    // Get Survey
+    api.get("/get/survey", engage.requestReadSurveyData);
   });
 });
 

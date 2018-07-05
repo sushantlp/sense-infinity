@@ -553,8 +553,8 @@ module.exports.showKeepSurveyTable = async (merchantMobile, storeId) => {
   }
 };
 
-// Create Merchant Keep Survey Table
-module.exports.createKeepSurveyTable = async (merchantMobile, storeId) => {
+// Create Merchant Survey Store Table
+module.exports.createSurveyStoreTable = async (merchantMobile, storeId) => {
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
@@ -640,7 +640,7 @@ module.exports.createSurveyOptionTable = async (merchantMobile, storeId) => {
 };
 
 // Read Merchant Survey Question Record
-module.exports.readSurveyQuestion = async (status, merchantMobile, storeId) => {
+module.exports.readSurveyQuestion = async (merchantMobile, storeId, status) => {
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,

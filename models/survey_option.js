@@ -41,7 +41,7 @@ module.exports.readAdminSurveyOption = async (select, quesId, status) => {
     });
 
     // Query
-    const query = `SELECT ${select} FROM survey_options WHERE survey_ques_id=? AND status=?`;
+    const query = `SELECT ${select} FROM survey_options WHERE survey_ques_id = ? AND status = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [status]);
@@ -54,20 +54,6 @@ module.exports.readAdminSurveyOption = async (select, quesId, status) => {
   }
 };
 
-// Get Admin Survey Option
-// module.exports.getAdminSurveyOption = (quesId, status) => {
-//   const query =
-//     "SELECT * FROM `SurveyOptions` WHERE `survey_ques_id`=? AND `status`=?";
-
-//   return new Promise(function(resolve, reject) {
-//     mysqlObject.execute(query, [quesId, status], function(err, row) {
-//       if (err) {
-//         return reject(err);
-//       }
-//       return resolve(row);
-//     });
-//   });
-// };
 /**
  * End Database Read and Write
  */
