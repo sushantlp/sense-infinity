@@ -254,6 +254,7 @@ const logicReadFeedback = async (mobile, storeId, merchantFlag, senseFlag) => {
   try {
     // Variable
     let jsonArray = [];
+    let merchantArray = [];
 
     // Parallel
     await Promise.all([
@@ -274,12 +275,11 @@ const logicReadFeedback = async (mobile, storeId, merchantFlag, senseFlag) => {
 
       if (merchantFeed.length !== 0) {
         // Create Feedback Json
-        jsonArray = await creatFeedbackJson(
+        merchantArray = await creatFeedbackJson(
           merchantFeed,
           1,
           mobile,
-          storeId,
-          jsonArray
+          storeId
         );
       }
     }
@@ -294,13 +294,14 @@ const logicReadFeedback = async (mobile, storeId, merchantFlag, senseFlag) => {
 
       if (adminFeed.length !== 0) {
         // Create Feedback Json
-        jsonArray = await creatFeedbackJson(
+        const adminArray = await creatFeedbackJson(
           adminFeed,
           2,
           undefined,
-          undefined,
-          jsonArray
+          undefined
         );
+
+        jsonArray = merchantArray.concat(adminArray);
       }
     }
 
@@ -311,11 +312,11 @@ const logicReadFeedback = async (mobile, storeId, merchantFlag, senseFlag) => {
 };
 
 // Create Feedback Json
-const creatFeedbackJson = async (json, role, mobile, storeId, jsonArray) => {
+const creatFeedbackJson = async (json, role, mobile, storeId) => {
   try {
     // Variable
     let option = [];
-    json.map(async (feed, index) => {
+    const jsonArray = json.map(async (feed, index) => {
       // Block
       let lowerObject = {};
       if (role === 1) {
@@ -347,13 +348,11 @@ const creatFeedbackJson = async (json, role, mobile, storeId, jsonArray) => {
         lowerObject.Feedback_Option = createFeedbackOptionJson(option);
       }
 
-      // Push Array
-      jsonArray.push(lowerObject);
+      return lowerObject;
     });
 
-    return jsonArray;
+    return await Promise.all(jsonArray);
   } catch (error) {
-    console.log(error);
     return Promise.reject(error);
   }
 };
