@@ -129,3 +129,107 @@ module.exports.validateOtp = async (mobile, otp) => {
     return Promise.reject(error);
   }
 };
+
+// Validate Customer Detail
+module.exports.validateCustomerDetail = (loop, bool) => {
+  let responsedata = {};
+  for (let i = 0; i < loop.length; i++) {
+    // Customer Mobile Parameter Validate
+    if (
+      !loop[i].hasOwnProperty("customer_mobile") ||
+      loop[i]["customer_mobile"] === ""
+    ) {
+      return (responsedata = {
+        success: false,
+        msg: "Customer mobile number should not be empty or null"
+      });
+    }
+
+    // Customer First Name Parameter Validate
+    if (!loop[i].hasOwnProperty("first_name") || loop[i]["first_name"] === "") {
+      return (responsedata = {
+        success: false,
+        msg: "Customer first name should be valid"
+      });
+    }
+
+    // Customer Last Name Parameter Validate
+    if (!loop[i].hasOwnProperty("last_name") || loop[i]["last_name"] === "") {
+      return (responsedata = {
+        success: false,
+        msg: "Customer last name should be valid"
+      });
+    }
+
+    // Customer Dob Parameter Validate
+    if (!loop[i].hasOwnProperty("dob") || loop[i]["dob"] === "") {
+      return (responsedata = {
+        success: false,
+        msg: "Customer dob should be valid"
+      });
+    }
+
+    // Customer Email Parameter Validate
+    if (!loop[i].hasOwnProperty("email") || loop[i]["email"] === "") {
+      return (responsedata = {
+        success: false,
+        msg: "Customer email should be valid"
+      });
+    }
+
+    // Customer Gender Id Parameter Validate
+    if (!loop[i].hasOwnProperty("gender_id") || loop[i]["gender_id"] === "") {
+      return (responsedata = {
+        success: false,
+        msg: "Gender should be valid"
+      });
+    }
+
+    // Customer Gender Id Is Numeric
+    if (isNaN(loop[i]["gender_id"])) {
+      return (responsedata = {
+        success: false,
+        msg: "Gender should be numeric"
+      });
+    }
+
+    if (loop[i]["customer_mobile"].toString().length !== 10) {
+      return (responsedata = {
+        success: false,
+        msg: "Mobile length should be 10 digit"
+      });
+    }
+
+    // If True then Execute
+    if (bool) {
+      // Customer Married Parameter Validate
+      if (!loop[i].hasOwnProperty("married")) {
+        return (responsedata = {
+          success: false,
+          msg: "Married parameter missing"
+        });
+      }
+
+      // Customer Spouse Name Parameter Validate
+      if (!loop[i].hasOwnProperty("spouse_name")) {
+        return (responsedata = {
+          success: false,
+          msg: "Spouse name parameter missing"
+        });
+      }
+
+      // Customer Anniversary Parameter Validate
+      if (!loop[i].hasOwnProperty("anniversary")) {
+        return (responsedata = {
+          success: false,
+          msg: "Anniversary parameter missing"
+        });
+      }
+    }
+  }
+
+  return (responsedata = {
+    success: true,
+    msg: "Succesful"
+  });
+};

@@ -28,22 +28,6 @@ const now = moment()
  * Start Database Read and Write
  */
 
-// Get Sense Offer
-// module.exports.getSenseOffer = (name, status) => {
-//   return new Promise(function(resolve, reject) {
-//     mysqlObject.execute(
-//       "SELECT * FROM `SenseOffers` WHERE `offer_name`=? AND `status`=?",
-//       [name, status],
-//       function(err, row) {
-//         if (err) {
-//           return reject(err);
-//         }
-//         return resolve(row);
-//       }
-//     );
-//   });
-// };
-
 // Read Gender Record
 module.exports.readSenseOffer = async (select, name, status) => {
   try {
@@ -56,7 +40,7 @@ module.exports.readSenseOffer = async (select, name, status) => {
     });
 
     // Query
-    const query = `SELECT ${select} FROM sense_offers WHERE offer_name=? AND status=?`;
+    const query = `SELECT ${select} FROM sense_offers WHERE offer_name = ? AND status = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [status]);

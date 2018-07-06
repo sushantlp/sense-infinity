@@ -82,7 +82,10 @@ app.group("/api/v1", router => {
     api.post("/signup", signup.requestAppSignup);
 
     // Keep Device Information
-    api.post("/keep/device/data", engage.requestKeepDeviceData);
+    api.post("/keep/device", engage.requestKeepDeviceData);
+
+    // Keep Merchant Store Complain
+    api.post("/keep/complain", engage.requestKeepStoreComplain);
 
     // Get Static Data
     api.get("/get/static", engage.requestSenseStatic);
@@ -92,6 +95,9 @@ app.group("/api/v1", router => {
 
     // Get Survey
     api.get("/get/survey", engage.requestReadSurveyData);
+
+    // Get Customer Data
+    api.get("/get/customer", engage.requestReadCustomerData);
   });
 });
 

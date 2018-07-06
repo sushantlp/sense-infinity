@@ -1,4 +1,8 @@
 "use strict";
+
+const moment = require("moment");
+const mysql = require("mysql2/promise");
+
 module.exports = (sequelize, DataTypes) => {
   var merchant = sequelize.define(
     "merchant",
@@ -34,7 +38,7 @@ const now = moment()
  * Start Database Read and Write
  */
 
-// Read Gender Record
+// Read Merchant Record
 module.exports.readMerchantByMobile = async (select, mobile, status) => {
   try {
     const connection = await mysql.createConnection({

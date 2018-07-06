@@ -2,6 +2,7 @@
 
 // Import Package
 const dotEnv = require("dotenv");
+const moment = require("moment");
 
 const shareController = require("./shareController");
 const databaseController = require("./databaseController");
@@ -16,6 +17,9 @@ const feedbackModel = require("../models/feedback_question");
 const feedbackOptionModel = require("../models/feedback_option");
 const surveyModel = require("../models/survey_question");
 const surveyOptionModel = require("../models/survey_option");
+const surveyOfferModel = require("../models/sense_offer");
+const complainModel = require("../models/store_complain");
+const merchantModel = require("../models/merchant");
 
 // Request Sense Infinity Static Data
 module.exports.requestSenseStatic = (req, res) => {
@@ -72,7 +76,6 @@ module.exports.requestSenseStatic = (req, res) => {
 
 // Request Keep Device Data
 module.exports.requestKeepDeviceData = (req, res) => {
-  // Check Paramter
   if (
     req.query.mobile !== undefined &&
     req.query.mobile !== "" &&
@@ -94,7 +97,7 @@ module.exports.requestKeepDeviceData = (req, res) => {
           .send(
             shareController.createJsonObject(
               response.msg,
-              "/api/v1/merchant/keep/device/data",
+              "/api/v1/merchant/keep/device",
               200,
               response.success,
               null
@@ -106,6 +109,312 @@ module.exports.requestKeepDeviceData = (req, res) => {
       });
   } else {
     return res.status(400).send("Not a good api call");
+  }
+};
+
+// Request Keep Merchant Store Specific Complain
+module.exports.requestKeepStoreComplain = (req, res) => {
+  if (
+    req.query.mobile !== undefined &&
+    req.query.mobile !== "" &&
+    req.query.store_id !== undefined &&
+    req.query.store_id !== "" &&
+    req.body.complain !== undefined &&
+    req.body.complain !== ""
+  ) {
+    // Extract Parameter
+    const complainJson = req.body.complain;
+    const mobile = req.query.mobile;
+    const storeId = req.query.store_id;
+
+    // Validate Customer Detail
+    const validate = shareController.validateCustomerDetail(
+      complainJson,
+      false
+    );
+
+    // Request Logic Keep Complain
+    return requestLogicKeepComplain(complainJson, mobile, storeId)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.msg,
+              "/api/v1/merchant/keep/complain",
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else {
+    return res.status(400).send("Not a good api call");
+  }
+};
+
+// Request Logic Keep Complain
+const requestLogicKeepComplain = async (complainJson, mobile, storeId) => {
+  try {
+    let responsedata = {};
+
+    // Read Merchant Record
+    const merchantRecord = await merchantModel.readMerchantByMobile(
+      "merchant_id",
+      mobile,
+      1
+    );
+
+    if (merchantRecord.length === 0) {
+      return (responsedata = {
+        success: false,
+        msg: "Empty merchant record"
+      });
+    }
+    // Merchant Constant Table Exist
+    const senseConstant = await databaseController.showConstantTable(
+      mobile,
+      storeId
+    );
+
+    // Zero Means Empty Record
+    if (senseConstant.length === 0) {
+      // Create Merchant Constant Store Table
+      await databaseController.createConstantTable(mobile, storeId);
+
+      // Logic Keep Merchant Constant
+      await logicMerchantConstant(mobile, storeId);
+    }
+
+    // Parallel
+    await Promise.all([
+      databaseController.createCustomerIdentityTable(mobile, storeId),
+      databaseController.createCustomerAddressTable(mobile, storeId)
+    ]);
+
+    // Logic Read Complain
+    const complain = await logicKeepComplain(
+      mobile,
+      storeId,
+      complainJson,
+      merchantRecord
+    );
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Read Complain
+const logicKeepComplain = async (
+  mobile,
+  storeId,
+  complainJson,
+  merchantRecord
+) => {
+  complainJson.map(async (json, index) => {
+    // Read Customer Identity By Mobile
+    let customerRecord = await databaseController.readCustomerIdentityByMobile(
+      "cust_identity_id, first_name, last_name, email, mobile, dob, married, spouse_name, gender_id, anniversary_date",
+      mobile,
+      storeId,
+      json.customer_mobile,
+      1
+    );
+
+    // Dob Date Convert
+    let dob = moment(new Date(json.dob)).format("YYYY-MM-DD");
+
+    // Convert All String First Word Captial
+    let firstName = json.first_name.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+    let lastName = json.last_name.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+
+    if (customerRecord.length === 0) {
+      // Keep Merchant Customer Identity Record
+      let customerId = await databaseController.keepCustomerIdentity(
+        mobile,
+        storeId,
+        firstName,
+        lastName,
+        json.email,
+        json.customer_mobile,
+        json.dob,
+        json.gender_id,
+        json.married,
+        json.spouse_name,
+        json.anniversary_date,
+        1
+      );
+
+      // Keep Merchant Store Complain
+      complainModel.keepStoreComplain(
+        customerId.insertId,
+        merchantRecord[0].merchant_id,
+        storeId,
+        json.description,
+        1
+      );
+    } else {
+      // Update Merchant Customer Identity Record
+      await databaseController.updateCustomerIdentity(
+        mobile,
+        storeId,
+        firstName,
+        lastName,
+        json.email,
+        json.customer_mobile,
+        json.dob,
+        json.gender_id,
+        json.married,
+        json.spouse_name,
+        json.anniversary_date,
+        1
+      );
+
+      // Read Store Complain Record
+      let complainRecord = complainModel.readStoreComplain(
+        "*",
+        storeId,
+        merchantRecord[0].merchant_id,
+        customerRecord[0].customer_id,
+        1
+      );
+
+      if (complainRecord.length === 0) {
+        // Keep Merchant Store Complain
+        complainModel.keepStoreComplain(
+          customerRecord[0].customer_id,
+          merchantRecord[0].merchant_id,
+          storeId,
+          json.description,
+          1
+        );
+      }
+    }
+  });
+};
+// Request Read Customer Data
+module.exports.requestReadCustomerData = (req, res) => {
+  if (
+    req.query.mobile !== undefined &&
+    req.query.mobile !== "" &&
+    req.query.store_id !== undefined &&
+    req.query.store_id !== "" &&
+    req.query.customer_version !== undefined &&
+    req.query.customer_version !== ""
+  ) {
+    // Extract Parameter
+    const mobile = req.query.mobile;
+    const storeId = req.query.store_id;
+    const customerVersion = parseFloat(req.query.customer_version);
+
+    // Variable
+    let flag = false;
+
+    // Logic Customer Data
+    return logicCustomerData(customerVersion, mobile, storeId)
+      .then(response => {
+        if (response.hasOwnProperty("customer_version")) {
+          flag = true;
+        }
+
+        // Intialize
+        const metadata = {
+          customer_version: flag ? response.customer_version : customerVersion,
+          count: flag ? Object.keys(response.msg).length : 0
+        };
+
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.msg,
+              "/api/v1/merchant/get/customer",
+              200,
+              response.success,
+              metadata
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else {
+    return res.status(400).send("Not a good api call");
+  }
+};
+
+// Logic Customer Data
+const logicCustomerData = async (customerVersion, mobile, storeId) => {
+  try {
+    // Intialize
+    let responsedata = {};
+
+    // Merchant Constant Table Exist
+    const senseConstant = await databaseController.showConstantTable(
+      mobile,
+      storeId
+    );
+
+    // Zero Means Empty Record
+    if (senseConstant.length === 0) {
+      // Create Merchant Constant Store Table
+      await databaseController.createConstantTable(mobile, storeId);
+
+      // Logic Keep Merchant Constant
+      await logicMerchantConstant(mobile, storeId);
+    }
+
+    // Read Constant Record
+    const constant = await databaseController.readConstantRecord(
+      "*",
+      mobile,
+      storeId,
+      "CUSTOMER_IDENTITY_APP_VERSION",
+      1
+    );
+
+    if (constant.length === 0) {
+      return Promise.reject("Oops our bad!!!");
+    }
+
+    // Customer version
+    if (customerVersion === parseFloat(constant[0].value)) {
+      return (responsedata = {
+        success: true,
+        msg: "Upto date"
+      });
+    } else {
+      customerVersion = parseFloat(constant[0].value);
+    }
+
+    // Parallel
+    await Promise.all([
+      databaseController.createCustomerIdentityTable(mobile, storeId),
+      databaseController.createCustomerAddressTable(mobile, storeId)
+    ]);
+
+    // Read Merchant Customer Idenitity Record
+    const record = await databaseController.readCustomerIdentityRecord(
+      mobile,
+      storeId,
+      1
+    );
+
+    return (responsedata = {
+      success: true,
+      msg: record,
+      customer_version: customerVersion
+    });
+  } catch (error) {
+    return Promise.reject(error);
   }
 };
 
