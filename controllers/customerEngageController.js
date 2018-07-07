@@ -758,6 +758,86 @@ const logicCustomerData = async (customerVersion, mobile, storeId) => {
   }
 };
 
+// Request Keep Merchant Feedback Survey
+module.exports.requestKeepFeedbackSurvey = (req, res) => {
+  if (
+    req.query.mobile !== undefined &&
+    req.query.mobile !== "" &&
+    req.query.store_id !== undefined &&
+    req.query.store_id !== "" &&
+    req.body.feedback_survey !== undefined &&
+    req.body.feedback_survey !== ""
+  ) {
+    // Extract Parameter
+    const feedSurvJson = req.body.feedback_survey;
+    const mobile = req.query.mobile;
+    const storeId = req.query.store_id;
+
+    // Validate Customer Detail
+    const validate = shareController.validateCustomerDetail(
+      feedSurvJson,
+      false
+    );
+
+    // Request Logic Keep Feedback Survey
+    return requestLogicFeedbackSurvey(feedSurvJson, mobile, storeId)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.msg,
+              "/api/v1/merchant/keep/feedback/survey",
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else {
+    return res.status(400).send("Not a good api call");
+  }
+};
+
+// Request Logic Keep Feedback Survey
+const requestLogicFeedbackSurvey = async (feedSurvJson, mobile, storeId) => {
+  try {
+    // Intialize
+    let responsedata = {};
+
+    // Merchant Constant Table Exist
+    const senseConstant = await databaseController.showConstantTable(
+      mobile,
+      storeId
+    );
+
+    // Zero Means Empty Record
+    if (senseConstant.length === 0) {
+      // Create Merchant Constant Store Table
+      await databaseController.createConstantTable(mobile, storeId);
+
+      // Logic Keep Merchant Constant
+      await logicMerchantConstant(mobile, storeId);
+    }
+
+    // Parallel
+    await Promise.all([
+      databaseController.createFeedbackQuestionTable(mobile, storeId),
+      databaseController.createFeedbackOptionTable(mobile, storeId),
+      databaseController.createFeedbackStoreTable(mobile, storeId),
+      databaseController.createSurveyQuestionTable(mobile, storeId),
+      databaseController.createSurveyOptionTable(mobile, storeId),
+      databaseController.createSurveyStoreTable(mobile, storeId),
+      databaseController.createCustomerIdentityTable(mobile, storeId),
+      databaseController.createCustomerAddressTable(mobile, storeId)
+    ]);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
 // Request Feedback Data
 module.exports.requestReadFeedbackData = (req, res) => {
   if (

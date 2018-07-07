@@ -90,6 +90,9 @@ app.group("/api/v1", router => {
     // Keep Customer Detail
     api.post("/keep/customer/detail", engage.requestKeepCustomerDetail);
 
+    // Keep Feedback Survey
+    api.post("/keep/feedback/survey", engage.requestKeepFeedbackSurvey);
+
     // Get Static Data
     api.get("/get/static", engage.requestSenseStatic);
 
