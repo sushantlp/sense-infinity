@@ -202,6 +202,11 @@ const requestLogicKeepComplain = async (complainJson, mobile, storeId) => {
       complainJson,
       merchantRecord
     );
+
+    return (responsedata = {
+      success: true,
+      msg: "Succesful"
+    });
   } catch (error) {
     return Promise.reject(error);
   }
@@ -214,9 +219,21 @@ const logicKeepComplain = async (
   complainJson,
   merchantRecord
 ) => {
-  complainJson.map(async (json, index) => {
+  // Read Constant Record
+  const constant = await databaseController.readConstantRecord(
+    "*",
+    mobile,
+    storeId,
+    "CUSTOMER_IDENTITY_APP_VERSION",
+    1
+  );
+
+  // // Read Sense Offer Record
+  // const offer = await surveyOfferModel.readSenseOffer("*", Complain, 1);
+
+  const promises = complainJson.map(async (json, index) => {
     // Read Customer Identity By Mobile
-    let customerRecord = await databaseController.readCustomerIdentityByMobile(
+    const customerRecord = await databaseController.readCustomerIdentityByMobile(
       "cust_identity_id, first_name, last_name, email, mobile, dob, married, spouse_name, gender_id, anniversary_date",
       mobile,
       storeId,
@@ -225,19 +242,19 @@ const logicKeepComplain = async (
     );
 
     // Dob Date Convert
-    let dob = moment(new Date(json.dob)).format("YYYY-MM-DD");
+    const dob = moment(new Date(json.dob)).format("YYYY-MM-DD");
 
     // Convert All String First Word Captial
-    let firstName = json.first_name.replace(/\b[a-z]/g, function(f) {
+    const firstName = json.first_name.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
-    let lastName = json.last_name.replace(/\b[a-z]/g, function(f) {
+    const lastName = json.last_name.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
 
     if (customerRecord.length === 0) {
       // Keep Merchant Customer Identity Record
-      let customerId = await databaseController.keepCustomerIdentity(
+      const customerId = await databaseController.keepCustomerIdentity(
         mobile,
         storeId,
         firstName,
@@ -278,7 +295,7 @@ const logicKeepComplain = async (
       );
 
       // Read Store Complain Record
-      let complainRecord = complainModel.readStoreComplain(
+      const complainRecord = complainModel.readStoreComplain(
         "*",
         storeId,
         merchantRecord[0].merchant_id,
@@ -295,9 +312,56 @@ const logicKeepComplain = async (
           json.description,
           1
         );
+      } else {
+        // Current Date and Time
+        const todayDate = moment()
+          .tz("Asia/Kolkata")
+          .format("YYYY-MM-DD");
+
+        // Complain Record CreatedAt Date Convert
+        const createdDate = moment(complainRecord[0].created_at).format(
+          "YYYY-MM-DD"
+        );
+
+        // Back Date -1 Convert
+        const backDate = moment()
+          .subtract(1, "days")
+          .format("YYYY-MM-DD");
+
+        // Check Complain Keep or Update
+        if (createdDate >= backDate && createdDate <= todayDate) {
+          // Update Merchant Store Complain
+          complainModel.updateStoreComplain(
+            complainRecord[0].complain_id,
+            json.description,
+            1
+          );
+        } else {
+          // Keep Merchant Store Complain
+          complainModel.keepStoreComplain(
+            customerRecord[0].customer_id,
+            merchantRecord[0].merchant_id,
+            storeId,
+            json.description,
+            1
+          );
+        }
       }
     }
   });
+
+  // Increment Constant Value
+  const increment = parseFloat(constant[0].value) + parseFloat(0.1);
+
+  databaseController.updateMerchantConstantTable(
+    mobile,
+    storeId,
+    constant[0].constant_id,
+    increment.toFixed(3),
+    1
+  );
+
+  return await Promise.all(promises);
 };
 // Request Read Customer Data
 module.exports.requestReadCustomerData = (req, res) => {
