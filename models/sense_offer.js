@@ -28,7 +28,7 @@ const now = moment()
  * Start Database Read and Write
  */
 
-// Read Gender Record
+// Read Sense Offer Record
 module.exports.readSenseOffer = async (select, name, status) => {
   try {
     const connection = await mysql.createConnection({

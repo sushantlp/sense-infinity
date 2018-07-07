@@ -241,6 +241,52 @@ const logicKeepComplain = async (
       1
     );
 
+    // Declare
+    const anniversaryDate = undefined;
+    const married = undefined;
+    const spouseName = undefined;
+
+    // Check Anniversary Parameter Empty || Null || Undefined
+    if (
+      json.anniversary === "" ||
+      json.anniversary === null ||
+      typeof json.anniversary === undefined
+    ) {
+      // Intialize NULL
+      anniversaryDate = null;
+    } else {
+      // Anniversary Date Convert
+      anniversaryDate = moment(new Date(json.anniversary)).format("YYYY-MM-DD");
+    }
+
+    // Check Married Parameter Empty || Null || Undefined
+    if (
+      json.married === "" ||
+      json.married === null ||
+      typeof json.married === undefined
+    ) {
+      // Intialize NULL
+      married = 0;
+    } else {
+      // Convert
+      married = json.married;
+    }
+
+    // Check Spouse Name Parameter Empty || Null || Undefined
+    if (
+      json.spouse_name === "" ||
+      json.spouse_name === null ||
+      typeof json.spouse_name === undefined
+    ) {
+      // Intialize NULL
+      spouseName = null;
+    } else {
+      // Convert
+      spouseName = json.spouse_name.replace(/\b[a-z]/g, function(f) {
+        return f.toUpperCase();
+      });
+    }
+
     // Dob Date Convert
     const dob = moment(new Date(json.dob)).format("YYYY-MM-DD");
 
@@ -261,11 +307,11 @@ const logicKeepComplain = async (
         lastName,
         json.email,
         json.customer_mobile,
-        json.dob,
+        dob,
         json.gender_id,
-        json.married,
-        json.spouse_name,
-        json.anniversary_date,
+        married,
+        spouseName,
+        anniversaryDate,
         1
       );
 
@@ -286,11 +332,11 @@ const logicKeepComplain = async (
         lastName,
         json.email,
         json.customer_mobile,
-        json.dob,
+        dob,
         json.gender_id,
-        json.married,
-        json.spouse_name,
-        json.anniversary_date,
+        married,
+        spouseName,
+        anniversaryDate,
         1
       );
 
@@ -363,6 +409,236 @@ const logicKeepComplain = async (
 
   return await Promise.all(promises);
 };
+
+// Request Keep Merchant Specific Customer Detail
+module.exports.requestKeepCustomerDetail = (req, res) => {
+  if (
+    req.query.mobile !== undefined &&
+    req.query.mobile !== "" &&
+    req.query.store_id !== undefined &&
+    req.query.store_id !== "" &&
+    req.body.customer !== undefined &&
+    req.body.customer !== ""
+  ) {
+    // Extract Parameter
+    const customerJson = req.body.customer;
+    const mobile = req.query.mobile;
+    const storeId = req.query.store_id;
+
+    // Validate Customer Detail
+    const validate = shareController.validateCustomerDetail(customerJson, true);
+
+    // Request Logic Keep Customer
+    return requestLogicKeepCustomer(customerJson, mobile, storeId)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.msg,
+              "/api/v1/merchant/keep/customer/detail",
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else {
+    return res.status(400).send("Not a good api call");
+  }
+};
+
+// Request Logic Keep Customer
+const requestLogicKeepCustomer = async (customerJson, mobile, storeId) => {
+  try {
+    let responsedata = {};
+
+    // Read Merchant Record
+    const merchantRecord = await merchantModel.readMerchantByMobile(
+      "merchant_id",
+      mobile,
+      1
+    );
+
+    if (merchantRecord.length === 0) {
+      return (responsedata = {
+        success: false,
+        msg: "Empty merchant record"
+      });
+    }
+    // Merchant Constant Table Exist
+    const senseConstant = await databaseController.showConstantTable(
+      mobile,
+      storeId
+    );
+
+    // Zero Means Empty Record
+    if (senseConstant.length === 0) {
+      // Create Merchant Constant Store Table
+      await databaseController.createConstantTable(mobile, storeId);
+
+      // Logic Keep Merchant Constant
+      await logicMerchantConstant(mobile, storeId);
+    }
+
+    // Parallel
+    await Promise.all([
+      databaseController.createCustomerIdentityTable(mobile, storeId),
+      databaseController.createCustomerAddressTable(mobile, storeId)
+    ]);
+
+    // Logic Read Customer
+    const complain = await logicKeepCustomer(
+      mobile,
+      storeId,
+      customerJson,
+      merchantRecord
+    );
+
+    return (responsedata = {
+      success: true,
+      msg: "Succesful"
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Read Customer
+const logicKeepCustomer = async (
+  mobile,
+  storeId,
+  customerJson,
+  merchantRecord
+) => {
+  // Read Constant Record
+  const constant = await databaseController.readConstantRecord(
+    "*",
+    mobile,
+    storeId,
+    "CUSTOMER_IDENTITY_APP_VERSION",
+    1
+  );
+
+  const promises = customerJson.map(async (json, index) => {
+    // Declare
+    const anniversaryDate = undefined;
+    const married = undefined;
+    const spouseName = undefined;
+
+    // Check Anniversary Parameter Empty || Null || Undefined
+    if (
+      json.anniversary === "" ||
+      json.anniversary === null ||
+      typeof json.anniversary === undefined
+    ) {
+      // Intialize NULL
+      anniversaryDate = null;
+    } else {
+      // Anniversary Date Convert
+      anniversaryDate = moment(new Date(json.anniversary)).format("YYYY-MM-DD");
+    }
+
+    // Check Married Parameter Empty || Null || Undefined
+    if (
+      json.married === "" ||
+      json.married === null ||
+      typeof json.married === undefined
+    ) {
+      // Intialize NULL
+      married = 0;
+    } else {
+      // Convert
+      married = json.married;
+    }
+
+    // Check Spouse Name Parameter Empty || Null || Undefined
+    if (
+      json.spouse_name === "" ||
+      json.spouse_name === null ||
+      typeof json.spouse_name === undefined
+    ) {
+      // Intialize NULL
+      spouseName = null;
+    } else {
+      // Convert
+      spouseName = json.spouse_name.replace(/\b[a-z]/g, function(f) {
+        return f.toUpperCase();
+      });
+    }
+
+    // Dob Date Convert
+    const dob = moment(new Date(json.dob)).format("YYYY-MM-DD");
+
+    // Convert All String First Word Captial
+    const firstName = json.first_name.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+    const lastName = json.last_name.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+
+    // Read Customer Identity By Mobile
+    const customerRecord = await databaseController.readCustomerIdentityByMobile(
+      "*",
+      mobile,
+      storeId,
+      json.customer_mobile,
+      1
+    );
+
+    if (customerRecord.length === 0) {
+      // Keep Merchant Customer Identity Record
+      const customerId = await databaseController.keepCustomerIdentity(
+        mobile,
+        storeId,
+        firstName,
+        lastName,
+        json.email,
+        json.customer_mobile,
+        dob,
+        json.gender_id,
+        married,
+        spouseName,
+        anniversaryDate,
+        1
+      );
+    } else {
+      // Update Merchant Customer Identity Record
+      await databaseController.updateCustomerIdentity(
+        mobile,
+        storeId,
+        firstName,
+        lastName,
+        json.email,
+        json.customer_mobile,
+        dob,
+        json.gender_id,
+        married,
+        spouseName,
+        anniversaryDate,
+        1
+      );
+    }
+  });
+
+  // Increment Constant Value
+  const increment = parseFloat(constant[0].value) + parseFloat(0.1);
+
+  databaseController.updateMerchantConstantTable(
+    mobile,
+    storeId,
+    constant[0].constant_id,
+    increment.toFixed(3),
+    1
+  );
+
+  return await Promise.all(promises);
+};
+
 // Request Read Customer Data
 module.exports.requestReadCustomerData = (req, res) => {
   if (

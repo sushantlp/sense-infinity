@@ -87,6 +87,9 @@ app.group("/api/v1", router => {
     // Keep Merchant Store Complain
     api.post("/keep/complain", engage.requestKeepStoreComplain);
 
+    // Keep Customer Detail
+    api.post("/keep/customer/detail", engage.requestKeepCustomerDetail);
+
     // Get Static Data
     api.get("/get/static", engage.requestSenseStatic);
 
