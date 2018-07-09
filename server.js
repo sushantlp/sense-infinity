@@ -26,7 +26,7 @@ const app = express();
 // Controllers (route handlers).
 const database = require("./controllers/databaseController");
 const signup = require("./controllers/signupController");
-const engage = require("./controllers/customerEngageController");
+const requestEngage = require("./controllers/requestEngageController");
 
 // Use morgan to log requests to the console
 app.use(morgan("dev"));
@@ -82,28 +82,28 @@ app.group("/api/v1", router => {
     api.post("/signup", signup.requestAppSignup);
 
     // Keep Device Information
-    api.post("/keep/device", engage.requestKeepDeviceData);
+    api.post("/keep/device", requestEngage.requestKeepDeviceData);
 
     // Keep Merchant Store Complain
-    api.post("/keep/complain", engage.requestKeepStoreComplain);
+    api.post("/keep/complain", requestEngage.requestKeepStoreComplain);
 
     // Keep Customer Detail
-    api.post("/keep/customer/detail", engage.requestKeepCustomerDetail);
+    api.post("/keep/customer/detail", requestEngage.requestKeepCustomerDetail);
 
     // Keep Feedback Survey
-    api.post("/keep/feedback/survey", engage.requestKeepFeedbackSurvey);
+    api.post("/keep/feedback/survey", requestEngage.requestKeepFeedbackSurvey);
 
     // Get Static Data
-    api.get("/get/static", engage.requestSenseStatic);
+    api.get("/get/static", requestEngage.requestSenseStatic);
 
     // Get Feedback
-    api.get("/get/feedback", engage.requestReadFeedbackData);
+    api.get("/get/feedback", requestEngage.requestReadFeedbackData);
 
     // Get Survey
-    api.get("/get/survey", engage.requestReadSurveyData);
+    api.get("/get/survey", requestEngage.requestReadSurveyData);
 
     // Get Customer Data
-    api.get("/get/customer", engage.requestReadCustomerData);
+    api.get("/get/customer", requestEngage.requestReadCustomerData);
   });
 });
 
