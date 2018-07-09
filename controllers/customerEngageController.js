@@ -220,7 +220,7 @@ const logicKeepComplain = async (
   merchantRecord
 ) => {
   // Read Constant Record
-  const constant = await databaseController.readConstantRecord(
+  const constant = await databaseController.readConstantRecordName(
     "*",
     mobile,
     storeId,
@@ -515,7 +515,7 @@ const logicKeepCustomer = async (
   merchantRecord
 ) => {
   // Read Constant Record
-  const constant = await databaseController.readConstantRecord(
+  const constant = await databaseController.readConstantRecordName(
     "*",
     mobile,
     storeId,
@@ -713,7 +713,7 @@ const logicCustomerData = async (customerVersion, mobile, storeId) => {
     }
 
     // Read Constant Record
-    const constant = await databaseController.readConstantRecord(
+    const constant = await databaseController.readConstantRecordName(
       "*",
       mobile,
       storeId,
@@ -769,18 +769,18 @@ module.exports.requestKeepFeedbackSurvey = (req, res) => {
     req.body.feedback_survey !== ""
   ) {
     // Extract Parameter
-    const feedSurvJson = req.body.feedback_survey;
+    const feedbackSurveyJson = req.body.feedback_survey;
     const mobile = req.query.mobile;
     const storeId = req.query.store_id;
 
     // Validate Customer Detail
     const validate = shareController.validateCustomerDetail(
-      feedSurvJson,
+      feedbackSurveyJson,
       false
     );
 
     // Request Logic Keep Feedback Survey
-    return requestLogicFeedbackSurvey(feedSurvJson, mobile, storeId)
+    return requestLogicFeedbackSurvey(feedbackSurveyJson, mobile, storeId)
       .then(response => {
         return res
           .status(200)
@@ -803,7 +803,11 @@ module.exports.requestKeepFeedbackSurvey = (req, res) => {
 };
 
 // Request Logic Keep Feedback Survey
-const requestLogicFeedbackSurvey = async (feedSurvJson, mobile, storeId) => {
+const requestLogicFeedbackSurvey = async (
+  feedbackSurveyJson,
+  mobile,
+  storeId
+) => {
   try {
     // Intialize
     let responsedata = {};
@@ -834,10 +838,329 @@ const requestLogicFeedbackSurvey = async (feedSurvJson, mobile, storeId) => {
       databaseController.createCustomerIdentityTable(mobile, storeId),
       databaseController.createCustomerAddressTable(mobile, storeId)
     ]);
+
+    // Logic Feedback Survey
+    await logicFeedbackSurvey(feedbackSurveyJson, mobile, storeId);
+
+    return (responsedata = {
+      success: true,
+      msg: "Succesful"
+    });
   } catch (error) {
     return Promise.reject(error);
   }
 };
+
+// Logic Feedback Survey
+const logicFeedbackSurvey = async (feedbackSurveyJson, mobile, storeId) => {
+  try {
+    // Intialize
+    let responsedata = {};
+    let surveyVersion = undefined;
+    let feedbackVersion = undefined;
+    let customerVersion = undefined;
+    let versionFlag = {
+      survey: false,
+      feedback: false,
+      customer: false
+    };
+
+    // Read Merchant Record
+    const merchantRecord = await merchantModel.readMerchantByMobile(
+      "merchant_id",
+      mobile,
+      1
+    );
+
+    if (merchantRecord.length === 0) {
+      return (responsedata = {
+        success: false,
+        msg: "Empty merchant record"
+      });
+    }
+
+    // Read Constant Record
+    const constant = await databaseController.readConstantRecord(
+      "*",
+      mobile,
+      storeId,
+      1
+    );
+
+    if (constant.length === 0) {
+      return (responsedata = {
+        success: false,
+        msg: "Empty constant record"
+      });
+    }
+
+    // Iterate
+    constant.map((version, index) => {
+      if (version.name === "CUSTOMER_SURVEY_APP_VERSION") {
+        surveyVersion = version.value;
+      } else if (version.name === "CUSTOMER_FEEDBACK_APP_VERSION") {
+        feedbackVersion = version.value;
+      } else if (version.name === "CUSTOMER_IDENTITY_APP_VERSION") {
+        customerVersion = version.value;
+      }
+    });
+
+    const promises = feedbackSurveyJson.map(async (json, index) => {
+      // Read Customer Identity By Mobile
+      const customerRecord = await databaseController.readCustomerIdentityByMobile(
+        "*",
+        mobile,
+        storeId,
+        json.customer_mobile,
+        1
+      );
+
+      // Declare
+      const anniversaryDate = undefined;
+      const married = undefined;
+      const spouseName = undefined;
+      const customerId = undefined;
+
+      // Check Anniversary Parameter Empty || Null || Undefined
+      if (
+        json.anniversary === "" ||
+        json.anniversary === null ||
+        typeof json.anniversary === undefined
+      ) {
+        // Intialize NULL
+        anniversaryDate = null;
+      } else {
+        // Anniversary Date Convert
+        anniversaryDate = moment(new Date(json.anniversary)).format(
+          "YYYY-MM-DD"
+        );
+      }
+
+      // Check Married Parameter Empty || Null || Undefined
+      if (
+        json.married === "" ||
+        json.married === null ||
+        typeof json.married === undefined
+      ) {
+        // Intialize NULL
+        married = 0;
+      } else {
+        // Convert
+        married = json.married;
+      }
+
+      // Check Spouse Name Parameter Empty || Null || Undefined
+      if (
+        json.spouse_name === "" ||
+        json.spouse_name === null ||
+        typeof json.spouse_name === undefined
+      ) {
+        // Intialize NULL
+        spouseName = null;
+      } else {
+        // Convert
+        spouseName = json.spouse_name.replace(/\b[a-z]/g, function(f) {
+          return f.toUpperCase();
+        });
+      }
+
+      // Dob Date Convert
+      const dob = moment(new Date(json.dob)).format("YYYY-MM-DD");
+
+      // Convert All String First Word Captial
+      const firstName = json.first_name.replace(/\b[a-z]/g, function(f) {
+        return f.toUpperCase();
+      });
+      const lastName = json.last_name.replace(/\b[a-z]/g, function(f) {
+        return f.toUpperCase();
+      });
+
+      // Customer flag
+      versionFlag.customer = true;
+
+      if (customerRecord.length === 0) {
+        // Keep Merchant Customer Identity Record
+        customerId = await databaseController.keepCustomerIdentity(
+          mobile,
+          storeId,
+          firstName,
+          lastName,
+          json.email,
+          json.customer_mobile,
+          dob,
+          json.gender_id,
+          married,
+          spouseName,
+          anniversaryDate,
+          1
+        );
+      } else {
+        // Update Merchant Customer Identity Record
+        await databaseController.updateCustomerIdentity(
+          mobile,
+          storeId,
+          firstName,
+          lastName,
+          json.email,
+          json.customer_mobile,
+          dob,
+          json.gender_id,
+          married,
+          spouseName,
+          anniversaryDate,
+          1
+        );
+
+        customerId = customerRecord.customer_id;
+      }
+
+      // Survey
+      json.customer_survey.map(async (survey, index) => {
+        // Survey flag
+        versionFlag.survey = true;
+
+        // Read One Record Merchant Store Survey
+        const surveyRecord = await database.readLimitMerchantSurvey(
+          "*",
+          mobile,
+          storeId,
+          customerId,
+          survey.question_id,
+          survey.role_id,
+          1
+        );
+
+        if (surveyRecord.length === 0) {
+          // Keep Merchant Store Survey Table
+          await database.keepMerchantSurveyTable(
+            mobile,
+            storeId,
+            survey.question_id,
+            survey.option_id,
+            customerId,
+            survey.role_id,
+            1
+          );
+        } else {
+          // Current Date and Time
+          const todayDate = moment()
+            .tz("Asia/Kolkata")
+            .format("YYYY-MM-DD");
+
+          // Complain Record CreatedAt Date Convert
+          const createdDate = moment(surveyRecord[0].created_at).format(
+            "YYYY-MM-DD"
+          );
+
+          // Back Date -1 Convert
+          const backDate = moment()
+            .subtract(1, "days")
+            .format("YYYY-MM-DD");
+
+          // Check Survey Keep or Update
+          if (createdDate >= backDate && createdDate <= todayDate) {
+            // Update Merchant Store Survey
+            await database.updateMerchantSurveyTable(
+              mobile,
+              storeId,
+              surveyRecord[0].keep_survey_id,
+              survey.question_id,
+              survey.option_id,
+              customerId,
+              survey.role_id,
+              1
+            );
+          } else {
+            // Keep Merchant Store Survey Table
+            await database.keepMerchantSurveyTable(
+              mobile,
+              storeId,
+              survey.question_id,
+              survey.option_id,
+              customerId,
+              survey.role_id,
+              1
+            );
+          }
+        }
+      });
+
+      // Feedback
+      json.customer_feedback.map(async (feedback, index) => {
+        // Feedback flag
+        versionFlag.feedback = true;
+
+        // Read One Record Merchant Store Feedback
+        const feedbackRecord = await database.readLimitMerchantFeedback(
+          "*",
+          mobile,
+          storeId,
+          customerId,
+          feedback.question_id,
+          feedback.role_id,
+          1
+        );
+
+        if (feedbackRecord.length === 0) {
+          // Keep Merchant Store Feedback Table
+          await database.keepMerchantFeedbackTable(
+            mobile,
+            storeId,
+            feedback.question_id,
+            feedback.option_id,
+            customerId,
+            feedback.role_id,
+            1
+          );
+        } else {
+          // Current Date and Time
+          const todayDate = moment()
+            .tz("Asia/Kolkata")
+            .format("YYYY-MM-DD");
+
+          // Complain Record CreatedAt Date Convert
+          const createdDate = moment(feedbackRecord[0].created_at).format(
+            "YYYY-MM-DD"
+          );
+
+          // Back Date -1 Convert
+          const backDate = moment()
+            .subtract(1, "days")
+            .format("YYYY-MM-DD");
+
+          // Check Survey Keep or Update
+          if (createdDate >= backDate && createdDate <= todayDate) {
+            // Update Merchant Store Feedback
+            await database.updateMerchantFeedbackTable(
+              mobile,
+              storeId,
+              feedbackRecord[0].keep_feed_id,
+              feedback.question_id,
+              feedback.option_id,
+              customerId,
+              feedback.role_id,
+              1
+            );
+          } else {
+            // Keep Merchant Store Feedback Table
+            await database.keepMerchantFeedbackTable(
+              mobile,
+              storeId,
+              feedback.question_id,
+              feedback.option_id,
+              customerId,
+              feedback.role_id,
+              1
+            );
+          }
+        }
+      });
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 // Request Feedback Data
 module.exports.requestReadFeedbackData = (req, res) => {
   if (
@@ -926,7 +1249,7 @@ const logicGetFeedback = async (
 
     // Parallel Merchant and Sense Constant
     const parallel = await Promise.all([
-      databaseController.readConstantRecord(
+      databaseController.readConstantRecordName(
         "*",
         mobile,
         storeId,

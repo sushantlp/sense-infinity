@@ -122,6 +122,39 @@ module.exports.readConstantRecord = async (
   select,
   merchantMobile,
   storeId,
+  status
+) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Dynamic Table
+    const MerchantConstant = `${merchantMobile}_${storeId}_constants`;
+
+    // Query
+    const query = `SELECT ${select} FROM ${MerchantConstant} WHERE status = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [name, status]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Read Constant Record By Name
+module.exports.readConstantRecordName = async (
+  select,
+  merchantMobile,
+  storeId,
   name,
   status
 ) => {
@@ -138,7 +171,7 @@ module.exports.readConstantRecord = async (
     const MerchantConstant = `${merchantMobile}_${storeId}_constants`;
 
     // Query
-    const query = `SELECT ${select} FROM ${MerchantConstant} WHERE name=? AND status=? LIMIT 1`;
+    const query = `SELECT ${select} FROM ${MerchantConstant} WHERE name = ? AND status = ? LIMIT 1`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [name, status]);
