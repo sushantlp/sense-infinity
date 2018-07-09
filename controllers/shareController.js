@@ -2,13 +2,10 @@
 
 // Import Package
 const jwt = require("jsonwebtoken");
-const dotEnv = require("dotenv");
+const moment = require("moment");
 
 // Import Model
 const smsModel = require("../models/sms");
-
-// Load Environment Variables.
-dotEnv.load({ path: ".env" });
 
 // Generate Random Number
 module.exports.generateRandomNumber = (length = 10) => {
@@ -232,4 +229,68 @@ module.exports.validateCustomerDetail = (loop, bool) => {
     success: true,
     msg: "Succesful"
   });
+};
+
+// Reform Customer Detail
+module.exports.reformCustomerDetail = (
+  firstName,
+  lastName,
+  spouseName,
+  dob,
+  married,
+  anniversary
+) => {
+  // Variable
+  let reform = {
+    anniversary: null,
+    first_name: null,
+    last_name: null,
+    spouse_name: null,
+    dob: null,
+    married: 0
+  };
+
+  // EMPTY || NULL || UNDEFINED
+  if (
+    anniversary !== "" &&
+    anniversary !== null &&
+    typeof anniversary !== undefined
+  ) {
+    reform.anniversary = moment(new Date(anniversary)).format("YYYY-MM-DD");
+  }
+  if (
+    firstName !== "" &&
+    firstName !== null &&
+    typeof firstName !== undefined
+  ) {
+    reform.first_Name = firstName.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+  }
+  if (lastName !== "" && lastName !== null && typeof lastName !== undefined) {
+    reform.last_Name = lastName.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+  }
+  if (
+    spouseName !== "" &&
+    spouseName !== null &&
+    typeof spouseName !== undefined
+  ) {
+    reform.spouse_name = spouseName.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+  }
+  if (dob !== "" && dob !== null && typeof dob !== undefined) {
+    reform.dob = dob.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+  }
+  if (married !== "" && married !== null && typeof married !== undefined) {
+    reform.married = married.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+  }
+
+  return reform;
 };

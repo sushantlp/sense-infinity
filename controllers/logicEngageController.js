@@ -188,62 +188,15 @@ const logicKeepComplain = async (
       1
     );
 
-    // Declare
-    const anniversaryDate = undefined;
-    const married = undefined;
-    const spouseName = undefined;
-
-    // Check Anniversary Parameter Empty || Null || Undefined
-    if (
-      json.anniversary === "" ||
-      json.anniversary === null ||
-      typeof json.anniversary === undefined
-    ) {
-      // Intialize NULL
-      anniversaryDate = null;
-    } else {
-      // Anniversary Date Convert
-      anniversaryDate = moment(new Date(json.anniversary)).format("YYYY-MM-DD");
-    }
-
-    // Check Married Parameter Empty || Null || Undefined
-    if (
-      json.married === "" ||
-      json.married === null ||
-      typeof json.married === undefined
-    ) {
-      // Intialize NULL
-      married = 0;
-    } else {
-      // Convert
-      married = json.married;
-    }
-
-    // Check Spouse Name Parameter Empty || Null || Undefined
-    if (
-      json.spouse_name === "" ||
-      json.spouse_name === null ||
-      typeof json.spouse_name === undefined
-    ) {
-      // Intialize NULL
-      spouseName = null;
-    } else {
-      // Convert
-      spouseName = json.spouse_name.replace(/\b[a-z]/g, function(f) {
-        return f.toUpperCase();
-      });
-    }
-
-    // Dob Date Convert
-    const dob = moment(new Date(json.dob)).format("YYYY-MM-DD");
-
-    // Convert All String First Word Captial
-    const firstName = json.first_name.replace(/\b[a-z]/g, function(f) {
-      return f.toUpperCase();
-    });
-    const lastName = json.last_name.replace(/\b[a-z]/g, function(f) {
-      return f.toUpperCase();
-    });
+    // Reform Customer Detail
+    const reform = shareController.reformCustomerDetail(
+      json.first_name,
+      json.last_name,
+      json.spouse_name,
+      json.dob,
+      json.married,
+      json.anniversary
+    );
 
     // Flag
     versionFlag.customer = true;
@@ -253,15 +206,15 @@ const logicKeepComplain = async (
       const customerId = await databaseController.keepCustomerIdentity(
         mobile,
         storeId,
-        firstName,
-        lastName,
+        reform.first_name,
+        reform.last_name,
         json.email,
         json.customer_mobile,
-        dob,
+        reform.dob,
         json.gender_id,
-        married,
-        spouseName,
-        anniversaryDate,
+        reform.married,
+        reform.spouse_name,
+        reform.anniversary,
         1
       );
 
@@ -278,15 +231,15 @@ const logicKeepComplain = async (
       await databaseController.updateCustomerIdentity(
         mobile,
         storeId,
-        firstName,
-        lastName,
+        reform.first_name,
+        reform.last_name,
         json.email,
         json.customer_mobile,
         dob,
         json.gender_id,
-        married,
-        spouseName,
-        anniversaryDate,
+        reform.married,
+        reform.spouse_name,
+        reform.anniversary,
         1
       );
 
@@ -428,62 +381,15 @@ const logicKeepCustomer = async (
   );
 
   const promises = customerJson.map(async (json, index) => {
-    // Declare
-    const anniversaryDate = undefined;
-    const married = undefined;
-    const spouseName = undefined;
-
-    // Check Anniversary Parameter Empty || Null || Undefined
-    if (
-      json.anniversary === "" ||
-      json.anniversary === null ||
-      typeof json.anniversary === undefined
-    ) {
-      // Intialize NULL
-      anniversaryDate = null;
-    } else {
-      // Anniversary Date Convert
-      anniversaryDate = moment(new Date(json.anniversary)).format("YYYY-MM-DD");
-    }
-
-    // Check Married Parameter Empty || Null || Undefined
-    if (
-      json.married === "" ||
-      json.married === null ||
-      typeof json.married === undefined
-    ) {
-      // Intialize NULL
-      married = 0;
-    } else {
-      // Convert
-      married = json.married;
-    }
-
-    // Check Spouse Name Parameter Empty || Null || Undefined
-    if (
-      json.spouse_name === "" ||
-      json.spouse_name === null ||
-      typeof json.spouse_name === undefined
-    ) {
-      // Intialize NULL
-      spouseName = null;
-    } else {
-      // Convert
-      spouseName = json.spouse_name.replace(/\b[a-z]/g, function(f) {
-        return f.toUpperCase();
-      });
-    }
-
-    // Dob Date Convert
-    const dob = moment(new Date(json.dob)).format("YYYY-MM-DD");
-
-    // Convert All String First Word Captial
-    const firstName = json.first_name.replace(/\b[a-z]/g, function(f) {
-      return f.toUpperCase();
-    });
-    const lastName = json.last_name.replace(/\b[a-z]/g, function(f) {
-      return f.toUpperCase();
-    });
+    // Reform Customer Detail
+    const reform = shareController.reformCustomerDetail(
+      json.first_name,
+      json.last_name,
+      json.spouse_name,
+      json.dob,
+      json.married,
+      json.anniversary
+    );
 
     // Read Customer Identity By Mobile
     const customerRecord = await databaseController.readCustomerIdentityByMobile(
@@ -499,15 +405,15 @@ const logicKeepCustomer = async (
       const customerId = await databaseController.keepCustomerIdentity(
         mobile,
         storeId,
-        firstName,
-        lastName,
+        reform.first_name,
+        reform.last_Name,
         json.email,
         json.customer_mobile,
-        dob,
+        reform.dob,
         json.gender_id,
-        married,
-        spouseName,
-        anniversaryDate,
+        reform.married,
+        reform.spouse_name,
+        reform.anniversary,
         1
       );
     } else {
@@ -515,15 +421,15 @@ const logicKeepCustomer = async (
       await databaseController.updateCustomerIdentity(
         mobile,
         storeId,
-        firstName,
-        lastName,
+        reform.first_name,
+        reform.last_Name,
         json.email,
         json.customer_mobile,
-        dob,
+        reform.dob,
         json.gender_id,
-        married,
-        spouseName,
-        anniversaryDate,
+        reform.married,
+        reform.spouse_name,
+        reform.anniversary,
         1
       );
     }
@@ -663,64 +569,17 @@ const logicFeedbackSurvey = async (
       );
 
       // Declare
-      const anniversaryDate = undefined;
-      const married = undefined;
-      const spouseName = undefined;
       const customerId = undefined;
 
-      // Check Anniversary Parameter Empty || Null || Undefined
-      if (
-        json.anniversary === "" ||
-        json.anniversary === null ||
-        typeof json.anniversary === undefined
-      ) {
-        // Intialize NULL
-        anniversaryDate = null;
-      } else {
-        // Anniversary Date Convert
-        anniversaryDate = moment(new Date(json.anniversary)).format(
-          "YYYY-MM-DD"
-        );
-      }
-
-      // Check Married Parameter Empty || Null || Undefined
-      if (
-        json.married === "" ||
-        json.married === null ||
-        typeof json.married === undefined
-      ) {
-        // Intialize NULL
-        married = 0;
-      } else {
-        // Convert
-        married = json.married;
-      }
-
-      // Check Spouse Name Parameter Empty || Null || Undefined
-      if (
-        json.spouse_name === "" ||
-        json.spouse_name === null ||
-        typeof json.spouse_name === undefined
-      ) {
-        // Intialize NULL
-        spouseName = null;
-      } else {
-        // Convert
-        spouseName = json.spouse_name.replace(/\b[a-z]/g, function(f) {
-          return f.toUpperCase();
-        });
-      }
-
-      // Dob Date Convert
-      const dob = moment(new Date(json.dob)).format("YYYY-MM-DD");
-
-      // Convert All String First Word Captial
-      const firstName = json.first_name.replace(/\b[a-z]/g, function(f) {
-        return f.toUpperCase();
-      });
-      const lastName = json.last_name.replace(/\b[a-z]/g, function(f) {
-        return f.toUpperCase();
-      });
+      // Reform Customer Detail
+      const reform = shareController.reformCustomerDetail(
+        json.first_name,
+        json.last_name,
+        json.spouse_name,
+        json.dob,
+        json.married,
+        json.anniversary
+      );
 
       // Customer flag
       versionFlag.customer = true;
@@ -730,15 +589,15 @@ const logicFeedbackSurvey = async (
         customerRecord = await databaseController.keepCustomerIdentity(
           mobile,
           storeId,
-          firstName,
-          lastName,
+          reform.first_name,
+          reform.last_name,
           json.email,
           json.customer_mobile,
           dob,
           json.gender_id,
-          married,
-          spouseName,
-          anniversaryDate,
+          reform.married,
+          reform.spouse_name,
+          reform.anniversary,
           1
         );
 
@@ -748,15 +607,15 @@ const logicFeedbackSurvey = async (
         await databaseController.updateCustomerIdentity(
           mobile,
           storeId,
-          firstName,
-          lastName,
+          reform.first_name,
+          reform.last_name,
           json.email,
           json.customer_mobile,
           dob,
           json.gender_id,
-          married,
-          spouseName,
-          anniversaryDate,
+          reform.married,
+          reform.spouse_name,
+          reform.anniversary,
           1
         );
 
