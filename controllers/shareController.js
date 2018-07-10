@@ -239,7 +239,8 @@ module.exports.reformCustomerDetail = (
   spouseName,
   dob,
   married,
-  anniversary
+  anniversary,
+  flag
 ) => {
   // Variable
   let reform = {
@@ -253,13 +254,6 @@ module.exports.reformCustomerDetail = (
 
   // EMPTY || NULL || UNDEFINED
   if (
-    anniversary !== "" &&
-    anniversary !== null &&
-    typeof anniversary !== undefined
-  ) {
-    reform.anniversary = moment(new Date(anniversary)).format("YYYY-MM-DD");
-  }
-  if (
     firstName !== "" &&
     firstName !== null &&
     typeof firstName !== undefined
@@ -268,29 +262,43 @@ module.exports.reformCustomerDetail = (
       return f.toUpperCase();
     });
   }
+
   if (lastName !== "" && lastName !== null && typeof lastName !== undefined) {
     reform.last_Name = lastName.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
   }
-  if (
-    spouseName !== "" &&
-    spouseName !== null &&
-    typeof spouseName !== undefined
-  ) {
-    reform.spouse_name = spouseName.replace(/\b[a-z]/g, function(f) {
-      return f.toUpperCase();
-    });
-  }
+
   if (dob !== "" && dob !== null && typeof dob !== undefined) {
     reform.dob = dob.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
   }
-  if (married !== "" && married !== null && typeof married !== undefined) {
-    reform.married = married.replace(/\b[a-z]/g, function(f) {
-      return f.toUpperCase();
-    });
+
+  if (flag) {
+    if (
+      spouseName !== "" &&
+      spouseName !== null &&
+      typeof spouseName !== undefined
+    ) {
+      reform.spouse_name = spouseName.replace(/\b[a-z]/g, function(f) {
+        return f.toUpperCase();
+      });
+    }
+
+    if (
+      anniversary !== "" &&
+      anniversary !== null &&
+      typeof anniversary !== undefined
+    ) {
+      reform.anniversary = moment(new Date(anniversary)).format("YYYY-MM-DD");
+    }
+
+    if (married !== "" && married !== null && typeof married !== undefined) {
+      reform.married = married.replace(/\b[a-z]/g, function(f) {
+        return f.toUpperCase();
+      });
+    }
   }
 
   return reform;

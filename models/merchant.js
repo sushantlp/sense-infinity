@@ -50,10 +50,10 @@ module.exports.readMerchantByMobile = async (select, mobile, status) => {
     });
 
     // Query
-    const query = `SELECT ${select} FROM merchants WHERE mobile=? AND status=? LIMIT 1`;
+    const query = `SELECT ${select} FROM merchants WHERE mobile = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [status]);
+    const [rows, fields] = await connection.execute(query, [mobile, status]);
 
     connection.close();
 

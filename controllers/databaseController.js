@@ -254,6 +254,7 @@ module.exports.updateMerchantConstantTable = async (
     const [rows, fields] = await connection.execute(query, [
       value,
       status,
+      now,
       constantId
     ]);
 

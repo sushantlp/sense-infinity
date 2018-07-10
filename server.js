@@ -66,7 +66,7 @@ app.get("/", (req, res) => {
   return res.status(200).redirect("/index.html");
 });
 
-app.use("/api", jsonWebToken.verifyJsonWebToken);
+// app.use("/api", jsonWebToken.verifyJsonWebToken);
 
 // Version 1 API
 app.group("/api/v1", router => {

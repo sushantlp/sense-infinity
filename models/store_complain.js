@@ -48,7 +48,7 @@ module.exports.readStoreComplain = async (
     });
 
     // Query
-    const query = `SELECT ${select} FROM store_complains store_id=? AND cust_identity_id=? AND merchant_id=? AND status=? ORDER BY created_at DESC LIMIT 1`;
+    const query = `SELECT ${select} FROM store_complains WHERE store_id = ? AND cust_identity_id = ? AND merchant_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
@@ -123,21 +123,21 @@ module.exports.updateStoreComplain = async (
 
     // Query
     const query =
-      "UPDATE `store_complains` SET `complain`=?,`status`=?,`updated_at`=? WHERE `complain_id`=?";
+      "UPDATE `store_complains` SET complain = ?, status = ?, updated_at = ? WHERE complain_id = ?";
 
     // Query Database
     const row = await connection.execute(query, [
-      complainId,
       description,
       status,
       now,
-      now
+      complainId
     ]);
 
     connection.close();
 
     return row;
   } catch (error) {
+    console.log("H");
     return Promise.reject(error);
   }
 };

@@ -171,6 +171,7 @@ module.exports.requestKeepStoreComplain = (req, res) => {
           );
       })
       .catch(error => {
+        console.log(error);
         return res.status(500).send("Oops our bad!!!");
       });
   } else {

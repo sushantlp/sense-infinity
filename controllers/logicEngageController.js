@@ -118,6 +118,7 @@ module.exports.requestLogicKeepComplain = async (
         msg: "Empty merchant record"
       });
     }
+
     // Merchant Constant Table Exist
     const senseConstant = await databaseController.showConstantTable(
       mobile,
@@ -163,145 +164,150 @@ const logicKeepComplain = async (
   complainJson,
   merchantRecord
 ) => {
-  let versionFlag = {
-    customer: false
-  };
-  // Read Constant Record
-  const constant = await databaseController.readConstantRecordName(
-    "*",
-    mobile,
-    storeId,
-    "CUSTOMER_IDENTITY_APP_VERSION",
-    1
-  );
+  try {
+    let versionFlag = {
+      customer: true
+    };
 
-  // // Read Sense Offer Record
-  // const offer = await surveyOfferModel.readSenseOffer("*", Complain, 1);
-
-  const promises = complainJson.map(async (json, index) => {
-    // Read Customer Identity By Mobile
-    const customerRecord = await databaseController.readCustomerIdentityByMobile(
-      "cust_identity_id, first_name, last_name, email, mobile, dob, married, spouse_name, gender_id, anniversary_date",
+    // Read Constant Record
+    const constant = await databaseController.readConstantRecordName(
+      "*",
       mobile,
       storeId,
-      json.customer_mobile,
+      "CUSTOMER_IDENTITY_APP_VERSION",
       1
     );
 
-    // Reform Customer Detail
-    const reform = shareController.reformCustomerDetail(
-      json.first_name,
-      json.last_name,
-      json.spouse_name,
-      json.dob,
-      json.married,
-      json.anniversary
-    );
+    // // Read Sense Offer Record
+    // const offer = await surveyOfferModel.readSenseOffer("*", Complain, 1);
 
-    // Flag
-    versionFlag.customer = true;
-
-    if (customerRecord.length === 0) {
-      // Keep Merchant Customer Identity Record
-      const customerId = await databaseController.keepCustomerIdentity(
-        mobile,
-        storeId,
-        reform.first_name,
-        reform.last_name,
-        json.email,
-        json.customer_mobile,
-        reform.dob,
-        json.gender_id,
-        reform.married,
-        reform.spouse_name,
-        reform.anniversary,
-        1
-      );
-
-      // Keep Merchant Store Complain
-      complainModel.keepStoreComplain(
-        customerId.insertId,
-        merchantRecord[0].merchant_id,
-        storeId,
-        json.description,
-        1
-      );
-    } else {
-      // Update Merchant Customer Identity Record
-      await databaseController.updateCustomerIdentity(
-        mobile,
-        storeId,
-        reform.first_name,
-        reform.last_name,
-        json.email,
-        json.customer_mobile,
-        dob,
-        json.gender_id,
-        reform.married,
-        reform.spouse_name,
-        reform.anniversary,
-        1
-      );
-
-      // Read Store Complain Record
-      const complainRecord = complainModel.readStoreComplain(
+    const promises = complainJson.map(async (json, index) => {
+      // Read Customer Identity By Mobile
+      const customerRecord = await databaseController.readCustomerIdentityByMobile(
         "*",
+        mobile,
         storeId,
-        merchantRecord[0].merchant_id,
-        customerRecord[0].customer_id,
+        json.customer_mobile,
         1
       );
 
-      if (complainRecord.length === 0) {
+      // Reform Customer Detail
+      const reform = shareController.reformCustomerDetail(
+        json.first_name,
+        json.last_name,
+        json.spouse_name,
+        json.dob,
+        json.married,
+        json.anniversary,
+        false
+      );
+
+      if (customerRecord.length === 0) {
+        // Keep Merchant Customer Identity Record
+        const customerId = await databaseController.keepCustomerIdentity(
+          mobile,
+          storeId,
+          reform.first_name,
+          reform.last_name,
+          json.email,
+          json.customer_mobile,
+          reform.dob,
+          json.gender_id,
+          reform.married,
+          reform.spouse_name,
+          reform.anniversary,
+          1
+        );
+
         // Keep Merchant Store Complain
         complainModel.keepStoreComplain(
-          customerRecord[0].customer_id,
+          customerId.insertId,
           merchantRecord[0].merchant_id,
           storeId,
           json.description,
           1
         );
       } else {
-        // Complain Record CreatedAt Date Convert
-        const createdDate = moment(complainRecord[0].created_at).format(
-          "YYYY-MM-DD"
+        // Update Merchant Customer Identity Record
+        await databaseController.updateCustomerIdentity(
+          mobile,
+          storeId,
+          reform.first_name,
+          reform.last_name,
+          json.email,
+          json.customer_mobile,
+          reform.dob,
+          json.gender_id,
+          reform.married,
+          reform.spouse_name,
+          reform.anniversary,
+          1
         );
 
-        // Check Complain Keep or Update
-        if (createdDate >= backDate && createdDate <= todayDate) {
-          // Update Merchant Store Complain
-          complainModel.updateStoreComplain(
-            complainRecord[0].complain_id,
-            json.description,
-            1
-          );
-        } else {
+        // Read Store Complain Record
+        const complainRecord = await complainModel.readStoreComplain(
+          "*",
+          storeId,
+          merchantRecord[0].merchant_id,
+          customerRecord[0].cust_identity_id,
+          1
+        );
+
+        if (complainRecord.length === 0) {
           // Keep Merchant Store Complain
           complainModel.keepStoreComplain(
-            customerRecord[0].customer_id,
+            customerRecord[0].cust_identity_id,
             merchantRecord[0].merchant_id,
             storeId,
             json.description,
             1
           );
+        } else {
+          // Complain Record CreatedAt Date Convert
+          const createdDate = moment(complainRecord[0].created_at).format(
+            "YYYY-MM-DD"
+          );
+
+          // Check Complain Keep or Update
+          if (createdDate >= backDate && createdDate <= todayDate) {
+            // Update Merchant Store Complain
+            complainModel.updateStoreComplain(
+              complainRecord[0].complain_id,
+              json.description,
+              1
+            );
+          } else {
+            // Keep Merchant Store Complain
+            complainModel.keepStoreComplain(
+              customerRecord[0].cust_identity_id,
+              merchantRecord[0].merchant_id,
+              storeId,
+              json.description,
+              1
+            );
+          }
         }
       }
-    }
-  });
 
-  if (versionFlag.customer) {
-    // Increment Constant Value
-    const increment = parseFloat(constant[0].value) + parseFloat(0.1);
+      if (versionFlag.customer) {
+        versionFlag.customer = false;
+        // Increment Constant Value
+        const increment = parseFloat(constant[0].value) + parseFloat(0.1);
 
-    databaseController.updateMerchantConstantTable(
-      mobile,
-      storeId,
-      constant[0].constant_id,
-      increment.toFixed(3),
-      1
-    );
+        databaseController.updateMerchantConstantTable(
+          mobile,
+          storeId,
+          constant[0].constant_id,
+          increment.toFixed(1),
+          1
+        );
+      }
+    });
+
+    return await Promise.all(promises);
+  } catch (error) {
+    return Promise.reject(error);
   }
-  return await Promise.all(promises);
 };
 
 // Request Logic Keep Customer
@@ -371,6 +377,9 @@ const logicKeepCustomer = async (
   customerJson,
   merchantRecord
 ) => {
+  let versionFlag = {
+    customer: true
+  };
   // Read Constant Record
   const constant = await databaseController.readConstantRecordName(
     "*",
@@ -388,7 +397,8 @@ const logicKeepCustomer = async (
       json.spouse_name,
       json.dob,
       json.married,
-      json.anniversary
+      json.anniversary,
+      true
     );
 
     // Read Customer Identity By Mobile
@@ -433,18 +443,22 @@ const logicKeepCustomer = async (
         1
       );
     }
+
+    if (versionFlag.customer) {
+      versionFlag.customer = false;
+
+      // Increment Constant Value
+      const increment = parseFloat(constant[0].value) + parseFloat(0.1);
+
+      databaseController.updateMerchantConstantTable(
+        mobile,
+        storeId,
+        constant[0].constant_id,
+        increment.toFixed(1),
+        1
+      );
+    }
   });
-
-  // Increment Constant Value
-  const increment = parseFloat(constant[0].value) + parseFloat(0.1);
-
-  databaseController.updateMerchantConstantTable(
-    mobile,
-    storeId,
-    constant[0].constant_id,
-    increment.toFixed(3),
-    1
-  );
 
   return await Promise.all(promises);
 };
@@ -530,9 +544,9 @@ const logicFeedbackSurvey = async (
     let feedbackVersion = undefined;
     let customerVersion = undefined;
     let versionFlag = {
-      survey: false,
-      feedback: false,
-      customer: false
+      survey: true,
+      feedback: true,
+      customer: true
     };
 
     // Read Constant Record
@@ -578,11 +592,9 @@ const logicFeedbackSurvey = async (
         json.spouse_name,
         json.dob,
         json.married,
-        json.anniversary
+        json.anniversary,
+        true
       );
-
-      // Customer flag
-      versionFlag.customer = true;
 
       if (customerRecord.length === 0) {
         // Keep Merchant Customer Identity Record
@@ -619,14 +631,27 @@ const logicFeedbackSurvey = async (
           1
         );
 
-        customerId = customerRecord.customer_id;
+        customerId = customerRecord[0].cust_identity_id;
+      }
+
+      if (versionFlag.customer) {
+        // Customer flag
+        versionFlag.customer = false;
+
+        // Increment Constant Value
+        const increment = parseFloat(customerVersion.value) + parseFloat(0.1);
+
+        databaseController.updateMerchantConstantTable(
+          mobile,
+          storeId,
+          customerVersion.constant_id,
+          increment.toFixed(1),
+          1
+        );
       }
 
       // Survey
       json.customer_survey.map(async (survey, index) => {
-        // Survey flag
-        versionFlag.survey = true;
-
         // Read One Record Merchant Store Survey
         const surveyRecord = await database.readLimitMerchantSurvey(
           "*",
@@ -681,13 +706,26 @@ const logicFeedbackSurvey = async (
             );
           }
         }
+
+        if (versionFlag.survey) {
+          // Survey flag
+          versionFlag.survey = false;
+
+          // Increment Constant Value
+          const increment = parseFloat(surveyVersion.value) + parseFloat(0.1);
+
+          databaseController.updateMerchantConstantTable(
+            mobile,
+            storeId,
+            surveyVersion.constant_id,
+            increment.toFixed(1),
+            1
+          );
+        }
       });
 
       // Feedback
       json.customer_feedback.map(async (feedback, index) => {
-        // Feedback flag
-        versionFlag.feedback = true;
-
         // Read One Record Merchant Store Feedback
         const feedbackRecord = await database.readLimitMerchantFeedback(
           "*",
@@ -742,47 +780,23 @@ const logicFeedbackSurvey = async (
             );
           }
         }
+
+        if (versionFlag.feedback) {
+          // Feedback flag
+          versionFlag.feedback = false;
+          // Increment Constant Value
+          const increment = parseFloat(feedbackVersion.value) + parseFloat(0.1);
+
+          databaseController.updateMerchantConstantTable(
+            mobile,
+            storeId,
+            feedbackVersion.constant_id,
+            increment.toFixed(1),
+            1
+          );
+        }
       });
     });
-
-    if (versionFlag.customer) {
-      // Increment Constant Value
-      const increment = parseFloat(customerVersion.value) + parseFloat(0.1);
-
-      databaseController.updateMerchantConstantTable(
-        mobile,
-        storeId,
-        customerVersion.constant_id,
-        increment.toFixed(3),
-        1
-      );
-    }
-
-    if (versionFlag.survey) {
-      // Increment Constant Value
-      const increment = parseFloat(surveyVersion.value) + parseFloat(0.1);
-
-      databaseController.updateMerchantConstantTable(
-        mobile,
-        storeId,
-        surveyVersion.constant_id,
-        increment.toFixed(3),
-        1
-      );
-    }
-
-    if (versionFlag.feedback) {
-      // Increment Constant Value
-      const increment = parseFloat(feedbackVersion.value) + parseFloat(0.1);
-
-      databaseController.updateMerchantConstantTable(
-        mobile,
-        storeId,
-        feedbackVersion.constant_id,
-        increment.toFixed(3),
-        1
-      );
-    }
 
     return await Promise.all(promises);
   } catch (error) {
