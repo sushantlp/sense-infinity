@@ -8,6 +8,8 @@ const shareController = require("./shareController");
 const smsModel = require("../models/sms");
 const errorModel = require("../models/error_log");
 const userModel = require("../models/user");
+const merchantModel = require("../models/merchant");
+const storeModel = require("../models/merchant_store");
 
 // Request Merchant Signup
 module.exports.requestAppSignup = (req, res) => {
@@ -172,7 +174,8 @@ const logicOtpVerify = async (mobile, otp, password) => {
         mobile,
         1,
         1
-      )
+      ),
+      merchantModel.readMerchantByMobile("*", mobile, 1)
     ]);
 
     if (parallel.length > 0) {
@@ -180,6 +183,11 @@ const logicOtpVerify = async (mobile, otp, password) => {
         return parallel[0];
       }
 
+      const merchantStore = await storeModel.readStoreRecord(
+        "store_id AS store_unique, store_name AS name, address",
+        merchantModel[2].merchant_id,
+        1
+      );
       // Generate JWT Token
       const token = shareController.generateToken(parallel[1]);
 
@@ -188,7 +196,7 @@ const logicOtpVerify = async (mobile, otp, password) => {
 
       return (responsedata = {
         success: true,
-        msg: { token: token }
+        msg: { token: token, store: merchantStore }
       });
     } else {
       return Promise.reject("Oops our bad!!!");

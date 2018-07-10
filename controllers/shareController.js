@@ -258,13 +258,13 @@ module.exports.reformCustomerDetail = (
     firstName !== null &&
     typeof firstName !== undefined
   ) {
-    reform.first_Name = firstName.replace(/\b[a-z]/g, function(f) {
+    reform.first_name = firstName.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
   }
 
   if (lastName !== "" && lastName !== null && typeof lastName !== undefined) {
-    reform.last_Name = lastName.replace(/\b[a-z]/g, function(f) {
+    reform.last_name = lastName.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
   }
@@ -295,9 +295,7 @@ module.exports.reformCustomerDetail = (
     }
 
     if (married !== "" && married !== null && typeof married !== undefined) {
-      reform.married = married.replace(/\b[a-z]/g, function(f) {
-        return f.toUpperCase();
-      });
+      reform.married = married;
     }
   }
 

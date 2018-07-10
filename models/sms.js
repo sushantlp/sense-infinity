@@ -2,7 +2,6 @@
 
 const moment = require("moment");
 const mysql = require("mysql2/promise");
-const dotEnv = require("dotenv");
 
 module.exports = (sequelize, DataTypes) => {
   var sms = sequelize.define(

@@ -4,18 +4,19 @@ const moment = require("moment");
 const mysql = require("mysql2/promise");
 
 module.exports = (sequelize, DataTypes) => {
-  var sense_offer = sequelize.define(
-    "sense_offer",
+  var CustomerMembershipCard = sequelize.define(
+    "customer_membership_card",
     {
-      offer_name: DataTypes.STRING,
+      customer_mobile: DataTypes.STRING,
+      membership_card_number: DataTypes.STRING,
       status: DataTypes.BOOLEAN
     },
     {}
   );
-  sense_offer.associate = function(models) {
+  CustomerMembershipCard.associate = function(models) {
     // associations can be defined here
   };
-  return sense_offer;
+  return CustomerMembershipCard;
 };
 
 // Current Date and Time
@@ -27,8 +28,8 @@ const now = moment()
  * Start Database Read and Write
  */
 
-// Read Sense Offer Record
-module.exports.readSenseOffer = async (select, name, status) => {
+// Keep Customer Membership Card
+module.exports.keepCustomerMembershipCard = async (mobile, card, status) => {
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
@@ -39,14 +40,21 @@ module.exports.readSenseOffer = async (select, name, status) => {
     });
 
     // Query
-    const query = `SELECT ${select} FROM sense_offers WHERE offer_name = ? AND status = ?`;
+    const query =
+      "INSERT INTO `customer_membership_cards` (`customer_mobile`, `membership_card_number`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?)";
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [status]);
+    const row = await connection.execute(query, [
+      mobile,
+      card,
+      status,
+      now,
+      now
+    ]);
 
     connection.close();
 
-    return rows;
+    return row;
   } catch (error) {
     return Promise.reject(error);
   }

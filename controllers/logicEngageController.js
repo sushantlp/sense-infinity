@@ -20,6 +20,7 @@ const surveyOptionModel = require("../models/survey_option");
 const surveyOfferModel = require("../models/sense_offer");
 const complainModel = require("../models/store_complain");
 const merchantModel = require("../models/merchant");
+const cardModel = require("../models/customer_membership_card");
 
 // Current Date and Time
 const todayDate = moment()
@@ -377,9 +378,12 @@ const logicKeepCustomer = async (
   customerJson,
   merchantRecord
 ) => {
+  // Variable
   let versionFlag = {
     customer: true
   };
+  let customerId = undefined;
+
   // Read Constant Record
   const constant = await databaseController.readConstantRecordName(
     "*",
@@ -402,7 +406,7 @@ const logicKeepCustomer = async (
     );
 
     // Read Customer Identity By Mobile
-    const customerRecord = await databaseController.readCustomerIdentityByMobile(
+    let customerRecord = await databaseController.readCustomerIdentityByMobile(
       "*",
       mobile,
       storeId,
@@ -412,11 +416,11 @@ const logicKeepCustomer = async (
 
     if (customerRecord.length === 0) {
       // Keep Merchant Customer Identity Record
-      const customerId = await databaseController.keepCustomerIdentity(
+      customerRecord = await databaseController.keepCustomerIdentity(
         mobile,
         storeId,
         reform.first_name,
-        reform.last_Name,
+        reform.last_name,
         json.email,
         json.customer_mobile,
         reform.dob,
@@ -426,13 +430,15 @@ const logicKeepCustomer = async (
         reform.anniversary,
         1
       );
+
+      customerId = customerRecord.insertId;
     } else {
       // Update Merchant Customer Identity Record
       await databaseController.updateCustomerIdentity(
         mobile,
         storeId,
         reform.first_name,
-        reform.last_Name,
+        reform.last_name,
         json.email,
         json.customer_mobile,
         reform.dob,
@@ -442,7 +448,16 @@ const logicKeepCustomer = async (
         reform.anniversary,
         1
       );
+
+      customerId = customerRecord[0].cust_identity_id;
     }
+
+    // Keep Customer Membership Card
+    cardModel.keepCustomerMembershipCard(
+      json.customer_mobile,
+      json.membership_number,
+      1
+    );
 
     if (versionFlag.customer) {
       versionFlag.customer = false;
