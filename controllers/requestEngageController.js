@@ -19,10 +19,25 @@ module.exports.requestKeepDeviceData = (req, res) => {
     const mobile = req.query.mobile;
     const storeId = req.query.store_id;
 
+    // Variable
+    let token = undefined;
+
+    // If Production then Execute
+    if (process.env.APP_ENV.toUpperCase() === "PROD") {
+      // Get Token In Header
+      token = req.headers["authorization"];
+    } else {
+      // Get Token In Query
+      token = req.query.token;
+    }
+
     // Logic Device Data
     return engageController
       .logicDeviceData(deviceJson, mobile, storeId)
       .then(response => {
+        // Jwt Token Pass in Header
+        res.header("Access-Control-Expose-Headers", token);
+
         return res
           .status(200)
           .send(
@@ -36,6 +51,7 @@ module.exports.requestKeepDeviceData = (req, res) => {
           );
       })
       .catch(error => {
+        console.log(error);
         return res.status(500).send("Oops our bad!!!");
       });
   } else {
@@ -51,16 +67,19 @@ module.exports.requestSenseStatic = (req, res) => {
   ) {
     // Extract Parameter
     const appVersion = parseFloat(req.query.static_app_version);
-    let flag = false;
 
-    // // If Production then Execute
-    // if (process.env.APP_ENV.toUpperCase() == "PROD") {
-    //   // Get Token In Header
-    //   token = req.headers["authorization"];
-    // } else {
-    //   // Get Token In Query
-    //   token = req.query.token;
-    // }
+    // Variable
+    let flag = false;
+    let token = undefined;
+
+    // If Production then Execute
+    if (process.env.APP_ENV.toUpperCase() == "PROD") {
+      // Get Token In Header
+      token = req.headers["authorization"];
+    } else {
+      // Get Token In Query
+      token = req.query.token;
+    }
 
     // Logic Sense Static
     return engageController
@@ -70,9 +89,12 @@ module.exports.requestSenseStatic = (req, res) => {
           flag = true;
         }
 
+        // Jwt Token Pass in Header
+        res.header("Access-Control-Expose-Headers", token);
+
         // Intialize
         const metadata = {
-          version: flag ? response.version : appVersion,
+          static_version: flag ? response.version : appVersion,
           count: flag ? Object.keys(response.msg).length : 0
         };
 
@@ -111,6 +133,18 @@ module.exports.requestKeepStoreComplain = (req, res) => {
     const mobile = req.query.mobile;
     const storeId = req.query.store_id;
 
+    // Variable
+    let token = undefined;
+
+    // If Production then Execute
+    if (process.env.APP_ENV.toUpperCase() == "PROD") {
+      // Get Token In Header
+      token = req.headers["authorization"];
+    } else {
+      // Get Token In Query
+      token = req.query.token;
+    }
+
     // Validate Customer Detail
     const validate = shareController.validateCustomerDetail(
       complainJson,
@@ -121,6 +155,9 @@ module.exports.requestKeepStoreComplain = (req, res) => {
     return engageController
       .requestLogicKeepComplain(complainJson, mobile, storeId)
       .then(response => {
+        // Jwt Token Pass in Header
+        res.header("Access-Control-Expose-Headers", token);
+
         return res
           .status(200)
           .send(
@@ -156,6 +193,18 @@ module.exports.requestKeepCustomerDetail = (req, res) => {
     const mobile = req.query.mobile;
     const storeId = req.query.store_id;
 
+    // Variable
+    let token = undefined;
+
+    // If Production then Execute
+    if (process.env.APP_ENV.toUpperCase() == "PROD") {
+      // Get Token In Header
+      token = req.headers["authorization"];
+    } else {
+      // Get Token In Query
+      token = req.query.token;
+    }
+
     // Validate Customer Detail
     const validate = shareController.validateCustomerDetail(customerJson, true);
 
@@ -163,6 +212,9 @@ module.exports.requestKeepCustomerDetail = (req, res) => {
     return engageController
       .requestLogicKeepCustomer(customerJson, mobile, storeId)
       .then(response => {
+        // Jwt Token Pass In Header
+        res.header("Access-Control-Expose-Headers", token);
+
         return res
           .status(200)
           .send(
@@ -198,6 +250,18 @@ module.exports.requestKeepFeedbackSurvey = (req, res) => {
     const mobile = req.query.mobile;
     const storeId = req.query.store_id;
 
+    // Variable
+    let token = undefined;
+
+    // If Production then Execute
+    if (process.env.APP_ENV.toUpperCase() == "PROD") {
+      // Get Token In Header
+      token = req.headers["authorization"];
+    } else {
+      // Get Token In Query
+      token = req.query.token;
+    }
+
     // Validate Customer Detail
     const validate = shareController.validateCustomerDetail(
       feedbackSurveyJson,
@@ -208,6 +272,9 @@ module.exports.requestKeepFeedbackSurvey = (req, res) => {
     return engageController
       .requestLogicFeedbackSurvey(feedbackSurveyJson, mobile, storeId)
       .then(response => {
+        // Jwt Token Pass in Header
+        res.header("Access-Control-Expose-Headers", token);
+
         return res
           .status(200)
           .send(
@@ -221,6 +288,7 @@ module.exports.requestKeepFeedbackSurvey = (req, res) => {
           );
       })
       .catch(error => {
+        console.log(error);
         return res.status(500).send("Oops our bad!!!");
       });
   } else {
@@ -248,6 +316,16 @@ module.exports.requestReadFeedbackData = (req, res) => {
 
     // Variable
     let flag = false;
+    let token = undefined;
+
+    // If Production then Execute
+    if (process.env.APP_ENV.toUpperCase() == "PROD") {
+      // Get Token In Header
+      token = req.headers["authorization"];
+    } else {
+      // Get Token In Query
+      token = req.query.token;
+    }
 
     // Logic Get Feedback Data
     return engageController
@@ -256,6 +334,9 @@ module.exports.requestReadFeedbackData = (req, res) => {
         if (response.hasOwnProperty("sense_version")) {
           flag = true;
         }
+
+        // Jwt Token Pass in Header
+        res.header("Access-Control-Expose-Headers", token);
 
         // Intialize
         const metadata = {
@@ -307,6 +388,16 @@ module.exports.requestReadSurveyData = (req, res) => {
 
     // Variable
     let flag = false;
+    let token = undefined;
+
+    // If Production then Execute
+    if (process.env.APP_ENV.toUpperCase() == "PROD") {
+      // Get Token In Header
+      token = req.headers["authorization"];
+    } else {
+      // Get Token In Query
+      token = req.query.token;
+    }
 
     // Logic Get Survey Data
     return engageController
@@ -315,6 +406,9 @@ module.exports.requestReadSurveyData = (req, res) => {
         if (response.hasOwnProperty("sense_version")) {
           flag = true;
         }
+
+        // Jwt Token Pass in Header
+        res.header("Access-Control-Expose-Headers", token);
 
         // Intialize
         const metadata = {
@@ -363,6 +457,16 @@ module.exports.requestReadCustomerData = (req, res) => {
 
     // Variable
     let flag = false;
+    let token = undefined;
+
+    // If Production then Execute
+    if (process.env.APP_ENV.toUpperCase() == "PROD") {
+      // Get Token In Header
+      token = req.headers["authorization"];
+    } else {
+      // Get Token In Query
+      token = req.query.token;
+    }
 
     // Logic Customer Data
     return engageController
@@ -371,6 +475,9 @@ module.exports.requestReadCustomerData = (req, res) => {
         if (response.hasOwnProperty("customer_version")) {
           flag = true;
         }
+
+        // Jwt Token Pass in Header
+        res.header("Access-Control-Expose-Headers", token);
 
         // Intialize
         const metadata = {

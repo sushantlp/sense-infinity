@@ -4,7 +4,7 @@
   "description": "Node.js web applications",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sushantlp/any-tune-server.git"
+    "url": "https://github.com/sushantlp/sense-infinity.git"
   },
   "author": "Sushant singh chauhan",
   "license": "MIT",
@@ -17,7 +17,7 @@
   "dependencies": {
     "async": "^2.6.0",
     "axios": "^0.18.0",
-    "bcrypt": "^1.0.3",
+    "bcrypt": "^2.0.1",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
     "circular-json": "^0.5.4",
@@ -32,6 +32,7 @@
     "express-status-monitor": "^1.0.1",
     "express-validator": "^4.3.0",
     "jsonwebtoken": "^8.3.0",
+    "jsonwebtoken-refresh": "^5.7.0",
     "lodash": "^4.17.5",
     "lusca": "^1.5.2",
     "moment": "^2.19.2",

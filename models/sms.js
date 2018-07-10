@@ -75,7 +75,7 @@ module.exports.updateSmsOtp = async (mobile, gateway, status) => {
 
     // Query
     const query =
-      "UPDATE `sms` SET `gateway_status`=?, `status`=?, `updated_at`=? WHERE `mobile`=?";
+      "UPDATE `sms` SET `gateway_status` = ?, `status` = ?, `updated_at` = ? WHERE `mobile` = ?";
 
     // Query Database
     const row = await connection.execute(query, [gateway, status, now, mobile]);
@@ -100,7 +100,7 @@ module.exports.dailySmsLimit = async (select, mobile) => {
     });
 
     // Query
-    const query = `SELECT ${select} FROM sms WHERE mobile=? AND date(created_at)=curdate()`;
+    const query = `SELECT ${select} FROM sms WHERE mobile = ? AND date(created_at)=curdate()`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [mobile]);
@@ -125,7 +125,7 @@ module.exports.readSmsRecord = async (select, mobile, status) => {
     });
 
     // Query
-    const query = `SELECT ${select} FROM sms WHERE mobile=? AND status=? LIMIT 1`;
+    const query = `SELECT ${select} FROM sms WHERE mobile = ? AND status = ? LIMIT 1`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [mobile, status]);

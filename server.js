@@ -13,7 +13,7 @@ const sass = require("node-sass-middleware");
 const favicon = require("serve-favicon");
 const robots = require("express-robots");
 const CronJob = require("cron").CronJob;
-//const jsonWebToken = require("./middleware/jsonwebtoken");
+const jsonWebToken = require("./middleware/jsonWebToken");
 
 require("express-group-routes");
 
@@ -52,8 +52,6 @@ app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 app.use(robots(path.join(__dirname, "public", "robots.txt")));
 app.disable("etag");
 
-//app.use("/api", jsonWebToken.verifyJsonWebToken);
-
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
@@ -67,6 +65,8 @@ app.use(function(req, res, next) {
 app.get("/", (req, res) => {
   return res.status(200).redirect("/index.html");
 });
+
+app.use("/api", jsonWebToken.verifyJsonWebToken);
 
 // Version 1 API
 app.group("/api/v1", router => {

@@ -168,7 +168,7 @@ const logicOtpVerify = async (mobile, otp, password) => {
     const parallel = await Promise.all([
       shareController.validateOtp(mobile, otp),
       userModel.readUserRecord(
-        "user_id,name,mobile,email,password,",
+        "user_id,name,mobile,email,password",
         mobile,
         1,
         1

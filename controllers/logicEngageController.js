@@ -1030,7 +1030,7 @@ module.exports.logicGetSurvey = async (
 
     // Parallel Merchant and Sense Constant
     const parallel = await Promise.all([
-      databaseController.readConstantRecord(
+      databaseController.readConstantRecordName(
         "*",
         mobile,
         storeId,

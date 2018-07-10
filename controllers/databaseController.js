@@ -28,6 +28,7 @@ module.exports.sequelizeConnection = () => {
     {
       host: process.env.DB_HOST,
       dialect: process.env.DB_DRIVER,
+      operatorsAliases: false,
       pool: {
         max: 90,
         min: 0,
@@ -140,7 +141,7 @@ module.exports.readConstantRecord = async (
     const query = `SELECT ${select} FROM ${MerchantConstant} WHERE status = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [name, status]);
+    const [rows, fields] = await connection.execute(query, [status]);
 
     connection.close();
 

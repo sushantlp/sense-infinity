@@ -2,6 +2,7 @@
 
 // Import Package
 const jwt = require("jsonwebtoken");
+const jwtRefresh = require("jsonwebtoken-refresh");
 const moment = require("moment");
 
 // Import Model
@@ -35,7 +36,7 @@ module.exports.generateToken = payload => {
 // Refresh JWT Token
 module.exports.refreshToken = token => {
   const originalDecoded = jwt.decode(token, { complete: true });
-  return jwt.refresh(originalDecoded, 1500, process.env.JWT_SECRET);
+  return jwtRefresh.refresh(originalDecoded, 1500, process.env.JWT_SECRET);
 };
 
 // Create Json Object
