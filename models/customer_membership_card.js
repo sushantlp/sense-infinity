@@ -60,6 +60,31 @@ module.exports.keepCustomerMembershipCard = async (mobile, card, status) => {
   }
 };
 
+// Read Membership Card Record
+module.exports.readMembershipCardRecord = async (select, mobile, status) => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USERNAME,
+      port: process.env.DB_PORT,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE
+    });
+
+    // Query
+    const query = `SELECT ${select} FROM customer_membership_cards WHERE mobile = ? AND status = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [mobile, status]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 /**
  * End Database Read and Write
  */

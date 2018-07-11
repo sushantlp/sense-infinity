@@ -452,12 +452,21 @@ const logicKeepCustomer = async (
       customerId = customerRecord[0].cust_identity_id;
     }
 
-    // Keep Customer Membership Card
-    cardModel.keepCustomerMembershipCard(
+    // Read Membership Card Record
+    const card = await cardModel.readMembershipCardRecord(
+      "*",
       json.customer_mobile,
-      json.membership_number,
       1
     );
+
+    if (card.length === 0) {
+      // Keep Customer Membership Card
+      cardModel.keepCustomerMembershipCard(
+        json.customer_mobile,
+        json.membership_number,
+        1
+      );
+    }
 
     if (versionFlag.customer) {
       versionFlag.customer = false;
@@ -579,11 +588,11 @@ const logicFeedbackSurvey = async (
     // Iterate
     constant.map((version, index) => {
       if (version.name === "CUSTOMER_SURVEY_APP_VERSION") {
-        surveyVersion = version[index];
+        surveyVersion = version;
       } else if (version.name === "CUSTOMER_FEEDBACK_APP_VERSION") {
-        feedbackVersion = version[index];
+        feedbackVersion = version;
       } else if (version.name === "CUSTOMER_IDENTITY_APP_VERSION") {
-        customerVersion = version[index];
+        customerVersion = version;
       }
     });
 
@@ -598,7 +607,7 @@ const logicFeedbackSurvey = async (
       );
 
       // Declare
-      const customerId = undefined;
+      let customerId = undefined;
 
       // Reform Customer Detail
       const reform = shareController.reformCustomerDetail(
@@ -620,7 +629,7 @@ const logicFeedbackSurvey = async (
           reform.last_name,
           json.email,
           json.customer_mobile,
-          dob,
+          reform.dob,
           json.gender_id,
           reform.married,
           reform.spouse_name,
@@ -638,7 +647,7 @@ const logicFeedbackSurvey = async (
           reform.last_name,
           json.email,
           json.customer_mobile,
-          dob,
+          reform.dob,
           json.gender_id,
           reform.married,
           reform.spouse_name,
@@ -668,7 +677,7 @@ const logicFeedbackSurvey = async (
       // Survey
       json.customer_survey.map(async (survey, index) => {
         // Read One Record Merchant Store Survey
-        const surveyRecord = await database.readLimitMerchantSurvey(
+        const surveyRecord = await databaseController.readLimitMerchantSurvey(
           "*",
           mobile,
           storeId,
@@ -680,7 +689,7 @@ const logicFeedbackSurvey = async (
 
         if (surveyRecord.length === 0) {
           // Keep Merchant Store Survey Table
-          await database.keepMerchantSurveyTable(
+          await databaseController.keepMerchantSurveyTable(
             mobile,
             storeId,
             survey.question_id,
@@ -698,7 +707,7 @@ const logicFeedbackSurvey = async (
           // Check Survey Keep or Update
           if (createdDate >= backDate && createdDate <= todayDate) {
             // Update Merchant Store Survey
-            await database.updateMerchantSurveyTable(
+            await databaseController.updateMerchantSurveyTable(
               mobile,
               storeId,
               surveyRecord[0].keep_survey_id,
@@ -710,7 +719,7 @@ const logicFeedbackSurvey = async (
             );
           } else {
             // Keep Merchant Store Survey Table
-            await database.keepMerchantSurveyTable(
+            await databaseController.keepMerchantSurveyTable(
               mobile,
               storeId,
               survey.question_id,
@@ -742,7 +751,7 @@ const logicFeedbackSurvey = async (
       // Feedback
       json.customer_feedback.map(async (feedback, index) => {
         // Read One Record Merchant Store Feedback
-        const feedbackRecord = await database.readLimitMerchantFeedback(
+        const feedbackRecord = await databaseController.readLimitMerchantFeedback(
           "*",
           mobile,
           storeId,
@@ -754,7 +763,7 @@ const logicFeedbackSurvey = async (
 
         if (feedbackRecord.length === 0) {
           // Keep Merchant Store Feedback Table
-          await database.keepMerchantFeedbackTable(
+          await databaseController.keepMerchantFeedbackTable(
             mobile,
             storeId,
             feedback.question_id,
@@ -772,7 +781,7 @@ const logicFeedbackSurvey = async (
           // Check Survey Keep or Update
           if (createdDate >= backDate && createdDate <= todayDate) {
             // Update Merchant Store Feedback
-            await database.updateMerchantFeedbackTable(
+            await databaseController.updateMerchantFeedbackTable(
               mobile,
               storeId,
               feedbackRecord[0].keep_feed_id,
@@ -784,7 +793,7 @@ const logicFeedbackSurvey = async (
             );
           } else {
             // Keep Merchant Store Feedback Table
-            await database.keepMerchantFeedbackTable(
+            await databaseController.keepMerchantFeedbackTable(
               mobile,
               storeId,
               feedback.question_id,
