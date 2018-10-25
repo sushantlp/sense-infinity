@@ -1,8 +1,7 @@
 "use strict";
 
-const moment = require("moment");
+const moment = require("moment-timezone");
 const mysql = require("mysql2/promise");
-const dotEnv = require("dotenv");
 
 module.exports = (sequelize, DataTypes) => {
   var sense_constant = sequelize.define(

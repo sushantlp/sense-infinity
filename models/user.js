@@ -1,7 +1,6 @@
 "use strict";
 
 const mysql = require("mysql2/promise");
-const dotEnv = require("dotenv");
 
 module.exports = (sequelize, DataTypes) => {
   var User = sequelize.define(

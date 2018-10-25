@@ -2,6 +2,8 @@
 
 // Module Dependencies.
 const express = require("express");
+// const https = require("https");
+// const http = require("http");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const errorHandler = require("errorhandler");
@@ -66,7 +68,7 @@ app.get("/", (req, res) => {
   return res.status(200).redirect("/index.html");
 });
 
-// app.use("/api", jsonWebToken.verifyJsonWebToken);
+app.use("/api", jsonWebToken.verifyJsonWebToken);
 
 // Version 1 API
 app.group("/api/v1", router => {
@@ -117,6 +119,9 @@ app.use(errorHandler());
 app.listen(app.get("port"), () => {
   console.log("Server Start");
 });
+
+// http.createServer(app).listen(3000);
+// https.createServer(app).listen(3001);
 
 // If Production then Execute
 if (process.env.APP_ENV.toUpperCase() == "PROD") {
