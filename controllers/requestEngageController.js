@@ -42,6 +42,7 @@ module.exports.requestKeepDeviceData = (req, res) => {
           .status(200)
           .send(
             shareController.createJsonObject(
+              response.data,
               response.msg,
               "/api/v1/merchant/keep/device",
               200,
@@ -102,6 +103,7 @@ module.exports.requestSenseStatic = (req, res) => {
           .status(200)
           .send(
             shareController.createJsonObject(
+              response.data,
               response.msg,
               "/api/v1/merchant/get/static",
               200,
@@ -151,6 +153,10 @@ module.exports.requestKeepStoreComplain = (req, res) => {
       false
     );
 
+    if (!validate.success) {
+      return res.status(400).send("Bad request");
+    }
+
     // Request Logic Keep Complain
     return engageController
       .requestLogicKeepComplain(complainJson, mobile, storeId)
@@ -162,6 +168,7 @@ module.exports.requestKeepStoreComplain = (req, res) => {
           .status(200)
           .send(
             shareController.createJsonObject(
+              response.data,
               response.msg,
               "/api/v1/merchant/keep/complain",
               200,
@@ -209,6 +216,10 @@ module.exports.requestKeepCustomerDetail = (req, res) => {
     // Validate Customer Detail
     const validate = shareController.validateCustomerDetail(customerJson, true);
 
+    if (!validate.success) {
+      return res.status(400).send("Bad request");
+    }
+
     // Request Logic Keep Customer
     return engageController
       .requestLogicKeepCustomer(customerJson, mobile, storeId)
@@ -220,6 +231,7 @@ module.exports.requestKeepCustomerDetail = (req, res) => {
           .status(200)
           .send(
             shareController.createJsonObject(
+              response.data,
               response.msg,
               "/api/v1/merchant/keep/customer/detail",
               200,
@@ -270,6 +282,10 @@ module.exports.requestKeepFeedbackSurvey = (req, res) => {
       false
     );
 
+    if (!validate.success) {
+      return res.status(400).send("Bad request");
+    }
+
     // Request Logic Keep Feedback Survey
     return engageController
       .requestLogicFeedbackSurvey(feedbackSurveyJson, mobile, storeId)
@@ -281,6 +297,7 @@ module.exports.requestKeepFeedbackSurvey = (req, res) => {
           .status(200)
           .send(
             shareController.createJsonObject(
+              response.data,
               response.msg,
               "/api/v1/merchant/keep/feedback/survey",
               200,
@@ -353,6 +370,7 @@ module.exports.requestReadFeedbackData = (req, res) => {
           .status(200)
           .send(
             shareController.createJsonObject(
+              response.data,
               response.msg,
               "/api/v1/merchant/get/feedback",
               200,
@@ -425,6 +443,7 @@ module.exports.requestReadSurveyData = (req, res) => {
           .status(200)
           .send(
             shareController.createJsonObject(
+              response.data,
               response.msg,
               "/api/v1/merchant/get/survey",
               200,
@@ -491,6 +510,7 @@ module.exports.requestReadCustomerData = (req, res) => {
           .status(200)
           .send(
             shareController.createJsonObject(
+              response.data,
               response.msg,
               "/api/v1/merchant/get/customer",
               200,

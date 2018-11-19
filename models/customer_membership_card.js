@@ -72,7 +72,7 @@ module.exports.readMembershipCardRecord = async (select, mobile, status) => {
     });
 
     // Query
-    const query = `SELECT ${select} FROM customer_membership_cards WHERE mobile = ? AND status = ?`;
+    const query = `SELECT ${select} FROM customer_membership_cards WHERE customer_mobile = ? AND status = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [mobile, status]);

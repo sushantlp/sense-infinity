@@ -1,7 +1,7 @@
 "use strict";
 
 // Import Package
-const moment = require("moment");
+const moment = require("moment-timezone");
 
 // Import Controller
 const shareController = require("./shareController");
@@ -49,6 +49,7 @@ module.exports.logicSenseStatic = async appVersion => {
     if (senseConstant.length === 0) {
       return (responsedata = {
         success: false,
+        data: [],
         msg: "Empty sense constant"
       });
     }
@@ -57,6 +58,7 @@ module.exports.logicSenseStatic = async appVersion => {
     if (appVersion === parseFloat(senseConstant[0].value)) {
       return (responsedata = {
         success: true,
+        data: [],
         msg: "Upto date"
       });
     } else {
@@ -85,11 +87,12 @@ module.exports.logicSenseStatic = async appVersion => {
 
     return (responsedata = {
       success: true,
-      msg: {
+      data: {
         city: parallel[0],
         locality: parallel[1],
         gender: parallel[2]
       },
+      msg: "Succesful",
       version: appVersion
     });
   } catch (error) {
@@ -116,6 +119,7 @@ module.exports.requestLogicKeepComplain = async (
     if (merchantRecord.length === 0) {
       return (responsedata = {
         success: false,
+        data: [],
         msg: "Empty merchant record"
       });
     }
@@ -136,21 +140,20 @@ module.exports.requestLogicKeepComplain = async (
     }
 
     // Parallel
-    await Promise.all([
-      databaseController.createCustomerIdentityTable(mobile, storeId),
-      databaseController.createCustomerAddressTable(mobile, storeId)
-    ]);
+    // await Promise.all([
+    //   databaseController.createCustomerIdentityTable(mobile, storeId),
+    //   databaseController.createCustomerAddressTable(mobile, storeId)
+    // ]);
+
+    await databaseController.createCustomerIdentityTable(mobile, storeId);
+    await databaseController.createCustomerAddressTable(mobile, storeId);
 
     // Logic Read Complain
-    const complain = await logicKeepComplain(
-      mobile,
-      storeId,
-      complainJson,
-      merchantRecord
-    );
+    await logicKeepComplain(mobile, storeId, complainJson, merchantRecord);
 
     return (responsedata = {
       success: true,
+      data: [],
       msg: "Succesful"
     });
   } catch (error) {
@@ -330,6 +333,7 @@ module.exports.requestLogicKeepCustomer = async (
     if (merchantRecord.length === 0) {
       return (responsedata = {
         success: false,
+        data: [],
         msg: "Empty merchant record"
       });
     }
@@ -348,22 +352,21 @@ module.exports.requestLogicKeepCustomer = async (
       await logicMerchantConstant(mobile, storeId);
     }
 
-    // Parallel
-    await Promise.all([
-      databaseController.createCustomerIdentityTable(mobile, storeId),
-      databaseController.createCustomerAddressTable(mobile, storeId)
-    ]);
+    // // Parallel
+    // await Promise.all([
+    //   databaseController.createCustomerIdentityTable(mobile, storeId),
+    //   databaseController.createCustomerAddressTable(mobile, storeId)
+    // ]);
+
+    await databaseController.createCustomerIdentityTable(mobile, storeId);
+    await databaseController.createCustomerAddressTable(mobile, storeId);
 
     // Logic Read Customer
-    const complain = await logicKeepCustomer(
-      mobile,
-      storeId,
-      customerJson,
-      merchantRecord
-    );
+    await logicKeepCustomer(mobile, storeId, customerJson, merchantRecord);
 
     return (responsedata = {
       success: true,
+      data: [],
       msg: "Succesful"
     });
   } catch (error) {
@@ -522,21 +525,31 @@ module.exports.requestLogicFeedbackSurvey = async (
     if (merchantRecord.length === 0) {
       return (responsedata = {
         success: false,
+        data: [],
         msg: "Empty merchant record"
       });
     }
 
-    // Parallel
-    await Promise.all([
-      databaseController.createFeedbackQuestionTable(mobile, storeId),
-      databaseController.createFeedbackOptionTable(mobile, storeId),
-      databaseController.createFeedbackStoreTable(mobile, storeId),
-      databaseController.createSurveyQuestionTable(mobile, storeId),
-      databaseController.createSurveyOptionTable(mobile, storeId),
-      databaseController.createSurveyStoreTable(mobile, storeId),
-      databaseController.createCustomerIdentityTable(mobile, storeId),
-      databaseController.createCustomerAddressTable(mobile, storeId)
-    ]);
+    // // Parallel
+    // await Promise.all([
+    //   databaseController.createFeedbackQuestionTable(mobile, storeId),
+    //   databaseController.createFeedbackOptionTable(mobile, storeId),
+    //   databaseController.createFeedbackStoreTable(mobile, storeId),
+    //   databaseController.createSurveyQuestionTable(mobile, storeId),
+    //   databaseController.createSurveyOptionTable(mobile, storeId),
+    //   databaseController.createSurveyStoreTable(mobile, storeId),
+    //   databaseController.createCustomerIdentityTable(mobile, storeId),
+    //   databaseController.createCustomerAddressTable(mobile, storeId)
+    // ]);
+
+    await databaseController.createFeedbackQuestionTable(mobile, storeId);
+    await databaseController.createFeedbackOptionTable(mobile, storeId);
+    await databaseController.createFeedbackStoreTable(mobile, storeId);
+    await databaseController.createSurveyQuestionTable(mobile, storeId);
+    await databaseController.createSurveyOptionTable(mobile, storeId);
+    await databaseController.createSurveyStoreTable(mobile, storeId);
+    await databaseController.createCustomerIdentityTable(mobile, storeId);
+    await databaseController.createCustomerAddressTable(mobile, storeId);
 
     // Logic Feedback Survey
     await logicFeedbackSurvey(
@@ -548,6 +561,7 @@ module.exports.requestLogicFeedbackSurvey = async (
 
     return (responsedata = {
       success: true,
+      data: [],
       msg: "Succesful"
     });
   } catch (error) {
@@ -890,6 +904,7 @@ module.exports.logicGetFeedback = async (
     if (merchantFlag && senseFlag) {
       return (responsedata = {
         success: true,
+        data: [],
         msg: "Upto date"
       });
     }
@@ -904,7 +919,8 @@ module.exports.logicGetFeedback = async (
 
     return (responsedata = {
       success: true,
-      msg: feedback,
+      data: feedback,
+      msg: "Successful",
       sense_version: senseVersion,
       merchant_version: merchantVersion
     });
@@ -921,14 +937,20 @@ const logicReadFeedback = async (mobile, storeId, merchantFlag, senseFlag) => {
     let merchantArray = [];
     let adminArray = [];
 
-    // Parallel
-    await Promise.all([
-      databaseController.createFeedbackQuestionTable(mobile, storeId),
-      databaseController.createFeedbackOptionTable(mobile, storeId),
-      databaseController.createCustomerIdentityTable(mobile, storeId),
-      databaseController.createCustomerAddressTable(mobile, storeId),
-      databaseController.createFeedbackStoreTable(mobile, storeId)
-    ]);
+    // // Parallel
+    // await Promise.all([
+    //   databaseController.createFeedbackQuestionTable(mobile, storeId),
+    //   databaseController.createFeedbackOptionTable(mobile, storeId),
+    //   databaseController.createCustomerIdentityTable(mobile, storeId),
+    //   databaseController.createCustomerAddressTable(mobile, storeId),
+    //   databaseController.createFeedbackStoreTable(mobile, storeId)
+    // ]);
+
+    await databaseController.createFeedbackQuestionTable(mobile, storeId);
+    await databaseController.createFeedbackOptionTable(mobile, storeId);
+    await databaseController.createCustomerIdentityTable(mobile, storeId);
+    await databaseController.createCustomerAddressTable(mobile, storeId);
+    await databaseController.createFeedbackStoreTable(mobile, storeId);
 
     // Merchant Version
     if (!merchantFlag) {
@@ -1100,6 +1122,7 @@ module.exports.logicGetSurvey = async (
     if (merchantFlag && senseFlag) {
       return (responsedata = {
         success: true,
+        data: [],
         msg: "Upto date"
       });
     }
@@ -1114,7 +1137,8 @@ module.exports.logicGetSurvey = async (
 
     return (responsedata = {
       success: true,
-      msg: survey,
+      data: survey,
+      msg: "Sucessful",
       sense_version: senseVersion,
       merchant_version: merchantVersion
     });
@@ -1132,13 +1156,19 @@ const logicReadSurvey = async (mobile, storeId, merchantFlag, senseFlag) => {
     let adminArray = [];
 
     // Parallel
-    await Promise.all([
-      databaseController.createSurveyQuestionTable(mobile, storeId),
-      databaseController.createSurveyOptionTable(mobile, storeId),
-      databaseController.createCustomerIdentityTable(mobile, storeId),
-      databaseController.createCustomerAddressTable(mobile, storeId),
-      databaseController.createSurveyStoreTable(mobile, storeId)
-    ]);
+    // await Promise.all([
+    //   databaseController.createSurveyQuestionTable(mobile, storeId),
+    //   databaseController.createSurveyOptionTable(mobile, storeId),
+    //   databaseController.createCustomerIdentityTable(mobile, storeId),
+    //   databaseController.createCustomerAddressTable(mobile, storeId),
+    //   databaseController.createSurveyStoreTable(mobile, storeId)
+    // ]);
+
+    await databaseController.createSurveyQuestionTable(mobile, storeId);
+    await databaseController.createSurveyOptionTable(mobile, storeId);
+    await databaseController.createCustomerIdentityTable(mobile, storeId);
+    await databaseController.createCustomerAddressTable(mobile, storeId);
+    await databaseController.createSurveyStoreTable(mobile, storeId);
 
     // Merchant Version
     if (!merchantFlag) {
@@ -1276,6 +1306,7 @@ module.exports.logicCustomerData = async (customerVersion, mobile, storeId) => {
     if (customerVersion === parseFloat(constant[0].value)) {
       return (responsedata = {
         success: true,
+        data: [],
         msg: "Upto date"
       });
     } else {
@@ -1283,10 +1314,13 @@ module.exports.logicCustomerData = async (customerVersion, mobile, storeId) => {
     }
 
     // Parallel
-    await Promise.all([
-      databaseController.createCustomerIdentityTable(mobile, storeId),
-      databaseController.createCustomerAddressTable(mobile, storeId)
-    ]);
+    // await Promise.all([
+    //   databaseController.createCustomerIdentityTable(mobile, storeId),
+    //   databaseController.createCustomerAddressTable(mobile, storeId)
+    // ]);
+
+    await databaseController.createCustomerIdentityTable(mobile, storeId);
+    await databaseController.createCustomerAddressTable(mobile, storeId);
 
     // Read Merchant Customer Idenitity Record
     const record = await databaseController.readCustomerIdentityRecord(
@@ -1297,7 +1331,8 @@ module.exports.logicCustomerData = async (customerVersion, mobile, storeId) => {
 
     return (responsedata = {
       success: true,
-      msg: record,
+      data: record,
+      msg: "Succesful",
       customer_version: customerVersion
     });
   } catch (error) {
@@ -1342,6 +1377,7 @@ module.exports.logicDeviceData = async (deviceJson, mobile, storeId) => {
 
     return (responsedata = {
       success: true,
+      data: [],
       msg: "Succesful"
     });
   } catch (error) {
@@ -1389,6 +1425,7 @@ const logicMerchantConstant = async (mobile, storeId) => {
 
     return (responsedata = {
       success: true,
+      data: [],
       msg: "Succesful"
     });
   } catch (error) {

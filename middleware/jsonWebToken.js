@@ -41,6 +41,7 @@ module.exports.verifyJsonWebToken = (req, res, next) => {
               .status(403)
               .send(
                 shareController.createJsonObject(
+                  [],
                   err.message,
                   null,
                   403,
@@ -58,6 +59,7 @@ module.exports.verifyJsonWebToken = (req, res, next) => {
         .status(403)
         .send(
           shareController.createJsonObject(
+            [],
             "No token provide",
             null,
             403,

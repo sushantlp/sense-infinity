@@ -6,13 +6,8 @@
 
 // Import
 const mysql = require("mysql2/promise");
-const dotEnv = require("dotenv");
 const Sequelize = require("sequelize");
-const bluebird = require("bluebird");
-const moment = require("moment");
-
-// // Load Environment Variables from .env file.
-// dotEnv.load({ path: ".env" });
+const moment = require("moment-timezone");
 
 // Current Date and Time
 const now = moment()

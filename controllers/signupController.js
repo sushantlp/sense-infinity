@@ -35,6 +35,7 @@ module.exports.requestAppSignup = (req, res) => {
           .status(200)
           .send(
             shareController.createJsonObject(
+              response.data,
               response.msg,
               "/api/v1/merchant/signup",
               200,
@@ -74,6 +75,7 @@ module.exports.requestOtpVerify = (req, res) => {
           .status(200)
           .send(
             shareController.createJsonObject(
+              response.data,
               response.msg,
               "/api/v1/otp/verify",
               200,
@@ -83,6 +85,7 @@ module.exports.requestOtpVerify = (req, res) => {
           );
       })
       .catch(error => {
+        console.log(error);
         return res.status(500).send("Oops our bad!!!");
       });
   } else {
@@ -103,6 +106,7 @@ module.exports.requestRefreshToken = async (req, res) => {
       .send(
         shareController.createJsonObject(
           { token: token },
+          "Successful",
           "/refresh/token",
           200,
           true,
@@ -120,13 +124,26 @@ const logicAppSignup = async mobile => {
     // Intialize
     let responsedata = {};
 
-    // Read Youtube Playlist All Data
+    // Read Merchant Record
+    const merchant = await merchantModel.readMerchantByMobile("*", mobile, 1);
+
+    // Check Sms Limit Per Day
+    if (merchant.length < 1) {
+      return (responsedata = {
+        success: false,
+        data: [],
+        msg: "Unknown merchant"
+      });
+    }
+
+    // Read Daily Sms Limit
     const limit = await smsModel.dailySmsLimit("*", mobile);
 
     // Check Sms Limit Per Day
     if (limit.length > 3) {
       return (responsedata = {
         success: false,
+        data: [],
         msg:
           "You have exceeded your OTP request limit, please try again 24 hour"
       });
@@ -143,9 +160,11 @@ const logicAppSignup = async mobile => {
 
     return (responsedata = {
       success: true,
+      data: [],
       msg: "Otp send respective user mobile number"
     });
   } catch (error) {
+    console.log(error);
     return Promise.reject(error);
   }
 };
@@ -185,9 +204,10 @@ const logicOtpVerify = async (mobile, otp, password) => {
 
       const merchantStore = await storeModel.readStoreRecord(
         "store_id AS store_unique, store_name AS name, address",
-        merchantModel[2].merchant_id,
+        parallel[2][0].merchant_id,
         1
       );
+
       // Generate JWT Token
       const token = shareController.generateToken(parallel[1]);
 
@@ -196,12 +216,14 @@ const logicOtpVerify = async (mobile, otp, password) => {
 
       return (responsedata = {
         success: true,
-        msg: { token: token, store: merchantStore }
+        data: { token: token, store: merchantStore },
+        msg: "Successful"
       });
     } else {
       return Promise.reject("Oops our bad!!!");
     }
   } catch (error) {
+    console.log(error);
     return Promise.reject(error);
   }
 };
