@@ -810,7 +810,7 @@ module.exports.readCustomerIdentityRecord = async (
     const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
 
     // Query
-    const query = `SELECT ${CustomerIdentity}.cust_identity_id, ${CustomerIdentity}.first_name, ${CustomerIdentity}.last_name, ${CustomerIdentity}.email, ${CustomerIdentity}.mobile, ${CustomerIdentity}.dob, ${CustomerIdentity}.married, ${CustomerIdentity}.spouse_name, ${CustomerIdentity}.anniversary_date, genders.name AS gender_name FROM ${CustomerIdentity} LEFT JOIN genders ON ${CustomerIdentity}.gender_id = genders.gender_id WHERE ${CustomerIdentity}.status = ?`;
+    const query = `SELECT ${CustomerIdentity}.cust_identity_id, ${CustomerIdentity}.first_name, ${CustomerIdentity}.last_name, ${CustomerIdentity}.email, ${CustomerIdentity}.mobile, ${CustomerIdentity}.dob, ${CustomerIdentity}.married, ${CustomerIdentity}.spouse_name, ${CustomerIdentity}.anniversary_date, genders.name AS gender_name, customer_membership_cards.membership_card_number AS membership_card FROM ${CustomerIdentity} LEFT JOIN genders ON ${CustomerIdentity}.gender_id = genders.gender_id LEFT JOIN customer_membership_cards ON ${CustomerIdentity}.mobile = customer_membership_cards.customer_mobile WHERE ${CustomerIdentity}.status = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [status]);
