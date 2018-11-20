@@ -688,50 +688,21 @@ const logicFeedbackSurvey = async (
         );
       }
 
-      // Survey
-      json.customer_survey.map(async (survey, index) => {
-        // Read One Record Merchant Store Survey
-        const surveyRecord = await databaseController.readLimitMerchantSurvey(
-          "*",
-          mobile,
-          storeId,
-          customerId,
-          survey.question_id,
-          survey.role_id,
-          1
-        );
-
-        if (surveyRecord.length === 0) {
-          // Keep Merchant Store Survey Table
-          await databaseController.keepMerchantSurveyTable(
+      if (json.customer_survey != null) {
+        // Survey
+        json.customer_survey.map(async (survey, index) => {
+          // Read One Record Merchant Store Survey
+          const surveyRecord = await databaseController.readLimitMerchantSurvey(
+            "*",
             mobile,
             storeId,
-            survey.question_id,
-            survey.option_id,
             customerId,
+            survey.question_id,
             survey.role_id,
             1
           );
-        } else {
-          // Survey Record CreatedAt Date Convert
-          const createdDate = moment(surveyRecord[0].created_at).format(
-            "YYYY-MM-DD"
-          );
 
-          // Check Survey Keep or Update
-          if (createdDate >= backDate && createdDate <= todayDate) {
-            // Update Merchant Store Survey
-            await databaseController.updateMerchantSurveyTable(
-              mobile,
-              storeId,
-              surveyRecord[0].keep_survey_id,
-              survey.question_id,
-              survey.option_id,
-              customerId,
-              survey.role_id,
-              1
-            );
-          } else {
+          if (surveyRecord.length === 0) {
             // Keep Merchant Store Survey Table
             await databaseController.keepMerchantSurveyTable(
               mobile,
@@ -742,70 +713,72 @@ const logicFeedbackSurvey = async (
               survey.role_id,
               1
             );
+          } else {
+            // Survey Record CreatedAt Date Convert
+            const createdDate = moment(surveyRecord[0].created_at).format(
+              "YYYY-MM-DD"
+            );
+
+            // Check Survey Keep or Update
+            if (createdDate >= backDate && createdDate <= todayDate) {
+              // Update Merchant Store Survey
+              await databaseController.updateMerchantSurveyTable(
+                mobile,
+                storeId,
+                surveyRecord[0].keep_survey_id,
+                survey.question_id,
+                survey.option_id,
+                customerId,
+                survey.role_id,
+                1
+              );
+            } else {
+              // Keep Merchant Store Survey Table
+              await databaseController.keepMerchantSurveyTable(
+                mobile,
+                storeId,
+                survey.question_id,
+                survey.option_id,
+                customerId,
+                survey.role_id,
+                1
+              );
+            }
           }
-        }
 
-        if (versionFlag.survey) {
-          // Survey flag
-          versionFlag.survey = false;
+          if (versionFlag.survey) {
+            // Survey flag
+            versionFlag.survey = false;
 
-          // Increment Constant Value
-          const increment = parseFloat(surveyVersion.value) + parseFloat(0.1);
+            // Increment Constant Value
+            const increment = parseFloat(surveyVersion.value) + parseFloat(0.1);
 
-          databaseController.updateMerchantConstantTable(
+            databaseController.updateMerchantConstantTable(
+              mobile,
+              storeId,
+              surveyVersion.constant_id,
+              increment.toFixed(1),
+              1
+            );
+          }
+        });
+      }
+
+      if (json.customer_feedback != null) {
+        // Feedback
+        json.customer_feedback.map(async (feedback, index) => {
+          // Read One Record Merchant Store Feedback
+          const feedbackRecord = await databaseController.readLimitMerchantFeedback(
+            "*",
             mobile,
             storeId,
-            surveyVersion.constant_id,
-            increment.toFixed(1),
-            1
-          );
-        }
-      });
-
-      // Feedback
-      json.customer_feedback.map(async (feedback, index) => {
-        // Read One Record Merchant Store Feedback
-        const feedbackRecord = await databaseController.readLimitMerchantFeedback(
-          "*",
-          mobile,
-          storeId,
-          customerId,
-          feedback.question_id,
-          feedback.role_id,
-          1
-        );
-
-        if (feedbackRecord.length === 0) {
-          // Keep Merchant Store Feedback Table
-          await databaseController.keepMerchantFeedbackTable(
-            mobile,
-            storeId,
-            feedback.question_id,
-            feedback.option_id,
             customerId,
+            feedback.question_id,
             feedback.role_id,
             1
           );
-        } else {
-          // Feedback Record CreatedAt Date Convert
-          const createdDate = moment(feedbackRecord[0].created_at).format(
-            "YYYY-MM-DD"
-          );
 
-          // Check Survey Keep or Update
-          if (createdDate >= backDate && createdDate <= todayDate) {
-            // Update Merchant Store Feedback
-            await databaseController.updateMerchantFeedbackTable(
-              mobile,
-              storeId,
-              feedbackRecord[0].keep_feed_id,
-              feedback.question_id,
-              feedback.option_id,
-              customerId,
-              feedback.role_id,
-              1
-            );
-          } else {
+          if (feedbackRecord.length === 0) {
             // Keep Merchant Store Feedback Table
             await databaseController.keepMerchantFeedbackTable(
               mobile,
@@ -816,24 +789,56 @@ const logicFeedbackSurvey = async (
               feedback.role_id,
               1
             );
+          } else {
+            // Feedback Record CreatedAt Date Convert
+            const createdDate = moment(feedbackRecord[0].created_at).format(
+              "YYYY-MM-DD"
+            );
+
+            // Check Survey Keep or Update
+            if (createdDate >= backDate && createdDate <= todayDate) {
+              // Update Merchant Store Feedback
+              await databaseController.updateMerchantFeedbackTable(
+                mobile,
+                storeId,
+                feedbackRecord[0].keep_feed_id,
+                feedback.question_id,
+                feedback.option_id,
+                customerId,
+                feedback.role_id,
+                1
+              );
+            } else {
+              // Keep Merchant Store Feedback Table
+              await databaseController.keepMerchantFeedbackTable(
+                mobile,
+                storeId,
+                feedback.question_id,
+                feedback.option_id,
+                customerId,
+                feedback.role_id,
+                1
+              );
+            }
           }
-        }
 
-        if (versionFlag.feedback) {
-          // Feedback flag
-          versionFlag.feedback = false;
-          // Increment Constant Value
-          const increment = parseFloat(feedbackVersion.value) + parseFloat(0.1);
+          if (versionFlag.feedback) {
+            // Feedback flag
+            versionFlag.feedback = false;
+            // Increment Constant Value
+            const increment =
+              parseFloat(feedbackVersion.value) + parseFloat(0.1);
 
-          databaseController.updateMerchantConstantTable(
-            mobile,
-            storeId,
-            feedbackVersion.constant_id,
-            increment.toFixed(1),
-            1
-          );
-        }
-      });
+            databaseController.updateMerchantConstantTable(
+              mobile,
+              storeId,
+              feedbackVersion.constant_id,
+              increment.toFixed(1),
+              1
+            );
+          }
+        });
+      }
     });
 
     return await Promise.all(promises);
