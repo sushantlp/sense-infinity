@@ -37,18 +37,12 @@ module.exports.verifyJsonWebToken = (req, res, next) => {
         { algorithms: ["HS256"] },
         (err, decoded) => {
           if (err) {
-            return res
-              .status(403)
-              .send(
-                shareController.createJsonObject(
-                  [],
-                  err.message,
-                  null,
-                  403,
-                  false,
-                  null
-                )
-              );
+            // Refresh JWT Token
+            const refresh = shareController.refreshToken(token);
+
+            res.header("authorization", refresh);
+
+            return next();
           } else {
             return next();
           }

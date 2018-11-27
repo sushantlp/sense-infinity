@@ -49,7 +49,7 @@ module.exports.logicSenseStatic = async appVersion => {
     if (senseConstant.length === 0) {
       return (responsedata = {
         success: false,
-        data: [],
+        data: {},
         msg: "Empty sense constant"
       });
     }
@@ -58,7 +58,7 @@ module.exports.logicSenseStatic = async appVersion => {
     if (appVersion === parseFloat(senseConstant[0].value)) {
       return (responsedata = {
         success: true,
-        data: [],
+        data: {},
         msg: "Upto date"
       });
     } else {
@@ -146,7 +146,7 @@ module.exports.requestLogicKeepComplain = async (
     // ]);
 
     await databaseController.createCustomerIdentityTable(mobile, storeId);
-    await databaseController.createCustomerAddressTable(mobile, storeId);
+    // await databaseController.createCustomerAddressTable(mobile, storeId);
 
     // Logic Read Complain
     await logicKeepComplain(mobile, storeId, complainJson, merchantRecord);
@@ -359,7 +359,7 @@ module.exports.requestLogicKeepCustomer = async (
     // ]);
 
     await databaseController.createCustomerIdentityTable(mobile, storeId);
-    await databaseController.createCustomerAddressTable(mobile, storeId);
+    // await databaseController.createCustomerAddressTable(mobile, storeId);
 
     // Logic Read Customer
     await logicKeepCustomer(mobile, storeId, customerJson, merchantRecord);
@@ -370,6 +370,7 @@ module.exports.requestLogicKeepCustomer = async (
       msg: "Succesful"
     });
   } catch (error) {
+    console.log(error);
     return Promise.reject(error);
   }
 };
@@ -549,7 +550,7 @@ module.exports.requestLogicFeedbackSurvey = async (
     await databaseController.createSurveyOptionTable(mobile, storeId);
     await databaseController.createSurveyStoreTable(mobile, storeId);
     await databaseController.createCustomerIdentityTable(mobile, storeId);
-    await databaseController.createCustomerAddressTable(mobile, storeId);
+    // await databaseController.createCustomerAddressTable(mobile, storeId);
 
     // Logic Feedback Survey
     await logicFeedbackSurvey(
@@ -954,7 +955,7 @@ const logicReadFeedback = async (mobile, storeId, merchantFlag, senseFlag) => {
     await databaseController.createFeedbackQuestionTable(mobile, storeId);
     await databaseController.createFeedbackOptionTable(mobile, storeId);
     await databaseController.createCustomerIdentityTable(mobile, storeId);
-    await databaseController.createCustomerAddressTable(mobile, storeId);
+    // await databaseController.createCustomerAddressTable(mobile, storeId);
     await databaseController.createFeedbackStoreTable(mobile, storeId);
 
     // Merchant Version
@@ -1031,10 +1032,10 @@ const creatFeedbackJson = async (json, role, mobile, storeId) => {
 
       // Zero Means No Record
       if (option.length === 0) {
-        lowerObject.feedback_option = [];
+        lowerObject.option_json = [];
       } else {
         // Create Feedback Option Json
-        lowerObject.Feedback_Option = createFeedbackOptionJson(option);
+        lowerObject.option_json = createFeedbackOptionJson(option);
       }
 
       return lowerObject;
@@ -1172,7 +1173,7 @@ const logicReadSurvey = async (mobile, storeId, merchantFlag, senseFlag) => {
     await databaseController.createSurveyQuestionTable(mobile, storeId);
     await databaseController.createSurveyOptionTable(mobile, storeId);
     await databaseController.createCustomerIdentityTable(mobile, storeId);
-    await databaseController.createCustomerAddressTable(mobile, storeId);
+    // await databaseController.createCustomerAddressTable(mobile, storeId);
     await databaseController.createSurveyStoreTable(mobile, storeId);
 
     // Merchant Version
@@ -1239,10 +1240,10 @@ const creatSurveyJson = async (json, role, mobile, storeId) => {
 
       // Zero Means No Record
       if (option.length === 0) {
-        lowerObject.survey_option = [];
+        lowerObject.option_json = [];
       } else {
         // Create Survey Option Json
-        lowerObject.survey_Option = createSurveyOptionJson(option);
+        lowerObject.option_json = createSurveyOptionJson(option);
       }
 
       return lowerObject;
@@ -1325,7 +1326,7 @@ module.exports.logicCustomerData = async (customerVersion, mobile, storeId) => {
     // ]);
 
     await databaseController.createCustomerIdentityTable(mobile, storeId);
-    await databaseController.createCustomerAddressTable(mobile, storeId);
+    // await databaseController.createCustomerAddressTable(mobile, storeId);
 
     // Read Merchant Customer Idenitity Record
     const record = await databaseController.readCustomerIdentityRecord(

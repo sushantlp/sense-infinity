@@ -28,7 +28,7 @@ module.exports.requestKeepDeviceData = (req, res) => {
       token = req.headers["authorization"];
     } else {
       // Get Token In Query
-      token = req.query.token;
+      token = req.body.token || req.query.token || req.headers["authorization"];
     }
 
     // Logic Device Data
@@ -36,7 +36,7 @@ module.exports.requestKeepDeviceData = (req, res) => {
       .logicDeviceData(deviceJson, mobile, storeId)
       .then(response => {
         // Jwt Token Pass in Header
-        res.header("Access-Control-Expose-Headers", token);
+        res.header("token", token);
 
         return res
           .status(200)
@@ -79,7 +79,7 @@ module.exports.requestSenseStatic = (req, res) => {
       token = req.headers["authorization"];
     } else {
       // Get Token In Query
-      token = req.query.token;
+      token = req.body.token || req.query.token || req.headers["authorization"];
     }
 
     // Logic Sense Static
@@ -91,7 +91,7 @@ module.exports.requestSenseStatic = (req, res) => {
         }
 
         // Jwt Token Pass in Header
-        res.header("Access-Control-Expose-Headers", token);
+        res.header("token", token);
 
         // Intialize
         const metadata = {
@@ -113,6 +113,7 @@ module.exports.requestSenseStatic = (req, res) => {
           );
       })
       .catch(error => {
+        console.log(error);
         return res.status(500).send("Oops our bad!!!");
       });
   } else {
@@ -144,7 +145,7 @@ module.exports.requestKeepStoreComplain = (req, res) => {
       token = req.headers["authorization"];
     } else {
       // Get Token In Query
-      token = req.query.token;
+      token = req.body.token || req.query.token || req.headers["authorization"];
     }
 
     // Validate Customer Detail
@@ -162,7 +163,7 @@ module.exports.requestKeepStoreComplain = (req, res) => {
       .requestLogicKeepComplain(complainJson, mobile, storeId)
       .then(response => {
         // Jwt Token Pass in Header
-        res.header("Access-Control-Expose-Headers", token);
+        res.header("token", token);
 
         return res
           .status(200)
@@ -210,12 +211,11 @@ module.exports.requestKeepCustomerDetail = (req, res) => {
       token = req.headers["authorization"];
     } else {
       // Get Token In Query
-      token = req.query.token;
+      token = req.body.token || req.query.token || req.headers["authorization"];
     }
 
     // Validate Customer Detail
     const validate = shareController.validateCustomerDetail(customerJson, true);
-
     if (!validate.success) {
       return res.status(400).send("Bad request");
     }
@@ -225,7 +225,7 @@ module.exports.requestKeepCustomerDetail = (req, res) => {
       .requestLogicKeepCustomer(customerJson, mobile, storeId)
       .then(response => {
         // Jwt Token Pass In Header
-        res.header("Access-Control-Expose-Headers", token);
+        res.header("token", token);
 
         return res
           .status(200)
@@ -273,7 +273,7 @@ module.exports.requestKeepFeedbackSurvey = (req, res) => {
       token = req.headers["authorization"];
     } else {
       // Get Token In Query
-      token = req.query.token;
+      token = req.body.token || req.query.token || req.headers["authorization"];
     }
 
     // Validate Customer Detail
@@ -291,7 +291,7 @@ module.exports.requestKeepFeedbackSurvey = (req, res) => {
       .requestLogicFeedbackSurvey(feedbackSurveyJson, mobile, storeId)
       .then(response => {
         // Jwt Token Pass in Header
-        res.header("Access-Control-Expose-Headers", token);
+        res.header("token", token);
 
         return res
           .status(200)
@@ -343,7 +343,7 @@ module.exports.requestReadFeedbackData = (req, res) => {
       token = req.headers["authorization"];
     } else {
       // Get Token In Query
-      token = req.query.token;
+      token = req.body.token || req.query.token || req.headers["authorization"];
     }
 
     // Logic Get Feedback Data
@@ -355,7 +355,7 @@ module.exports.requestReadFeedbackData = (req, res) => {
         }
 
         // Jwt Token Pass in Header
-        res.header("Access-Control-Expose-Headers", token);
+        res.header("token", token);
 
         // Intialize
         const metadata = {
@@ -416,7 +416,7 @@ module.exports.requestReadSurveyData = (req, res) => {
       token = req.headers["authorization"];
     } else {
       // Get Token In Query
-      token = req.query.token;
+      token = req.body.token || req.query.token || req.headers["authorization"];
     }
 
     // Logic Get Survey Data
@@ -428,12 +428,12 @@ module.exports.requestReadSurveyData = (req, res) => {
         }
 
         // Jwt Token Pass in Header
-        res.header("Access-Control-Expose-Headers", token);
+        res.header("token", token);
 
         // Intialize
         const metadata = {
-          sense_feedback_version: flag ? response.sense_version : senseVersion,
-          merchant_feedback_version: flag
+          sense_survey_version: flag ? response.sense_version : senseVersion,
+          merchant_survey_version: flag
             ? response.merchant_version
             : merchantVersion,
           count: flag ? Object.keys(response.msg).length : null
@@ -483,7 +483,7 @@ module.exports.requestReadCustomerData = (req, res) => {
     // If Production then Execute
     if (process.env.APP_ENV.toUpperCase() == "PROD") {
       // Get Token In Header
-      token = req.headers["authorization"];
+      token = req.body.token || req.query.token || req.headers["authorization"];
     } else {
       // Get Token In Query
       token = req.query.token;
@@ -498,7 +498,7 @@ module.exports.requestReadCustomerData = (req, res) => {
         }
 
         // Jwt Token Pass in Header
-        res.header("Access-Control-Expose-Headers", token);
+        res.header("token", token);
 
         // Intialize
         const metadata = {
