@@ -441,6 +441,8 @@ const logicKeepCustomer = async (
         reform.address_one,
         reform.address_two,
         reform.landmark,
+        json.city_id,
+        json.locality_id,
         1
       );
 
@@ -462,6 +464,8 @@ const logicKeepCustomer = async (
         reform.address_one,
         reform.address_two,
         reform.landmark,
+        json.city_id,
+        json.locality_id,
         1
       );
 

@@ -268,30 +268,6 @@ module.exports.validateCustomerDetail = (loop, bool) => {
         });
       }
 
-      // Customer Landmark Parameter Validate
-      if (
-        !loop[i].hasOwnProperty("landmark") ||
-        loop[i]["landmark"] === "" ||
-        loop[i]["landmark"] === undefined
-      ) {
-        return (responsedata = {
-          success: false,
-          msg: "Landmark parameter missing"
-        });
-      }
-
-      // Customer Landmark Parameter Validate
-      if (
-        !loop[i].hasOwnProperty("landmark") ||
-        loop[i]["landmark"] === "" ||
-        loop[i]["landmark"] === undefined
-      ) {
-        return (responsedata = {
-          success: false,
-          msg: "Landmark parameter missing"
-        });
-      }
-
       // Customer City Parameter Validate
       if (
         !loop[i].hasOwnProperty("city_id") ||

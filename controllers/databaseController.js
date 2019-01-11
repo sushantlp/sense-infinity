@@ -810,7 +810,7 @@ module.exports.readCustomerIdentityRecord = async (
     const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
 
     // Query
-    const query = `SELECT ${CustomerIdentity}.cust_identity_id, ${CustomerIdentity}.first_name, ${CustomerIdentity}.last_name, ${CustomerIdentity}.email, ${CustomerIdentity}.mobile, ${CustomerIdentity}.dob, ${CustomerIdentity}.married, ${CustomerIdentity}.spouse_name, ${CustomerIdentity}.anniversary_date, ${CustomerIdentity}.gender_id, genders.name AS gender_name, customer_membership_cards.membership_card_number AS membership_card FROM ${CustomerIdentity} LEFT JOIN genders ON ${CustomerIdentity}.gender_id = genders.gender_id LEFT JOIN customer_membership_cards ON ${CustomerIdentity}.mobile = customer_membership_cards.customer_mobile WHERE ${CustomerIdentity}.status = ?`;
+    const query = `SELECT ${CustomerIdentity}.cust_identity_id, ${CustomerIdentity}.first_name, ${CustomerIdentity}.last_name, ${CustomerIdentity}.email, ${CustomerIdentity}.mobile, ${CustomerIdentity}.dob, ${CustomerIdentity}.married, ${CustomerIdentity}.spouse_name, ${CustomerIdentity}.anniversary_date, ${CustomerIdentity}.address_one, ${CustomerIdentity}.address_two, ${CustomerIdentity}.landmark, ${CustomerIdentity}.gender_id, ${CustomerIdentity}.city_id, ${CustomerIdentity}.locality_id, cities.city_name, localities.locality_name, genders.name AS gender_name, customer_membership_cards.membership_card_number AS membership_card FROM ${CustomerIdentity} LEFT JOIN genders ON ${CustomerIdentity}.gender_id = genders.gender_id LEFT JOIN cities ON ${CustomerIdentity}.city_id = cities.city_id LEFT JOIN localities ON ${CustomerIdentity}.locality_id = localities.locality_id LEFT JOIN customer_membership_cards ON ${CustomerIdentity}.mobile = customer_membership_cards.customer_mobile WHERE ${CustomerIdentity}.status = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [status]);
@@ -876,6 +876,8 @@ module.exports.keepCustomerIdentity = async (
   addressOne,
   addressTwo,
   landmark,
+  cityId,
+  localityId,
   status
 ) => {
   try {
@@ -891,7 +893,7 @@ module.exports.keepCustomerIdentity = async (
     const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
 
     // Query
-    const query = `INSERT INTO ${CustomerIdentity} (first_name, last_name, email, mobile, dob, gender_id, married, spouse_name, anniversary_date, address_one, address_two, landmark, status, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+    const query = `INSERT INTO ${CustomerIdentity} (first_name, last_name, email, mobile, dob, gender_id, married, spouse_name, anniversary_date, address_one, address_two, landmark, city_id, locality_id, status, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
@@ -907,6 +909,8 @@ module.exports.keepCustomerIdentity = async (
       addressOne,
       addressTwo,
       landmark,
+      cityId,
+      localityId,
       status,
       now,
       now
@@ -936,6 +940,8 @@ module.exports.updateCustomerIdentity = async (
   addressOne,
   addressTwo,
   landmark,
+  cityId,
+  localityId,
   status
 ) => {
   try {
@@ -951,7 +957,7 @@ module.exports.updateCustomerIdentity = async (
     const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
 
     // Query
-    const query = `UPDATE ${CustomerIdentity} SET first_name = ?, last_name = ?, email = ?, dob = ?, gender_id = ?, married = ?, spouse_name = ?, anniversary_date = ?, address_one = ?, address_two = ?, landmark = ?, status = ?, updated_at = ? WHERE mobile = ?`;
+    const query = `UPDATE ${CustomerIdentity} SET first_name = ?, last_name = ?, email = ?, dob = ?, gender_id = ?, married = ?, spouse_name = ?, anniversary_date = ?, address_one = ?, address_two = ?, landmark = ?, city_id = ?, locality_id = ?, status = ?, updated_at = ? WHERE mobile = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
@@ -966,6 +972,8 @@ module.exports.updateCustomerIdentity = async (
       addressOne,
       addressTwo,
       landmark,
+      cityId,
+      localityId,
       status,
       now,
       mobile
