@@ -749,7 +749,7 @@ module.exports.createCustomerIdentityTable = async (
     const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
 
     // Query
-    const query = `CREATE TABLE IF NOT EXISTS ${CustomerIdentity} (cust_identity_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, first_name VARCHAR(255) NULL, last_name VARCHAR(255) NULL, email VARCHAR(255) NULL, mobile VARCHAR(10) UNIQUE, dob VARCHAR(255) NULL, gender_id INTEGER NOT NULL DEFAULT 0, FOREIGN KEY (gender_id) REFERENCES genders (gender_id), married VARCHAR(255) NULL DEFAULT 0, spouse_name VARCHAR(255) NULL, anniversary_date VARCHAR(255) NULL, status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(cust_identity_id))`;
+    const query = `CREATE TABLE IF NOT EXISTS ${CustomerIdentity} (cust_identity_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, first_name VARCHAR(255) NULL, last_name VARCHAR(255) NULL, email VARCHAR(255) NULL, mobile VARCHAR(10) UNIQUE, dob VARCHAR(255) NULL, gender_id INTEGER NOT NULL DEFAULT 0,address_one VARCHAR(255) NULL, address_two VARCHAR(255) NULL,landmark VARCHAR(255) NULL, city_id INTEGER NOT NULL, FOREIGN KEY (city_id) REFERENCES cities (city_id), locality_id INTEGER NOT NULL, FOREIGN KEY (locality_id) REFERENCES localities (locality_id), FOREIGN KEY (gender_id) REFERENCES genders (gender_id), married VARCHAR(255) NULL DEFAULT 0, spouse_name VARCHAR(255) NULL, anniversary_date VARCHAR(255) NULL, status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(cust_identity_id))`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query);
@@ -763,33 +763,33 @@ module.exports.createCustomerIdentityTable = async (
 };
 
 // Create Customer Identity Address Table
-module.exports.createCustomerAddressTable = async (merchantMobile, storeId) => {
-  try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USERNAME,
-      port: process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
+// module.exports.createCustomerAddressTable = async (merchantMobile, storeId) => {
+//   try {
+//     const connection = await mysql.createConnection({
+//       host: process.env.DB_HOST,
+//       user: process.env.DB_USERNAME,
+//       port: process.env.DB_PORT,
+//       password: process.env.DB_PASSWORD,
+//       database: process.env.DB_DATABASE
+//     });
 
-    // Dynamic Table
-    const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
-    const CustomerAddress = `${merchantMobile}_${storeId}_customer_identity_address`;
+//     // Dynamic Table
+//     const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
+//     const CustomerAddress = `${merchantMobile}_${storeId}_customer_identity_address`;
 
-    // Query
-    const query = `CREATE TABLE IF NOT EXISTS ${CustomerAddress} (cust_address_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, address_one VARCHAR(255) NULL, address_two VARCHAR(255) NULL, address_three VARCHAR(255) NULL, landmark VARCHAR(255) NULL, city_id INTEGER NOT NULL, FOREIGN KEY (city_id) REFERENCES cities (city_id), locality_id INTEGER NOT NULL, FOREIGN KEY (locality_id) REFERENCES localities (locality_id), cust_identity_id INT(11) UNSIGNED NOT NULL, FOREIGN KEY (cust_identity_id) REFERENCES ${CustomerIdentity} (cust_identity_id), status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(cust_address_id))`;
+//     // Query
+//     const query = `CREATE TABLE IF NOT EXISTS ${CustomerAddress} (cust_address_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, address_one VARCHAR(255) NULL, address_two VARCHAR(255) NULL, address_three VARCHAR(255) NULL, landmark VARCHAR(255) NULL, city_id INTEGER NOT NULL, FOREIGN KEY (city_id) REFERENCES cities (city_id), locality_id INTEGER NOT NULL, FOREIGN KEY (locality_id) REFERENCES localities (locality_id), cust_identity_id INT(11) UNSIGNED NOT NULL, FOREIGN KEY (cust_identity_id) REFERENCES ${CustomerIdentity} (cust_identity_id), status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(cust_address_id))`;
 
-    // Query Database
-    const [rows, fields] = await connection.execute(query);
+//     // Query Database
+//     const [rows, fields] = await connection.execute(query);
 
-    connection.close();
+//     connection.close();
 
-    return rows;
-  } catch (error) {
-    return Promise.reject(error);
-  }
-};
+//     return rows;
+//   } catch (error) {
+//     return Promise.reject(error);
+//   }
+// };
 
 // Read Merchant Customer Idenitity Record
 module.exports.readCustomerIdentityRecord = async (
@@ -873,6 +873,9 @@ module.exports.keepCustomerIdentity = async (
   married,
   spouseName,
   anniversaryDate,
+  addressOne,
+  addressTwo,
+  landmark,
   status
 ) => {
   try {
@@ -888,7 +891,7 @@ module.exports.keepCustomerIdentity = async (
     const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
 
     // Query
-    const query = `INSERT INTO ${CustomerIdentity} (first_name, last_name, email, mobile, dob, gender_id, married, spouse_name, anniversary_date, status, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`;
+    const query = `INSERT INTO ${CustomerIdentity} (first_name, last_name, email, mobile, dob, gender_id, married, spouse_name, anniversary_date, address_one, address_two, landmark, status, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
@@ -901,6 +904,9 @@ module.exports.keepCustomerIdentity = async (
       married,
       spouseName,
       anniversaryDate,
+      addressOne,
+      addressTwo,
+      landmark,
       status,
       now,
       now
@@ -927,6 +933,9 @@ module.exports.updateCustomerIdentity = async (
   married,
   spouseName,
   anniversaryDate,
+  addressOne,
+  addressTwo,
+  landmark,
   status
 ) => {
   try {
@@ -942,7 +951,7 @@ module.exports.updateCustomerIdentity = async (
     const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
 
     // Query
-    const query = `UPDATE ${CustomerIdentity} SET first_name = ?, last_name = ?, email = ?, dob = ?, gender_id = ?, married = ?, spouse_name = ?, anniversary_date = ?, status = ?, updated_at = ? WHERE mobile = ?`;
+    const query = `UPDATE ${CustomerIdentity} SET first_name = ?, last_name = ?, email = ?, dob = ?, gender_id = ?, married = ?, spouse_name = ?, anniversary_date = ?, address_one = ?, address_two = ?, landmark = ?, status = ?, updated_at = ? WHERE mobile = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
@@ -954,6 +963,9 @@ module.exports.updateCustomerIdentity = async (
       married,
       spouseName,
       anniversaryDate,
+      addressOne,
+      addressTwo,
+      landmark,
       status,
       now,
       mobile

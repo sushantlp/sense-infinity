@@ -203,6 +203,9 @@ const logicKeepComplain = async (
         json.dob,
         json.married,
         json.anniversary,
+        undefined,
+        undefined,
+        undefined,
         false
       );
 
@@ -406,6 +409,9 @@ const logicKeepCustomer = async (
       json.dob,
       json.married,
       json.anniversary,
+      json.address_one,
+      json.address_two,
+      json.landmark,
       true
     );
 
@@ -432,6 +438,9 @@ const logicKeepCustomer = async (
         reform.married,
         reform.spouse_name,
         reform.anniversary,
+        reform.address_one,
+        reform.address_two,
+        reform.landmark,
         1
       );
 
@@ -450,6 +459,9 @@ const logicKeepCustomer = async (
         reform.married,
         reform.spouse_name,
         reform.anniversary,
+        reform.address_one,
+        reform.address_two,
+        reform.landmark,
         1
       );
 
@@ -632,6 +644,9 @@ const logicFeedbackSurvey = async (
         json.dob,
         json.married,
         json.anniversary,
+        undefined,
+        undefined,
+        undefined,
         true
       );
 

@@ -231,6 +231,92 @@ module.exports.validateCustomerDetail = (loop, bool) => {
           msg: "Anniversary parameter missing"
         });
       }
+
+      // Customer Address One Parameter Validate
+      if (
+        !loop[i].hasOwnProperty("address_one") ||
+        loop[i]["address_one"] === "" ||
+        loop[i]["address_one"] === undefined
+      ) {
+        return (responsedata = {
+          success: false,
+          msg: "Address one parameter missing"
+        });
+      }
+
+      // Customer Address Two Parameter Validate
+      if (
+        !loop[i].hasOwnProperty("address_two") ||
+        loop[i]["address_two"] === "" ||
+        loop[i]["address_two"] === undefined
+      ) {
+        return (responsedata = {
+          success: false,
+          msg: "Address two parameter missing"
+        });
+      }
+
+      // Customer Landmark Parameter Validate
+      if (
+        !loop[i].hasOwnProperty("landmark") ||
+        loop[i]["landmark"] === "" ||
+        loop[i]["landmark"] === undefined
+      ) {
+        return (responsedata = {
+          success: false,
+          msg: "Landmark parameter missing"
+        });
+      }
+
+      // Customer Landmark Parameter Validate
+      if (
+        !loop[i].hasOwnProperty("landmark") ||
+        loop[i]["landmark"] === "" ||
+        loop[i]["landmark"] === undefined
+      ) {
+        return (responsedata = {
+          success: false,
+          msg: "Landmark parameter missing"
+        });
+      }
+
+      // Customer Landmark Parameter Validate
+      if (
+        !loop[i].hasOwnProperty("landmark") ||
+        loop[i]["landmark"] === "" ||
+        loop[i]["landmark"] === undefined
+      ) {
+        return (responsedata = {
+          success: false,
+          msg: "Landmark parameter missing"
+        });
+      }
+
+      // Customer City Parameter Validate
+      if (
+        !loop[i].hasOwnProperty("city_id") ||
+        loop[i]["city_id"] === "" ||
+        loop[i]["city_id"] === undefined ||
+        loop[i]["city_id"] !== parseInt(loop[i]["city_id"], 10)
+      ) {
+        return (responsedata = {
+          success: false,
+          msg: "City parameter missing"
+        });
+      }
+
+      // Customer Locality Parameter Validate
+      if (
+        !loop[i].hasOwnProperty("locality_id") ||
+        loop[i]["locality_id"] === "" ||
+        loop[i]["locality_id"] === undefined ||
+        loop[i]["locality_id"] !== parseInt(loop[i]["locality_id"], 10)
+      ) {
+        return (responsedata = {
+          success: false,
+          msg: "Locality parameter missing"
+        });
+      }
     }
   }
 
@@ -248,6 +334,8 @@ module.exports.reformCustomerDetail = (
   dob,
   married,
   anniversary,
+  addressOne,
+  addressTwo,
   flag
 ) => {
   // Variable
@@ -257,6 +345,9 @@ module.exports.reformCustomerDetail = (
     last_name: null,
     spouse_name: null,
     dob: null,
+    address_one: null,
+    address_two: null,
+    landmark: null,
     married: 0
   };
 
@@ -304,6 +395,32 @@ module.exports.reformCustomerDetail = (
 
     if (married !== "" && married !== null && typeof married !== undefined) {
       reform.married = married;
+    }
+
+    if (
+      addressOne !== "" &&
+      addressOne !== null &&
+      typeof addressOne !== undefined
+    ) {
+      reform.address_one = addressOne.replace(/\b[a-z]/g, function(f) {
+        return f.toUpperCase();
+      });
+    }
+
+    if (
+      addressTwo !== "" &&
+      addressTwo !== null &&
+      typeof addressTwo !== undefined
+    ) {
+      reform.address_two = addressTwo.replace(/\b[a-z]/g, function(f) {
+        return f.toUpperCase();
+      });
+    }
+
+    if (landmark !== "" && landmark !== null && typeof landmark !== undefined) {
+      reform.landmark = landmark.replace(/\b[a-z]/g, function(f) {
+        return f.toUpperCase();
+      });
     }
   }
 
