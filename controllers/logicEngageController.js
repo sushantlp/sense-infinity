@@ -223,6 +223,11 @@ const logicKeepComplain = async (
           reform.married,
           reform.spouse_name,
           reform.anniversary,
+          undefined,
+          undefined,
+          undefined,
+          0,
+          0,
           1
         );
 
@@ -248,6 +253,11 @@ const logicKeepComplain = async (
           reform.married,
           reform.spouse_name,
           reform.anniversary,
+          undefined,
+          undefined,
+          undefined,
+          0,
+          0,
           1
         );
 
@@ -668,6 +678,11 @@ const logicFeedbackSurvey = async (
           reform.married,
           reform.spouse_name,
           reform.anniversary,
+          undefined,
+          undefined,
+          undefined,
+          0,
+          0,
           1
         );
 
@@ -686,6 +701,11 @@ const logicFeedbackSurvey = async (
           reform.married,
           reform.spouse_name,
           reform.anniversary,
+          undefined,
+          undefined,
+          undefined,
+          0,
+          0,
           1
         );
 
