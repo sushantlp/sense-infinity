@@ -192,7 +192,10 @@ module.exports.validateCustomerDetail = (loop, bool) => {
     }
 
     // Customer Gender Id Is Numeric
-    if (isNaN(loop[i]["gender_id"])) {
+    if (
+      // isNaN(loop[i]["gender_id"]) ||
+      loop[i]["gender_id"] !== parseInt(loop[i]["gender_id"], 10)
+    ) {
       return (responsedata = {
         success: false,
         msg: "Gender should be numeric"
@@ -213,6 +216,14 @@ module.exports.validateCustomerDetail = (loop, bool) => {
         return (responsedata = {
           success: false,
           msg: "Married parameter missing"
+        });
+      }
+
+      // Married Numeric
+      if (loop[i]["married"] !== parseInt(loop[i]["married"], 10)) {
+        return (responsedata = {
+          success: false,
+          msg: "Married should be numeric"
         });
       }
 
@@ -312,18 +323,19 @@ module.exports.reformCustomerDetail = (
   anniversary,
   addressOne,
   addressTwo,
+  landmark,
   flag
 ) => {
   // Variable
   let reform = {
-    anniversary: null,
-    first_name: null,
-    last_name: null,
-    spouse_name: null,
-    dob: null,
-    address_one: null,
-    address_two: null,
-    landmark: null,
+    anniversary: "NULL",
+    first_name: "NULL",
+    last_name: "NULL",
+    spouse_name: "NULL",
+    dob: "NULL",
+    address_one: "NULL",
+    address_two: "NULL",
+    landmark: "NULL",
     married: 0
   };
 
