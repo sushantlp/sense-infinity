@@ -199,12 +199,12 @@ module.exports.validateCustomerDetail = (loop, bool) => {
       });
     }
 
-    if (loop[i]["customer_mobile"].toString().length !== 10) {
-      return (responsedata = {
-        success: false,
-        msg: "Mobile length should be 10 digit"
-      });
-    }
+    // if (loop[i]["customer_mobile"].toString().length !== 10) {
+    //   return (responsedata = {
+    //     success: false,
+    //     msg: "Mobile length should be 10 digit"
+    //   });
+    // }
 
     // If True then Execute
     if (bool) {
