@@ -155,7 +155,7 @@ module.exports.requestKeepStoreComplain = (req, res) => {
     );
 
     if (!validate.success) {
-      return res.status(400).send("Bad request");
+      return res.status(400).send(validate.msg);
     }
 
     // Request Logic Keep Complain
@@ -217,7 +217,7 @@ module.exports.requestKeepCustomerDetail = (req, res) => {
     // Validate Customer Detail
     const validate = shareController.validateCustomerDetail(customerJson, true);
     if (!validate.success) {
-      return res.status(400).send("Bad request");
+      return res.status(400).send(validate.msg);
     }
 
     // Request Logic Keep Customer
@@ -283,7 +283,7 @@ module.exports.requestKeepFeedbackSurvey = (req, res) => {
     );
 
     if (!validate.success) {
-      return res.status(400).send("Bad request");
+      return res.status(400).send(validate.msg);
     }
 
     // Request Logic Keep Feedback Survey

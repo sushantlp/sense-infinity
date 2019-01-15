@@ -202,13 +202,6 @@ module.exports.validateCustomerDetail = (loop, bool) => {
       });
     }
 
-    // if (loop[i]["customer_mobile"].toString().length !== 10) {
-    //   return (responsedata = {
-    //     success: false,
-    //     msg: "Mobile length should be 10 digit"
-    //   });
-    // }
-
     // If True then Execute
     if (bool) {
       // Customer Married Parameter Validate
@@ -244,11 +237,7 @@ module.exports.validateCustomerDetail = (loop, bool) => {
       }
 
       // Customer Address One Parameter Validate
-      if (
-        !loop[i].hasOwnProperty("address_one") ||
-        loop[i]["address_one"] === "" ||
-        loop[i]["address_one"] === undefined
-      ) {
+      if (!loop[i].hasOwnProperty("address_one")) {
         return (responsedata = {
           success: false,
           msg: "Address one parameter missing"
@@ -256,11 +245,7 @@ module.exports.validateCustomerDetail = (loop, bool) => {
       }
 
       // Customer Address Two Parameter Validate
-      if (
-        !loop[i].hasOwnProperty("address_two") ||
-        loop[i]["address_two"] === "" ||
-        loop[i]["address_two"] === undefined
-      ) {
+      if (!loop[i].hasOwnProperty("address_two")) {
         return (responsedata = {
           success: false,
           msg: "Address two parameter missing"
@@ -268,11 +253,7 @@ module.exports.validateCustomerDetail = (loop, bool) => {
       }
 
       // Customer Landmark Parameter Validate
-      if (
-        !loop[i].hasOwnProperty("landmark") ||
-        loop[i]["landmark"] === "" ||
-        loop[i]["landmark"] === undefined
-      ) {
+      if (!loop[i].hasOwnProperty("landmark")) {
         return (responsedata = {
           success: false,
           msg: "Landmark parameter missing"
@@ -328,14 +309,14 @@ module.exports.reformCustomerDetail = (
 ) => {
   // Variable
   let reform = {
-    anniversary: "NULL",
-    first_name: "NULL",
-    last_name: "NULL",
-    spouse_name: "NULL",
-    dob: "NULL",
-    address_one: "NULL",
-    address_two: "NULL",
-    landmark: "NULL",
+    anniversary: undefined,
+    first_name: undefined,
+    last_name: undefined,
+    spouse_name: undefined,
+    dob: undefined,
+    address_one: undefined,
+    address_two: undefined,
+    landmark: undefined,
     married: 0
   };
 
