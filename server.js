@@ -2,8 +2,6 @@
 
 // Module Dependencies.
 const express = require("express");
-// const https = require("https");
-// const http = require("http");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const errorHandler = require("errorhandler");
@@ -68,7 +66,7 @@ app.get("/", (req, res) => {
   return res.status(200).redirect("/index.html");
 });
 
-app.use("/api", jsonWebToken.verifyJsonWebToken);
+// app.use("/api", jsonWebToken.verifyJsonWebToken);
 
 // Version 1 API
 app.group("/api/v1", router => {
