@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface
-      .createTable("customer_membership_cards", {
+      .createTable('customer_membership_cards', {
         membership_card_id: {
           allowNull: false,
           autoIncrement: true,
@@ -10,7 +10,7 @@ module.exports = {
           type: Sequelize.INTEGER
         },
         customer_mobile: {
-          type: Sequelize.STRING(10)
+          type: Sequelize.STRING
         },
         membership_card_number: {
           type: Sequelize.STRING
@@ -20,12 +20,12 @@ module.exports = {
           defaultValue: 1
         },
         createdAt: {
-          field: "created_at",
+          field: 'created_at',
           allowNull: false,
           type: Sequelize.DATE
         },
         updatedAt: {
-          field: "updated_at",
+          field: 'updated_at',
           allowNull: false,
           type: Sequelize.DATE
         }
@@ -33,12 +33,12 @@ module.exports = {
 
       .then(function() {
         return queryInterface.sequelize.query(
-          "ALTER TABLE `customer_membership_cards` ADD UNIQUE `unique_index`(`customer_mobile`, `status`)"
+          'ALTER TABLE `customer_membership_cards` ADD UNIQUE `unique_index`(`customer_mobile`, `status`)'
         );
       });
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("customer_membership_cards");
+    return queryInterface.dropTable('customer_membership_cards');
   }
 };

@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("merchant_stores", {
+    return queryInterface.createTable('merchant_stores', {
       store_id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,17 +11,17 @@ module.exports = {
       merchant_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: "merchants", key: "merchant_id" }
+        references: { model: 'merchants', key: 'merchant_id' }
       },
       store_name: {
         type: Sequelize.STRING,
         allowNull: true
       },
-      address: {
+      address_one: {
         type: Sequelize.TEXT,
         allowNull: true
       },
-      address_op1: {
+      address_two: {
         type: Sequelize.TEXT,
         allowNull: true
       },
@@ -33,13 +33,13 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        references: { model: "cities", key: "city_id" }
+        references: { model: 'cities', key: 'city_id' }
       },
       locality_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        references: { model: "localities", key: "locality_id" }
+        references: { model: 'localities', key: 'locality_id' }
       },
       pincode: {
         type: Sequelize.INTEGER,
@@ -65,18 +65,18 @@ module.exports = {
         defaultValue: 0
       },
       createdAt: {
-        field: "created_at",
+        field: 'created_at',
         allowNull: false,
         type: Sequelize.DATE
       },
       updatedAt: {
-        field: "updated_at",
+        field: 'updated_at',
         allowNull: false,
         type: Sequelize.DATE
       }
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("merchant_stores");
+    return queryInterface.dropTable('merchant_stores');
   }
 };

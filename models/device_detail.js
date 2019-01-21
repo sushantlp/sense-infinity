@@ -1,27 +1,27 @@
-"use strict";
+'use strict';
 
-const moment = require("moment-timezone");
-const mysql = require("mysql2/promise");
+const moment = require('moment-timezone');
+const mysql = require('mysql2/promise');
 
 module.exports = (sequelize, DataTypes) => {
-  var device_detail = sequelize.define(
-    "device_detail",
+  var deviceDetail = sequelize.define(
+    'device_detail',
     {
       firstName: DataTypes.STRING,
       lastName: DataTypes.STRING
     },
     {}
   );
-  device_detail.associate = function(models) {
+  deviceDetail.associate = function(models) {
     // associations can be defined here
   };
-  return device_detail;
+  return deviceDetail;
 };
 
 // Current Date and Time
 const now = moment()
-  .tz("Asia/Kolkata")
-  .format("YYYY-MM-DD HH-m-ss");
+  .tz('Asia/Kolkata')
+  .format('YYYY-MM-DD HH-m-ss');
 
 /**
  * Start Database Read and Write
@@ -52,7 +52,7 @@ module.exports.keepDeviceDetail = async (
 
     // Query
     const query =
-      "INSERT INTO `device_details` (`mobile`,`store_id`,`longitude`,`latitude`,`brand`,`device`,`model`,`app_id`,`version_sdk`,`version_release`,`sense_version_number`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      'INSERT INTO `device_details` (`mobile`,`store_id`,`longitude`,`latitude`,`brand`,`device`,`model`,`app_id`,`version_sdk`,`version_release`,`sense_version_number`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
     // Query Database
     const row = await connection.execute(query, [

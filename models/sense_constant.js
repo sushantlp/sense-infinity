@@ -1,11 +1,11 @@
-"use strict";
+'use strict';
 
-const moment = require("moment-timezone");
-const mysql = require("mysql2/promise");
+const moment = require('moment-timezone');
+const mysql = require('mysql2/promise');
 
 module.exports = (sequelize, DataTypes) => {
-  var sense_constant = sequelize.define(
-    "sense_constant",
+  var senseConstant = sequelize.define(
+    'sense_constant',
     {
       name: DataTypes.STRING,
       value: DataTypes.STRING,
@@ -15,16 +15,16 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  sense_constant.associate = function(models) {
+  senseConstant.associate = function(models) {
     // associations can be defined here
   };
-  return sense_constant;
+  return senseConstant;
 };
 
 // Current Date and Time
 const now = moment()
-  .tz("Asia/Kolkata")
-  .format("YYYY-MM-DD HH-m-ss");
+  .tz('Asia/Kolkata')
+  .format('YYYY-MM-DD HH-m-ss');
 
 /**
  * Start Database Read and Write

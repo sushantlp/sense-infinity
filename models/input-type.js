@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var input_type = sequelize.define(
-    "input_type",
+  var inputType = sequelize.define(
+    'input_type',
     {
       input_name: DataTypes.STRING,
       min: DataTypes.STRING,
@@ -11,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  input_type.associate = function(models) {
+  inputType.associate = function(models) {
     // associations can be defined here
   };
-  return input_type;
+  return inputType;
 };

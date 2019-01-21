@@ -1,14 +1,14 @@
-"use strict";
+'use strict';
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert(
-      "merchant_stores",
+      'merchant_stores',
       [
         {
           merchant_id: 1,
-          store_name: "JP Nagar",
-          address: "JP Nagar",
+          store_name: 'JP Nagar',
+          address_one: 'JP Nagar',
           status: 1,
           city_id: 1,
           locality_id: 4,
@@ -17,8 +17,8 @@ module.exports = {
         },
         {
           merchant_id: 1,
-          store_name: "Jayanagar",
-          address: "Jayanagar",
+          store_name: 'Jayanagar',
+          address_one: 'Jayanagar',
           status: 1,
           city_id: 1,
           locality_id: 3,
@@ -31,6 +31,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete("merchant_stores", null, {});
+    return queryInterface.bulkDelete('merchant_stores', null, {});
   }
 };

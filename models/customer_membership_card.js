@@ -1,11 +1,11 @@
-"use strict";
+'use strict';
 
-const moment = require("moment-timezone");
-const mysql = require("mysql2/promise");
+const moment = require('moment-timezone');
+const mysql = require('mysql2/promise');
 
 module.exports = (sequelize, DataTypes) => {
   var CustomerMembershipCard = sequelize.define(
-    "customer_membership_card",
+    'customer_membership_card',
     {
       customer_mobile: DataTypes.STRING,
       membership_card_number: DataTypes.STRING,
@@ -21,8 +21,8 @@ module.exports = (sequelize, DataTypes) => {
 
 // Current Date and Time
 const now = moment()
-  .tz("Asia/Kolkata")
-  .format("YYYY-MM-DD HH-m-ss");
+  .tz('Asia/Kolkata')
+  .format('YYYY-MM-DD HH-m-ss');
 
 /**
  * Start Database Read and Write
@@ -41,16 +41,10 @@ module.exports.keepCustomerMembershipCard = async (mobile, card, status) => {
 
     // Query
     const query =
-      "INSERT INTO `customer_membership_cards` (`customer_mobile`, `membership_card_number`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?)";
+      'INSERT INTO `customer_membership_cards` (`customer_mobile`, `membership_card_number`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?)';
 
     // Query Database
-    const row = await connection.execute(query, [
-      mobile,
-      card,
-      status,
-      now,
-      now
-    ]);
+    const row = await connection.execute(query, [mobile, card, status, now, now]);
 
     connection.close();
 

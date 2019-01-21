@@ -1,27 +1,27 @@
-"use strict";
+'use strict';
 
-const moment = require("moment-timezone");
-const mysql = require("mysql2/promise");
+const moment = require('moment-timezone');
+const mysql = require('mysql2/promise');
 
 module.exports = (sequelize, DataTypes) => {
-  var sense_offer = sequelize.define(
-    "sense_offer",
+  var senseOffer = sequelize.define(
+    'sense_offer',
     {
       offer_name: DataTypes.STRING,
       status: DataTypes.BOOLEAN
     },
     {}
   );
-  sense_offer.associate = function(models) {
+  senseOffer.associate = function(models) {
     // associations can be defined here
   };
-  return sense_offer;
+  return senseOffer;
 };
 
 // Current Date and Time
 const now = moment()
-  .tz("Asia/Kolkata")
-  .format("YYYY-MM-DD HH-m-ss");
+  .tz('Asia/Kolkata')
+  .format('YYYY-MM-DD HH-m-ss');
 
 /**
  * Start Database Read and Write

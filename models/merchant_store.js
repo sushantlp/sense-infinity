@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 
-const mysql = require("mysql2/promise");
+const mysql = require('mysql2/promise');
 
 module.exports = (sequelize, DataTypes) => {
-  var merchant_store = sequelize.define(
-    "merchant_store",
+  var merchantStore = sequelize.define(
+    'merchant_store',
     {
       merchant_id: DataTypes.INTEGER,
       store_name: DataTypes.STRING,
@@ -21,10 +21,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  merchant_store.associate = function(models) {
+  merchantStore.associate = function(models) {
     // associations can be defined here
   };
-  return merchant_store;
+  return merchantStore;
 };
 
 /**
@@ -46,10 +46,7 @@ module.exports.readStoreRecord = async (select, merchantId, status) => {
     const query = `SELECT ${select} FROM merchant_stores WHERE merchant_id = ? AND status = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [
-      merchantId,
-      status
-    ]);
+    const [rows, fields] = await connection.execute(query, [merchantId, status]);
 
     connection.close();
 

@@ -1,11 +1,11 @@
-"use strict";
+'use strict';
 
-const moment = require("moment-timezone");
-const mysql = require("mysql2/promise");
+const moment = require('moment-timezone');
+const mysql = require('mysql2/promise');
 
 module.exports = (sequelize, DataTypes) => {
-  var feedbackquestion = sequelize.define(
-    "feedback_question",
+  var feedbackQuestion = sequelize.define(
+    'feedback_question',
     {
       feed_question: DataTypes.STRING,
       input_id: DataTypes.INTEGER,
@@ -14,16 +14,16 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  feedbackquestion.associate = function(models) {
+  feedbackQuestion.associate = function(models) {
     // associations can be defined here
   };
-  return feedbackquestion;
+  return feedbackQuestion;
 };
 
 // Current Date and Time
 const now = moment()
-  .tz("Asia/Kolkata")
-  .format("YYYY-MM-DD HH-m-ss");
+  .tz('Asia/Kolkata')
+  .format('YYYY-MM-DD HH-m-ss');
 
 /**
  * Start Database Read and Write

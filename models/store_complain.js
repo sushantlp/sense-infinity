@@ -1,11 +1,11 @@
-"use strict";
+'use strict';
 
-const moment = require("moment-timezone");
-const mysql = require("mysql2/promise");
+const moment = require('moment-timezone');
+const mysql = require('mysql2/promise');
 
 module.exports = (sequelize, DataTypes) => {
-  var store_complain = sequelize.define(
-    "store_complain",
+  var storeComplain = sequelize.define(
+    'store_complain',
     {
       cust_identity_id: DataTypes.INTEGER,
       store_id: DataTypes.INTEGER,
@@ -15,29 +15,23 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  store_complain.associate = function(models) {
+  storeComplain.associate = function(models) {
     // associations can be defined here
   };
-  return store_complain;
+  return storeComplain;
 };
 
 // Current Date and Time
 const now = moment()
-  .tz("Asia/Kolkata")
-  .format("YYYY-MM-DD HH-m-ss");
+  .tz('Asia/Kolkata')
+  .format('YYYY-MM-DD HH-m-ss');
 
 /**
  * Start Database Read and Write
  */
 
 // Read Store Complain Record
-module.exports.readStoreComplain = async (
-  select,
-  storeId,
-  merchantId,
-  customerId,
-  status
-) => {
+module.exports.readStoreComplain = async (select, storeId, merchantId, customerId, status) => {
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
@@ -51,12 +45,7 @@ module.exports.readStoreComplain = async (
     const query = `SELECT ${select} FROM store_complains WHERE store_id = ? AND cust_identity_id = ? AND merchant_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [
-      storeId,
-      customerId,
-      merchantId,
-      status
-    ]);
+    const [rows, fields] = await connection.execute(query, [storeId, customerId, merchantId, status]);
 
     connection.close();
 
@@ -67,13 +56,7 @@ module.exports.readStoreComplain = async (
 };
 
 // Keep Merchant Store Complain
-module.exports.keepStoreComplain = async (
-  customerId,
-  merchantId,
-  storeId,
-  desc,
-  status
-) => {
+module.exports.keepStoreComplain = async (customerId, merchantId, storeId, desc, status) => {
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
@@ -85,18 +68,10 @@ module.exports.keepStoreComplain = async (
 
     // Query
     const query =
-      "INSERT INTO `store_complains` (`cust_identity_id`,`merchant_id`,`store_id`,`complain`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?)";
+      'INSERT INTO `store_complains` (`cust_identity_id`,`merchant_id`,`store_id`,`complain`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?)';
 
     // Query Database
-    const row = await connection.execute(query, [
-      customerId,
-      merchantId,
-      storeId,
-      desc,
-      status,
-      now,
-      now
-    ]);
+    const row = await connection.execute(query, [customerId, merchantId, storeId, desc, status, now, now]);
 
     connection.close();
 
@@ -107,11 +82,7 @@ module.exports.keepStoreComplain = async (
 };
 
 // Update Merchant Store Complain
-module.exports.updateStoreComplain = async (
-  complainId,
-  description,
-  status
-) => {
+module.exports.updateStoreComplain = async (complainId, description, status) => {
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
@@ -122,22 +93,16 @@ module.exports.updateStoreComplain = async (
     });
 
     // Query
-    const query =
-      "UPDATE `store_complains` SET complain = ?, status = ?, updated_at = ? WHERE complain_id = ?";
+    const query = 'UPDATE `store_complains` SET complain = ?, status = ?, updated_at = ? WHERE complain_id = ?';
 
     // Query Database
-    const row = await connection.execute(query, [
-      description,
-      status,
-      now,
-      complainId
-    ]);
+    const row = await connection.execute(query, [description, status, now, complainId]);
 
     connection.close();
 
     return row;
   } catch (error) {
-    console.log("H");
+    console.log('H');
     return Promise.reject(error);
   }
 };
