@@ -42,7 +42,27 @@ const now = moment()
  * Start Database Read and Write
  */
 
-// Keep Device Detail
+// Read Customer Data
+module.exports.readCustomerData = async (select, name, status) => {
+	try {
+		// Create Mysql Connection
+		const connection = await constants.createMysqlConnection();
+
+		// Query
+		const query = `SELECT ${select} FROM sense_offers WHERE offer_name = ? AND status = ?`;
+
+		// Query Database
+		const [rows, fields] = await connection.execute(query, [status]);
+
+		connection.close();
+
+		return rows;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
+// Keep Customer Data
 module.exports.keepCustomerData = async (
 	firstName,
 	lastName,
@@ -61,31 +81,29 @@ module.exports.keepCustomerData = async (
 	status
 ) => {
 	try {
-		const connection = await mysql.createConnection({
-			host: process.env.DB_HOST,
-			user: process.env.DB_USERNAME,
-			port: process.env.DB_PORT,
-			password: process.env.DB_PASSWORD,
-			database: process.env.DB_DATABASE
-		});
+		// Create Mysql Connection
+		const connection = await constants.createMysqlConnection();
 
 		// Query
 		const query =
-			'INSERT INTO `device_details` (`mobile`,`store_id`,`longitude`,`latitude`,`brand`,`device`,`model`,`app_id`,`version_sdk`,`version_release`,`sense_version_number`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)';
+			'INSERT INTO `customer_information_data` (`first_name`,`last_name`,`email`,`mobile`,`dob`,`gender_id`,`city_id`,`locality_id`,`married`,`address_one`,`address_two`,`landmark`,`spouse_name`,`anniversary_date`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
 		// Query Database
 		const row = await connection.execute(query, [
-			mobile,
-			storeId,
-			longitude,
-			latitude,
-			brand,
-			device,
-			model,
-			appId,
-			versionSdk,
-			versionRelease,
-			senseVersionNumber,
+			connection.escape(firstName),
+			connection.escape(lastName),
+			connection.escape(email),
+			connection.escape(mobile),
+			connection.escape(dob),
+			connection.escape(genderId),
+			connection.escape(cityId),
+			connection.escape(localityId),
+			connection.escape(married),
+			connection.escape(addressOne),
+			connection.escape(addressTwo),
+			connection.escape(landmark),
+			connection.escape(spouse_name),
+			connection.escape(anniversary_date),
 			now,
 			now
 		]);
