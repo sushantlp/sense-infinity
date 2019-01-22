@@ -30,19 +30,16 @@ module.exports = {
       },
       gender_id: {
         type: Sequelize.INTEGER,
-        allowNull: true
         defaultValue: 0,
         references: { model: 'genders', key: 'gender_id' }
       },
       city_id: {
         type: Sequelize.INTEGER,
-        allowNull: true
         defaultValue: 0,
         references: { model: 'cities', key: 'city_id' }
       },
       locality_id: {
         type: Sequelize.INTEGER,
-        allowNull: true
         defaultValue: 0,
         references: { model: 'localities', key: 'locality_id' }
       },
@@ -55,6 +52,18 @@ module.exports = {
         allowNull: true
       },
       landmark: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      married: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: 0
+      },
+      spouse_name: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      anniversary_date: {
         type: Sequelize.STRING,
         allowNull: true
       },

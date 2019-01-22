@@ -30,31 +30,26 @@ module.exports = {
       },
       gender_id: {
         type: Sequelize.INTEGER,
-        allowNull: true
         defaultValue: 0,
         references: { model: 'genders', key: 'gender_id' }
       },
       city_id: {
         type: Sequelize.INTEGER,
-        allowNull: true
         defaultValue: 0,
         references: { model: 'cities', key: 'city_id' }
       },
       locality_id: {
         type: Sequelize.INTEGER,
-        allowNull: true
         defaultValue: 0,
         references: { model: 'localities', key: 'locality_id' }
       },
       merchant_id: {
         type: Sequelize.INTEGER,
-        allowNull: true,
         defaultValue: 0,
         references: { model: 'merchants', key: 'merchant_id' }
       },
       store_id: {
         type: Sequelize.INTEGER,
-        allowNull: true,
         defaultValue: 0,
         references: { model: 'merchant_stores', key: 'store_id' }
       },
@@ -71,6 +66,18 @@ module.exports = {
         allowNull: true
       },
       gateway: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      married: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: 0
+      },
+      spouse_name: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      anniversary_date: {
         type: Sequelize.STRING,
         allowNull: true
       },
