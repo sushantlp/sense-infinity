@@ -42,17 +42,17 @@ const now = moment()
  * Start Database Read and Write
  */
 
-// Read Customer Data
-module.exports.readCustomerData = async (select, name, status) => {
+// Read Customer Information Data By Customer Information Id
+module.exports.readCustomerDataId = async (select, id, status) => {
 	try {
 		// Create Mysql Connection
 		const connection = await constants.createMysqlConnection();
 
 		// Query
-		const query = `SELECT ${select} FROM sense_offers WHERE offer_name = ? AND status = ?`;
+		const query = `SELECT ${select} FROM customer_information_data WHERE customer_information_id = ? AND status = ?`;
 
 		// Query Database
-		const [rows, fields] = await connection.execute(query, [status]);
+		const [rows, fields] = await connection.execute(query, [mobile, status]);
 
 		connection.close();
 
@@ -62,7 +62,27 @@ module.exports.readCustomerData = async (select, name, status) => {
 	}
 };
 
-// Keep Customer Data
+// Read Customer Information Data By Mobile
+module.exports.readCustomerDataMobile = async (select, mobile, status) => {
+	try {
+		// Create Mysql Connection
+		const connection = await constants.createMysqlConnection();
+
+		// Query
+		const query = `SELECT ${select} FROM customer_information_data WHERE mobile = ? AND status = ?`;
+
+		// Query Database
+		const [rows, fields] = await connection.execute(query, [mobile, status]);
+
+		connection.close();
+
+		return rows;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
+// Keep Customer Information Data
 module.exports.keepCustomerData = async (
 	firstName,
 	lastName,
@@ -86,7 +106,7 @@ module.exports.keepCustomerData = async (
 
 		// Query
 		const query =
-			'INSERT INTO `customer_information_data` (`first_name`,`last_name`,`email`,`mobile`,`dob`,`gender_id`,`city_id`,`locality_id`,`married`,`address_one`,`address_two`,`landmark`,`spouse_name`,`anniversary_date`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+			'INSERT INTO `customer_information_data` (`first_name`,`last_name`,`email`,`mobile`,`dob`,`gender_id`,`city_id`,`locality_id`,`married`,`address_one`,`address_two`,`landmark`,`spouse_name`,`anniversary_date`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
 		// Query Database
 		const row = await connection.execute(query, [
@@ -95,18 +115,40 @@ module.exports.keepCustomerData = async (
 			connection.escape(email),
 			connection.escape(mobile),
 			connection.escape(dob),
-			connection.escape(genderId),
-			connection.escape(cityId),
-			connection.escape(localityId),
-			connection.escape(married),
+			genderId,
+			cityId,
+			localityId,
+			married,
 			connection.escape(addressOne),
 			connection.escape(addressTwo),
 			connection.escape(landmark),
 			connection.escape(spouse_name),
 			connection.escape(anniversary_date),
+			status,
 			now,
 			now
 		]);
+
+		connection.close();
+
+		return row;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
+// Update Customer Information Data
+module.exports.updateCustomerData = async mobile => {
+	try {
+		// Create Mysql Connection
+		const connection = await constants.createMysqlConnection();
+
+		// Query
+		const query =
+			'UPDATE `customer_information_data` SET `first_name` = ?, `last_name` = ?, `email` = ?,  `dob` = ?, `gender_id` = ?, `city_id` = ?, `locality_id` = ?, `married` = ?, `address_one` = ?, `address_two` = ?, `landmark` = ?, `spouse_name` = ?, `anniversary_date` = ?, `updated_at` = ? WHERE `mobile` = ?';
+
+		// Query Database
+		const row = await connection.execute(query, [now, mobile]);
 
 		connection.close();
 

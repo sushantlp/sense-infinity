@@ -2,52 +2,47 @@
  * Database Connection
  */
 
-"use strict";
+'use strict';
 
 // Import
-const mysql = require("mysql2/promise");
-const Sequelize = require("sequelize");
-const moment = require("moment-timezone");
+const mysql = require('mysql2/promise');
+const Sequelize = require('sequelize');
+const moment = require('moment-timezone');
 
 // Current Date and Time
 const now = moment()
-  .tz("Asia/Kolkata")
-  .format("YYYY-MM-DD HH-m-ss");
+  .tz('Asia/Kolkata')
+  .format('YYYY-MM-DD HH-m-ss');
 
 // Sequelize Connection
 module.exports.sequelizeConnection = () => {
-  const sequelize = new Sequelize(
-    process.env.DB_DATABASE,
-    process.env.DB_USERNAME,
-    process.env.DB_PASSWORD,
-    {
-      host: process.env.DB_HOST,
-      dialect: process.env.DB_DRIVER,
-      operatorsAliases: false,
-      pool: {
-        max: 90,
-        min: 0,
-        acquire: 30000,
-        idle: 10000
-      },
-      dialectOptions: {
-        charset: "utf8mb4"
-      },
-      define: {
-        underscored: false,
-        freezeTableName: false,
-        timestamps: true
-      }
+  const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DRIVER,
+    operatorsAliases: false,
+    pool: {
+      max: 90,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    },
+    dialectOptions: {
+      charset: 'utf8mb4'
+    },
+    define: {
+      underscored: false,
+      freezeTableName: false,
+      timestamps: true
     }
-  );
+  });
 
   sequelize
     .authenticate()
     .then(() => {
-      console.log("Connection has been established successfully.");
+      console.log('Connection has been established successfully.');
     })
     .catch(err => {
-      console.error("Unable to connect to the database:", err);
+      console.error('Unable to connect to the database:', err);
     });
 
   return sequelize;
@@ -114,12 +109,7 @@ module.exports.showConstantTable = async (merchantMobile, storeId) => {
 };
 
 // Read Constant Record
-module.exports.readConstantRecord = async (
-  select,
-  merchantMobile,
-  storeId,
-  status
-) => {
+module.exports.readConstantRecord = async (select, merchantMobile, storeId, status) => {
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
@@ -147,13 +137,7 @@ module.exports.readConstantRecord = async (
 };
 
 // Read Constant Record By Name
-module.exports.readConstantRecordName = async (
-  select,
-  merchantMobile,
-  storeId,
-  name,
-  status
-) => {
+module.exports.readConstantRecordName = async (select, merchantMobile, storeId, name, status) => {
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
@@ -181,14 +165,7 @@ module.exports.readConstantRecordName = async (
 };
 
 // Keep Merchant Constant Table
-module.exports.keepMerchantConstantTable = async (
-  merchantMobile,
-  storeId,
-  name,
-  value,
-  comment,
-  status
-) => {
+module.exports.keepMerchantConstantTable = async (merchantMobile, storeId, name, value, comment, status) => {
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
@@ -205,14 +182,7 @@ module.exports.keepMerchantConstantTable = async (
     const query = `INSERT INTO ${MerchantConstant} (name, value, comment, status, created_at, updated_at) VALUES (?,?,?,?,?,?)`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [
-      name,
-      value,
-      comment,
-      status,
-      now,
-      now
-    ]);
+    const [rows, fields] = await connection.execute(query, [name, value, comment, status, now, now]);
 
     connection.close();
 
@@ -223,13 +193,7 @@ module.exports.keepMerchantConstantTable = async (
 };
 
 // Update Constant Record
-module.exports.updateMerchantConstantTable = async (
-  merchantMobile,
-  storeId,
-  constantId,
-  value,
-  status
-) => {
+module.exports.updateMerchantConstantTable = async (merchantMobile, storeId, constantId, value, status) => {
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
@@ -246,12 +210,7 @@ module.exports.updateMerchantConstantTable = async (
     const query = `UPDATE ${MerchantConstant} SET value = ?, status = ?, updated_at = ? WHERE constant_id = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [
-      value,
-      status,
-      now,
-      constantId
-    ]);
+    const [rows, fields] = await connection.execute(query, [value, status, now, constantId]);
 
     connection.close();
 
@@ -375,10 +334,7 @@ module.exports.createFeedbackStoreTable = async (merchantMobile, storeId) => {
 };
 
 // Create Merchant Feedback Question Table
-module.exports.createFeedbackQuestionTable = async (
-  merchantMobile,
-  storeId
-) => {
+module.exports.createFeedbackQuestionTable = async (merchantMobile, storeId) => {
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
@@ -435,11 +391,7 @@ module.exports.createFeedbackOptionTable = async (merchantMobile, storeId) => {
 };
 
 // Read Merchant Feedback Question Record
-module.exports.readFeedbackQuestion = async (
-  merchantMobile,
-  storeId,
-  status
-) => {
+module.exports.readFeedbackQuestion = async (merchantMobile, storeId, status) => {
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
@@ -467,12 +419,7 @@ module.exports.readFeedbackQuestion = async (
 };
 
 // Read Merchant Feedback Option Record
-module.exports.readFeedbackOption = async (
-  merchantMobile,
-  storeId,
-  quesId,
-  status
-) => {
+module.exports.readFeedbackOption = async (merchantMobile, storeId, quesId, status) => {
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
@@ -698,13 +645,7 @@ module.exports.readSurveyQuestion = async (merchantMobile, storeId, status) => {
 };
 
 // Read Merchant Survey Option Record
-module.exports.readSurveyOption = async (
-  select,
-  merchantMobile,
-  storeId,
-  quesId,
-  status
-) => {
+module.exports.readSurveyOption = async (select, merchantMobile, storeId, quesId, status) => {
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
@@ -732,35 +673,35 @@ module.exports.readSurveyOption = async (
 };
 
 // Create Customer Identity Table
-module.exports.createCustomerIdentityTable = async (
-  merchantMobile,
-  storeId
-) => {
-  try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USERNAME,
-      port: process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
+// module.exports.createCustomerIdentityTable = async (
+//   merchantMobile,
+//   storeId
+// ) => {
+//   try {
+//     const connection = await mysql.createConnection({
+//       host: process.env.DB_HOST,
+//       user: process.env.DB_USERNAME,
+//       port: process.env.DB_PORT,
+//       password: process.env.DB_PASSWORD,
+//       database: process.env.DB_DATABASE
+//     });
 
-    // Dynamic Table
-    const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
+//     // Dynamic Table
+//     const CustomerIdentity = `${merchantMobile}_${storeId}_customer_identity`;
 
-    // Query
-    const query = `CREATE TABLE IF NOT EXISTS ${CustomerIdentity} (cust_identity_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, first_name VARCHAR(255) NULL, last_name VARCHAR(255) NULL, email VARCHAR(255) NULL, mobile VARCHAR(10) UNIQUE, dob VARCHAR(255) NULL, gender_id INTEGER NOT NULL DEFAULT 0,address_one VARCHAR(255) NULL, address_two VARCHAR(255) NULL,landmark VARCHAR(255) NULL, city_id INTEGER NOT NULL, FOREIGN KEY (city_id) REFERENCES cities (city_id), locality_id INTEGER NOT NULL, FOREIGN KEY (locality_id) REFERENCES localities (locality_id), FOREIGN KEY (gender_id) REFERENCES genders (gender_id), married VARCHAR(255) NULL DEFAULT 0, spouse_name VARCHAR(255) NULL, anniversary_date VARCHAR(255) NULL, status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(cust_identity_id))`;
+//     // Query
+//     const query = `CREATE TABLE IF NOT EXISTS ${CustomerIdentity} (cust_identity_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, first_name VARCHAR(255) NULL, last_name VARCHAR(255) NULL, email VARCHAR(255) NULL, mobile VARCHAR(10) UNIQUE, dob VARCHAR(255) NULL, gender_id INTEGER NOT NULL DEFAULT 0,address_one VARCHAR(255) NULL, address_two VARCHAR(255) NULL,landmark VARCHAR(255) NULL, city_id INTEGER NOT NULL, FOREIGN KEY (city_id) REFERENCES cities (city_id), locality_id INTEGER NOT NULL, FOREIGN KEY (locality_id) REFERENCES localities (locality_id), FOREIGN KEY (gender_id) REFERENCES genders (gender_id), married VARCHAR(255) NULL DEFAULT 0, spouse_name VARCHAR(255) NULL, anniversary_date VARCHAR(255) NULL, status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(cust_identity_id))`;
 
-    // Query Database
-    const [rows, fields] = await connection.execute(query);
+//     // Query Database
+//     const [rows, fields] = await connection.execute(query);
 
-    connection.close();
+//     connection.close();
 
-    return rows;
-  } catch (error) {
-    return Promise.reject(error);
-  }
-};
+//     return rows;
+//   } catch (error) {
+//     return Promise.reject(error);
+//   }
+// };
 
 // Create Customer Identity Address Table
 // module.exports.createCustomerAddressTable = async (merchantMobile, storeId) => {
@@ -792,11 +733,7 @@ module.exports.createCustomerIdentityTable = async (
 // };
 
 // Read Merchant Customer Idenitity Record
-module.exports.readCustomerIdentityRecord = async (
-  merchantMobile,
-  storeId,
-  status
-) => {
+module.exports.readCustomerIdentityRecord = async (merchantMobile, storeId, status) => {
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
@@ -824,13 +761,7 @@ module.exports.readCustomerIdentityRecord = async (
 };
 
 // Read Customer Identity By Mobile
-module.exports.readCustomerIdentityByMobile = async (
-  select,
-  merchantMobile,
-  storeId,
-  customerMobile,
-  status
-) => {
+module.exports.readCustomerIdentityByMobile = async (select, merchantMobile, storeId, customerMobile, status) => {
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
@@ -847,10 +778,7 @@ module.exports.readCustomerIdentityByMobile = async (
     const query = `SELECT ${select} FROM ${CustomerIdentity} WHERE status = ? AND mobile = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [
-      status,
-      customerMobile
-    ]);
+    const [rows, fields] = await connection.execute(query, [status, customerMobile]);
 
     connection.close();
 
@@ -1013,12 +941,7 @@ module.exports.readLimitMerchantSurvey = async (
     const query = `SELECT ${select} FROM ${KeepSurvey} WHERE cust_identity_id = ? AND survey_ques_id = ? AND role_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [
-      customerId,
-      questionId,
-      roleId,
-      status
-    ]);
+    const [rows, fields] = await connection.execute(query, [customerId, questionId, roleId, status]);
 
     connection.close();
 
@@ -1054,12 +977,7 @@ module.exports.readLimitMerchantFeedback = async (
     const query = `SELECT ${select} FROM ${KeepFeedback} WHERE cust_identity_id = ? AND feed_ques_id = ? AND role_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [
-      customerId,
-      questionId,
-      roleId,
-      status
-    ]);
+    const [rows, fields] = await connection.execute(query, [customerId, questionId, roleId, status]);
 
     connection.close();
 
