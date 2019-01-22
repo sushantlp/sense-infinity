@@ -3,7 +3,7 @@
 const moment = require('moment-timezone');
 
 // Import Config
-const constants = require('./config/constants');
+const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
 	var customerInformationTrack = sequelize.define(
@@ -44,7 +44,7 @@ const now = moment()
 /**
  * Start Database Read and Write
  */
- 
+
 // Keep Information Track
 module.exports.keepInformationTrack = async (
 	firstName,
@@ -56,7 +56,7 @@ module.exports.keepInformationTrack = async (
 	cityId,
 	localityId,
 	merchantId,
-	storeId
+	storeId,
 	married,
 	addressOne,
 	addressTwo,
@@ -72,7 +72,7 @@ module.exports.keepInformationTrack = async (
 
 		// Query
 		const query =
-			'INSERT INTO `customer_information_tracks` (`first_name`,`last_name`,`email`,`mobile`,`dob`,`gender_id`,`city_id`,`locality_id`,`merchant_id`,`store_id`,`married`,`address_one`,`address_two`,`landmark`,`spouse_name`,`anniversary_date`,`gateway`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+			'INSERT INTO `customer_information_tracks` (`first_name`,`last_name`,`email`,`mobile`,`dob`,`gender_id`,`city_id`,`locality_id`,`merchant_id`,`store_id`,`married`,`address_one`,`address_two`,`landmark`,`spouse_name`,`anniversary_date`,`gateway`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
 		// Query Database
 		const row = await connection.execute(query, [
@@ -90,8 +90,8 @@ module.exports.keepInformationTrack = async (
 			connection.escape(addressOne),
 			connection.escape(addressTwo),
 			connection.escape(landmark),
-			connection.escape(spouse_name),
-			connection.escape(anniversary_date),
+			connection.escape(spouseName),
+			connection.escape(anniversaryDate),
 			gateway,
 			status,
 			now,
@@ -105,7 +105,6 @@ module.exports.keepInformationTrack = async (
 		return Promise.reject(error);
 	}
 };
-
 
 /**
  * End Database Read and Write

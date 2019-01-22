@@ -3,7 +3,7 @@
 const moment = require('moment-timezone');
 
 // Import Config
-const constants = require('./config/constants');
+const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
 	var merchantLinkCustomer = sequelize.define(

@@ -40,7 +40,7 @@ module.exports.readAdminFeedbackOption = async (select, quesId, status) => {
     });
 
     // Query
-    const query = `SELECT ${select} FROM feedback_options WHERE feed_ques_id=? AND status=?`;
+    const query = `SELECT ${select} FROM feedback_options WHERE feed_ques_id = ? AND status = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [quesId, status]);

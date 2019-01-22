@@ -8,7 +8,7 @@ const shareController = require('./shareController');
 const databaseController = require('./databaseController');
 
 // Import Config
-const constants = require('./config/constants');
+const constants = require('../config/constants');
 
 // Import Model
 const localityModel = require('../models/locality');
@@ -20,7 +20,6 @@ const feedbackModel = require('../models/feedback_question');
 const feedbackOptionModel = require('../models/feedback_option');
 const surveyModel = require('../models/survey_question');
 const surveyOptionModel = require('../models/survey_option');
-const surveyOfferModel = require('../models/sense_offer');
 const complainModel = require('../models/store_complain');
 const merchantModel = require('../models/merchant');
 const cardModel = require('../models/customer_membership_card');
@@ -199,6 +198,8 @@ const logicKeepComplain = async (mobile, storeId, complainJson, merchantRecord) 
           json.description,
           1
         );
+
+        linkModel.keepMerchantLinkCustomer();
       } else {
         // Update Customer Information Data
         const customerId = await customerDataModel.updateCustomerData(
@@ -331,15 +332,6 @@ module.exports.requestLogicKeepCustomer = async (customerJson, mobile, storeId) 
       await logicMerchantConstant(mobile, storeId);
     }
 
-    // // Parallel
-    // await Promise.all([
-    //   databaseController.createCustomerIdentityTable(mobile, storeId),
-    //   databaseController.createCustomerAddressTable(mobile, storeId)
-    // ]);
-
-    await databaseController.createCustomerIdentityTable(mobile, storeId);
-    // await databaseController.createCustomerAddressTable(mobile, storeId);
-
     // Logic Read Customer
     await logicKeepCustomer(mobile, storeId, customerJson, merchantRecord);
 
@@ -386,57 +378,47 @@ const logicKeepCustomer = async (mobile, storeId, customerJson, merchantRecord) 
       true
     );
 
-    // Read Customer Identity By Mobile
-    let customerRecord = await databaseController.readCustomerIdentityByMobile(
-      '*',
-      mobile,
-      storeId,
-      json.customer_mobile,
-      1
-    );
+    // Read Customer Information Data By Mobile
+    let customerRecord = await customerDataModel.readCustomerDataMobile('*', json.customer_mobile, 1);
 
     if (customerRecord.length === 0) {
-      // Keep Merchant Customer Identity Record
-      customerRecord = await databaseController.keepCustomerIdentity(
-        mobile,
-        storeId,
+      // Keep Customer Information Data
+      customerRecord = await customerDataModel.keepCustomerData(
         reform.first_name,
         reform.last_name,
         json.email,
         json.customer_mobile,
         reform.dob,
         json.gender_id,
+        json.city_id,
+        json.locality_id,
         reform.married,
-        reform.spouse_name,
-        reform.anniversary,
         reform.address_one,
         reform.address_two,
         reform.landmark,
-        json.city_id,
-        json.locality_id,
+        reform.spouse_name,
+        reform.anniversary,
         1
       );
-
+      console.log(customerRecord);
       customerId = customerRecord.insertId;
     } else {
-      // Update Merchant Customer Identity Record
-      await databaseController.updateCustomerIdentity(
-        mobile,
-        storeId,
+      // Update Customer Information Data
+      await customerDataModel.updateCustomerData(
         reform.first_name,
         reform.last_name,
         json.email,
         json.customer_mobile,
         reform.dob,
         json.gender_id,
+        json.city_id,
+        json.locality_id,
         reform.married,
-        reform.spouse_name,
-        reform.anniversary,
         reform.address_one,
         reform.address_two,
         reform.landmark,
-        json.city_id,
-        json.locality_id,
+        reform.spouse_name,
+        reform.anniversary,
         1
       );
 

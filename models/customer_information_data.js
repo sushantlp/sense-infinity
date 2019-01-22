@@ -3,7 +3,7 @@
 const moment = require('moment-timezone');
 
 // Import Config
-const constants = require('./config/constants');
+const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
 	var customerInformationData = sequelize.define(
@@ -106,7 +106,7 @@ module.exports.keepCustomerData = async (
 
 		// Query
 		const query =
-			'INSERT INTO `customer_information_data` (`first_name`,`last_name`,`email`,`mobile`,`dob`,`gender_id`,`city_id`,`locality_id`,`married`,`address_one`,`address_two`,`landmark`,`spouse_name`,`anniversary_date`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+			'INSERT INTO `customer_information_data` (`first_name`,`last_name`,`email`,`mobile`,`dob`,`gender_id`,`city_id`,`locality_id`,`married`,`address_one`,`address_two`,`landmark`,`spouse_name`,`anniversary_date`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
 		// Query Database
 		const row = await connection.execute(query, [
@@ -122,8 +122,8 @@ module.exports.keepCustomerData = async (
 			connection.escape(addressOne),
 			connection.escape(addressTwo),
 			connection.escape(landmark),
-			connection.escape(spouse_name),
-			connection.escape(anniversary_date),
+			connection.escape(spouseName),
+			connection.escape(anniversaryDate),
 			status,
 			now,
 			now
@@ -175,8 +175,8 @@ module.exports.updateCustomerData = async (
 			connection.escape(addressOne),
 			connection.escape(addressTwo),
 			connection.escape(landmark),
-			connection.escape(spouse_name),
-			connection.escape(anniversary_date),
+			connection.escape(spouseName),
+			connection.escape(anniversaryDate),
 			now,
 			mobile
 		]);
