@@ -79,7 +79,7 @@ module.exports.keepInformationTrack = async (
 			connection.escape(firstName),
 			connection.escape(lastName),
 			connection.escape(email),
-			connection.escape(mobile),
+			mobile,
 			connection.escape(dob),
 			genderId,
 			cityId,

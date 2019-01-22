@@ -71,7 +71,15 @@ module.exports.keepStoreComplain = async (customerId, merchantId, storeId, desc,
       'INSERT INTO `store_complains` (`cust_identity_id`,`merchant_id`,`store_id`,`complain`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?)';
 
     // Query Database
-    const row = await connection.execute(query, [customerId, merchantId, storeId, desc, status, now, now]);
+    const row = await connection.execute(query, [
+      customerId,
+      merchantId,
+      storeId,
+      connection.escape(desc),
+      status,
+      now,
+      now
+    ]);
 
     connection.close();
 
@@ -96,7 +104,7 @@ module.exports.updateStoreComplain = async (complainId, description, status) => 
     const query = 'UPDATE `store_complains` SET complain = ?, status = ?, updated_at = ? WHERE complain_id = ?';
 
     // Query Database
-    const row = await connection.execute(query, [description, status, now, complainId]);
+    const row = await connection.execute(query, [connection.escape(description), status, now, complainId]);
 
     connection.close();
 

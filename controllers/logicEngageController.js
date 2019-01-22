@@ -1,36 +1,42 @@
-"use strict";
+'use strict';
 
 // Import Package
-const moment = require("moment-timezone");
+const moment = require('moment-timezone');
 
 // Import Controller
-const shareController = require("./shareController");
-const databaseController = require("./databaseController");
+const shareController = require('./shareController');
+const databaseController = require('./databaseController');
+
+// Import Config
+const constants = require('./config/constants');
 
 // Import Model
-const localityModel = require("../models/locality");
-const cityModel = require("../models/city");
-const genderModel = require("../models/gender");
-const deviceModel = require("../models/device_detail");
-const senseConstModel = require("../models/sense_constant");
-const feedbackModel = require("../models/feedback_question");
-const feedbackOptionModel = require("../models/feedback_option");
-const surveyModel = require("../models/survey_question");
-const surveyOptionModel = require("../models/survey_option");
-const surveyOfferModel = require("../models/sense_offer");
-const complainModel = require("../models/store_complain");
-const merchantModel = require("../models/merchant");
-const cardModel = require("../models/customer_membership_card");
+const localityModel = require('../models/locality');
+const cityModel = require('../models/city');
+const genderModel = require('../models/gender');
+const deviceModel = require('../models/device_detail');
+const senseConstModel = require('../models/sense_constant');
+const feedbackModel = require('../models/feedback_question');
+const feedbackOptionModel = require('../models/feedback_option');
+const surveyModel = require('../models/survey_question');
+const surveyOptionModel = require('../models/survey_option');
+const surveyOfferModel = require('../models/sense_offer');
+const complainModel = require('../models/store_complain');
+const merchantModel = require('../models/merchant');
+const cardModel = require('../models/customer_membership_card');
+const customerDataModel = require('../models/customer_information_data');
+const customerTrackModel = require('../models/customer_information_track');
+const linkModel = require('../models/merchant_link_customer');
 
 // Current Date and Time
 const todayDate = moment()
-  .tz("Asia/Kolkata")
-  .format("YYYY-MM-DD");
+  .tz('Asia/Kolkata')
+  .format('YYYY-MM-DD');
 
 // Back Date -1 Convert
 const backDate = moment()
-  .subtract(1, "days")
-  .format("YYYY-MM-DD");
+  .subtract(1, 'days')
+  .format('YYYY-MM-DD');
 
 // Logic Sense Static
 module.exports.logicSenseStatic = async appVersion => {
@@ -39,18 +45,14 @@ module.exports.logicSenseStatic = async appVersion => {
     let responsedata = {};
 
     // Read Sense Constant Record
-    const senseConstant = await senseConstModel.readSenseConstant(
-      "*",
-      "STATIC_APP_VERSION",
-      1
-    );
+    const senseConstant = await senseConstModel.readSenseConstant('*', 'STATIC_APP_VERSION', 1);
 
     // Zero Means Empty Record
     if (senseConstant.length === 0) {
       return (responsedata = {
         success: false,
         data: {},
-        msg: "Empty sense constant"
+        msg: 'Empty sense constant'
       });
     }
 
@@ -59,7 +61,7 @@ module.exports.logicSenseStatic = async appVersion => {
       return (responsedata = {
         success: true,
         data: {},
-        msg: "Upto date"
+        msg: 'Upto date'
       });
     } else {
       appVersion = parseFloat(senseConstant[0].value);
@@ -67,22 +69,16 @@ module.exports.logicSenseStatic = async appVersion => {
 
     // Parallel City Locality Gender Record
     const parallel = await Promise.all([
-      cityModel.readCityRecord(
-        "city_id AS city_unique, city_name AS city, longitude AS lon, latitude AS lat",
-        1
-      ),
+      cityModel.readCityRecord('city_id AS city_unique, city_name AS city, longitude AS lon, latitude AS lat', 1),
       localityModel.readLocalityRecord(
-        "locality_id AS locality_unique, city_id AS city_unique, locality_name AS locality, pincode, longitude AS lon, latitude AS lat",
+        'locality_id AS locality_unique, city_id AS city_unique, locality_name AS locality, pincode, longitude AS lon, latitude AS lat',
         1
       ),
-      genderModel.readGenderRecord(
-        "gender_id AS gender_unique, name AS gender_name",
-        1
-      )
+      genderModel.readGenderRecord('gender_id AS gender_unique, name AS gender_name', 1)
     ]);
 
     if (parallel.length === 0) {
-      return Promise.reject("Oops our bad!!!");
+      return Promise.reject('Oops our bad!!!');
     }
 
     return (responsedata = {
@@ -92,7 +88,7 @@ module.exports.logicSenseStatic = async appVersion => {
         locality: parallel[1],
         gender: parallel[2]
       },
-      msg: "Succesful",
+      msg: 'Succesful',
       version: appVersion
     });
   } catch (error) {
@@ -101,34 +97,23 @@ module.exports.logicSenseStatic = async appVersion => {
 };
 
 // Request Logic Keep Complain
-module.exports.requestLogicKeepComplain = async (
-  complainJson,
-  mobile,
-  storeId
-) => {
+module.exports.requestLogicKeepComplain = async (complainJson, mobile, storeId) => {
   try {
     let responsedata = {};
 
     // Read Merchant Record
-    const merchantRecord = await merchantModel.readMerchantByMobile(
-      "merchant_id",
-      mobile,
-      1
-    );
+    const merchantRecord = await merchantModel.readMerchantByMobile('merchant_id', mobile, 1);
 
     if (merchantRecord.length === 0) {
       return (responsedata = {
         success: false,
         data: [],
-        msg: "Empty merchant record"
+        msg: 'Empty merchant record'
       });
     }
 
     // Merchant Constant Table Exist
-    const senseConstant = await databaseController.showConstantTable(
-      mobile,
-      storeId
-    );
+    const senseConstant = await databaseController.showConstantTable(mobile, storeId);
 
     // Zero Means Empty Record
     if (senseConstant.length === 0) {
@@ -139,22 +124,13 @@ module.exports.requestLogicKeepComplain = async (
       await logicMerchantConstant(mobile, storeId);
     }
 
-    // Parallel
-    // await Promise.all([
-    //   databaseController.createCustomerIdentityTable(mobile, storeId),
-    //   databaseController.createCustomerAddressTable(mobile, storeId)
-    // ]);
-
-    await databaseController.createCustomerIdentityTable(mobile, storeId);
-    // await databaseController.createCustomerAddressTable(mobile, storeId);
-
     // Logic Read Complain
     await logicKeepComplain(mobile, storeId, complainJson, merchantRecord);
 
     return (responsedata = {
       success: true,
       data: [],
-      msg: "Succesful"
+      msg: 'Succesful'
     });
   } catch (error) {
     return Promise.reject(error);
@@ -162,12 +138,7 @@ module.exports.requestLogicKeepComplain = async (
 };
 
 // Logic Read Complain
-const logicKeepComplain = async (
-  mobile,
-  storeId,
-  complainJson,
-  merchantRecord
-) => {
+const logicKeepComplain = async (mobile, storeId, complainJson, merchantRecord) => {
   try {
     let versionFlag = {
       customer: true
@@ -175,25 +146,16 @@ const logicKeepComplain = async (
 
     // Read Constant Record
     const constant = await databaseController.readConstantRecordName(
-      "*",
+      '*',
       mobile,
       storeId,
-      "CUSTOMER_IDENTITY_APP_VERSION",
+      'CUSTOMER_IDENTITY_APP_VERSION',
       1
     );
 
-    // // Read Sense Offer Record
-    // const offer = await surveyOfferModel.readSenseOffer("*", Complain, 1);
-
     const promises = complainJson.map(async (json, index) => {
-      // Read Customer Identity By Mobile
-      const customerRecord = await databaseController.readCustomerIdentityByMobile(
-        "*",
-        mobile,
-        storeId,
-        json.customer_mobile,
-        1
-      );
+      // Read Customer Information Data By Mobile
+      const customerRecord = await customerDataModel.readCustomerDataMobile('*', json.customer_mobile, 1);
 
       // Reform Customer Detail
       const reform = shareController.reformCustomerDetail(
@@ -210,24 +172,22 @@ const logicKeepComplain = async (
       );
 
       if (customerRecord.length === 0) {
-        // Keep Merchant Customer Identity Record
-        const customerId = await databaseController.keepCustomerIdentity(
-          mobile,
-          storeId,
+        // Keep Customer Information Data
+        const customerId = await customerDataModel.keepCustomerData(
           reform.first_name,
           reform.last_name,
           json.email,
           json.customer_mobile,
           reform.dob,
           json.gender_id,
+          0,
+          0,
           reform.married,
+          undefined,
+          undefined,
+          undefined,
           reform.spouse_name,
           reform.anniversary,
-          undefined,
-          undefined,
-          undefined,
-          0,
-          0,
           1
         );
 
@@ -240,40 +200,38 @@ const logicKeepComplain = async (
           1
         );
       } else {
-        // Update Merchant Customer Identity Record
-        await databaseController.updateCustomerIdentity(
-          mobile,
-          storeId,
+        // Update Customer Information Data
+        const customerId = await customerDataModel.updateCustomerData(
           reform.first_name,
           reform.last_name,
           json.email,
           json.customer_mobile,
           reform.dob,
           json.gender_id,
+          customerRecord[0].city_id,
+          customerRecord[0].locality_id,
           reform.married,
+          undefined,
+          undefined,
+          undefined,
           reform.spouse_name,
           reform.anniversary,
-          undefined,
-          undefined,
-          undefined,
-          0,
-          0,
           1
         );
 
         // Read Store Complain Record
         const complainRecord = await complainModel.readStoreComplain(
-          "*",
+          '*',
           storeId,
           merchantRecord[0].merchant_id,
-          customerRecord[0].cust_identity_id,
+          customerRecord[0].customer_information_id,
           1
         );
 
         if (complainRecord.length === 0) {
           // Keep Merchant Store Complain
           complainModel.keepStoreComplain(
-            customerRecord[0].cust_identity_id,
+            customerRecord[0].customer_information_id,
             merchantRecord[0].merchant_id,
             storeId,
             json.description,
@@ -281,22 +239,16 @@ const logicKeepComplain = async (
           );
         } else {
           // Complain Record CreatedAt Date Convert
-          const createdDate = moment(complainRecord[0].created_at).format(
-            "YYYY-MM-DD"
-          );
+          const createdDate = moment(complainRecord[0].created_at).format('YYYY-MM-DD');
 
           // Check Complain Keep or Update
           if (createdDate >= backDate && createdDate <= todayDate) {
             // Update Merchant Store Complain
-            complainModel.updateStoreComplain(
-              complainRecord[0].complain_id,
-              json.description,
-              1
-            );
+            complainModel.updateStoreComplain(complainRecord[0].complain_id, json.description, 1);
           } else {
             // Keep Merchant Store Complain
             complainModel.keepStoreComplain(
-              customerRecord[0].cust_identity_id,
+              customerRecord[0].customer_information_id,
               merchantRecord[0].merchant_id,
               storeId,
               json.description,
@@ -307,10 +259,13 @@ const logicKeepComplain = async (
       }
 
       if (versionFlag.customer) {
+        // Reintialize Variable
         versionFlag.customer = false;
+
         // Increment Constant Value
         const increment = parseFloat(constant[0].value) + parseFloat(0.1);
 
+        // Update Constant Record
         databaseController.updateMerchantConstantTable(
           mobile,
           storeId,
@@ -319,6 +274,28 @@ const logicKeepComplain = async (
           1
         );
       }
+
+      // Keep Information Track
+      customerTrackModel.keepInformationTrack(
+        reform.first_name,
+        reform.last_name,
+        json.email,
+        json.customer_mobile,
+        reform.dob,
+        json.gender_id,
+        0,
+        0,
+        merchantRecord[0].merchant_id,
+        storeId,
+        reform.married,
+        undefined,
+        undefined,
+        undefined,
+        reform.spouse_name,
+        reform.anniversary,
+        constants.gateway.CLUB_CARD,
+        1
+      );
     });
 
     return await Promise.all(promises);
@@ -328,33 +305,22 @@ const logicKeepComplain = async (
 };
 
 // Request Logic Keep Customer
-module.exports.requestLogicKeepCustomer = async (
-  customerJson,
-  mobile,
-  storeId
-) => {
+module.exports.requestLogicKeepCustomer = async (customerJson, mobile, storeId) => {
   try {
     let responsedata = {};
 
     // Read Merchant Record
-    const merchantRecord = await merchantModel.readMerchantByMobile(
-      "merchant_id",
-      mobile,
-      1
-    );
+    const merchantRecord = await merchantModel.readMerchantByMobile('merchant_id', mobile, 1);
 
     if (merchantRecord.length === 0) {
       return (responsedata = {
         success: false,
         data: [],
-        msg: "Empty merchant record"
+        msg: 'Empty merchant record'
       });
     }
     // Merchant Constant Table Exist
-    const senseConstant = await databaseController.showConstantTable(
-      mobile,
-      storeId
-    );
+    const senseConstant = await databaseController.showConstantTable(mobile, storeId);
 
     // Zero Means Empty Record
     if (senseConstant.length === 0) {
@@ -380,7 +346,7 @@ module.exports.requestLogicKeepCustomer = async (
     return (responsedata = {
       success: true,
       data: [],
-      msg: "Succesful"
+      msg: 'Succesful'
     });
   } catch (error) {
     console.log(error);
@@ -389,12 +355,7 @@ module.exports.requestLogicKeepCustomer = async (
 };
 
 // Logic Read Customer
-const logicKeepCustomer = async (
-  mobile,
-  storeId,
-  customerJson,
-  merchantRecord
-) => {
+const logicKeepCustomer = async (mobile, storeId, customerJson, merchantRecord) => {
   // Variable
   let versionFlag = {
     customer: true
@@ -403,10 +364,10 @@ const logicKeepCustomer = async (
 
   // Read Constant Record
   const constant = await databaseController.readConstantRecordName(
-    "*",
+    '*',
     mobile,
     storeId,
-    "CUSTOMER_IDENTITY_APP_VERSION",
+    'CUSTOMER_IDENTITY_APP_VERSION',
     1
   );
 
@@ -427,7 +388,7 @@ const logicKeepCustomer = async (
 
     // Read Customer Identity By Mobile
     let customerRecord = await databaseController.readCustomerIdentityByMobile(
-      "*",
+      '*',
       mobile,
       storeId,
       json.customer_mobile,
@@ -483,19 +444,11 @@ const logicKeepCustomer = async (
     }
 
     // Read Membership Card Record
-    const card = await cardModel.readMembershipCardRecord(
-      "*",
-      json.customer_mobile,
-      1
-    );
+    const card = await cardModel.readMembershipCardRecord('*', json.customer_mobile, 1);
 
     if (card.length === 0) {
       // Keep Customer Membership Card
-      cardModel.keepCustomerMembershipCard(
-        json.customer_mobile,
-        json.membership_number,
-        1
-      );
+      cardModel.keepCustomerMembershipCard(json.customer_mobile, json.membership_number, 1);
     }
 
     if (versionFlag.customer) {
@@ -504,13 +457,7 @@ const logicKeepCustomer = async (
       // Increment Constant Value
       const increment = parseFloat(constant[0].value) + parseFloat(0.1);
 
-      databaseController.updateMerchantConstantTable(
-        mobile,
-        storeId,
-        constant[0].constant_id,
-        increment.toFixed(1),
-        1
-      );
+      databaseController.updateMerchantConstantTable(mobile, storeId, constant[0].constant_id, increment.toFixed(1), 1);
     }
   });
 
@@ -518,20 +465,13 @@ const logicKeepCustomer = async (
 };
 
 // Request Logic Keep Feedback Survey
-module.exports.requestLogicFeedbackSurvey = async (
-  feedbackSurveyJson,
-  mobile,
-  storeId
-) => {
+module.exports.requestLogicFeedbackSurvey = async (feedbackSurveyJson, mobile, storeId) => {
   try {
     // Intialize
     let responsedata = {};
 
     // Merchant Constant Table Exist
-    const senseConstant = await databaseController.showConstantTable(
-      mobile,
-      storeId
-    );
+    const senseConstant = await databaseController.showConstantTable(mobile, storeId);
 
     // Zero Means Empty Record
     if (senseConstant.length === 0) {
@@ -543,17 +483,13 @@ module.exports.requestLogicFeedbackSurvey = async (
     }
 
     // Read Merchant Record
-    const merchantRecord = await merchantModel.readMerchantByMobile(
-      "merchant_id",
-      mobile,
-      1
-    );
+    const merchantRecord = await merchantModel.readMerchantByMobile('merchant_id', mobile, 1);
 
     if (merchantRecord.length === 0) {
       return (responsedata = {
         success: false,
         data: [],
-        msg: "Empty merchant record"
+        msg: 'Empty merchant record'
       });
     }
 
@@ -579,17 +515,12 @@ module.exports.requestLogicFeedbackSurvey = async (
     // await databaseController.createCustomerAddressTable(mobile, storeId);
 
     // Logic Feedback Survey
-    await logicFeedbackSurvey(
-      feedbackSurveyJson,
-      mobile,
-      storeId,
-      merchantRecord
-    );
+    await logicFeedbackSurvey(feedbackSurveyJson, mobile, storeId, merchantRecord);
 
     return (responsedata = {
       success: true,
       data: [],
-      msg: "Succesful"
+      msg: 'Succesful'
     });
   } catch (error) {
     return Promise.reject(error);
@@ -597,12 +528,7 @@ module.exports.requestLogicFeedbackSurvey = async (
 };
 
 // Logic Feedback Survey
-const logicFeedbackSurvey = async (
-  feedbackSurveyJson,
-  mobile,
-  storeId,
-  merchantRecord
-) => {
+const logicFeedbackSurvey = async (feedbackSurveyJson, mobile, storeId, merchantRecord) => {
   try {
     // Intialize
     let surveyVersion = undefined;
@@ -615,24 +541,19 @@ const logicFeedbackSurvey = async (
     };
 
     // Read Constant Record
-    const constant = await databaseController.readConstantRecord(
-      "*",
-      mobile,
-      storeId,
-      1
-    );
+    const constant = await databaseController.readConstantRecord('*', mobile, storeId, 1);
 
     if (constant.length === 0) {
-      return Promise.reject("Oops our bad!!!");
+      return Promise.reject('Oops our bad!!!');
     }
 
     // Iterate
     constant.map((version, index) => {
-      if (version.name === "CUSTOMER_SURVEY_APP_VERSION") {
+      if (version.name === 'CUSTOMER_SURVEY_APP_VERSION') {
         surveyVersion = version;
-      } else if (version.name === "CUSTOMER_FEEDBACK_APP_VERSION") {
+      } else if (version.name === 'CUSTOMER_FEEDBACK_APP_VERSION') {
         feedbackVersion = version;
-      } else if (version.name === "CUSTOMER_IDENTITY_APP_VERSION") {
+      } else if (version.name === 'CUSTOMER_IDENTITY_APP_VERSION') {
         customerVersion = version;
       }
     });
@@ -640,7 +561,7 @@ const logicFeedbackSurvey = async (
     const promises = feedbackSurveyJson.map(async (json, index) => {
       // Read Customer Identity By Mobile
       let customerRecord = await databaseController.readCustomerIdentityByMobile(
-        "*",
+        '*',
         mobile,
         storeId,
         json.customer_mobile,
@@ -733,7 +654,7 @@ const logicFeedbackSurvey = async (
         json.customer_survey.map(async (survey, index) => {
           // Read One Record Merchant Store Survey
           const surveyRecord = await databaseController.readLimitMerchantSurvey(
-            "*",
+            '*',
             mobile,
             storeId,
             customerId,
@@ -755,9 +676,7 @@ const logicFeedbackSurvey = async (
             );
           } else {
             // Survey Record CreatedAt Date Convert
-            const createdDate = moment(surveyRecord[0].created_at).format(
-              "YYYY-MM-DD"
-            );
+            const createdDate = moment(surveyRecord[0].created_at).format('YYYY-MM-DD');
 
             // Check Survey Keep or Update
             if (createdDate >= backDate && createdDate <= todayDate) {
@@ -809,7 +728,7 @@ const logicFeedbackSurvey = async (
         json.customer_feedback.map(async (feedback, index) => {
           // Read One Record Merchant Store Feedback
           const feedbackRecord = await databaseController.readLimitMerchantFeedback(
-            "*",
+            '*',
             mobile,
             storeId,
             customerId,
@@ -831,9 +750,7 @@ const logicFeedbackSurvey = async (
             );
           } else {
             // Feedback Record CreatedAt Date Convert
-            const createdDate = moment(feedbackRecord[0].created_at).format(
-              "YYYY-MM-DD"
-            );
+            const createdDate = moment(feedbackRecord[0].created_at).format('YYYY-MM-DD');
 
             // Check Survey Keep or Update
             if (createdDate >= backDate && createdDate <= todayDate) {
@@ -866,8 +783,7 @@ const logicFeedbackSurvey = async (
             // Feedback flag
             versionFlag.feedback = false;
             // Increment Constant Value
-            const increment =
-              parseFloat(feedbackVersion.value) + parseFloat(0.1);
+            const increment = parseFloat(feedbackVersion.value) + parseFloat(0.1);
 
             databaseController.updateMerchantConstantTable(
               mobile,
@@ -888,12 +804,7 @@ const logicFeedbackSurvey = async (
 };
 
 // Logic Get Feedback Data
-module.exports.logicGetFeedback = async (
-  merchantVersion,
-  senseVersion,
-  mobile,
-  storeId
-) => {
+module.exports.logicGetFeedback = async (merchantVersion, senseVersion, mobile, storeId) => {
   try {
     // Intialize
     let responsedata = {};
@@ -901,10 +812,7 @@ module.exports.logicGetFeedback = async (
     let senseFlag = false;
 
     // Merchant Constant Table Exist
-    const senseConstant = await databaseController.showConstantTable(
-      mobile,
-      storeId
-    );
+    const senseConstant = await databaseController.showConstantTable(mobile, storeId);
 
     // Zero Means Empty Record
     if (senseConstant.length === 0) {
@@ -917,18 +825,12 @@ module.exports.logicGetFeedback = async (
 
     // Parallel Merchant and Sense Constant
     const parallel = await Promise.all([
-      databaseController.readConstantRecordName(
-        "*",
-        mobile,
-        storeId,
-        "CUSTOMER_FEEDBACK_APP_VERSION",
-        1
-      ),
-      senseConstModel.readSenseConstant("*", "CUSTOMER_FEEDBACK_APP_VERSION", 1)
+      databaseController.readConstantRecordName('*', mobile, storeId, 'CUSTOMER_FEEDBACK_APP_VERSION', 1),
+      senseConstModel.readSenseConstant('*', 'CUSTOMER_FEEDBACK_APP_VERSION', 1)
     ]);
 
     if (parallel.length === 0) {
-      return Promise.reject("Oops our bad!!!");
+      return Promise.reject('Oops our bad!!!');
     }
 
     // Merchant app version
@@ -950,22 +852,17 @@ module.exports.logicGetFeedback = async (
       return (responsedata = {
         success: true,
         data: [],
-        msg: "Upto date"
+        msg: 'Upto date'
       });
     }
 
     // Logic Read Feedback
-    const feedback = await logicReadFeedback(
-      mobile,
-      storeId,
-      merchantFlag,
-      senseFlag
-    );
+    const feedback = await logicReadFeedback(mobile, storeId, merchantFlag, senseFlag);
 
     return (responsedata = {
       success: true,
       data: feedback,
-      msg: "Successful",
+      msg: 'Successful',
       sense_version: senseVersion,
       merchant_version: merchantVersion
     });
@@ -999,39 +896,25 @@ const logicReadFeedback = async (mobile, storeId, merchantFlag, senseFlag) => {
 
     // Merchant Version
     if (!merchantFlag) {
-      const merchantFeed = await databaseController.readFeedbackQuestion(
-        mobile,
-        storeId,
-        1
-      );
+      const merchantFeed = await databaseController.readFeedbackQuestion(mobile, storeId, 1);
 
       if (merchantFeed.length !== 0) {
         // Create Feedback Json
-        merchantArray = await creatFeedbackJson(
-          merchantFeed,
-          1,
-          mobile,
-          storeId
-        );
+        merchantArray = await creatFeedbackJson(merchantFeed, 1, mobile, storeId);
       }
     }
 
     // Admin Version
     if (!senseFlag) {
       const adminFeed = await feedbackModel.readAdminFeedbackQuestion(
-        "feedback_questions.feed_ques_id, feedback_questions.feed_question, feedback_questions.input_id, input_types.input_name",
+        'feedback_questions.feed_ques_id, feedback_questions.feed_question, feedback_questions.input_id, input_types.input_name',
         mobile,
         1
       );
 
       if (adminFeed.length !== 0) {
         // Create Feedback Json
-        adminArray = await creatFeedbackJson(
-          adminFeed,
-          2,
-          undefined,
-          undefined
-        );
+        adminArray = await creatFeedbackJson(adminFeed, 2, undefined, undefined);
       }
     }
     return merchantArray.concat(adminArray);
@@ -1049,18 +932,9 @@ const creatFeedbackJson = async (json, role, mobile, storeId) => {
       // Block
       let lowerObject = {};
       if (role === 1) {
-        option = await databaseController.readFeedbackOption(
-          mobile,
-          storeId,
-          feed.feed_ques_id,
-          1
-        );
+        option = await databaseController.readFeedbackOption(mobile, storeId, feed.feed_ques_id, 1);
       } else {
-        option = await feedbackOptionModel.readAdminFeedbackOption(
-          "*",
-          feed.feed_ques_id,
-          1
-        );
+        option = await feedbackOptionModel.readAdminFeedbackOption('*', feed.feed_ques_id, 1);
       }
 
       lowerObject.feedback_id = feed.feed_ques_id;
@@ -1106,12 +980,7 @@ const createFeedbackOptionJson = json => {
 };
 
 // Logic Get Survey Data
-module.exports.logicGetSurvey = async (
-  merchantVersion,
-  senseVersion,
-  mobile,
-  storeId
-) => {
+module.exports.logicGetSurvey = async (merchantVersion, senseVersion, mobile, storeId) => {
   try {
     // Intialize
     let responsedata = {};
@@ -1119,10 +988,7 @@ module.exports.logicGetSurvey = async (
     let senseFlag = false;
 
     // Merchant Constant Table Exist
-    const senseConstant = await databaseController.showConstantTable(
-      mobile,
-      storeId
-    );
+    const senseConstant = await databaseController.showConstantTable(mobile, storeId);
 
     // Zero Means Empty Record
     if (senseConstant.length === 0) {
@@ -1135,18 +1001,12 @@ module.exports.logicGetSurvey = async (
 
     // Parallel Merchant and Sense Constant
     const parallel = await Promise.all([
-      databaseController.readConstantRecordName(
-        "*",
-        mobile,
-        storeId,
-        "CUSTOMER_SURVEY_APP_VERSION",
-        1
-      ),
-      senseConstModel.readSenseConstant("*", "CUSTOMER_SURVEY_APP_VERSION", 1)
+      databaseController.readConstantRecordName('*', mobile, storeId, 'CUSTOMER_SURVEY_APP_VERSION', 1),
+      senseConstModel.readSenseConstant('*', 'CUSTOMER_SURVEY_APP_VERSION', 1)
     ]);
 
     if (parallel.length === 0) {
-      return Promise.reject("Oops our bad!!!");
+      return Promise.reject('Oops our bad!!!');
     }
 
     // Merchant app version
@@ -1168,22 +1028,17 @@ module.exports.logicGetSurvey = async (
       return (responsedata = {
         success: true,
         data: [],
-        msg: "Upto date"
+        msg: 'Upto date'
       });
     }
 
     // Logic Read Survey
-    const survey = await logicReadSurvey(
-      mobile,
-      storeId,
-      merchantFlag,
-      senseFlag
-    );
+    const survey = await logicReadSurvey(mobile, storeId, merchantFlag, senseFlag);
 
     return (responsedata = {
       success: true,
       data: survey,
-      msg: "Sucessful",
+      msg: 'Sucessful',
       sense_version: senseVersion,
       merchant_version: merchantVersion
     });
@@ -1217,11 +1072,7 @@ const logicReadSurvey = async (mobile, storeId, merchantFlag, senseFlag) => {
 
     // Merchant Version
     if (!merchantFlag) {
-      const merchantFeed = await databaseController.readSurveyQuestion(
-        mobile,
-        storeId,
-        1
-      );
+      const merchantFeed = await databaseController.readSurveyQuestion(mobile, storeId, 1);
 
       if (merchantFeed.length !== 0) {
         // Create Survey Json
@@ -1232,7 +1083,7 @@ const logicReadSurvey = async (mobile, storeId, merchantFlag, senseFlag) => {
     // Admin Version
     if (!senseFlag) {
       const adminFeed = await surveyModel.readAdminSurveyQuestion(
-        "survey_questions.survey_ques_id, survey_questions.survey_question, survey_questions.input_id, input_types.input_name",
+        'survey_questions.survey_ques_id, survey_questions.survey_question, survey_questions.input_id, input_types.input_name',
         mobile,
         1
       );
@@ -1257,18 +1108,9 @@ const creatSurveyJson = async (json, role, mobile, storeId) => {
       // Block
       let lowerObject = {};
       if (role === 1) {
-        option = await databaseController.readSurveyOption(
-          mobile,
-          storeId,
-          survey.survey_ques_id,
-          1
-        );
+        option = await databaseController.readSurveyOption(mobile, storeId, survey.survey_ques_id, 1);
       } else {
-        option = await surveyOptionModel.readAdminSurveyOption(
-          "*",
-          survey.survey_ques_id,
-          1
-        );
+        option = await surveyOptionModel.readAdminSurveyOption('*', survey.survey_ques_id, 1);
       }
 
       lowerObject.survey_id = survey.survey_ques_id;
@@ -1320,10 +1162,7 @@ module.exports.logicCustomerData = async (customerVersion, mobile, storeId) => {
     let responsedata = {};
 
     // Merchant Constant Table Exist
-    const senseConstant = await databaseController.showConstantTable(
-      mobile,
-      storeId
-    );
+    const senseConstant = await databaseController.showConstantTable(mobile, storeId);
 
     // Zero Means Empty Record
     if (senseConstant.length === 0) {
@@ -1336,15 +1175,15 @@ module.exports.logicCustomerData = async (customerVersion, mobile, storeId) => {
 
     // Read Constant Record
     const constant = await databaseController.readConstantRecordName(
-      "*",
+      '*',
       mobile,
       storeId,
-      "CUSTOMER_IDENTITY_APP_VERSION",
+      'CUSTOMER_IDENTITY_APP_VERSION',
       1
     );
 
     if (constant.length === 0) {
-      return Promise.reject("Oops our bad!!!");
+      return Promise.reject('Oops our bad!!!');
     }
 
     // Customer version
@@ -1352,7 +1191,7 @@ module.exports.logicCustomerData = async (customerVersion, mobile, storeId) => {
       return (responsedata = {
         success: true,
         data: [],
-        msg: "Upto date"
+        msg: 'Upto date'
       });
     } else {
       customerVersion = parseFloat(constant[0].value);
@@ -1368,16 +1207,12 @@ module.exports.logicCustomerData = async (customerVersion, mobile, storeId) => {
     // await databaseController.createCustomerAddressTable(mobile, storeId);
 
     // Read Merchant Customer Idenitity Record
-    const record = await databaseController.readCustomerIdentityRecord(
-      mobile,
-      storeId,
-      1
-    );
+    const record = await databaseController.readCustomerIdentityRecord(mobile, storeId, 1);
 
     return (responsedata = {
       success: true,
       data: record,
-      msg: "Succesful",
+      msg: 'Succesful',
       customer_version: customerVersion
     });
   } catch (error) {
@@ -1393,15 +1228,15 @@ module.exports.logicDeviceData = async (deviceJson, mobile, storeId) => {
 
     deviceJson.map((json, index) => {
       if (
-        json.hasOwnProperty("latitude") &&
-        json.hasOwnProperty("longitude") &&
-        json.hasOwnProperty("brand") &&
-        json.hasOwnProperty("device") &&
-        json.hasOwnProperty("model") &&
-        json.hasOwnProperty("app_id") &&
-        json.hasOwnProperty("version_sdk") &&
-        json.hasOwnProperty("version_release") &&
-        json.hasOwnProperty("sense_version_number")
+        json.hasOwnProperty('latitude') &&
+        json.hasOwnProperty('longitude') &&
+        json.hasOwnProperty('brand') &&
+        json.hasOwnProperty('device') &&
+        json.hasOwnProperty('model') &&
+        json.hasOwnProperty('app_id') &&
+        json.hasOwnProperty('version_sdk') &&
+        json.hasOwnProperty('version_release') &&
+        json.hasOwnProperty('sense_version_number')
       ) {
         // Keep Device Detail
         deviceModel.keepDeviceDetail(
@@ -1423,7 +1258,7 @@ module.exports.logicDeviceData = async (deviceJson, mobile, storeId) => {
     return (responsedata = {
       success: true,
       data: [],
-      msg: "Succesful"
+      msg: 'Succesful'
     });
   } catch (error) {
     return Promise.reject(error);
@@ -1438,20 +1273,20 @@ const logicMerchantConstant = async (mobile, storeId) => {
     let responsedata = {};
 
     seed.push({
-      name: "CUSTOMER_FEEDBACK_APP_VERSION",
-      value: "1.0",
+      name: 'CUSTOMER_FEEDBACK_APP_VERSION',
+      value: '1.0',
       comment: null,
       status: 1
     });
     seed.push({
-      name: "CUSTOMER_SURVEY_APP_VERSION",
-      value: "1.0",
+      name: 'CUSTOMER_SURVEY_APP_VERSION',
+      value: '1.0',
       comment: null,
       status: 1
     });
     seed.push({
-      name: "CUSTOMER_IDENTITY_APP_VERSION",
-      value: "1.0",
+      name: 'CUSTOMER_IDENTITY_APP_VERSION',
+      value: '1.0',
       comment: null,
       status: 1
     });
@@ -1471,7 +1306,7 @@ const logicMerchantConstant = async (mobile, storeId) => {
     return (responsedata = {
       success: true,
       data: [],
-      msg: "Succesful"
+      msg: 'Succesful'
     });
   } catch (error) {
     return Promise.reject(error);

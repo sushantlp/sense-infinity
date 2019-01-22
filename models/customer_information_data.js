@@ -49,7 +49,7 @@ module.exports.readCustomerDataId = async (select, id, status) => {
 		const connection = await constants.createMysqlConnection();
 
 		// Query
-		const query = `SELECT ${select} FROM customer_information_data WHERE customer_information_id = ? AND status = ?`;
+		const query = `SELECT ${select} FROM customer_information_data WHERE customer_information_id = ? AND status = ? LIMIT 1`;
 
 		// Query Database
 		const [rows, fields] = await connection.execute(query, [mobile, status]);
@@ -69,7 +69,7 @@ module.exports.readCustomerDataMobile = async (select, mobile, status) => {
 		const connection = await constants.createMysqlConnection();
 
 		// Query
-		const query = `SELECT ${select} FROM customer_information_data WHERE mobile = ? AND status = ?`;
+		const query = `SELECT ${select} FROM customer_information_data WHERE mobile = ? AND status = ? LIMIT 1`;
 
 		// Query Database
 		const [rows, fields] = await connection.execute(query, [mobile, status]);
@@ -113,7 +113,7 @@ module.exports.keepCustomerData = async (
 			connection.escape(firstName),
 			connection.escape(lastName),
 			connection.escape(email),
-			connection.escape(mobile),
+			mobile,
 			connection.escape(dob),
 			genderId,
 			cityId,
@@ -138,7 +138,22 @@ module.exports.keepCustomerData = async (
 };
 
 // Update Customer Information Data
-module.exports.updateCustomerData = async mobile => {
+module.exports.updateCustomerData = async (
+	firstName,
+	lastName,
+	email,
+	mobile,
+	dob,
+	genderId,
+	cityId,
+	localityId,
+	married,
+	addressOne,
+	addressTwo,
+	landmark,
+	spouseName,
+	anniversaryDate
+) => {
 	try {
 		// Create Mysql Connection
 		const connection = await constants.createMysqlConnection();
@@ -148,7 +163,23 @@ module.exports.updateCustomerData = async mobile => {
 			'UPDATE `customer_information_data` SET `first_name` = ?, `last_name` = ?, `email` = ?,  `dob` = ?, `gender_id` = ?, `city_id` = ?, `locality_id` = ?, `married` = ?, `address_one` = ?, `address_two` = ?, `landmark` = ?, `spouse_name` = ?, `anniversary_date` = ?, `updated_at` = ? WHERE `mobile` = ?';
 
 		// Query Database
-		const row = await connection.execute(query, [now, mobile]);
+		const row = await connection.execute(query, [
+			connection.escape(firstName),
+			connection.escape(lastName),
+			connection.escape(email),
+			connection.escape(dob),
+			genderId,
+			cityId,
+			localityId,
+			married,
+			connection.escape(addressOne),
+			connection.escape(addressTwo),
+			connection.escape(landmark),
+			connection.escape(spouse_name),
+			connection.escape(anniversary_date),
+			now,
+			mobile
+		]);
 
 		connection.close();
 
