@@ -28,28 +28,20 @@ module.exports = {
         allowNull: true
       },
       gender_id: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        references: { model: 'genders', key: 'gender_id' }
+        type: Sequelize.INTEGER
       },
       city_id: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        references: { model: 'cities', key: 'city_id' }
+        type: Sequelize.INTEGER
       },
       locality_id: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        references: { model: 'localities', key: 'locality_id' }
+        type: Sequelize.INTEGER
       },
       merchant_id: {
         type: Sequelize.INTEGER,
-        allowNull: true,
         references: { model: 'merchants', key: 'merchant_id' }
       },
       store_id: {
         type: Sequelize.INTEGER,
-        allowNull: true,
         references: { model: 'merchant_stores', key: 'store_id' }
       },
       address_one: {

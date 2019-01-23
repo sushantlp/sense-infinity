@@ -1,7 +1,9 @@
 'use strict';
 
 const moment = require('moment-timezone');
-const mysql = require('mysql2/promise');
+
+// Import Config
+const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var storeComplain = sequelize.define(
@@ -10,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       cust_identity_id: DataTypes.INTEGER,
       store_id: DataTypes.INTEGER,
       merchant_id: DataTypes.INTEGER,
-      complain: DataTypes.STRING,
+      complain: DataTypes.TEXT,
       status: DataTypes.BOOLEAN
     },
     {}
@@ -33,13 +35,8 @@ const now = moment()
 // Read Store Complain Record
 module.exports.readStoreComplain = async (select, storeId, merchantId, customerId, status) => {
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USERNAME,
-      port: process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
 
     // Query
     const query = `SELECT ${select} FROM store_complains WHERE store_id = ? AND cust_identity_id = ? AND merchant_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
@@ -58,13 +55,8 @@ module.exports.readStoreComplain = async (select, storeId, merchantId, customerI
 // Keep Merchant Store Complain
 module.exports.keepStoreComplain = async (customerId, merchantId, storeId, desc, status) => {
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USERNAME,
-      port: process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
 
     // Query
     const query =
@@ -85,6 +77,7 @@ module.exports.keepStoreComplain = async (customerId, merchantId, storeId, desc,
 
     return row;
   } catch (error) {
+    console.log('keepStoreComplain');
     return Promise.reject(error);
   }
 };
@@ -92,13 +85,8 @@ module.exports.keepStoreComplain = async (customerId, merchantId, storeId, desc,
 // Update Merchant Store Complain
 module.exports.updateStoreComplain = async (complainId, description, status) => {
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USERNAME,
-      port: process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
 
     // Query
     const query = 'UPDATE `store_complains` SET complain = ?, status = ?, updated_at = ? WHERE complain_id = ?';
@@ -110,7 +98,7 @@ module.exports.updateStoreComplain = async (complainId, description, status) => 
 
     return row;
   } catch (error) {
-    console.log('H');
+    console.log('updateStoreComplain');
     return Promise.reject(error);
   }
 };

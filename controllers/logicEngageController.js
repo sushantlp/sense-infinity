@@ -160,10 +160,10 @@ const logicKeepComplain = async (mobile, storeId, complainJson, merchantRecord) 
       const reform = shareController.reformCustomerDetail(
         json.first_name,
         json.last_name,
-        json.spouse_name,
+        undefined,
         json.dob,
-        json.married,
-        json.anniversary,
+        undefined,
+        undefined,
         undefined,
         undefined,
         undefined,
@@ -179,14 +179,36 @@ const logicKeepComplain = async (mobile, storeId, complainJson, merchantRecord) 
           json.customer_mobile,
           reform.dob,
           json.gender_id,
+          0,
+          0,
+          0,
           undefined,
           undefined,
-          reform.married,
           undefined,
           undefined,
           undefined,
-          reform.spouse_name,
-          reform.anniversary,
+          1
+        );
+
+        // Keep Information Track
+        customerTrackModel.keepInformationTrack(
+          reform.first_name,
+          reform.last_name,
+          json.email,
+          json.customer_mobile,
+          reform.dob,
+          json.gender_id,
+          0,
+          0,
+          merchantRecord[0].merchant_id,
+          storeId,
+          0,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          constants.gateway.CLUB_CARD,
           1
         );
 
@@ -216,12 +238,34 @@ const logicKeepComplain = async (mobile, storeId, complainJson, merchantRecord) 
           json.gender_id,
           customerRecord[0].city_id,
           customerRecord[0].locality_id,
-          reform.married,
-          undefined,
-          undefined,
-          undefined,
-          reform.spouse_name,
-          reform.anniversary,
+          customerRecord[0].married,
+          customerRecord[0].address_one,
+          customerRecord[0].address_two,
+          customerRecord[0].landmark,
+          customerRecord[0].spouse_name,
+          customerRecord[0].anniversary_date,
+          1
+        );
+
+        // Keep Information Track
+        customerTrackModel.keepInformationTrack(
+          reform.first_name,
+          reform.last_name,
+          json.email,
+          json.customer_mobile,
+          reform.dob,
+          json.gender_id,
+          customerRecord[0].city_id,
+          customerRecord[0].locality_id,
+          merchantRecord[0].merchant_id,
+          storeId,
+          customerRecord[0].married,
+          customerRecord[0].address_one,
+          customerRecord[0].address_two,
+          customerRecord[0].landmark,
+          customerRecord[0].spouse_name,
+          customerRecord[0].anniversary_date,
+          constants.gateway.CLUB_CARD,
           1
         );
 
@@ -299,28 +343,6 @@ const logicKeepComplain = async (mobile, storeId, complainJson, merchantRecord) 
           1
         );
       }
-
-      // Keep Information Track
-      customerTrackModel.keepInformationTrack(
-        reform.first_name,
-        reform.last_name,
-        json.email,
-        json.customer_mobile,
-        reform.dob,
-        json.gender_id,
-        undefined,
-        undefined,
-        merchantRecord[0].merchant_id,
-        storeId,
-        reform.married,
-        undefined,
-        undefined,
-        undefined,
-        reform.spouse_name,
-        reform.anniversary,
-        constants.gateway.CLUB_CARD,
-        1
-      );
     });
 
     return await Promise.all(promises);
@@ -549,6 +571,18 @@ module.exports.requestLogicFeedbackSurvey = async (feedbackSurveyJson, mobile, s
         msg: 'Empty merchant record'
       });
     }
+
+    // // Parallel
+    // await Promise.all([
+    //   databaseController.createFeedbackQuestionTable(mobile, storeId),
+    //   databaseController.createFeedbackOptionTable(mobile, storeId),
+    //   databaseController.createFeedbackStoreTable(mobile, storeId),
+    //   databaseController.createSurveyQuestionTable(mobile, storeId),
+    //   databaseController.createSurveyOptionTable(mobile, storeId),
+    //   databaseController.createSurveyStoreTable(mobile, storeId),
+    //   databaseController.createCustomerIdentityTable(mobile, storeId),
+    //   databaseController.createCustomerAddressTable(mobile, storeId)
+    // ]);
 
     await databaseController.createFeedbackQuestionTable(mobile, storeId);
     await databaseController.createFeedbackOptionTable(mobile, storeId);
