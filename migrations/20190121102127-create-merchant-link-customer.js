@@ -10,17 +10,14 @@ module.exports = {
       },
       merchant_id: {
         type: Sequelize.INTEGER,
-        defaultValue: 0,
         references: { model: 'merchants', key: 'merchant_id' }
       },
       store_id: {
         type: Sequelize.INTEGER,
-        defaultValue: 0,
         references: { model: 'merchant_stores', key: 'store_id' }
       },
       customer_information_id: {
         type: Sequelize.INTEGER,
-        defaultValue: 0,
         references: { model: 'customer_information_data', key: 'customer_information_id' }
       },
       status: {

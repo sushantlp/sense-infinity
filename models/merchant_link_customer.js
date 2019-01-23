@@ -52,6 +52,26 @@ module.exports.keepMerchantLinkCustomer = async (merchantId, storeId, customerIn
 	}
 };
 
+// Read Merchant Link Customer
+module.exports.readMerchantLinkCustomer = async (select, merchantId, storeId, customerInformationId, status) => {
+	try {
+		// Create Mysql Connection
+		const connection = await constants.createMysqlConnection();
+
+		// Query
+		const query = `SELECT ${select} FROM merchant_link_customers WHERE merchant_id = ? AND store_id = ? AND customer_information_id = ? AND status = ? LIMIT 1`;
+
+		// Query Database
+		const [rows, fields] = await connection.execute(query, [merchantId, storeId, customerInformationId, status]);
+
+		connection.close();
+
+		return rows;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
 /**
  * End Database Read and Write
  */

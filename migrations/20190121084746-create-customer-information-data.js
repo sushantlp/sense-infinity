@@ -30,17 +30,17 @@ module.exports = {
       },
       gender_id: {
         type: Sequelize.INTEGER,
-        defaultValue: 0,
+        allowNull: true,
         references: { model: 'genders', key: 'gender_id' }
       },
       city_id: {
         type: Sequelize.INTEGER,
-        defaultValue: 0,
+        allowNull: true,
         references: { model: 'cities', key: 'city_id' }
       },
       locality_id: {
         type: Sequelize.INTEGER,
-        defaultValue: 0,
+        allowNull: true,
         references: { model: 'localities', key: 'locality_id' }
       },
       address_one: {

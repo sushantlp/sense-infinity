@@ -1,7 +1,9 @@
 'use strict';
 
 const moment = require('moment-timezone');
-const mysql = require('mysql2/promise');
+
+// Import Config
+const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var CustomerMembershipCard = sequelize.define(
@@ -31,13 +33,8 @@ const now = moment()
 // Keep Customer Membership Card
 module.exports.keepCustomerMembershipCard = async (mobile, card, status) => {
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USERNAME,
-      port: process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
 
     // Query
     const query =
@@ -54,22 +51,37 @@ module.exports.keepCustomerMembershipCard = async (mobile, card, status) => {
   }
 };
 
-// Read Membership Card Record
-module.exports.readMembershipCardRecord = async (select, mobile, status) => {
+// Read Membership Card Record By Mobile
+module.exports.readMembershipCardMobile = async (select, mobile, status) => {
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USERNAME,
-      port: process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
 
     // Query
-    const query = `SELECT ${select} FROM customer_membership_cards WHERE customer_mobile = ? AND status = ?`;
+    const query = `SELECT ${select} FROM customer_membership_cards WHERE customer_mobile = ? AND status = ? LIMIT 1`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [mobile, status]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Read Membership Card Record By Number
+module.exports.readMembershipCardNumber = async (select, cardNumber, status) => {
+  try {
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM customer_membership_cards WHERE membership_card_number = ? AND status = ? LIMIT 1`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [cardNumber, status]);
 
     connection.close();
 

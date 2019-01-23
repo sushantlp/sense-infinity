@@ -172,15 +172,15 @@ const logicKeepComplain = async (mobile, storeId, complainJson, merchantRecord) 
 
       if (customerRecord.length === 0) {
         // Keep Customer Information Data
-        const customerId = await customerDataModel.keepCustomerData(
+        const lastRecord = await customerDataModel.keepCustomerData(
           reform.first_name,
           reform.last_name,
           json.email,
           json.customer_mobile,
           reform.dob,
           json.gender_id,
-          0,
-          0,
+          undefined,
+          undefined,
           reform.married,
           undefined,
           undefined,
@@ -190,19 +190,24 @@ const logicKeepComplain = async (mobile, storeId, complainJson, merchantRecord) 
           1
         );
 
+        // Parse
+        const jsonStringify = JSON.stringify(lastRecord);
+        const jsonParse = JSON.parse(jsonStringify);
+
         // Keep Merchant Store Complain
         complainModel.keepStoreComplain(
-          customerId.insertId,
+          jsonParse[0].insertId,
           merchantRecord[0].merchant_id,
           storeId,
           json.description,
           1
         );
 
-        linkModel.keepMerchantLinkCustomer();
+        // Keep Merchant Link Customer
+        linkModel.keepMerchantLinkCustomer(merchantRecord[0].merchant_id, storeId, jsonParse[0].insertId, 1);
       } else {
         // Update Customer Information Data
-        const customerId = await customerDataModel.updateCustomerData(
+        customerDataModel.updateCustomerData(
           reform.first_name,
           reform.last_name,
           json.email,
@@ -219,6 +224,25 @@ const logicKeepComplain = async (mobile, storeId, complainJson, merchantRecord) 
           reform.anniversary,
           1
         );
+
+        // Read Merchant Link Customer
+        const linkValue = await linkModel.readMerchantLinkCustomer(
+          '*',
+          merchantRecord[0].merchant_id,
+          storeId,
+          customerRecord[0].customer_information_id,
+          1
+        );
+
+        if (linkValue.length === 0) {
+          // Keep Merchant Link Customer
+          linkModel.keepMerchantLinkCustomer(
+            merchantRecord[0].merchant_id,
+            storeId,
+            customerRecord[0].customer_information_id,
+            1
+          );
+        }
 
         // Read Store Complain Record
         const complainRecord = await complainModel.readStoreComplain(
@@ -284,8 +308,8 @@ const logicKeepComplain = async (mobile, storeId, complainJson, merchantRecord) 
         json.customer_mobile,
         reform.dob,
         json.gender_id,
-        0,
-        0,
+        undefined,
+        undefined,
         merchantRecord[0].merchant_id,
         storeId,
         reform.married,
@@ -352,7 +376,6 @@ const logicKeepCustomer = async (mobile, storeId, customerJson, merchantRecord) 
   let versionFlag = {
     customer: true
   };
-  let customerId = undefined;
 
   // Read Constant Record
   const constant = await databaseController.readConstantRecordName(
@@ -383,7 +406,7 @@ const logicKeepCustomer = async (mobile, storeId, customerJson, merchantRecord) 
 
     if (customerRecord.length === 0) {
       // Keep Customer Information Data
-      customerRecord = await customerDataModel.keepCustomerData(
+      const lastRecord = await customerDataModel.keepCustomerData(
         reform.first_name,
         reform.last_name,
         json.email,
@@ -400,8 +423,13 @@ const logicKeepCustomer = async (mobile, storeId, customerJson, merchantRecord) 
         reform.anniversary,
         1
       );
-      console.log(customerRecord);
-      customerId = customerRecord.insertId;
+
+      // Parse
+      const jsonStringify = JSON.stringify(lastRecord);
+      const jsonParse = JSON.parse(jsonStringify);
+
+      // Keep Merchant Link Customer
+      linkModel.keepMerchantLinkCustomer(merchantRecord[0].merchant_id, storeId, jsonParse[0].insertId, 1);
     } else {
       // Update Customer Information Data
       await customerDataModel.updateCustomerData(
@@ -422,25 +450,72 @@ const logicKeepCustomer = async (mobile, storeId, customerJson, merchantRecord) 
         1
       );
 
-      customerId = customerRecord[0].cust_identity_id;
+      // Read Merchant Link Customer
+      const linkValue = await linkModel.readMerchantLinkCustomer(
+        '*',
+        merchantRecord[0].merchant_id,
+        storeId,
+        customerRecord[0].customer_information_id,
+        1
+      );
+
+      if (linkValue.length === 0) {
+        // Keep Merchant Link Customer
+        linkModel.keepMerchantLinkCustomer(
+          merchantRecord[0].merchant_id,
+          storeId,
+          customerRecord[0].customer_information_id,
+          1
+        );
+      }
     }
 
     // Read Membership Card Record
-    const card = await cardModel.readMembershipCardRecord('*', json.customer_mobile, 1);
+    const card = await cardModel.readMembershipCardNumber('*', json.membership_number, 1);
 
     if (card.length === 0) {
       // Keep Customer Membership Card
       cardModel.keepCustomerMembershipCard(json.customer_mobile, json.membership_number, 1);
+    } else {
+      // One Membership Card to One Mobile Number
+      if (card[0].customer_mobile !== json.customer_mobile) {
+        console.log('Alert');
+        // Send Admin Mail
+      }
     }
 
     if (versionFlag.customer) {
+      // Assign Value
       versionFlag.customer = false;
 
       // Increment Constant Value
       const increment = parseFloat(constant[0].value) + parseFloat(0.1);
 
+      // Update Constant Record
       databaseController.updateMerchantConstantTable(mobile, storeId, constant[0].constant_id, increment.toFixed(1), 1);
     }
+
+    // Keep Information Track
+    customerTrackModel.keepInformationTrack(
+      reform.first_name,
+      reform.last_name,
+      json.email,
+      json.customer_mobile,
+      reform.dob,
+      json.gender_id,
+      json.city_id,
+      json.locality_id,
+      merchantRecord[0].merchant_id,
+      storeId,
+      reform.married,
+      reform.address_one,
+      reform.address_two,
+      reform.landmark,
+      reform.spouse_name,
+      reform.anniversary,
+      constants.gateway.CLUB_CARD,
+      1
+    );
   });
 
   return await Promise.all(promises);
@@ -474,18 +549,6 @@ module.exports.requestLogicFeedbackSurvey = async (feedbackSurveyJson, mobile, s
         msg: 'Empty merchant record'
       });
     }
-
-    // // Parallel
-    // await Promise.all([
-    //   databaseController.createFeedbackQuestionTable(mobile, storeId),
-    //   databaseController.createFeedbackOptionTable(mobile, storeId),
-    //   databaseController.createFeedbackStoreTable(mobile, storeId),
-    //   databaseController.createSurveyQuestionTable(mobile, storeId),
-    //   databaseController.createSurveyOptionTable(mobile, storeId),
-    //   databaseController.createSurveyStoreTable(mobile, storeId),
-    //   databaseController.createCustomerIdentityTable(mobile, storeId),
-    //   databaseController.createCustomerAddressTable(mobile, storeId)
-    // ]);
 
     await databaseController.createFeedbackQuestionTable(mobile, storeId);
     await databaseController.createFeedbackOptionTable(mobile, storeId);
