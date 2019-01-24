@@ -93,7 +93,7 @@ module.exports.requestSenseStatic = (req, res) => {
         // Intialize
         const metadata = {
           static_version: flag ? response.version : appVersion,
-          count: flag ? Object.keys(response.msg).length : 0
+          count: Object.keys(response.data).length
         };
 
         return res
@@ -352,7 +352,7 @@ module.exports.requestReadFeedbackData = (req, res) => {
         const metadata = {
           sense_feedback_version: flag ? response.sense_version : senseVersion,
           merchant_feedback_version: flag ? response.merchant_version : merchantVersion,
-          count: flag ? Object.keys(response.msg).length : 0
+          count: Object.keys(response.data).length
         };
 
         return res
@@ -423,7 +423,7 @@ module.exports.requestReadSurveyData = (req, res) => {
         const metadata = {
           sense_survey_version: flag ? response.sense_version : senseVersion,
           merchant_survey_version: flag ? response.merchant_version : merchantVersion,
-          count: flag ? Object.keys(response.msg).length : null
+          count: Object.keys(response.data).length
         };
 
         return res
@@ -490,7 +490,7 @@ module.exports.requestReadCustomerData = (req, res) => {
         // Intialize
         const metadata = {
           customer_version: flag ? response.customer_version : customerVersion,
-          count: flag ? Object.keys(response.msg).length : 0
+          count: Object.keys(response.data).length
         };
 
         return res
