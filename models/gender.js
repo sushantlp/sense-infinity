@@ -1,11 +1,14 @@
-"use strict";
+'use strict';
 
-const moment = require("moment-timezone");
-const mysql = require("mysql2/promise");
+// Import Package
+const moment = require('moment-timezone');
+
+// Import Config
+const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var gender = sequelize.define(
-    "gender",
+    'gender',
     {
       name: DataTypes.STRING,
       status: DataTypes.BOOLEAN
@@ -20,8 +23,8 @@ module.exports = (sequelize, DataTypes) => {
 
 // Current Date and Time
 const now = moment()
-  .tz("Asia/Kolkata")
-  .format("YYYY-MM-DD HH-m-ss");
+  .tz('Asia/Kolkata')
+  .format('YYYY-MM-DD HH-m-ss');
 
 /**
  * Start Database Read and Write
@@ -30,17 +33,11 @@ const now = moment()
 // Keep Into Gender
 module.exports.keepGender = async (name, status) => {
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USERNAME,
-      port: process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
 
     // Query
-    const query =
-      "INSERT INTO `genders` (`name`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?)";
+    const query = 'INSERT INTO `genders` (`name`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?)';
 
     // Query Database
     const row = await connection.execute(query, [name, status, now, now]);

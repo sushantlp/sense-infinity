@@ -1,7 +1,10 @@
 'use strict';
 
+// Import Package
 const moment = require('moment-timezone');
-const mysql = require('mysql2/promise');
+
+// Import Config
+const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var senseConstant = sequelize.define(
@@ -33,16 +36,11 @@ const now = moment()
 // Read Sense Constant Record
 module.exports.readSenseConstant = async (select, name, status) => {
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USERNAME,
-      port: process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
 
     // Query
-    const query = `SELECT ${select} FROM sense_constants WHERE name=? AND status=? LIMIT 1`;
+    const query = `SELECT ${select} FROM sense_constants WHERE name = ? AND status = ? LIMIT 1`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [name, status]);

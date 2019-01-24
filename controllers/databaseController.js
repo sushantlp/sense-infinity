@@ -273,7 +273,6 @@ module.exports.createFeedbackStoreTable = async (merchantMobile, storeId) => {
     // Query
     const query = `CREATE TABLE IF NOT EXISTS ${KeepFeedback} (keep_feed_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, feed_ques_id INTEGER NOT NULL, feed_option_id INTEGER NOT NULL, customer_information_id INT(11) NOT NULL, FOREIGN KEY (customer_information_id) REFERENCES customer_information_data (customer_information_id), role_id INTEGER NOT NULL, status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(keep_feed_id))`;
 
-    console.log(query);
     // Query Database
     const [rows, fields] = await connection.execute(query);
 
@@ -351,7 +350,6 @@ module.exports.readFeedbackQuestion = async (merchantMobile, storeId, status) =>
 
     return rows;
   } catch (error) {
-    console.log('readFeedbackQuestion');
     return Promise.reject(error);
   }
 };

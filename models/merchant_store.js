@@ -1,6 +1,7 @@
 'use strict';
 
-const mysql = require('mysql2/promise');
+// Import Config
+const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var merchantStore = sequelize.define(
@@ -34,13 +35,8 @@ module.exports = (sequelize, DataTypes) => {
 // Read Merchant Store Record
 module.exports.readStoreRecord = async (select, merchantId, status) => {
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USERNAME,
-      port: process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
 
     // Query
     const query = `SELECT ${select} FROM merchant_stores WHERE merchant_id = ? AND status = ?`;

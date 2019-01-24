@@ -1,11 +1,14 @@
-"use strict";
+'use strict';
 
-const moment = require("moment-timezone");
-const mysql = require("mysql2/promise");
+// Import Package
+const moment = require('moment-timezone');
+
+// Import Config
+const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var city = sequelize.define(
-    "city",
+    'city',
     {
       city_name: DataTypes.STRING,
       longitude: DataTypes.DOUBLE,
@@ -22,8 +25,8 @@ module.exports = (sequelize, DataTypes) => {
 
 // Current Date and Time
 const now = moment()
-  .tz("Asia/Kolkata")
-  .format("YYYY-MM-DD HH-m-ss");
+  .tz('Asia/Kolkata')
+  .format('YYYY-MM-DD HH-m-ss');
 
 /**
  * Start Database Read and Write
@@ -32,13 +35,8 @@ const now = moment()
 // Read City Record
 module.exports.readCityRecord = async (select, status) => {
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USERNAME,
-      port: process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
 
     // Query
     const query = `SELECT ${select} FROM cities WHERE status=?`;

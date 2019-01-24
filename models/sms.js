@@ -1,11 +1,14 @@
-"use strict";
+'use strict';
 
-const moment = require("moment-timezone");
-const mysql = require("mysql2/promise");
+// Import Package
+const moment = require('moment-timezone');
+
+// Import Config
+const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var sms = sequelize.define(
-    "sms",
+    'sms',
     {
       mobile: DataTypes.STRING,
       otp: DataTypes.STRING,
@@ -22,8 +25,8 @@ module.exports = (sequelize, DataTypes) => {
 
 // Current Date and Time
 const now = moment()
-  .tz("Asia/Kolkata")
-  .format("YYYY-MM-DD HH-m-ss");
+  .tz('Asia/Kolkata')
+  .format('YYYY-MM-DD HH-m-ss');
 
 /**
  * Start Database Read and Write
@@ -32,26 +35,14 @@ const now = moment()
 // Keep Sms Record
 module.exports.keepSmsOtp = async (mobile, otp, status) => {
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USERNAME,
-      port: process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
 
     // Query
-    const query =
-      "INSERT INTO `sms` (`mobile`, `otp`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?)";
+    const query = 'INSERT INTO `sms` (`mobile`, `otp`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?)';
 
     // Query Database
-    const row = await connection.execute(query, [
-      mobile,
-      otp,
-      status,
-      now,
-      now
-    ]);
+    const row = await connection.execute(query, [mobile, otp, status, now, now]);
 
     connection.close();
 
@@ -73,8 +64,7 @@ module.exports.updateSmsOtp = async (mobile, gateway, status) => {
     });
 
     // Query
-    const query =
-      "UPDATE `sms` SET `gateway_status` = ?, `status` = ?, `updated_at` = ? WHERE `mobile` = ?";
+    const query = 'UPDATE `sms` SET `gateway_status` = ?, `status` = ?, `updated_at` = ? WHERE `mobile` = ?';
 
     // Query Database
     const row = await connection.execute(query, [gateway, status, now, mobile]);

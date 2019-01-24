@@ -1,10 +1,11 @@
-"use strict";
+'use strict';
 
-const mysql = require("mysql2/promise");
+// Import Config
+const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var User = sequelize.define(
-    "user",
+    'user',
     {
       name: DataTypes.STRING,
       mobile: DataTypes.STRING,
@@ -33,23 +34,14 @@ module.exports = (sequelize, DataTypes) => {
 // Read User Table Record
 module.exports.readUserRecord = async (select, mobile, role, status) => {
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USERNAME,
-      port: process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
 
     // Query
-    const query = `SELECT ${select} FROM users WHERE mobile=? AND role_id=? AND status=?`;
+    const query = `SELECT ${select} FROM users WHERE mobile = ? AND role_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [
-      mobile,
-      role,
-      status
-    ]);
+    const [rows, fields] = await connection.execute(query, [mobile, role, status]);
 
     connection.close();
 

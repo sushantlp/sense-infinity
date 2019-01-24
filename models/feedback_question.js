@@ -1,7 +1,10 @@
 'use strict';
 
+// Import Package
 const moment = require('moment-timezone');
-const mysql = require('mysql2/promise');
+
+// Import Config
+const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var feedbackQuestion = sequelize.define(
@@ -32,13 +35,8 @@ const now = moment()
 // Read Admin Feedback Question
 module.exports.readAdminFeedbackQuestion = async (select, mobile, status) => {
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USERNAME,
-      port: process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
 
     // Query
     const query = `SELECT ${select} FROM feedback_questions LEFT JOIN input_types ON feedback_questions.input_id=input_types.input_id LEFT JOIN merchants ON feedback_questions.category_id=merchants.category_id WHERE feedback_questions.status=? AND merchants.mobile=?`;
@@ -50,7 +48,6 @@ module.exports.readAdminFeedbackQuestion = async (select, mobile, status) => {
 
     return rows;
   } catch (error) {
-    console.log('readAdminFeedbackQuestion');
     return Promise.reject(error);
   }
 };

@@ -370,7 +370,6 @@ module.exports.requestLogicKeepCustomer = async (customerJson, mobile, storeId) 
       msg: 'Succesful'
     });
   } catch (error) {
-    console.log(error);
     return Promise.reject(error);
   }
 };
