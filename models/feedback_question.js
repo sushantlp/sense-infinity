@@ -50,6 +50,7 @@ module.exports.readAdminFeedbackQuestion = async (select, mobile, status) => {
 
     return rows;
   } catch (error) {
+    console.log('readAdminFeedbackQuestion');
     return Promise.reject(error);
   }
 };

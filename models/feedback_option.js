@@ -1,7 +1,10 @@
 'use strict';
 
+// Import Package
 const moment = require('moment-timezone');
-const mysql = require('mysql2/promise');
+
+// Import Config
+const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var feedbackOption = sequelize.define(
@@ -31,13 +34,8 @@ const now = moment()
 // Read Admin Feedback Option
 module.exports.readAdminFeedbackOption = async (select, quesId, status) => {
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USERNAME,
-      port: process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
 
     // Query
     const query = `SELECT ${select} FROM feedback_options WHERE feed_ques_id = ? AND status = ?`;
@@ -52,22 +50,6 @@ module.exports.readAdminFeedbackOption = async (select, quesId, status) => {
     return Promise.reject(error);
   }
 };
-
-// Get Admin Feedback Option
-// module.exports.getAdminFeedbackOption = (quesId, status) => {
-//   // Query
-//   const query =
-//     "SELECT * FROM `FeedbackOptions` WHERE `feed_ques_id`=? AND `status`=?";
-
-//   return new Promise(function(resolve, reject) {
-//     mysqlObject.execute(query, [quesId, status], function(err, row) {
-//       if (err) {
-//         return reject(err);
-//       }
-//       return resolve(row);
-//     });
-//   });
-// };
 
 /**
  * End Database Read and Write

@@ -1,7 +1,10 @@
 'use strict';
 
+// Import Package
 const moment = require('moment-timezone');
-const mysql = require('mysql2/promise');
+
+// Import Config
+const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var surveyOption = sequelize.define(
@@ -31,13 +34,8 @@ const now = moment()
 // Read Admin Survey Option
 module.exports.readAdminSurveyOption = async (select, quesId, status) => {
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USERNAME,
-      port: process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
 
     // Query
     const query = `SELECT ${select} FROM survey_options WHERE survey_ques_id = ? AND status = ?`;

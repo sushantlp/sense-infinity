@@ -1,5 +1,6 @@
 'use strict';
 
+// Import Package
 const moment = require('moment-timezone');
 
 // Import Config
@@ -63,6 +64,26 @@ module.exports.readMerchantLinkCustomer = async (select, merchantId, storeId, cu
 
 		// Query Database
 		const [rows, fields] = await connection.execute(query, [merchantId, storeId, customerInformationId, status]);
+
+		connection.close();
+
+		return rows;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
+// Read All Merchant Store Customer Record
+module.exports.readMerchantStoreCustomer = async (select, merchantId, storeId, status) => {
+	try {
+		// Create Mysql Connection
+		const connection = await constants.createMysqlConnection();
+
+		// Query
+		const query = `SELECT ${select} FROM merchant_link_customers LEFT JOIN customer_information_data ON merchant_link_customers.customer_information_id = customer_information_data.customer_information_id LEFT JOIN genders ON customer_information_data.gender_id = genders.gender_id LEFT JOIN cities ON customer_information_data.city_id = cities.city_id LEFT JOIN localities ON customer_information_data.locality_id = localities.locality_id LEFT JOIN customer_membership_cards ON customer_information_data.mobile = customer_membership_cards.customer_mobile WHERE merchant_link_customers.merchant_id = ? AND merchant_link_customers.store_id = ? AND merchant_link_customers.status = ? AND customer_information_data.status = ?`;
+
+		// Query Database
+		const [rows, fields] = await connection.execute(query, [merchantId, storeId, status, status]);
 
 		connection.close();
 

@@ -1,5 +1,6 @@
 'use strict';
 
+// Import Package
 const moment = require('moment-timezone');
 
 // Import Config
@@ -101,8 +102,6 @@ module.exports.keepCustomerData = async (
 	status
 ) => {
 	try {
-		console.log(anniversaryDate);
-		console.log(married);
 		// Create Mysql Connection
 		const connection = await constants.createMysqlConnection();
 
@@ -135,7 +134,6 @@ module.exports.keepCustomerData = async (
 
 		return row;
 	} catch (error) {
-		console.log('keepCustomerData');
 		return Promise.reject(error);
 	}
 };
@@ -188,7 +186,6 @@ module.exports.updateCustomerData = async (
 
 		return row;
 	} catch (error) {
-		console.log('updateCustomerData');
 		return Promise.reject(error);
 	}
 };
