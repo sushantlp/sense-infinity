@@ -23,7 +23,7 @@ module.exports.requestKeepDeviceData = (req, res) => {
     let token = undefined;
 
     // If Production then Execute
-    if (process.env.NODE_ENV.toUpperCase() === 'development') {
+    if (process.env.NODE_ENV !== 'development') {
       // Get Token In Header
       token = req.headers['authorization'];
     } else {
@@ -71,7 +71,7 @@ module.exports.requestSenseStatic = (req, res) => {
     let token = undefined;
 
     // If Production then Execute
-    if (process.env.NODE_ENV.toUpperCase() == 'development') {
+    if (process.env.NODE_ENV !== 'development') {
       // Get Token In Header
       token = req.headers['authorization'];
     } else {
@@ -137,7 +137,7 @@ module.exports.requestKeepStoreComplain = (req, res) => {
     let token = undefined;
 
     // If Production then Execute
-    if (process.env.NODE_ENV.toUpperCase() == 'development') {
+    if (process.env.NODE_ENV !== 'development') {
       // Get Token In Header
       token = req.headers['authorization'];
     } else {
@@ -200,7 +200,7 @@ module.exports.requestKeepCustomerDetail = (req, res) => {
     let token = undefined;
 
     // If Production then Execute
-    if (process.env.NODE_ENV.toUpperCase() == 'development') {
+    if (process.env.NODE_ENV !== 'development') {
       // Get Token In Header
       token = req.headers['authorization'];
     } else {
@@ -262,7 +262,7 @@ module.exports.requestKeepFeedbackSurvey = (req, res) => {
     let token = undefined;
 
     // If Production then Execute
-    if (process.env.NODE_ENV.toUpperCase() == 'development') {
+    if (process.env.NODE_ENV !== 'development') {
       // Get Token In Header
       token = req.headers['authorization'];
     } else {
@@ -329,7 +329,7 @@ module.exports.requestReadFeedbackData = (req, res) => {
     let token = undefined;
 
     // If Production then Execute
-    if (process.env.NODE_ENV.toUpperCase() == 'development') {
+    if (process.env.NODE_ENV !== 'development') {
       // Get Token In Header
       token = req.headers['authorization'];
     } else {
@@ -400,7 +400,7 @@ module.exports.requestReadSurveyData = (req, res) => {
     let token = undefined;
 
     // If Production then Execute
-    if (process.env.NODE_ENV.toUpperCase() == 'development') {
+    if (process.env.NODE_ENV !== 'development') {
       // Get Token In Header
       token = req.headers['authorization'];
     } else {
@@ -468,7 +468,7 @@ module.exports.requestReadCustomerData = (req, res) => {
     let token = undefined;
 
     // If Production then Execute
-    if (process.env.NODE_ENV.toUpperCase() == 'development') {
+    if (process.env.NODE_ENV !== 'development') {
       // Get Token In Header
       token = req.body.token || req.query.token || req.headers['authorization'];
     } else {

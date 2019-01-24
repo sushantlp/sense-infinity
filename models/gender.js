@@ -53,13 +53,8 @@ module.exports.keepGender = async (name, status) => {
 // Read Gender Record
 module.exports.readGenderRecord = async (select, status) => {
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USERNAME,
-      port: process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
 
     // Query
     const query = `SELECT ${select} FROM genders WHERE status=?`;

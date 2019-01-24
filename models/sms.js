@@ -55,13 +55,8 @@ module.exports.keepSmsOtp = async (mobile, otp, status) => {
 // Update Sms Record
 module.exports.updateSmsOtp = async (mobile, gateway, status) => {
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USERNAME,
-      port: process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
 
     // Query
     const query = 'UPDATE `sms` SET `gateway_status` = ?, `status` = ?, `updated_at` = ? WHERE `mobile` = ?';
@@ -80,13 +75,8 @@ module.exports.updateSmsOtp = async (mobile, gateway, status) => {
 // Read Daily Sms Limit
 module.exports.dailySmsLimit = async (select, mobile) => {
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USERNAME,
-      port: process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
 
     // Query
     const query = `SELECT ${select} FROM sms WHERE mobile = ? AND date(created_at)=curdate()`;
@@ -105,13 +95,8 @@ module.exports.dailySmsLimit = async (select, mobile) => {
 // Read Sms Record
 module.exports.readSmsRecord = async (select, mobile, status) => {
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USERNAME,
-      port: process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
 
     // Query
     const query = `SELECT ${select} FROM sms WHERE mobile = ? AND status = ? LIMIT 1`;
