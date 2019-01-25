@@ -7,16 +7,16 @@ const { Router } = require('express');
 const clubCard = require('./card.routes.js');
 
 // Controllers (route handlers).
-const signup = require('../../controllers/signup.controller');
+const signupController = require('../../controllers/signup.controller');
 
 const routes = new Router();
 
 routes.use('/cards', clubCard);
 
 // Verify Otp
-routes.get('/otp/verify', signup.requestOtpVerify);
+routes.get('/otp/verify', signupController.requestOtpVerify);
 
 // Refresh Token
-routes.post('/refresh/token', signup.requestRefreshToken);
+routes.post('/refresh/token', signupController.requestRefreshToken);
 
 module.exports = routes;

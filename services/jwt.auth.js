@@ -7,7 +7,7 @@ const shareController = require('../controllers/share.controller');
 const jwt = require('jsonwebtoken');
 
 // Verify Json Web Token
-module.exports.verifyJsonWebToken = (req, res, next) => {
+module.exports.authJwt = (req, res, next) => {
   let token = false;
 
   if (process.env.NODE_ENV !== 'development') {

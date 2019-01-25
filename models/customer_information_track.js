@@ -76,11 +76,11 @@ module.exports.keepInformationTrack = async (
 
 		// Query Database
 		const row = await connection.execute(query, [
-			connection.escape(firstName),
-			connection.escape(lastName),
-			connection.escape(email),
+			firstName,
+			lastName,
+			email,
 			mobile,
-			connection.escape(dob),
+			dob,
 			genderId,
 			cityId,
 			localityId,
