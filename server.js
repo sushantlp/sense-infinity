@@ -2,44 +2,32 @@
 
 require('dotenv').config();
 
-// Module Dependencies.
+// Import Package
 const express = require('express');
-const bodyParser = require('body-parser');
-const morgan = require('morgan');
 const chalk = require('chalk');
-const errorHandler = require('errorhandler');
-const dotEnv = require('dotenv');
-const path = require('path');
-const expressValidator = require('express-validator');
-const expressStatusMonitor = require('express-status-monitor');
 const sass = require('node-sass-middleware');
+const path = require('path');
 const favicon = require('serve-favicon');
 const robots = require('express-robots');
 const CronJob = require('cron').CronJob;
-
-const jsonWebToken = require('./middleware/jsonWebToken');
 
 require('express-group-routes');
 
 // Create Express server.
 const app = express();
 
+// Import Route
+const v1RouteApi = require('./routes/routes_v1');
+
+// Import Config
+const middlewaresConfig = require('./config/middlewares');
+const jsonWebToken = require('./middleware/jsonWebToken');
+
 // Controllers (route handlers).
-const database = require('./controllers/databaseController');
-const signup = require('./controllers/signupController');
-const requestEngage = require('./controllers/requestEngageController');
+const database = require('./controllers/database.controller');
 
-// Use morgan to log requests to the console
-app.use(morgan('dev'));
-
-// Express configuration.
-app.set('host', process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0');
-app.set('port', process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080);
-
-app.use(expressStatusMonitor());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(expressValidator());
+// Wrap all the middlewares with the server
+middlewaresConfig.default(app);
 
 app.use(
   sass({
@@ -53,63 +41,56 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(robots(path.join(__dirname, 'public', 'robots.txt')));
 app.disable('etag');
 
-app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
-
 // Index Route
 app.get('/', (req, res) => {
   return res.status(200).redirect('/index.html');
 });
 
-// app.use("/api", jsonWebToken.verifyJsonWebToken);
+// Add the apiRoutes stack to the server
+app.use('/api/v1', v1RouteApi);
 
 // Version 1 API
-app.group('/api/v1', router => {
-  // Verify Otp
-  router.get('/otp/verify', signup.requestOtpVerify);
+// app.group('/api/v1', router => {
+//   // Verify Otp
+//   router.get('/otp/verify', signup.requestOtpVerify);
 
-  // Refresh Token
-  router.post('/refresh/token', signup.requestRefreshToken);
+//   // Refresh Token
+//   router.post('/refresh/token', signup.requestRefreshToken);
 
-  // Club Card Route
-  router.group('/cards', api => {
-    // Merchant APP Signup
-    api.post('/signup', signup.requestAppSignup);
+//   // Club Card Route
+//   router.group('/cards', api => {
 
-    // Keep Device Information
-    api.post('/keep/device', requestEngage.requestKeepDeviceData);
+//     // Merchant APP Signup
+//     api.post('/signup', signup.requestAppSignup);
 
-    // Keep Merchant Store Complain
-    api.post('/keep/complain', requestEngage.requestKeepStoreComplain);
+//     // Keep Device Information
+//     api.post('/keep/device', jsonWebToken.verifyJsonWebToken, requestEngage.requestKeepDeviceData);
 
-    // Keep Customer Detail
-    api.post('/keep/customer/detail', requestEngage.requestKeepCustomerDetail);
+//     // Keep Merchant Store Complain
+//     api.post('/keep/complain', jsonWebToken.verifyJsonWebToken, requestEngage.requestKeepStoreComplain);
 
-    // Keep Feedback Survey
-    api.post('/keep/feedback/survey', requestEngage.requestKeepFeedbackSurvey);
+//     // Keep Customer Detail
+//     api.post('/keep/customer/detail', jsonWebToken.verifyJsonWebToken, requestEngage.requestKeepCustomerDetail);
 
-    // Get Static Data
-    api.get('/get/static', requestEngage.requestSenseStatic);
+//     // Keep Feedback Survey
+//     api.post('/keep/feedback/survey', jsonWebToken.verifyJsonWebToken, requestEngage.requestKeepFeedbackSurvey);
 
-    // Get Feedback
-    api.get('/get/feedback', requestEngage.requestReadFeedbackData);
+//     // Get Static Data
+//     api.get('/get/static', jsonWebToken.verifyJsonWebToken, requestEngage.requestSenseStatic);
 
-    // Get Survey
-    api.get('/get/survey', requestEngage.requestReadSurveyData);
+//     // Get Feedback
+//     api.get('/get/feedback', jsonWebToken.verifyJsonWebToken, requestEngage.requestReadFeedbackData);
 
-    // Get Customer Data
-    api.get('/get/customer', requestEngage.requestReadCustomerData);
-  });
-});
+//     // Get Survey
+//     api.get('/get/survey', jsonWebToken.verifyJsonWebToken, requestEngage.requestReadSurveyData);
+
+//     // Get Customer Data
+//     api.get('/get/customer', jsonWebToken.verifyJsonWebToken, requestEngage.requestReadCustomerData);
+//   });
+// });
 
 // Call Sequelize Connection
 database.sequelizeConnection();
-
-// Error Handler.
-app.use(errorHandler());
 
 // Start Express server.
 app.listen(app.get('port'), () => {

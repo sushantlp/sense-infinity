@@ -1,8 +1,8 @@
 'use strict';
 
 // Import Controller
-const validateController = require('./validateController');
-const shareController = require('./shareController');
+const validateController = require('./validate.controller');
+const shareController = require('./share.controller');
 
 // Import Model
 const smsModel = require('../models/sms');

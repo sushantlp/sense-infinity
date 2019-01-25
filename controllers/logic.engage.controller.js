@@ -4,8 +4,8 @@
 const moment = require('moment-timezone');
 
 // Import Controller
-const shareController = require('./shareController');
-const databaseController = require('./databaseController');
+const shareController = require('./share.controller');
+const databaseController = require('./database.controller');
 
 // Import Config
 const constants = require('../config/constants');

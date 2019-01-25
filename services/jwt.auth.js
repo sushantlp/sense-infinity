@@ -5,11 +5,9 @@ const shareController = require('../controllers/share.controller');
 
 // Import Package
 const jwt = require('jsonwebtoken');
-// const param = '/api/v1';
 
 // Verify Json Web Token
 module.exports.verifyJsonWebToken = (req, res, next) => {
-  // Variable Intialize
   let token = false;
 
   if (process.env.NODE_ENV !== 'development') {

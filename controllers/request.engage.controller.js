@@ -1,8 +1,8 @@
 'use strict';
 
 // Import Controller
-const engageController = require('./logicEngageController');
-const shareController = require('./shareController');
+const engageController = require('./logic.engage.controller');
+const shareController = require('./share.controller');
 
 // Request Keep Device Data
 module.exports.requestKeepDeviceData = (req, res) => {
