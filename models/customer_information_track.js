@@ -70,6 +70,26 @@ module.exports.keepInformationTrack = async (
 		// Create Mysql Connection
 		const connection = await constants.createMysqlConnection();
 
+		if (addressOne === undefined) {
+			addressOne = connection.escape(addressOne);
+		}
+
+		if (addressTwo === undefined) {
+			addressTwo = connection.escape(addressTwo);
+		}
+
+		if (landmark === undefined) {
+			landmark = connection.escape(landmark);
+		}
+
+		if (spouseName === undefined) {
+			spouseName = connection.escape(spouseName);
+		}
+
+		if (anniversaryDate === undefined) {
+			anniversaryDate = connection.escape(anniversaryDate);
+		}
+
 		// Query
 		const query =
 			'INSERT INTO `customer_information_tracks` (`first_name`,`last_name`,`email`,`mobile`,`dob`,`gender_id`,`city_id`,`locality_id`,`merchant_id`,`store_id`,`married`,`address_one`,`address_two`,`landmark`,`spouse_name`,`anniversary_date`,`gateway`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
@@ -87,11 +107,11 @@ module.exports.keepInformationTrack = async (
 			merchantId,
 			storeId,
 			married,
-			connection.escape(addressOne),
-			connection.escape(addressTwo),
-			connection.escape(landmark),
-			connection.escape(spouseName),
-			connection.escape(anniversaryDate),
+			addressOne,
+			addressTwo,
+			landmark,
+			spouseName,
+			anniversaryDate,
 			gateway,
 			status,
 			now,

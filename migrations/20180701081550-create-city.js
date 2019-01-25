@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("cities", {
+    return queryInterface.createTable('cities', {
       city_id: {
         allowNull: false,
         autoIncrement: true,
@@ -9,6 +9,9 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       city_name: {
+        type: Sequelize.STRING
+      },
+      country_code: {
         type: Sequelize.STRING
       },
       longitude: {
@@ -24,18 +27,18 @@ module.exports = {
         defaultValue: 0
       },
       createdAt: {
-        field: "created_at",
+        field: 'created_at',
         allowNull: false,
         type: Sequelize.DATE
       },
       updatedAt: {
-        field: "updated_at",
+        field: 'updated_at',
         allowNull: false,
         type: Sequelize.DATE
       }
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("cities");
+    return queryInterface.dropTable('cities');
   }
 };

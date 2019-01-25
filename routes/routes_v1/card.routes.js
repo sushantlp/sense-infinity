@@ -24,7 +24,7 @@ routes.post('/keep/device', authJwt, engageController.requestKeepDeviceData);
 routes.post('/keep/complain', authJwt, engageController.requestKeepStoreComplain);
 
 // Keep Customer Detail
-routes.post('/keep/customer/detail', authJwt, engageController.requestKeepCustomerDetail);
+routes.post('/keep/customer/detail', engageController.requestKeepCustomerDetail);
 
 // Keep Feedback Survey
 routes.post('/keep/feedback/survey', authJwt, engageController.requestKeepFeedbackSurvey);

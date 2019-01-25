@@ -394,6 +394,12 @@ const logicKeepCustomer = async (mobile, storeId, customerJson, merchantRecord) 
     // Variable Declare
     let customerId = undefined;
 
+    let spouseName = undefined;
+    let anniversary = undefined;
+    let addressOne = undefined;
+    let addressTwo = undefined;
+    let landmark = undefined;
+
     // Reform Customer Detail
     const reform = shareController.reformCustomerDetail(
       json.first_name,
@@ -640,11 +646,11 @@ const logicFeedbackSurvey = async (feedbackSurveyJson, mobile, storeId, merchant
           0,
           0,
           0,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
+          connection.escape(undefined),
+          connection.escape(undefined),
+          connection.escape(undefined),
+          connection.escape(undefined),
+          connection.escape(undefined),
           1
         );
 

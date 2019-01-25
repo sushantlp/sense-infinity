@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       city_name: DataTypes.STRING,
       longitude: DataTypes.DOUBLE,
       latitude: DataTypes.DOUBLE,
+      country_code: DataTypes.STRING,
       status: DataTypes.BOOLEAN
     },
     {}
