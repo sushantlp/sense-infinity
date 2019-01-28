@@ -78,7 +78,7 @@ module.exports.passwordAlgorthim = (mobile, password) => {
 
   // Concat
   pair1 = pair1.concat(pair2);
-  console.log(pair1);
+  
   // Validate Password
   if (pair1 == password) {
     return (responsedata = {

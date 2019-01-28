@@ -6,24 +6,20 @@
 const { Router } = require('express');
 
 // Controllers (route handlers).
-const signupController = require('../../controllers/signup.controller');
-const engageController = require('../../controllers/request.engage.controller');
+const rewardController = require('../../controllers/request.reward.controller');
 
 // Jwt Auth
 const { authJwt } = require('../../services/jwt.auth');
 
 const routes = new Router();
 
-// Merchant Verify
-routes.post('/signup', signupController.requestAppSignup);
+// Verify Membership Mobile
+routes.post('/verify/membership/mobile', rewardController.requestVerifyMemberMobile);
 
-// Keep Device Information
-routes.post('/keep/device', authJwt, engageController.requestKeepDeviceData);
+// Verify Membership Email
+routes.post('/verify/email', authJwt, rewardController.requestVerifyEmail);
 
 
-
-// Get Static Data
-routes.get('/get/static', authJwt, engageController.requestSenseStatic);
 
 
 module.exports = routes;

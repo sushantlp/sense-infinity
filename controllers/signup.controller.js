@@ -1,7 +1,7 @@
 'use strict';
 
 // Import Controller
-const validateController = require('./validate.controller');
+// const validateController = require('./validate.controller');
 const shareController = require('./share.controller');
 
 // Import Model
@@ -17,13 +17,13 @@ module.exports.requestAppSignup = (req, res) => {
     // Extract Parameter
     const mobile = req.query.mobile;
 
-    // Validate Merchant SignUp
-    const validate = validateController.validateSignUpRequest(req, res);
+    // // Validate Merchant SignUp
+    // const validate = validateController.validateSignUpRequest(req, res);
 
-    // Check Response Code
-    if (isNaN(validate)) {
-      return res.status(400).send(validate[0].msg);
-    }
+    // // Check Response Code
+    // if (isNaN(validate)) {
+    //   return res.status(400).send(validate[0].msg);
+    // }
 
     // Logic App Signup
     return logicAppSignup(mobile)

@@ -179,7 +179,6 @@ const logicKeepComplain = async (mobile, storeId, complainJson, merchantRecord) 
       let customerId = undefined;
       
 
-
       // Read Customer Information Data By Mobile
       const customerRecord = await customerDataModel.readCustomerDataMobile('*', json.customer_mobile, 1);
 

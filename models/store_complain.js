@@ -77,7 +77,7 @@ module.exports.keepStoreComplain = async (customerId, merchantId, storeId, desc,
 
     return row;
   } catch (error) {
-    console.log('keepStoreComplain');
+    
     return Promise.reject(error);
   }
 };
