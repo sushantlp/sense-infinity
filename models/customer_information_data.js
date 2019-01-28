@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
 			last_name: DataTypes.STRING,
 			email: DataTypes.STRING,
 			mobile: DataTypes.STRING,
-			mobile_code: DataTypes.STRING,
+			country_code: DataTypes.STRING,
 			dob: DataTypes.STRING,
 			gender_id: DataTypes.INTEGER,
 			city_id: DataTypes.INTEGER,
@@ -90,6 +90,7 @@ module.exports.keepCustomerData = async (
 	lastName,
 	email,
 	mobile,
+	countryCode,
 	dob,
 	genderId,
 	cityId,
@@ -128,7 +129,7 @@ module.exports.keepCustomerData = async (
 
 		// Query
 		const query =
-			'INSERT INTO `customer_information_data` (`first_name`,`last_name`,`email`,`mobile`,`dob`,`gender_id`,`city_id`,`locality_id`,`married`,`address_one`,`address_two`,`landmark`,`spouse_name`,`anniversary_date`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+			'INSERT INTO `customer_information_data` (`first_name`,`last_name`,`email`,`mobile`,`country_code`,`dob`,`gender_id`,`city_id`,`locality_id`,`married`,`address_one`,`address_two`,`landmark`,`spouse_name`,`anniversary_date`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
 		// Query Database
 		const row = await connection.execute(query, [
@@ -136,6 +137,7 @@ module.exports.keepCustomerData = async (
 			lastName,
 			email,
 			mobile,
+			countryCode,
 			dob,
 			genderId,
 			cityId,
@@ -165,6 +167,7 @@ module.exports.updateCustomerData = async (
 	lastName,
 	email,
 	mobile,
+	countryCode,
 	dob,
 	genderId,
 	cityId,
@@ -202,13 +205,14 @@ module.exports.updateCustomerData = async (
 
 		// Query
 		const query =
-			'UPDATE `customer_information_data` SET `first_name` = ?, `last_name` = ?, `email` = ?,  `dob` = ?, `gender_id` = ?, `city_id` = ?, `locality_id` = ?, `married` = ?, `address_one` = ?, `address_two` = ?, `landmark` = ?, `spouse_name` = ?, `anniversary_date` = ?, `updated_at` = ? WHERE `mobile` = ?';
+			'UPDATE `customer_information_data` SET `first_name` = ?, `last_name` = ?, `email` = ?, `country_code` = ?,  `dob` = ?, `gender_id` = ?, `city_id` = ?, `locality_id` = ?, `married` = ?, `address_one` = ?, `address_two` = ?, `landmark` = ?, `spouse_name` = ?, `anniversary_date` = ?, `updated_at` = ? WHERE `mobile` = ?';
 
 		// Query Database
 		const row = await connection.execute(query, [
 			firstName,
 			lastName,
 			email,
+			countryCode,
 			dob,
 			genderId,
 			cityId,

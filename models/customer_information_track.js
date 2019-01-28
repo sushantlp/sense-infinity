@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
 			last_name: DataTypes.STRING,
 			email: DataTypes.STRING,
 			mobile: DataTypes.STRING,
-			mobile_code: DataTypes.STRING,
+			country_code: DataTypes.STRING,
 			dob: DataTypes.STRING,
 			gender_id: DataTypes.INTEGER,
 			city_id: DataTypes.INTEGER,
@@ -52,6 +52,7 @@ module.exports.keepInformationTrack = async (
 	lastName,
 	email,
 	mobile,
+	countryCode,
 	dob,
 	genderId,
 	cityId,
@@ -93,7 +94,7 @@ module.exports.keepInformationTrack = async (
 
 		// Query
 		const query =
-			'INSERT INTO `customer_information_tracks` (`first_name`,`last_name`,`email`,`mobile`,`dob`,`gender_id`,`city_id`,`locality_id`,`merchant_id`,`store_id`,`married`,`address_one`,`address_two`,`landmark`,`spouse_name`,`anniversary_date`,`gateway`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+			'INSERT INTO `customer_information_tracks` (`first_name`,`last_name`,`email`,`mobile`,`country_code`,`dob`,`gender_id`,`city_id`,`locality_id`,`merchant_id`,`store_id`,`married`,`address_one`,`address_two`,`landmark`,`spouse_name`,`anniversary_date`,`gateway`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
 		// Query Database
 		const row = await connection.execute(query, [
@@ -101,6 +102,7 @@ module.exports.keepInformationTrack = async (
 			lastName,
 			email,
 			mobile,
+			countryCode,
 			dob,
 			genderId,
 			cityId,

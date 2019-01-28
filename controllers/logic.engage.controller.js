@@ -22,6 +22,7 @@ const surveyModel = require('../models/survey_question');
 const surveyOptionModel = require('../models/survey_option');
 const complainModel = require('../models/store_complain');
 const merchantModel = require('../models/merchant');
+const storeModel = require('../models/merchant_store');
 const cardModel = require('../models/customer_membership_card');
 const customerDataModel = require('../models/customer_information_data');
 const customerTrackModel = require('../models/customer_information_track');
@@ -142,7 +143,7 @@ const logicKeepComplain = async (mobile, storeId, complainJson, merchantRecord) 
     let versionFlag = {
       customer: true
     };
-
+    let cityCode = 0;
     // Read Constant Record
     const constant = await databaseController.readConstantRecordName(
       '*',
@@ -152,12 +153,40 @@ const logicKeepComplain = async (mobile, storeId, complainJson, merchantRecord) 
       1
     );
 
+    // Read Merchant Store Record By Store Id
+    const storeRecord = await storeModel.readStoreById('city_id', storeId, 1);
+    
+    // Parse
+    const storeStringify = JSON.stringify(storeRecord);
+    const storeParse = JSON.parse(storeStringify);
+   
+    if (storeParse.length !== 0) {
+
+      // Read City Record By City Id
+      const cityRecord = await cityModel.readCityBYId('*', storeParse[0].city_id, 1);
+
+      // Parse
+      const cityStringify = JSON.stringify(cityRecord);
+      const cityParse = JSON.parse(cityStringify);
+   
+      if (cityParse.length !== 0) {
+        cityCode = cityParse[0].country_code;
+      }
+    }
+
     const promises = complainJson.map(async (json, index) => {
       // Variable Declare
       let customerId = undefined;
+      
+
 
       // Read Customer Information Data By Mobile
       const customerRecord = await customerDataModel.readCustomerDataMobile('*', json.customer_mobile, 1);
+
+      // Parse
+      const customerStringify = JSON.stringify(customerRecord);
+      const customerParse = JSON.parse(customerStringify);
+   
 
       // Reform Customer Detail
       const reform = shareController.reformCustomerDetail(
@@ -173,13 +202,14 @@ const logicKeepComplain = async (mobile, storeId, complainJson, merchantRecord) 
         false
       );
 
-      if (customerRecord.length === 0) {
+      if (customerParse.length === 0) {
         // Keep Customer Information Data
         const lastRecord = await customerDataModel.keepCustomerData(
           reform.first_name,
           reform.last_name,
           json.email,
           json.customer_mobile,
+          cityCode,
           reform.dob,
           json.gender_id,
           0,
@@ -199,6 +229,7 @@ const logicKeepComplain = async (mobile, storeId, complainJson, merchantRecord) 
           reform.last_name,
           json.email,
           json.customer_mobile,
+          cityCode,
           reform.dob,
           json.gender_id,
           0,
@@ -234,16 +265,17 @@ const logicKeepComplain = async (mobile, storeId, complainJson, merchantRecord) 
           reform.last_name,
           json.email,
           json.customer_mobile,
+          cityCode,
           reform.dob,
           json.gender_id,
-          customerRecord[0].city_id,
-          customerRecord[0].locality_id,
-          customerRecord[0].married,
-          customerRecord[0].address_one,
-          customerRecord[0].address_two,
-          customerRecord[0].landmark,
-          customerRecord[0].spouse_name,
-          customerRecord[0].anniversary_date,
+          customerParse[0].city_id,
+          customerParse[0].locality_id,
+          customerParse[0].married,
+          customerParse[0].address_one,
+          customerParse[0].address_two,
+          customerParse[0].landmark,
+          customerParse[0].spouse_name,
+          customerParse[0].anniversary_date,
           1
         );
 
@@ -253,18 +285,19 @@ const logicKeepComplain = async (mobile, storeId, complainJson, merchantRecord) 
           reform.last_name,
           json.email,
           json.customer_mobile,
+          cityCode,
           reform.dob,
           json.gender_id,
-          customerRecord[0].city_id,
-          customerRecord[0].locality_id,
-          merchantRecord[0].merchant_id,
+          customerParse[0].city_id,
+          customerParse[0].locality_id,
+          customerParse[0].merchant_id,
           storeId,
-          customerRecord[0].married,
-          customerRecord[0].address_one,
-          customerRecord[0].address_two,
-          customerRecord[0].landmark,
-          customerRecord[0].spouse_name,
-          customerRecord[0].anniversary_date,
+          customerParse[0].married,
+          customerParse[0].address_one,
+          customerParse[0].address_two,
+          customerParse[0].landmark,
+          customerParse[0].spouse_name,
+          customerParse[0].anniversary_date,
           constants.gateway.CLUB_CARD,
           1
         );
@@ -393,12 +426,7 @@ const logicKeepCustomer = async (mobile, storeId, customerJson, merchantRecord) 
   const promises = customerJson.map(async (json, index) => {
     // Variable Declare
     let customerId = undefined;
-
-    let spouseName = undefined;
-    let anniversary = undefined;
-    let addressOne = undefined;
-    let addressTwo = undefined;
-    let landmark = undefined;
+    let cityCode = 0;
 
     // Reform Customer Detail
     const reform = shareController.reformCustomerDetail(
@@ -417,6 +445,17 @@ const logicKeepCustomer = async (mobile, storeId, customerJson, merchantRecord) 
     // Read Customer Information Data By Mobile
     let customerRecord = await customerDataModel.readCustomerDataMobile('*', json.customer_mobile, 1);
 
+    // Read City Record By City Id
+    const cityRecord = await cityModel.readCityBYId('*', json.city_id, 1);
+
+    // Parse
+    const cityStringify = JSON.stringify(cityRecord);
+    const cityParse = JSON.parse(cityStringify);
+
+    if (cityParse.length !== 0) {
+      cityCode = cityParse[0].country_code;
+    }
+
     if (customerRecord.length === 0) {
       // Keep Customer Information Data
       const lastRecord = await customerDataModel.keepCustomerData(
@@ -424,6 +463,7 @@ const logicKeepCustomer = async (mobile, storeId, customerJson, merchantRecord) 
         reform.last_name,
         json.email,
         json.customer_mobile,
+        cityCode,
         reform.dob,
         json.gender_id,
         json.city_id,
@@ -453,6 +493,7 @@ const logicKeepCustomer = async (mobile, storeId, customerJson, merchantRecord) 
         reform.last_name,
         json.email,
         json.customer_mobile,
+        cityCode,
         reform.dob,
         json.gender_id,
         json.city_id,
@@ -512,6 +553,7 @@ const logicKeepCustomer = async (mobile, storeId, customerJson, merchantRecord) 
       reform.last_name,
       json.email,
       json.customer_mobile,
+      cityCode,
       reform.dob,
       json.gender_id,
       json.city_id,
@@ -594,6 +636,7 @@ const logicFeedbackSurvey = async (feedbackSurveyJson, mobile, storeId, merchant
       feedback: true,
       customer: true
     };
+    let cityCode = 0;
 
     // Read Constant Record
     const constant = await databaseController.readConstantRecord('*', mobile, storeId, 1);
@@ -612,6 +655,27 @@ const logicFeedbackSurvey = async (feedbackSurveyJson, mobile, storeId, merchant
         customerVersion = version;
       }
     });
+
+     // Read Merchant Store Record By Store Id
+    const storeRecord = await storeModel.readStoreById('city_id',storeId,1);
+
+    // Parse
+    const storeStringify = JSON.stringify(storeRecord);
+    const storeParse = JSON.parse(storeStringify);
+
+    if (storeParse.length !== 0) {
+
+      // Read City Record By City Id
+      const cityRecord = await cityModel.readCityBYId('*', storeParse[0].city_id, 1);
+
+      // Parse
+      const cityStringify = JSON.stringify(cityRecord);
+      const cityParse = JSON.parse(cityStringify);
+   
+      if (cityParse.length !== 0) {
+        cityCode = cityParse[0].country_code;
+      }
+    }
 
     const promises = feedbackSurveyJson.map(async (json, index) => {
       // Read Customer Information Data By Mobile
@@ -641,6 +705,7 @@ const logicFeedbackSurvey = async (feedbackSurveyJson, mobile, storeId, merchant
           reform.last_name,
           json.email,
           json.customer_mobile,
+          cityCode,
           reform.dob,
           json.gender_id,
           0,
@@ -667,6 +732,7 @@ const logicFeedbackSurvey = async (feedbackSurveyJson, mobile, storeId, merchant
           reform.last_name,
           json.email,
           json.customer_mobile,
+          cityCode,
           reform.dob,
           json.gender_id,
           0,
@@ -689,6 +755,7 @@ const logicFeedbackSurvey = async (feedbackSurveyJson, mobile, storeId, merchant
           reform.last_name,
           json.email,
           json.customer_mobile,
+          cityCode,
           reform.dob,
           json.gender_id,
           customerRecord[0].city_id,
@@ -711,6 +778,7 @@ const logicFeedbackSurvey = async (feedbackSurveyJson, mobile, storeId, merchant
           reform.last_name,
           json.email,
           json.customer_mobile,
+          cityCode,
           reform.dob,
           json.gender_id,
           customerRecord[0].city_id,

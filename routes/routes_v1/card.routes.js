@@ -21,10 +21,10 @@ routes.get('/otp/verify', signupController.requestOtpVerify);
 routes.post('/keep/device', authJwt, engageController.requestKeepDeviceData);
 
 // Keep Merchant Store Complain
-routes.post('/keep/complain', authJwt, engageController.requestKeepStoreComplain);
+routes.post('/keep/complain',  authJwt,engageController.requestKeepStoreComplain);
 
 // Keep Customer Detail
-routes.post('/keep/customer/detail', engageController.requestKeepCustomerDetail);
+routes.post('/keep/customer/detail', authJwt,engageController.requestKeepCustomerDetail);
 
 // Keep Feedback Survey
 routes.post('/keep/feedback/survey', authJwt, engageController.requestKeepFeedbackSurvey);

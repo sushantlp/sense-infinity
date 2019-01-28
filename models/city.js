@@ -40,7 +40,7 @@ module.exports.readCityRecord = async (select, status) => {
     const connection = await constants.createMysqlConnection();
 
     // Query
-    const query = `SELECT ${select} FROM cities WHERE status=?`;
+    const query = `SELECT ${select} FROM cities WHERE status = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [status]);
@@ -53,21 +53,27 @@ module.exports.readCityRecord = async (select, status) => {
   }
 };
 
-// // Get All City Record
-// module.exports.getAllCity = status => {
-//   // Query
-//   const query =
-//     "SELECT city_id AS city_unique, city_name AS city, longitude AS lon, latitude AS lat FROM `Cities` WHERE `status`=?";
 
-//   return new Promise(function(resolve, reject) {
-//     mysqlObject.execute(query, [status], function(err, row) {
-//       if (err) {
-//         return reject(err);
-//       }
-//       return resolve(row);
-//     });
-//   });
-// };
+// Read City Record By City Id
+module.exports.readCityBYId = async (select,cityId,status) => {
+  try {
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM cities WHERE city_id = ? AND status = ? LIMIT 1`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [cityId,status]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 
 /**
  * End Database Read and Write

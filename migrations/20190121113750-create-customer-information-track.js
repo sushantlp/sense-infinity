@@ -23,7 +23,7 @@ module.exports = {
       mobile: {
         type: Sequelize.STRING
       },
-      mobile_code: {
+      country_code: {
         type: Sequelize.STRING,
       },
       dob: {
