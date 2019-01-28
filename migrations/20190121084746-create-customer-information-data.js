@@ -24,6 +24,9 @@ module.exports = {
         type: Sequelize.STRING,
         unique: true
       },
+      mobile_code: {
+        type: Sequelize.STRING,
+      },
       dob: {
         type: Sequelize.STRING,
         allowNull: true
