@@ -580,7 +580,7 @@ module.exports.readLimitMerchantSurvey = async (
     const KeepSurvey = `${merchantMobile}_${storeId}_keep_merchant_surveys`;
 
     // Query
-    const query = `SELECT ${select} FROM ${KeepSurvey} WHERE cust_identity_id = ? AND survey_ques_id = ? AND role_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
+    const query = `SELECT ${select} FROM ${KeepSurvey} WHERE customer_information_id = ? AND survey_ques_id = ? AND role_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [customerId, questionId, roleId, status]);
@@ -611,7 +611,7 @@ module.exports.readLimitMerchantFeedback = async (
     const KeepFeedback = `${merchantMobile}_${storeId}_keep_merchant_feedbacks`;
 
     // Query
-    const query = `SELECT ${select} FROM ${KeepFeedback} WHERE cust_identity_id = ? AND feed_ques_id = ? AND role_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
+    const query = `SELECT ${select} FROM ${KeepFeedback} WHERE customer_information_id = ? AND feed_ques_id = ? AND role_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [customerId, questionId, roleId, status]);
@@ -642,7 +642,7 @@ module.exports.keepMerchantFeedbackTable = async (
     const KeepFeedback = `${merchantMobile}_${storeId}_keep_merchant_feedbacks`;
 
     // Query
-    const query = `INSERT INTO ${KeepFeedback} (feed_ques_id, feed_option_id, cust_identity_id, role_id, status, created_at, updated_at) VALUES (?,?,?,?,?,?,?)`;
+    const query = `INSERT INTO ${KeepFeedback} (feed_ques_id, feed_option_id, customer_information_id, role_id, status, created_at, updated_at) VALUES (?,?,?,?,?,?,?)`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
@@ -681,7 +681,7 @@ module.exports.keepMerchantSurveyTable = async (
     const KeepSurvey = `${merchantMobile}_${storeId}_keep_merchant_surveys`;
 
     // Query
-    const query = `INSERT INTO ${KeepSurvey} (survey_ques_id, survey_option_id, cust_identity_id, role_id, status, created_at, updated_at) VALUES (?,?,?,?,?,?,?)`;
+    const query = `INSERT INTO ${KeepSurvey} (survey_ques_id, survey_option_id, customer_information_id, role_id, status, created_at, updated_at) VALUES (?,?,?,?,?,?,?)`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
@@ -721,7 +721,7 @@ module.exports.updateMerchantFeedbackTable = async (
     const KeepFeedback = `${merchantMobile}_${storeId}_keep_merchant_feedbacks`;
 
     // Query
-    const query = `UPDATE ${KeepFeedback} SET feed_ques_id = ?, feed_option_id = ?, cust_identity_id = ?, role_id = ?, status = ?, updated_at = ? WHERE keep_feed_id = ?`;
+    const query = `UPDATE ${KeepFeedback} SET feed_ques_id = ?, feed_option_id = ?, customer_information_id = ?, role_id = ?, status = ?, updated_at = ? WHERE keep_feed_id = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
@@ -761,7 +761,7 @@ module.exports.updateMerchantSurveyTable = async (
     const KeepSurvey = `${merchantMobile}_${storeId}_keep_merchant_surveys`;
 
     // Query
-    const query = `UPDATE ${KeepSurvey} SET survey_ques_id = ?, survey_option_id = ?, cust_identity_id = ?, role_id = ?, status = ?, updated_at = ? WHERE keep_survey_id = ?`;
+    const query = `UPDATE ${KeepSurvey} SET survey_ques_id = ?, survey_option_id = ?, customer_information_id = ?, role_id = ?, status = ?, updated_at = ? WHERE keep_survey_id = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [

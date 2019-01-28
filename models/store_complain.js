@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
   var storeComplain = sequelize.define(
     'store_complain',
     {
-      cust_identity_id: DataTypes.INTEGER,
+      customer_information_id: DataTypes.INTEGER,
       store_id: DataTypes.INTEGER,
       merchant_id: DataTypes.INTEGER,
       complain: DataTypes.TEXT,
@@ -39,7 +39,7 @@ module.exports.readStoreComplain = async (select, storeId, merchantId, customerI
     const connection = await constants.createMysqlConnection();
 
     // Query
-    const query = `SELECT ${select} FROM store_complains WHERE store_id = ? AND cust_identity_id = ? AND merchant_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
+    const query = `SELECT ${select} FROM store_complains WHERE store_id = ? AND customer_information_id = ? AND merchant_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [storeId, customerId, merchantId, status]);
@@ -60,7 +60,7 @@ module.exports.keepStoreComplain = async (customerId, merchantId, storeId, desc,
 
     // Query
     const query =
-      'INSERT INTO `store_complains` (`cust_identity_id`,`merchant_id`,`store_id`,`complain`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?)';
+      'INSERT INTO `store_complains` (`customer_information_id`,`merchant_id`,`store_id`,`complain`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?)';
 
     // Query Database
     const row = await connection.execute(query, [
@@ -98,7 +98,6 @@ module.exports.updateStoreComplain = async (complainId, description, status) => 
 
     return row;
   } catch (error) {
-    console.log('updateStoreComplain');
     return Promise.reject(error);
   }
 };

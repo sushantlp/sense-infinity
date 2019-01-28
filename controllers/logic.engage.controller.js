@@ -657,7 +657,7 @@ const logicFeedbackSurvey = async (feedbackSurveyJson, mobile, storeId, merchant
     });
 
      // Read Merchant Store Record By Store Id
-    const storeRecord = await storeModel.readStoreById('city_id',storeId,1);
+    const storeRecord = await storeModel.readStoreById('city_id', storeId, 1);
 
     // Parse
     const storeStringify = JSON.stringify(storeRecord);
@@ -711,11 +711,11 @@ const logicFeedbackSurvey = async (feedbackSurveyJson, mobile, storeId, merchant
           0,
           0,
           0,
-          connection.escape(undefined),
-          connection.escape(undefined),
-          connection.escape(undefined),
-          connection.escape(undefined),
-          connection.escape(undefined),
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
           1
         );
 
