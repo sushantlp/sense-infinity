@@ -616,13 +616,13 @@ const logicKeepCustomer = async(
     if (card.length === 0) {
       // Keep Customer Membership Card
       cardModel.keepCustomerMembershipCard(
-        json.customer_mobile,
+        customerId,
         json.membership_number.toString(),
         1
       );
     } else {
-      // One Membership Card to One Mobile Number
-      if (card[0].customer_mobile !== json.customer_mobile) {
+      // One Membership Card to One Customer
+      if (card[0].customer_information_id !== customerId) {
         console.log("Alert");
         // Send Admin Mail
       }

@@ -2,6 +2,7 @@
 
 // Import Controller
 const logicRewardController = require("./logic.reward.controller");
+const shareController = require("./share.controller");
 
 // Request Verify Membership Card and Mobile
 module.exports.requestVerifyMemberMobile = (req, res) => {

@@ -1,5 +1,8 @@
 "use strict";
 
+// Import Package
+const moment = require('moment');
+
 // Import Config
 const constants = require("../config/constants");
 
@@ -34,7 +37,7 @@ module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
     const customerParse = JSON.parse(customerStringify);
     const cardParse = JSON.parse(cardStringify);
 
-    // Check Empty
+
     if (customerParse.length === 0 && cardParse.length !== 0) {
       return (responsedata = {
         success: false,
@@ -43,7 +46,6 @@ module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
       });
     } else if (customerParse.length === 0 && cardParse.length === 0) {
 
-
       // Keep Customer Information Data
       const lastRecord = await customerDataModel.keepCustomerData(
         undefined,
@@ -51,7 +53,7 @@ module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
         undefined,
         mobile.toString(),
         code,
-        undefined,
+        moment(new Date('1949-08-15')).format('YYYY-MM-DD'),
         0,
         0,
         0,
@@ -71,7 +73,7 @@ module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
         undefined,
         mobile.toString(),
         code,
-        undefined,
+        moment(new Date('1949-08-15')).format('YYYY-MM-DD'),
         0,
         0,
         0,
@@ -91,7 +93,106 @@ module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
       const lastStringify = JSON.stringify(lastRecord);
       const lastParse = JSON.parse(lastStringify);
 
+      // Keep Customer Membership Card
+      cardModel.keepCustomerMembershipCard(
+        lastParse[0].insertId,
+        card.toString(),
+        1
+      );
 
+
+      return (responsedata = {
+        success: true,
+        data: [],
+        msg: "Succesful"
+      });
+    } else if (customerParse.length !== 0 && cardParse.length === 0) {
+
+      // Read Membership Card Record by Customer Information Id
+      const customerCard = await cardModel.readMembershipCardId("*", customerParse[0].customer_information_id, 1);
+
+      if (customerCard.length !== 0) {
+        return (responsedata = {
+          success: false,
+          data: [],
+          msg: "Wrong Membership card"
+        });
+      }
+
+      // Keep Customer Membership Card
+      cardModel.keepCustomerMembershipCard(
+        customerParse[0].customer_information_id,
+        card.toString(),
+        1
+      );
+
+      // Keep Information Track
+      customerTrackModel.keepInformationTrack(
+        undefined,
+        undefined,
+        undefined,
+        mobile.toString(),
+        code,
+        moment(new Date('1949-08-15')).format('YYYY-MM-DD'),
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        constants.gateway.INFINITY_REWARD,
+        1
+      );
+
+
+      return (responsedata = {
+        success: true,
+        data: [],
+        msg: "Succesful"
+      });
+    } else {
+
+      if (cardParse[0].customer_information_id !== customerParse[0].customer_information_id) {
+        return (responsedata = {
+          success: false,
+          data: [],
+          msg: "Wrong Membership card"
+        });
+      }
+
+      // Keep Information Track
+      customerTrackModel.keepInformationTrack(
+        undefined,
+        undefined,
+        undefined,
+        mobile.toString(),
+        code,
+        moment(new Date('1949-08-15')).format('YYYY-MM-DD'),
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        constants.gateway.INFINITY_REWARD,
+        1
+      );
+
+      return (responsedata = {
+        success: true,
+        data: [],
+        msg: "Succesful"
+      });
     }
 
 
