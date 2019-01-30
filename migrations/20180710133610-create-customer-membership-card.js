@@ -9,8 +9,13 @@ module.exports = {
           primaryKey: true,
           type: Sequelize.INTEGER
         },
-        customer_mobile: {
-          type: Sequelize.STRING
+        customer_information_id: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: {
+            model: "customer_information_data",
+            key: "customer_information_id"
+          }
         },
         membership_card_number: {
           type: Sequelize.STRING
@@ -31,11 +36,11 @@ module.exports = {
         }
       })
 
-      .then(function() {
-        return queryInterface.sequelize.query(
-          'ALTER TABLE `customer_membership_cards` ADD UNIQUE `unique_index`(`customer_mobile`, `status`)'
-        );
-      });
+    // .then(function() {
+    //   return queryInterface.sequelize.query(
+    //     'ALTER TABLE `customer_membership_cards` ADD UNIQUE `unique_index`(`customer_mobile`, `status`)'
+    //   );
+    // });
   },
 
   down: (queryInterface, Sequelize) => {

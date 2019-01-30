@@ -41,11 +41,9 @@ module.exports = {
       },
       merchant_id: {
         type: Sequelize.INTEGER,
-        references: { model: 'merchants', key: 'merchant_id' }
       },
       store_id: {
         type: Sequelize.INTEGER,
-        references: { model: 'merchant_stores', key: 'store_id' }
       },
       address_one: {
         type: Sequelize.STRING,
