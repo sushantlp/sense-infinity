@@ -14,6 +14,8 @@ const cardModel = require("../models/customer_membership_card");
 // Logic Verify Memebership Card and Mobile
 module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
   try {
+
+    // Variable
     let responsedata = {};
 
     const recordList = await Promise.all([
@@ -200,3 +202,96 @@ module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
     return Promise.reject(error);
   }
 };
+
+// Logic Register Email
+module.exports.logicRegisterEmail = (email, mobile, code, password) => {
+  try {
+
+    // Variable
+    let responsedata = {};
+
+    if (!constants.EMAIL_REG.test(email)) {
+      return (responsedata = {
+        success: false,
+        data: [],
+        msg: "Invalid email"
+      });
+    }
+
+    // Validate Password
+    const passwordValidate = shareController.passwordAlgorthim(mobile, password);
+
+    if (!passwordValidate.success) {
+      return passwordValidate;
+    }
+
+
+    // Read Customer Information Data by Mobile and Country Code
+    const customerRecord = await customerDataModel.readDataMobileCode(
+      "*",
+      mobile,
+      code,
+      1
+    );
+
+    // Parse
+    const customerStringify = JSON.stringify(customerRecord);
+    const customerParse = JSON.parse(customerStringify);
+
+    if (customerParse.length === 0) {
+      return (responsedata = {
+        success: false,
+        data: [],
+        msg: "Wrong user"
+      });
+    }
+
+    // Update Customer Information Data
+    customerDataModel.updateCustomerData(
+      customerParse[0].first_name,
+      customerParse[0].last_name,
+      email,
+      customerParse[0].dob,
+      customerParse[0].gender_id,
+      customerParse[0].city_id,
+      customerParse[0].locality_id,
+      customerParse[0].married,
+      customerParse[0].address_one,
+      customerParse[0].address_two,
+      customerParse[0].landmark,
+      customerParse[0].spouse_name,
+      customerParse[0].anniversary_date,
+      customerParse[0].customer_information_id);
+
+    // Keep Information Track
+    customerTrackModel.keepInformationTrack(
+      customerParse[0].first_name,
+      customerParse[0].last_name,
+      email,
+      customerParse[0].mobile,
+      customerParse[0].country_code,
+      customerParse[0].dob,
+      customerParse[0].gender_id,
+      customerParse[0].city_id,
+      customerParse[0].locality_id,
+      customerParse[0].merchant_id,
+      customerParse[0].store_id,
+      customerParse[0].married,
+      customerParse[0].address_one,
+      customerParse[0].address_two,
+      customerParse[0].landmark,
+      customerParse[0].spouse_name,
+      customerParse[0].anniversary_date,
+      constants.gateway.INFINITY_REWARD,
+      1);
+
+    return (responsedata = {
+      success: true,
+      data: [],
+      msg: "Succesful"
+    });
+
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}

@@ -300,8 +300,6 @@ const logicKeepComplain = async(
           reform.first_name,
           reform.last_name,
           json.email,
-          json.customer_mobile.toString(),
-          cityCode,
           reform.dob,
           json.gender_id,
           customerParse[0].city_id,
@@ -312,7 +310,7 @@ const logicKeepComplain = async(
           customerParse[0].landmark,
           customerParse[0].spouse_name,
           customerParse[0].anniversary_date,
-          1
+          customerId
         );
 
         // Keep Information Track
@@ -571,8 +569,6 @@ const logicKeepCustomer = async(
         reform.first_name,
         reform.last_name,
         json.email,
-        json.customer_mobile.toString(),
-        cityCode,
         reform.dob,
         json.gender_id,
         json.city_id,
@@ -583,7 +579,7 @@ const logicKeepCustomer = async(
         reform.landmark,
         reform.spouse_name,
         reform.anniversary,
-        1
+        customerId
       );
     }
 
@@ -885,8 +881,6 @@ const logicFeedbackSurvey = async(
           reform.first_name,
           reform.last_name,
           json.email,
-          json.customer_mobile.toString(),
-          cityCode,
           reform.dob,
           json.gender_id,
           customerRecord[0].city_id,
@@ -897,7 +891,7 @@ const logicFeedbackSurvey = async(
           customerRecord[0].landmark,
           customerRecord[0].spouse_name,
           customerRecord[0].anniversary_date,
-          1
+          customerRecord[0].customer_information_id,
         );
 
         // ReInitialize

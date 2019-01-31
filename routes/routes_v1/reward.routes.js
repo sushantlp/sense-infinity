@@ -3,13 +3,17 @@
  */
 
 // Import Package
-const { Router } = require("express");
+const {
+  Router
+} = require("express");
 
 // Controllers (route handlers).
 const rewardController = require("../../controllers/request.reward.controller");
 
 // Jwt Auth
-const { authJwt } = require("../../services/jwt.auth");
+const {
+  authJwt
+} = require("../../services/jwt.auth");
 
 const routes = new Router();
 
@@ -19,7 +23,7 @@ routes.post(
   rewardController.requestVerifyMemberMobile
 );
 
-// Verify Membership Email
-// routes.post('/verify/email', authJwt, rewardController.requestVerifyEmail);
+// Register Membership Email
+routes.post('/register/email', rewardController.requestRegisterEmail);
 
 module.exports = routes;

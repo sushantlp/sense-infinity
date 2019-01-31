@@ -8,8 +8,7 @@ const constants = require("../config/constants");
 
 module.exports = (sequelize, DataTypes) => {
   var customerInformationData = sequelize.define(
-    "customer_information_data",
-    {
+    "customer_information_data", {
       first_name: DataTypes.STRING,
       last_name: DataTypes.STRING,
       email: DataTypes.STRING,
@@ -26,8 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       spouse_name: DataTypes.STRING,
       anniversary_date: DataTypes.STRING,
       status: DataTypes.BOOLEAN
-    },
-    {}
+    }, {}
   );
   customerInformationData.associate = function(models) {
     // associations can be defined here
@@ -45,7 +43,7 @@ const now = moment()
  */
 
 // Read Customer Information Data By Customer Information Id
-module.exports.readCustomerDataId = async (select, id, status) => {
+module.exports.readCustomerDataId = async(select, id, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -65,7 +63,7 @@ module.exports.readCustomerDataId = async (select, id, status) => {
 };
 
 // Read Customer Information Data By Mobile
-module.exports.readCustomerDataMobile = async (select, mobile, status) => {
+module.exports.readCustomerDataMobile = async(select, mobile, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -85,7 +83,7 @@ module.exports.readCustomerDataMobile = async (select, mobile, status) => {
 };
 
 // Read Customer Information Data by Mobile and Country Code
-module.exports.readDataMobileCode = async (select, mobile, code, status) => {
+module.exports.readDataMobileCode = async(select, mobile, code, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -109,7 +107,7 @@ module.exports.readDataMobileCode = async (select, mobile, code, status) => {
 };
 
 // Keep Customer Information Data
-module.exports.keepCustomerData = async (
+module.exports.keepCustomerData = async(
   firstName,
   lastName,
   email,
@@ -198,12 +196,10 @@ module.exports.keepCustomerData = async (
 };
 
 // Update Customer Information Data
-module.exports.updateCustomerData = async (
+module.exports.updateCustomerData = async(
   firstName,
   lastName,
   email,
-  mobile,
-  countryCode,
   dob,
   genderId,
   cityId,
@@ -213,7 +209,8 @@ module.exports.updateCustomerData = async (
   addressTwo,
   landmark,
   spouseName,
-  anniversaryDate
+  anniversaryDate,
+  id
 ) => {
   try {
     // Create Mysql Connection
@@ -253,14 +250,13 @@ module.exports.updateCustomerData = async (
 
     // Query
     const query =
-      "UPDATE `customer_information_data` SET `first_name` = ?, `last_name` = ?, `email` = ?, `country_code` = ?,  `dob` = ?, `gender_id` = ?, `city_id` = ?, `locality_id` = ?, `married` = ?, `address_one` = ?, `address_two` = ?, `landmark` = ?, `spouse_name` = ?, `anniversary_date` = ?, `updated_at` = ? WHERE `mobile` = ?";
+      "UPDATE `customer_information_data` SET `first_name` = ?, `last_name` = ?, `email` = ?, `dob` = ?, `gender_id` = ?, `city_id` = ?, `locality_id` = ?, `married` = ?, `address_one` = ?, `address_two` = ?, `landmark` = ?, `spouse_name` = ?, `anniversary_date` = ?, `updated_at` = ? WHERE `customer_information_id` = ?";
 
     // Query Database
     const row = await connection.execute(query, [
       firstName,
       lastName,
       email,
-      countryCode,
       dob,
       genderId,
       cityId,
@@ -272,7 +268,7 @@ module.exports.updateCustomerData = async (
       spouseName,
       anniversaryDate,
       now,
-      mobile
+      id
     ]);
 
     connection.close();

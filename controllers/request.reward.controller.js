@@ -24,9 +24,7 @@ module.exports.requestVerifyMemberMobile = (req, res) => {
       .then(response => {
         // Intialize
         const metadata = {
-          mobile: req.body.mobile,
-          card: req.body.card,
-          mobile_code: req.body.country_code
+          type: req.body.mobile,
         };
 
         return res
@@ -50,3 +48,53 @@ module.exports.requestVerifyMemberMobile = (req, res) => {
     return res.status(400).send("Not a good api call");
   }
 };
+
+
+// Request Register Email
+module.exports.requestRegisterEmail = (req, res) => {
+  if (
+    req.body.email !== undefined &&
+    req.body.email !== "" &&
+    req.body.mobile !== undefined &&
+    req.body.mobile !== "" &&
+    req.body.country_code !== undefined &&
+    req.body.country_code !== "" &&
+    req.body.password !== undefined &&
+    req.body.password !== ""
+  ) {
+
+    // Logic Register Email
+    return logicRewardController
+    .logicRegisterEmail(
+        req.body.email,
+        req.body.mobile,
+        req.body.country_code,
+        req.body.password,
+      )
+      .then(response => {
+        // Intialize
+        const metadata = {
+          type: req.body.email,
+        };
+
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              "/api/v1/rewards/register/email",
+              200,
+              response.success,
+              metadata
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else {
+    return res.status(400).send("Not a good api call");
+  }
+}
