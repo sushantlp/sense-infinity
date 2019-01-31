@@ -4,6 +4,7 @@
 const jwt = require('jsonwebtoken');
 const jwtRefresh = require('jsonwebtoken-refresh');
 const moment = require('moment');
+const nodeMailer = require('nodemailer');
 
 // Import Model
 const smsModel = require('../models/sms');
@@ -371,26 +372,24 @@ module.exports.reformCustomerDetail = (
   return reform;
 };
 
-
-
-// Logic Send Mail
-const logicSendMail = (email, link) => {
+// Send Mail
+module.exports.sendMail = (receiver, sender, subject, text, packages) => {
   const transporter = nodeMailer.createTransport({
-    host: process.env.MAIL_HOST,
-    port: process.env.MAIL_PORT,
+    host: Mail.MAIL_HOST,
+    port: Mail.MAIL_PORT,
     secure: false,
     auth: {
-      user: process.env.MAIL_USERNAME,
-      pass: process.env.MAIL_PASSWORD
+      user: Mail.MAIL_USERNAME,
+      pass: Mail.MAIL_PASSWORD
     }
   });
 
   const mailOptions = {
-    from: "sushantsingh.1081@gmail.com", // sender address
-    to: email, // list of receivers
-    subject: "OTP", // Subject line
-    text: "", // plain text body
-    html: link // html body
+    from: sender, // sender address
+    to: receiver, // list of receivers
+    subject: subject, // Subject line
+    text: text, // plain text body
+    html: packages // html body
   };
 
   transporter.sendMail(mailOptions, (error, info) => {

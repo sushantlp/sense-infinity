@@ -47,7 +47,7 @@ module.exports.requestKeepDeviceData = (req, res) => {
               "/api/v1/merchant/keep/device",
               200,
               response.success,
-              null
+              {}
             )
           );
       })
@@ -504,7 +504,7 @@ module.exports.requestReadCustomerData = (req, res) => {
         return res
           .status(200)
           .send(
-            shareController.createJsonObject(
+      shareController.createJsonObject(
               response.data,
               response.msg,
               "/api/v1/merchant/get/customer",

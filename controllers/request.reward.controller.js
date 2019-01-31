@@ -18,8 +18,8 @@ module.exports.requestVerifyMemberMobile = (req, res) => {
     return logicRewardController
       .logicVerifyMemberMobile(
         req.body.card,
-        req.body.mobile,
-        req.body.country_code
+        req.body.mobile.toString(),
+        req.body.country_code.toString()
       )
       .then(response => {
         // Intialize
@@ -65,8 +65,8 @@ module.exports.requestRegisterEmail = (req, res) => {
     return logicRewardController
       .logicRegisterEmail(
         req.body.email,
-        req.body.mobile,
-        req.body.country_code,
+        req.body.mobile.toString(),
+        req.body.country_code.toString(),
       )
       .then(response => {
         // Intialize
@@ -84,6 +84,50 @@ module.exports.requestRegisterEmail = (req, res) => {
               200,
               response.success,
               metadata
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else {
+    return res.status(400).send("Not a good api call");
+  }
+}
+
+// Request Verify Otp
+module.exports.requestVerifyOtp = (req, res) => {
+  if (
+    req.body.password !== undefined &&
+    req.body.password !== "" &&
+    req.body.mobile !== undefined &&
+    req.body.mobile !== "" &&
+    req.body.country_code !== undefined &&
+    req.body.country_code !== "" &&
+    req.body.otp !== undefined &&
+    req.body.otp !== ""
+  ) {
+
+    // Logic Verify Otp
+    return logicRewardController
+      .logicVerifyOtp(
+        req.body.password,
+        req.body.mobile.toString(),
+        req.body.country_code.toString(),
+        req.body.otp,
+      )
+      .then(response => {
+
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              "/api/v1/rewards/verify/otp",
+              200,
+              response.success, {}
             )
           );
       })

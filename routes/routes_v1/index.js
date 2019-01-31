@@ -3,7 +3,9 @@
  */
 
 // Import Package
-const { Router } = require('express');
+const {
+  Router
+} = require('express');
 
 // Import Route
 const clubCard = require('./card.routes.js');

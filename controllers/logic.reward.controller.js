@@ -231,13 +231,6 @@ module.exports.logicRegisterEmail = async(email, mobile, code) => {
       });
     }
 
-    // // Validate Password
-    // const passwordValidate = shareController.passwordAlgorthim(mobile, password);
-
-    // if (!passwordValidate.success) {
-    //   return passwordValidate;
-    // }
-
     // Read Customer Information Data by Mobile and Country Code
     const customerRecord = await customerDataModel.readDataMobileCode(
       "*",
@@ -309,10 +302,69 @@ module.exports.logicRegisterEmail = async(email, mobile, code) => {
     // Keep Sms Record
     smsModel.keepSmsOtp(mobile, random, 1);
 
+    // Send Mail
+    shareController.sendMail(email, "contact@sense8.tech", "OTP", "", random);
+
     return (responsedata = {
       success: true,
       data: [],
       msg: "Succesful"
+    });
+
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
+
+// Logic Verify Otp
+module.exports.logicVerifyOtp = async(password, mobile, code, otp) => {
+  try {
+
+    // Variable
+    let responsedata = {};
+
+    // Replace + 
+    code = code.replace(/\+/g, '');
+
+    // Concate
+    const newMobile = code + mobile
+
+    // Validate Password
+    const passwordValidate = shareController.passwordAlgorthim(mobile, password);
+    if (!passwordValidate.success) {
+      return passwordValidate;
+    }
+
+    // Validate Otp
+    const validate = await shareController.validateOtp(newMobile, otp);
+    if (!validate.success) {
+      return validate;
+    }
+
+    // Read Customer Information Data by Mobile and Country Code
+    const record = await customerDataModel.readDataMobileCode(
+      "*",
+      mobile,
+      code,
+      1
+    );
+
+    // Parse
+    const recordStringify = JSON.stringify(record);
+    const recordParse = JSON.parse(recordStringify);
+
+    // Generate JWT Token
+    const token = shareController.generateToken(recordParse);
+
+    // Update Sms Record
+    smsModel.updateSmsOtp(newMobile, null, 0);
+
+    return (responsedata = {
+      success: true,
+      data: {
+        token: token,
+      },
+      msg: 'Successful'
     });
 
   } catch (error) {

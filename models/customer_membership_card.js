@@ -8,7 +8,7 @@ const constants = require('../config/constants');
 module.exports = (sequelize, DataTypes) => {
   var CustomerMembershipCard = sequelize.define(
     'customer_membership_card', {
-      customer_mobile: DataTypes.STRING,
+      customer_information_id: DataTypes.INTEGER,
       membership_card_number: DataTypes.STRING,
       status: DataTypes.BOOLEAN
     }, {}
