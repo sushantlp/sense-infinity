@@ -58,18 +58,15 @@ module.exports.requestRegisterEmail = (req, res) => {
     req.body.mobile !== undefined &&
     req.body.mobile !== "" &&
     req.body.country_code !== undefined &&
-    req.body.country_code !== "" &&
-    req.body.password !== undefined &&
-    req.body.password !== ""
+    req.body.country_code !== ""
   ) {
 
     // Logic Register Email
     return logicRewardController
-    .logicRegisterEmail(
+      .logicRegisterEmail(
         req.body.email,
         req.body.mobile,
         req.body.country_code,
-        req.body.password,
       )
       .then(response => {
         // Intialize

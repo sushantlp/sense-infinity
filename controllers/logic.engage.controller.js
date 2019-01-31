@@ -8,7 +8,9 @@ const shareController = require("./share.controller");
 const databaseController = require("./database.controller");
 
 // Import Config
-const constants = require("../config/constants");
+const {
+  Gateway
+} = require("../config/constants");
 
 // Import Model
 const localityModel = require("../models/locality");
@@ -272,7 +274,7 @@ const logicKeepComplain = async(
           undefined,
           undefined,
           undefined,
-          constants.gateway.CLUB_CARD,
+          Gateway.CLUB_CARD,
           1
         );
 
@@ -332,7 +334,7 @@ const logicKeepComplain = async(
           customerParse[0].landmark,
           customerParse[0].spouse_name,
           customerParse[0].anniversary_date,
-          constants.gateway.CLUB_CARD,
+          Gateway.CLUB_CARD,
           1
         );
 
@@ -660,7 +662,7 @@ const logicKeepCustomer = async(
       reform.landmark,
       reform.spouse_name,
       reform.anniversary,
-      constants.gateway.CLUB_CARD,
+      Gateway.CLUB_CARD,
       1
     );
   });
@@ -872,7 +874,7 @@ const logicFeedbackSurvey = async(
           undefined,
           undefined,
           undefined,
-          constants.gateway.CLUB_CARD,
+          Gateway.CLUB_CARD,
           1
         );
       } else {
@@ -916,7 +918,7 @@ const logicFeedbackSurvey = async(
           customerRecord[0].landmark,
           customerRecord[0].spouse_name,
           customerRecord[0].anniversary_date,
-          constants.gateway.CLUB_CARD,
+          Gateway.CLUB_CARD,
           1
         );
       }

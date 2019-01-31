@@ -26,4 +26,7 @@ routes.post(
 // Register Membership Email
 routes.post('/register/email', rewardController.requestRegisterEmail);
 
+// Verify Otp
+// routes.post('/verify/otp', rewardController.requestVerifyOtp);
+
 module.exports = routes;

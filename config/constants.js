@@ -4,10 +4,20 @@
 const mysql = require('mysql2/promise');
 
 // Constant String
-module.exports.gateway = {
+module.exports.Gateway = {
   CLUB_CARD: 'Club-Card',
   POS: 'Point-of-Sale',
   INFINITY_REWARD: 'Infinity-Reward'
+};
+
+// Mail Information
+module.exports.Mail = {
+  MAIL_DRIVER: process.env.MAIL_DRIVER,
+  MAIL_HOST: process.env.MAIL_HOST,
+  MAIL_PORT: process.env.MAIL_PORT,
+  MAIL_USERNAME: process.env.MAIL_USERNAME,
+  MAIL_PASSWORD: process.env.MAIL_PASSWORD,
+  MAIL_ENCRYPTION: process.env.MAIL_ENCRYPTION,
 };
 
 // Create Mysql Connection

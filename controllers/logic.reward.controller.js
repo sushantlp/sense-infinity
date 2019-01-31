@@ -4,12 +4,19 @@
 const moment = require('moment');
 
 // Import Config
-const constants = require("../config/constants");
+const {
+  EMAIL_REG,
+  Gateway
+} = require("../config/constants");
 
 // Import Model
 const customerDataModel = require("../models/customer_information_data");
 const customerTrackModel = require("../models/customer_information_track");
 const cardModel = require("../models/customer_membership_card");
+const shareController = require("./share.controller");
+
+// Import Model
+const smsModel = require('../models/sms');
 
 // Logic Verify Memebership Card and Mobile
 module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
@@ -17,6 +24,9 @@ module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
 
     // Variable
     let responsedata = {};
+
+    // Replace + 
+    code = code.replace(/\+/g, '');
 
     const recordList = await Promise.all([
       // Read Customer Information Data by Mobile and Country Code
@@ -87,7 +97,7 @@ module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
         undefined,
         undefined,
         undefined,
-        constants.gateway.INFINITY_REWARD,
+        Gateway.INFINITY_REWARD,
         1
       );
 
@@ -147,7 +157,7 @@ module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
         undefined,
         undefined,
         undefined,
-        constants.gateway.INFINITY_REWARD,
+        Gateway.INFINITY_REWARD,
         1
       );
 
@@ -186,7 +196,7 @@ module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
         undefined,
         undefined,
         undefined,
-        constants.gateway.INFINITY_REWARD,
+        Gateway.INFINITY_REWARD,
         1
       );
 
@@ -204,13 +214,16 @@ module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
 };
 
 // Logic Register Email
-module.exports.logicRegisterEmail = (email, mobile, code, password) => {
+module.exports.logicRegisterEmail = async(email, mobile, code) => {
   try {
 
     // Variable
     let responsedata = {};
 
-    if (!constants.EMAIL_REG.test(email)) {
+    // Replace + 
+    code = code.replace(/\+/g, '');
+
+    if (!EMAIL_REG.test(email)) {
       return (responsedata = {
         success: false,
         data: [],
@@ -218,13 +231,12 @@ module.exports.logicRegisterEmail = (email, mobile, code, password) => {
       });
     }
 
-    // Validate Password
-    const passwordValidate = shareController.passwordAlgorthim(mobile, password);
+    // // Validate Password
+    // const passwordValidate = shareController.passwordAlgorthim(mobile, password);
 
-    if (!passwordValidate.success) {
-      return passwordValidate;
-    }
-
+    // if (!passwordValidate.success) {
+    //   return passwordValidate;
+    // }
 
     // Read Customer Information Data by Mobile and Country Code
     const customerRecord = await customerDataModel.readDataMobileCode(
@@ -274,16 +286,28 @@ module.exports.logicRegisterEmail = (email, mobile, code, password) => {
       customerParse[0].gender_id,
       customerParse[0].city_id,
       customerParse[0].locality_id,
-      customerParse[0].merchant_id,
-      customerParse[0].store_id,
+      0,
+      0,
       customerParse[0].married,
       customerParse[0].address_one,
       customerParse[0].address_two,
       customerParse[0].landmark,
       customerParse[0].spouse_name,
       customerParse[0].anniversary_date,
-      constants.gateway.INFINITY_REWARD,
+      Gateway.INFINITY_REWARD,
       1);
+
+    // Generate OTP
+    const random = shareController.generateRandomNumber(4);
+
+    // Concate
+    mobile = code + mobile
+
+    // Update Sms Record
+    await smsModel.updateSmsOtp(mobile, null, 0);
+
+    // Keep Sms Record
+    smsModel.keepSmsOtp(mobile, random, 1);
 
     return (responsedata = {
       success: true,

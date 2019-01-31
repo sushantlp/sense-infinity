@@ -29,7 +29,9 @@ module.exports.requestAppSignup = (req, res) => {
     return logicAppSignup(mobile)
       .then(response => {
         // Intialize
-        const metadata = { type: mobile };
+        const metadata = {
+          type: mobile
+        };
 
         return res
           .status(200)
@@ -71,7 +73,9 @@ module.exports.requestOtpVerify = (req, res) => {
     return logicOtpVerify(mobile, otp, password)
       .then(response => {
         // Intialize
-        const metadata = { type: mobile };
+        const metadata = {
+          type: mobile
+        };
         return res
           .status(200)
           .send(
@@ -95,13 +99,15 @@ module.exports.requestOtpVerify = (req, res) => {
 };
 
 // Request Refresh Token
-module.exports.requestRefreshToken = async (req, res) => {
+module.exports.requestRefreshToken = async(req, res) => {
   if (req.headers['authorization'] !== undefined && req.headers['authorization'] !== '') {
     // Refresh JWT Token
     const token = shareController.refreshToken(req.headers['authorization']);
     return res
       .status(200)
-      .send(shareController.createJsonObject({ token: token }, 'Successful', '/refresh/token', 200, true, null));
+      .send(shareController.createJsonObject({
+        token: token
+      }, 'Successful', '/refresh/token', 200, true, null));
   } else {
     return res.status(400).send('Not a good api call');
   }
@@ -144,7 +150,7 @@ const logicAppSignup = async mobile => {
     await smsModel.updateSmsOtp(mobile, null, 0);
 
     // Keep Sms Record
-    await smsModel.keepSmsOtp(mobile, random, 1);
+    smsModel.keepSmsOtp(mobile, random, 1);
 
     return (responsedata = {
       success: true,
@@ -158,7 +164,7 @@ const logicAppSignup = async mobile => {
 };
 
 // Logic Otp Verify
-const logicOtpVerify = async (mobile, otp, password) => {
+const logicOtpVerify = async(mobile, otp, password) => {
   try {
     // Intialize
     let responsedata = {};
@@ -196,7 +202,10 @@ const logicOtpVerify = async (mobile, otp, password) => {
 
       return (responsedata = {
         success: true,
-        data: { token: token, store: merchantStore },
+        data: {
+          token: token,
+          store: merchantStore
+        },
         msg: 'Successful'
       });
     } else {

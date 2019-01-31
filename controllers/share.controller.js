@@ -8,6 +8,12 @@ const moment = require('moment');
 // Import Model
 const smsModel = require('../models/sms');
 
+// Import Config
+const {
+  Mail
+} = require("../config/constants");
+
+
 // Generate Random Number
 module.exports.generateRandomNumber = (length = 10) => {
   let characters = '123456789';
@@ -22,18 +28,20 @@ module.exports.generateRandomNumber = (length = 10) => {
 
 // Generate JWT Token
 module.exports.generateToken = payload => {
-  return jwt.sign(
-    {
+  return jwt.sign({
       data: payload
     },
-    process.env.JWT_SECRET,
-    { expiresIn: 1500 }
+    process.env.JWT_SECRET, {
+      expiresIn: 1500
+    }
   ); // Expiry time in second
 };
 
 // Refresh JWT Token
 module.exports.refreshToken = token => {
-  const originalDecoded = jwt.decode(token, { complete: true });
+  const originalDecoded = jwt.decode(token, {
+    complete: true
+  });
   return jwtRefresh.refresh(originalDecoded, 1500, process.env.JWT_SECRET);
 };
 
@@ -78,7 +86,7 @@ module.exports.passwordAlgorthim = (mobile, password) => {
 
   // Concat
   pair1 = pair1.concat(pair2);
-  
+
   // Validate Password
   if (pair1 == password) {
     return (responsedata = {
@@ -94,7 +102,7 @@ module.exports.passwordAlgorthim = (mobile, password) => {
 };
 
 // Validate Otp
-module.exports.validateOtp = async (mobile, otp) => {
+module.exports.validateOtp = async(mobile, otp) => {
   try {
     // Intialize
     let responsedata = {};
@@ -249,8 +257,7 @@ module.exports.validateCustomerDetail = (loop, bool) => {
       }
 
       // Customer City Parameter Validate
-      if (
-        !loop[i].hasOwnProperty('city_id') ||
+      if (!loop[i].hasOwnProperty('city_id') ||
         loop[i]['city_id'] === '' ||
         loop[i]['city_id'] === undefined ||
         loop[i]['city_id'] !== parseInt(loop[i]['city_id'], 10)
@@ -262,8 +269,7 @@ module.exports.validateCustomerDetail = (loop, bool) => {
       }
 
       // Customer Locality Parameter Validate
-      if (
-        !loop[i].hasOwnProperty('locality_id') ||
+      if (!loop[i].hasOwnProperty('locality_id') ||
         loop[i]['locality_id'] === '' ||
         loop[i]['locality_id'] === undefined ||
         loop[i]['locality_id'] !== parseInt(loop[i]['locality_id'], 10)
@@ -363,4 +369,38 @@ module.exports.reformCustomerDetail = (
   }
 
   return reform;
+};
+
+
+
+// Logic Send Mail
+const logicSendMail = (email, link) => {
+  const transporter = nodeMailer.createTransport({
+    host: process.env.MAIL_HOST,
+    port: process.env.MAIL_PORT,
+    secure: false,
+    auth: {
+      user: process.env.MAIL_USERNAME,
+      pass: process.env.MAIL_PASSWORD
+    }
+  });
+
+  const mailOptions = {
+    from: "sushantsingh.1081@gmail.com", // sender address
+    to: email, // list of receivers
+    subject: "OTP", // Subject line
+    text: "", // plain text body
+    html: link // html body
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return Promise.reject(error);
+    }
+    return Promise.resolve(
+      "Message %s sent: %s",
+      info.messageId,
+      info.response
+    );
+  });
 };

@@ -67,6 +67,8 @@ module.exports.keepInformationTrack = async(
   status
 ) => {
   try {
+
+
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
 
