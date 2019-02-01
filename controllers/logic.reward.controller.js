@@ -371,3 +371,26 @@ module.exports.logicVerifyOtp = async(password, mobile, code, otp) => {
     return Promise.reject(error);
   }
 }
+
+// Logic Keep Customer Data
+module.exports.logicKeepCustomerData = async(email, mobile, code, card, firstName, lastName, dob, gender, married, spouse, anniversary, addressOne, addressTwo, landmark, city, locality) => {
+  try {
+
+    // Reform Customer Detail
+    const reform = shareController.reformCustomerDetail(
+      firstName,
+      lastName,
+      spouse,
+      dob,
+      married,
+      anniversary,
+      addressOne,
+      addressTwo,
+      landmark,
+      true
+    );
+
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}

@@ -139,3 +139,75 @@ module.exports.requestVerifyOtp = (req, res) => {
     return res.status(400).send("Not a good api call");
   }
 }
+
+// Request Keep Customer Data
+module.exports.requestKeepCustomerData = (req, res) => {
+  if (
+    req.body.email !== undefined &&
+    req.body.email !== "" &&
+    req.body.mobile !== undefined &&
+    req.body.mobile !== "" &&
+    req.body.country_code !== undefined &&
+    req.body.country_code !== "" &&
+    req.body.card !== undefined &&
+    req.body.card !== "" &&
+    req.body.hasOwnProperty('first_name') &&
+    req.body.hasOwnProperty('last_name') &&
+    req.body.hasOwnProperty('dob') &&
+    req.body.hasOwnProperty('gender') &&
+    req.body.hasOwnProperty('married') &&
+    req.body.hasOwnProperty('spouse') &&
+    req.body.hasOwnProperty('anniversary') &&
+    req.body.hasOwnProperty('address_one') &&
+    req.body.hasOwnProperty('address_two') &&
+    req.body.hasOwnProperty('landmark') &&
+    req.body.hasOwnProperty('city') &&
+    req.body.hasOwnProperty('locality')) {
+
+    // Logic Keep Customer Data
+    return logicRewardController
+      .logicKeepCustomerData(
+        req.body.email,
+        req.body.mobile.toString(),
+        req.body.country_code.toString(),
+        req.body.card,
+        req.body.first_name,
+        req.body.last_name,
+        req.body.dob,
+        req.body.gender,
+        req.body.married,
+        req.body.spouse,
+        req.body.anniversary,
+        req.body.address_one,
+        req.body.address_two,
+        req.body.landmark,
+        req.body.city,
+        req.body.locality,
+      )
+      .then(response => {
+
+        // Intialize
+        const metadata = {
+          type: req.body.email,
+        };
+
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              "/api/v1/rewards/verify/otp",
+              200,
+              response.success, metadata
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else {
+    return res.status(400).send("Not a good api call");
+  }
+}

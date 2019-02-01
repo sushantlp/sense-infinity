@@ -9,6 +9,7 @@ const {
 
 // Controllers (route handlers).
 const rewardController = require("../../controllers/request.reward.controller");
+const engageController = require('../../controllers/request.engage.controller');
 
 // Jwt Auth
 const {
@@ -28,5 +29,11 @@ routes.post('/register/email', rewardController.requestRegisterEmail);
 
 // Verify Otp
 routes.post('/verify/otp', rewardController.requestVerifyOtp);
+
+// Keep Customer Data
+routes.post('/keep/customer/data', rewardController.requestKeepCustomerData);
+
+// Get Static Data
+routes.get('/static', engageController.requestSenseStatic);
 
 module.exports = routes;
