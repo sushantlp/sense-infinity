@@ -151,6 +151,10 @@ module.exports.requestKeepCustomerData = (req, res) => {
     req.body.country_code !== "" &&
     req.body.card !== undefined &&
     req.body.card !== "" &&
+    req.body.city !== undefined &&
+    req.body.city !== "" &&
+    req.body.locality !== undefined &&
+    req.body.locality !== "" &&
     req.body.hasOwnProperty('first_name') &&
     req.body.hasOwnProperty('last_name') &&
     req.body.hasOwnProperty('dob') &&
@@ -160,9 +164,8 @@ module.exports.requestKeepCustomerData = (req, res) => {
     req.body.hasOwnProperty('anniversary') &&
     req.body.hasOwnProperty('address_one') &&
     req.body.hasOwnProperty('address_two') &&
-    req.body.hasOwnProperty('landmark') &&
-    req.body.hasOwnProperty('city') &&
-    req.body.hasOwnProperty('locality')) {
+    req.body.hasOwnProperty('landmark')
+  ) {
 
     // Logic Keep Customer Data
     return logicRewardController
@@ -197,7 +200,7 @@ module.exports.requestKeepCustomerData = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              "/api/v1/rewards/verify/otp",
+              "/api/v1/rewards/customer/data",
               200,
               response.success, metadata
             )

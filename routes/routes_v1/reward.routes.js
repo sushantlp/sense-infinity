@@ -31,7 +31,7 @@ routes.post('/register/email', rewardController.requestRegisterEmail);
 routes.post('/verify/otp', rewardController.requestVerifyOtp);
 
 // Keep Customer Data
-routes.post('/keep/customer/data', rewardController.requestKeepCustomerData);
+routes.post('/customer/data', rewardController.requestKeepCustomerData);
 
 // Get Static Data
 routes.get('/static', engageController.requestSenseStatic);

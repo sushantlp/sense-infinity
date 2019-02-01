@@ -376,6 +376,20 @@ module.exports.logicVerifyOtp = async(password, mobile, code, otp) => {
 module.exports.logicKeepCustomerData = async(email, mobile, code, card, firstName, lastName, dob, gender, married, spouse, anniversary, addressOne, addressTwo, landmark, city, locality) => {
   try {
 
+    // Intialize
+    let responsedata = {};
+
+    // Replace + 
+    code = code.replace(/\+/g, '');
+
+    if (!EMAIL_REG.test(email)) {
+      return (responsedata = {
+        success: false,
+        data: [],
+        msg: "Invalid email"
+      });
+    }
+
     // Reform Customer Detail
     const reform = shareController.reformCustomerDetail(
       firstName,
@@ -390,6 +404,60 @@ module.exports.logicKeepCustomerData = async(email, mobile, code, card, firstNam
       true
     );
 
+
+    // Read Customer Information Data by Mobile and Country Code
+    const record = await customerDataModel.readDataMobileCode("customer_information_id", mobile, code, 1);
+
+    // Parse
+    const recordStringify = JSON.stringify(record);
+    const recordParse = JSON.parse(recordStringify);
+
+    // Update Customer Information Data
+    customerDataModel.updateCustomerData(
+      reform.first_name,
+      reform.last_name,
+      email,
+      reform.dob,
+      parseInt(gender, 10),
+      parseInt(city, 10),
+      parseInt(locality, 10),
+      parseInt(married, 10),
+      reform.address_one,
+      reform.address_two,
+      reform.landmark,
+      reform.spouse_name,
+      reform.anniversary,
+      recordParse[0].customer_information_id
+    );
+
+    // Keep Information Track
+    customerTrackModel.keepInformationTrack(
+      reform.first_name,
+      reform.last_name,
+      email,
+      mobile,
+      code,
+      reform.dob,
+      parseInt(gender, 10),
+      parseInt(city, 10),
+      parseInt(locality, 10),
+      0,
+      0,
+      parseInt(married, 10),
+      reform.address_one,
+      reform.address_two,
+      reform.landmark,
+      reform.spouse_name,
+      reform.anniversary,
+      Gateway.INFINITY_REWARD,
+      1
+    );
+
+    return (responsedata = {
+      success: true,
+      data: [],
+      msg: "Succesful"
+    });
   } catch (error) {
     return Promise.reject(error);
   }
