@@ -26,7 +26,7 @@ module.exports = {
         unique: true
       },
       mobile: {
-        type: Sequelize.STRING(10),
+        type: Sequelize.STRING,
         unique: true
       },
       description: {
@@ -37,7 +37,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        references: { model: "categories", key: "category_id" }
+        references: {
+          model: "categories",
+          key: "category_id"
+        }
       },
       manager_id: {
         type: Sequelize.INTEGER,

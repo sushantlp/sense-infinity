@@ -9,17 +9,24 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       survey_question: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       input_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: "input_types", key: "input_id" }
+        references: {
+          model: "input_types",
+          key: "input_id"
+        }
       },
       category_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: "categories", key: "category_id" }
+        references: {
+          model: "categories",
+          key: "category_id"
+        }
       },
       status: {
         type: Sequelize.BOOLEAN,

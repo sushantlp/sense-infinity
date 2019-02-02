@@ -18,7 +18,8 @@ module.exports = {
           }
         },
         membership_card_number: {
-          type: Sequelize.STRING
+          type: Sequelize.STRING,
+          allowNull: false,
         },
         status: {
           type: Sequelize.BOOLEAN,

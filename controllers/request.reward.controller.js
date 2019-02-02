@@ -214,3 +214,7 @@ module.exports.requestKeepCustomerData = (req, res) => {
     return res.status(400).send("Not a good api call");
   }
 }
+
+module.exports.requestGetCouponList = (req, res) => {
+
+}

@@ -9,10 +9,12 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       mobile: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       otp: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       gateway_status: {
         type: Sequelize.STRING,

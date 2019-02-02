@@ -11,10 +11,14 @@ module.exports = {
       city_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: "cities", key: "city_id" }
+        references: {
+          model: "cities",
+          key: "city_id"
+        }
       },
       locality_name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       pincode: {
         type: Sequelize.INTEGER,

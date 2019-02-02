@@ -22,10 +22,12 @@ module.exports = {
           allowNull: true
         },
         mobile: {
-          type: Sequelize.STRING
+          type: Sequelize.STRING,
+          allowNull: false,
         },
         country_code: {
-          type: Sequelize.STRING
+          type: Sequelize.STRING,
+          allowNull: false,
         },
         dob: {
           type: Sequelize.STRING,

@@ -14,7 +14,10 @@ module.exports = {
       survey_ques_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: "survey_questions", key: "survey_ques_id" }
+        references: {
+          model: "survey_questions",
+          key: "survey_ques_id"
+        }
       },
       status: {
         type: Sequelize.BOOLEAN,

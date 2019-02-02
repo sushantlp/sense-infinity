@@ -11,7 +11,10 @@ module.exports = {
       merchant_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: 'merchants', key: 'merchant_id' }
+        references: {
+          model: 'merchants',
+          key: 'merchant_id'
+        }
       },
       store_name: {
         type: Sequelize.STRING,
@@ -33,13 +36,19 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        references: { model: 'cities', key: 'city_id' }
+        references: {
+          model: 'cities',
+          key: 'city_id'
+        }
       },
       locality_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        references: { model: 'localities', key: 'locality_id' }
+        references: {
+          model: 'localities',
+          key: 'locality_id'
+        }
       },
       pincode: {
         type: Sequelize.INTEGER,

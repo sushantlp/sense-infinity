@@ -9,20 +9,28 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       customer_information_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
       },
       store_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: 'merchant_stores', key: 'store_id' }
+        references: {
+          model: 'merchant_stores',
+          key: 'store_id'
+        }
       },
       merchant_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: 'merchants', key: 'merchant_id' }
+        references: {
+          model: 'merchants',
+          key: 'merchant_id'
+        }
       },
       complain: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
+        allowNull: false,
       },
       status: {
         type: Sequelize.BOOLEAN,

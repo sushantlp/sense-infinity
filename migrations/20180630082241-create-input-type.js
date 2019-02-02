@@ -9,7 +9,8 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       input_name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       min: {
         type: Sequelize.STRING,
