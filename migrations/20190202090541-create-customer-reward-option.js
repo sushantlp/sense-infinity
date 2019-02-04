@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("feedback_options", {
-      feed_option_id: {
+    return queryInterface.createTable('customer_reward_options', {
+      reward_option_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
@@ -12,12 +12,12 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      feed_ques_id: {
+      reward_question_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "feedback_questions",
-          key: "feed_ques_id"
+          model: "customer_reward_questions",
+          key: "reward_question_id"
         }
       },
       status: {
@@ -25,18 +25,18 @@ module.exports = {
         defaultValue: 0
       },
       createdAt: {
-        field: "created_at",
+        field: 'created_at',
         allowNull: false,
         type: Sequelize.DATE
       },
       updatedAt: {
-        field: "updated_at",
+        field: 'updated_at',
         allowNull: false,
         type: Sequelize.DATE
       }
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("feedback_options");
+    return queryInterface.dropTable('customer_reward_options');
   }
 };

@@ -1,28 +1,40 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('customer_reward_questions', {
-      reward_question_id: {
+    return queryInterface.createTable('reward_question_responses', {
+      question_response_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      reward_question: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      input_id: {
+      reward_question_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "input_types",
-          key: "input_id"
+          model: "customer_reward_questions",
+          key: "reward_question_id"
         }
       },
-      reward_gift: {
-        type: Sequelize.FLOAT,
+      reward_option_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
+        references: {
+          model: "customer_reward_options",
+          key: "reward_option_id"
+        }
+      },
+      customer_information_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "customer_information_data",
+          key: "customer_information_id"
+        }
+      },
+      text_question_response: {
+        type: Sequelize.STRING,
+        allowNull: true
       },
       status: {
         type: Sequelize.BOOLEAN,
@@ -41,6 +53,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('customer_reward_questions');
+    return queryInterface.dropTable('reward_question_responses');
   }
 };

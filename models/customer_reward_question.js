@@ -1,12 +1,13 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var customer_reward_question = sequelize.define('customer_reward_question', {
-    firstName: DataTypes.STRING,
-    lastName: DataTypes.STRING,
-    email: DataTypes.STRING
+  var customerRewardQuestion = sequelize.define('customer_reward_question', {
+    reward_question: DataTypes.STRING,
+    input_id: DataTypes.INTEGER,
+    reward_gift: DataTypes.FLOAT,
+    status: DataTypes.BOOLEAN
   }, {});
   customer_reward_question.associate = function(models) {
     // associations can be defined here
   };
-  return customer_reward_question;
+  return customerRewardQuestion;
 };
