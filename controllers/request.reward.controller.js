@@ -218,17 +218,17 @@ module.exports.requestKeepCustomerData = (req, res) => {
 // Request Get All Coupon Customer Reward 
 module.exports.requestGetAllData = (req, res) => {
   if (
-    req.body.mobile !== undefined &&
-    req.body.mobile !== "" &&
-    req.body.country_code !== undefined &&
-    req.body.country_code !== ""
+    req.query.mobile !== undefined &&
+    req.query.mobile !== "" &&
+    req.query.country_code !== undefined &&
+    req.query.country_code !== ""
   ) {
 
     // Logic Get All Coupon Customer Reward 
     return logicRewardController
       .logicGetAllData(
-        req.body.mobile.toString(),
-        req.body.country_code.toString()
+        req.query.mobile.toString(),
+        req.query.country_code.toString()
       )
       .then(response => {
 

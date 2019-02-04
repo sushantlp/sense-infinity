@@ -20,8 +20,8 @@ module.exports = {
           key: "input_id"
         }
       },
-      reward_gift: {
-        type: Sequelize.FLOAT,
+      reward_point: {
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
       status: {

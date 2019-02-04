@@ -13,10 +13,13 @@ const {
 const customerDataModel = require("../models/customer_information_data");
 const customerTrackModel = require("../models/customer_information_track");
 const cardModel = require("../models/customer_membership_card");
+const smsModel = require('../models/sms');
+const rewardQuestion = require('../models/customer_reward_question');
+const rewardOption = require('../models/customer_reward_option');
+
+// Import Controller
 const shareController = require("./share.controller");
 
-// Import Model
-const smsModel = require('../models/sms');
 
 // Logic Verify Memebership Card and Mobile
 module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
@@ -412,6 +415,14 @@ module.exports.logicKeepCustomerData = async(email, mobile, code, card, firstNam
     const recordStringify = JSON.stringify(record);
     const recordParse = JSON.parse(recordStringify);
 
+    if (recordParse.length === 0) {
+      return (responsedata = {
+        success: false,
+        data: {},
+        msg: "Unknown user"
+      });
+    }
+
     // Update Customer Information Data
     customerDataModel.updateCustomerData(
       reform.first_name,
@@ -467,7 +478,143 @@ module.exports.logicKeepCustomerData = async(email, mobile, code, card, firstNam
 module.exports.logicGetAllData = async(mobile, code) => {
   try {
 
+    // Variable
+    let responsedata = {};
+    let rewardPoint = 0;
+
+    // Replace + 
+    code = code.replace(/\+/g, '');
+
+    // Read Customer Information Data by Mobile and Country Code
+    const customerRecord = await customerDataModel.readDataMobileCode(
+      "customer_information_id AS id, first_name, last_name, email, mobile, country_code, dob, gender_id AS gender, city_id AS city, locality_id AS locality, address_one, address_two, landmark, married, spouse_name, anniversary_date, reward_point",
+      mobile,
+      code,
+      1
+    );
+
+    // Parse
+    const customerStringify = JSON.stringify(customerRecord);
+    const customerParse = JSON.parse(customerStringify);
+
+    if (customerParse.length === 0) {
+      return (responsedata = {
+        success: false,
+        data: {},
+        msg: "Unknown user"
+      });
+    }
+
+    const list = await Promise.all([
+
+      // Get Reward Question List
+      logicRewardQuestionList(),
+
+      // Get User Reward Question Response List
+      logicUserQuestionResponse(customerParse[0].id),
+
+    ]);
+
+    console.log(list)
+    return (responsedata = {
+      success: true,
+      data: [{
+        reward_point: customerParse[0].reward_point,
+        customer_record: customerParse[0],
+      }],
+      msg: "Succesful"
+    });
+
   } catch (error) {
     return Promise.reject(error);
   }
+}
+
+// Get Reward Question List
+const logicRewardQuestionList = async() => {
+  try {
+
+    // Read All Reward Question List
+    const question = await rewardQuestion.readRewardQuestionList("customer_reward_questions.reward_question_id, customer_reward_questions.reward_question, customer_reward_questions.input_id, customer_reward_questions.reward_point, input_types.input_name", 1);
+
+    // Parse
+    const questionStringify = JSON.stringify(question);
+    const questionParse = JSON.parse(questionStringify);
+    if (questionParse.length !== 0) {
+      return [];
+    }
+
+
+    return await creatRewardQuestionJson(questionParse)
+
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
+
+// Create Feedback Json
+const creatRewardQuestionJson = async(json) => {
+  try {
+
+    // Variable
+    let optionList = [];
+    let questionParse = [];
+
+    const jsonArray = json.map(async(list, index) => {
+
+      // Block Variable
+      let object = {};
+
+      // Read Reward Option List
+      optionList = await rewardOption.readRewardOptionList(
+        list.reward_question_id,
+        1
+      );
+
+      object.reward_question_id = list.reward_question_id;
+      object.question = list.reward_question;
+      object.question_input_id = list.input_id;
+      object.question_input_name = list.input_name;
+
+      // Parse
+      questionParse = JSON.stringify(optionList);
+      questionParse = JSON.parse(questionParse);
+
+      // Zero Means No Record
+      if (questionParse.length === 0) {
+        object.option_list = [];
+      } else {
+        // Create Option Json
+        object.option_list = createRewardOptionJson(optionList);
+      }
+
+      return object;
+    });
+
+    return await Promise.all(jsonArray);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+const createRewardOptionJson = (json) => {
+  // Variable
+  let array = [];
+  json.map(async(option, index) => {
+    // Block Variable
+    let object = {};
+
+    object.option_id = option.reward_option_id;
+    object.option_value = option.option_value;
+
+    // Push Array
+    array.push(object);
+  });
+
+  return array;
+}
+
+
+const logicUserQuestionResponse = async() => {
+  return [];
 }

@@ -29,7 +29,7 @@ module.exports = {
         }
       },
       question_response: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true
       },
       status: {

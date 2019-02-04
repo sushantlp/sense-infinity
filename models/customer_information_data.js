@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       landmark: DataTypes.STRING,
       spouse_name: DataTypes.STRING,
       anniversary_date: DataTypes.STRING,
+      reward_point: DataTypes.INTEGER,
       status: DataTypes.BOOLEAN
     }, {}
   );

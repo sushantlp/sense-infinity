@@ -66,6 +66,10 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: true
         },
+        reward_point: {
+          type: Sequelize.INTEGER,
+          defaultValue: 0
+        },
         status: {
           type: Sequelize.BOOLEAN,
           defaultValue: 0
