@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     reward_question_id: DataTypes.INTEGER,
     reward_option_id: DataTypes.INTEGER,
     customer_information_id: DataTypes.INTEGER,
-    text_question_response: DataTypes.STRING,
+    question_response: DataTypes.STRING,
     status: DataTypes.BOOLEAN
   }, {});
   reward_question_response.associate = function(models) {

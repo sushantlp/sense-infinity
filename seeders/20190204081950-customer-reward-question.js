@@ -3,108 +3,53 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert(
-      "feedback_questions", [{
-        feed_question: "How often do you visit this store?",
+      "customer_reward_questions", [{
+        reward_question: "How often do you meet in person with teachers at your child's school?",
         input_id: 1,
-        category_id: 1000,
+        reward_gift: 10,
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        feed_question: "How friendly is store staff?",
-        input_id: 3,
-        category_id: 1000,
-        status: 1,
-        created_at: new Date(),
-        updated_at: new Date()
-      }, {
-        feed_question: "Do you think the store staff (including billing) is well trained?",
-        input_id: 3,
-        category_id: 1000,
-        status: 1,
-        created_at: new Date(),
-        updated_at: new Date()
-      }, {
-        feed_question: "How often does this store have what you want in stock?",
-        input_id: 3,
-        category_id: 1000,
-        status: 1,
-        created_at: new Date(),
-        updated_at: new Date()
-      }, {
-        feed_question: "How happy are you with our product range and varieties?",
-        input_id: 3,
-        category_id: 1000,
-        status: 1,
-        created_at: new Date(),
-        updated_at: new Date()
-      }, {
-        feed_question: "How easy to find an item in a store?",
-        input_id: 3,
-        category_id: 1000,
-        status: 1,
-        created_at: new Date(),
-        updated_at: new Date()
-      }, {
-        feed_question: "How clean and hygienic you think this store is?",
-        input_id: 4,
-        category_id: 1000,
-        status: 1,
-        created_at: new Date(),
-        updated_at: new Date()
-      }, {
-        feed_question: "Would you recommend customizing offers based on individual instead of blanket discounts?",
+        reward_question: "How confident are you that you can help your child develop good friendships?",
         input_id: 1,
-        category_id: 1000,
+        reward_gift: 20,
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        feed_question: "Please rate us on value for money (interms of offers, savings and discounts)?",
+        reward_question: "How confident are you in your ability to help your child deal with his or her emotions appropriately?",
+        input_id: 2,
+        reward_gift: 5,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        reward_question: "Do you have any comments about any of your answers to the questions in this section?",
+        input_id: 5,
+        reward_gift: 30,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        reward_question: "How happy are you with our product range and varieties?",
         input_id: 3,
-        category_id: 1000,
+        reward_gift: 40,
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        feed_question: "Compare to similar stores, how fair are this store’s prices?",
-        input_id: 3,
-        category_id: 1000,
-        status: 1,
-        created_at: new Date(),
-        updated_at: new Date()
-      }, {
-        feed_question: "How fair is this store’s return policy?",
-        input_id: 3,
-        category_id: 1000,
-        status: 1,
-        created_at: new Date(),
-        updated_at: new Date()
-      }, {
-        feed_question: "Would you recommend buying from us to your friends and family?",
-        input_id: 3,
-        category_id: 1000,
-        status: 1,
-        created_at: new Date(),
-        updated_at: new Date()
-      }, {
-        feed_question: "Overall, how satisfied or dissatisfied you are with this store?",
+        reward_question: "How clean and hygienic you think this store is?",
         input_id: 4,
-        category_id: 1000,
+        reward_gift: 50,
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
-      }], {}
+      }, ], {}
     );
   },
 
   down: (queryInterface, Sequelize) => {
-    /*
-      Add reverting commands here.
-      Return a promise to correctly handle asynchronicity.
-
-      Example:
-      return queryInterface.bulkDelete('Person', null, {});
-    */
+    return queryInterface.bulkDelete("customer_reward_questions", null, {});
   }
 };

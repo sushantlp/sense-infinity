@@ -18,11 +18,7 @@ module.exports = {
       },
       reward_option_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "customer_reward_options",
-          key: "reward_option_id"
-        }
+        allowNull: true,
       },
       customer_information_id: {
         type: Sequelize.INTEGER,
@@ -32,7 +28,7 @@ module.exports = {
           key: "customer_information_id"
         }
       },
-      text_question_response: {
+      question_response: {
         type: Sequelize.STRING,
         allowNull: true
       },

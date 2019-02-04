@@ -215,6 +215,40 @@ module.exports.requestKeepCustomerData = (req, res) => {
   }
 }
 
-module.exports.requestGetCouponList = (req, res) => {
+// Request Get All Coupon Customer Reward 
+module.exports.requestGetAllData = (req, res) => {
+  if (
+    req.body.mobile !== undefined &&
+    req.body.mobile !== "" &&
+    req.body.country_code !== undefined &&
+    req.body.country_code !== ""
+  ) {
 
+    // Logic Get All Coupon Customer Reward 
+    return logicRewardController
+      .logicGetAllData(
+        req.body.mobile.toString(),
+        req.body.country_code.toString()
+      )
+      .then(response => {
+
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              "/api/v1/rewards/all/data",
+              200,
+              response.success, {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else {
+    return res.status(400).send("Not a good api call");
+  }
 }

@@ -36,6 +36,6 @@ routes.post('/customer/data', rewardController.requestKeepCustomerData);
 // Get Static Data
 routes.get('/static', engageController.requestSenseStatic);
 
-// routes.get('/coupon/', rewardController.requestGetCouponList);
+routes.get('/all/data', rewardController.requestGetAllData);
 
 module.exports = routes;

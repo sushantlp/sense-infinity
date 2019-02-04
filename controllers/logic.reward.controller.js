@@ -462,3 +462,12 @@ module.exports.logicKeepCustomerData = async(email, mobile, code, card, firstNam
     return Promise.reject(error);
   }
 }
+
+// Logic Get All Coupon Customer Reward
+module.exports.logicGetAllData = async(mobile, code) => {
+  try {
+
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
