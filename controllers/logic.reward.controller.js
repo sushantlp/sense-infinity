@@ -756,17 +756,38 @@ const iterateRewardResponse = async(id, json) => {
   try {
     json.map(async(reward, index) => {
 
-      // Block Variable
-      let response = undefined;
-      let optionId = 0;
-      if (reward.question_input_id !== 1 && reward.question_input_id !== 2) {
-        response = reward.question_response;
-      } else {
-        optionId = reward.option_id;
-      }
 
-      // Keep Question Reward Response
-      await responseOption.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(optionId, 10), id, response, 1);
+      // Block Variable
+      let responseQuestion = undefined;
+      let optionId = 0;
+
+      // Read Reward Question
+      const question = await rewardQuestion.readRewardQuestion("*", parseInt(reward.question_id, 10), 1);
+
+      // Parse
+      const questionStringify = JSON.stringify(question);
+      const questionParse = JSON.parse(questionStringify);
+
+      if (questionParse.length !== 0) {
+        if (questionParse[0].input_id !== 1 && questionParse[0].input_id !== 2) {
+          responseQuestion = reward.question_response;
+          if (responseQuestion !== undefined && responseQuestion !== "") {
+            // Keep Question Reward Response
+            await responseOption.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(optionId, 10), id, responseQuestion, 1);
+          } else {
+            console.log("Else 1")
+          }
+        } else {
+          optionId = reward.option_id;
+          if (typeof optionId === 'number') {
+            // Keep Question Reward Response
+            await responseOption.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(optionId, 10), id, responseQuestion, 1);
+          } else {
+            console.log("Else 2")
+          }
+        }
+
+      }
     });
 
     return Promise.resolve(true);

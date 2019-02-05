@@ -29,7 +29,7 @@ module.exports = {
         }
       },
       complain: {
-        type: Sequelize.TEXT,
+        type: Sequelize.TEXT('long'),
         allowNull: false,
       },
       status: {

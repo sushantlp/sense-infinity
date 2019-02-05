@@ -478,10 +478,10 @@ module.exports.requestReadCustomerData = (req, res) => {
     // If Production then Execute
     if (process.env.NODE_ENV !== "development") {
       // Get Token In Header
-      token = req.body.token || req.query.token || req.headers["authorization"];
+      token = req.headers["authorization"];
     } else {
       // Get Token In Query
-      token = req.query.token;
+      token = req.body.token || req.query.token || req.headers["authorization"];
     }
 
     // Logic Customer Data

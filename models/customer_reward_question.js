@@ -44,6 +44,27 @@ module.exports.readRewardQuestionList = async(select, status) => {
   }
 };
 
+// Read Reward Question  
+module.exports.readRewardQuestion = async(select, questionId, status) => {
+  try {
+
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM customer_reward_questions WHERE reward_question_id = ? AND status = ? LIMIT 1`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [questionId, status]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 /**
  * End Database Read and Write
  */

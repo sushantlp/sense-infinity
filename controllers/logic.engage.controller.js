@@ -603,27 +603,30 @@ const logicKeepCustomer = async(
         1
       );
     }
+    if (json.membership_number !== null && json.membership_number !== undefined && json.membership_number !== "") {
 
-    // Read Membership Card Record
-    const card = await cardModel.readMembershipCardNumber(
-      "*",
-      json.membership_number,
-      1
-    );
-
-    if (card.length === 0) {
-      // Keep Customer Membership Card
-      cardModel.keepCustomerMembershipCard(
-        customerId,
-        json.membership_number.toString(),
+      // Read Membership Card Record
+      const card = await cardModel.readMembershipCardNumber(
+        "*",
+        json.membership_number,
         1
       );
-    } else {
-      // One Membership Card to One Customer
-      if (card[0].customer_information_id !== customerId) {
-        console.log("Alert");
-        // Send Admin Mail
+
+      if (card.length === 0) {
+        // Keep Customer Membership Card
+        cardModel.keepCustomerMembershipCard(
+          customerId,
+          json.membership_number.toString(),
+          1
+        );
+      } else {
+        // One Membership Card to One Customer
+        if (card[0].customer_information_id !== customerId) {
+          console.log("Alert");
+          // Send Admin Mail
+        }
       }
+
     }
 
     if (versionFlag.customer) {
