@@ -46,8 +46,7 @@ module.exports.requestKeepDeviceData = (req, res) => {
               response.msg,
               "/api/v1/merchant/keep/device",
               200,
-              response.success,
-              {}
+              response.success, {}
             )
           );
       })
@@ -200,8 +199,8 @@ module.exports.requestKeepCustomerDetail = (req, res) => {
     const customerJson = req.body.customer;
     const mobile = req.query.mobile;
     const storeId = req.query.store_id;
-    console.log(customerJson)
-      // Variable
+
+    // Variable
     let token = undefined;
 
     // If Production then Execute
@@ -504,7 +503,7 @@ module.exports.requestReadCustomerData = (req, res) => {
         return res
           .status(200)
           .send(
-      shareController.createJsonObject(
+            shareController.createJsonObject(
               response.data,
               response.msg,
               "/api/v1/merchant/get/customer",

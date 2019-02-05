@@ -487,7 +487,7 @@ module.exports.logicGetAllData = async(mobile, code) => {
 
     // Read Customer Information Data by Mobile and Country Code
     const customerRecord = await customerDataModel.readDataMobileCode(
-      "customer_information_id AS id, first_name, last_name, email, mobile, country_code, dob, gender_id AS gender, city_id AS city, locality_id AS locality, address_one, address_two, landmark, married, spouse_name, anniversary_date, reward_point",
+      "*",
       mobile,
       code,
       1
@@ -505,6 +505,9 @@ module.exports.logicGetAllData = async(mobile, code) => {
       });
     }
 
+    // Customer Record Json
+    const customerJson = customerRecordJson(customerParse);
+
     const list = await Promise.all([
 
       // Get Reward Question List
@@ -515,13 +518,14 @@ module.exports.logicGetAllData = async(mobile, code) => {
 
     ]);
 
-    console.log(list)
     return (responsedata = {
       success: true,
-      data: [{
+      data: {
         reward_point: customerParse[0].reward_point,
-        customer_record: customerParse[0],
-      }],
+        customer_record: customerJson[0],
+        reward_question: list[0],
+        customer_reward_response: list[1]
+      },
       msg: "Succesful"
     });
 
@@ -540,7 +544,7 @@ const logicRewardQuestionList = async() => {
     // Parse
     const questionStringify = JSON.stringify(question);
     const questionParse = JSON.parse(questionStringify);
-    if (questionParse.length !== 0) {
+    if (questionParse.length === 0) {
       return [];
     }
 
@@ -567,6 +571,7 @@ const creatRewardQuestionJson = async(json) => {
 
       // Read Reward Option List
       optionList = await rewardOption.readRewardOptionList(
+        "*",
         list.reward_question_id,
         1
       );
@@ -584,6 +589,7 @@ const creatRewardQuestionJson = async(json) => {
       if (questionParse.length === 0) {
         object.option_list = [];
       } else {
+
         // Create Option Json
         object.option_list = createRewardOptionJson(optionList);
       }
@@ -593,10 +599,12 @@ const creatRewardQuestionJson = async(json) => {
 
     return await Promise.all(jsonArray);
   } catch (error) {
+
     return Promise.reject(error);
   }
 };
 
+// Create Option Json
 const createRewardOptionJson = (json) => {
   // Variable
   let array = [];
@@ -617,4 +625,84 @@ const createRewardOptionJson = (json) => {
 
 const logicUserQuestionResponse = async() => {
   return [];
+}
+
+
+// Customer Record Json
+const customerRecordJson = (json) => {
+
+  // Variable
+  let array = [];
+
+  json.map((customer, index) => {
+    // Block Variable
+    let object = {};
+
+    object.id = customer.customer_information_id;
+    object.mobile = customer.mobile;
+    object.code = customer.country_code;
+    object.gender = customer.gender_id;
+    object.city = customer.city_id;
+    object.locality = customer.locality_id;
+    object.married = customer.married;
+
+    if (customer.first_name === 'NULL') {
+      object.first_name = null;
+    } else {
+      object.first_name = customer.first_name;
+    }
+
+    if (customer.last_name === 'NULL') {
+      object.last_name = null;
+    } else {
+      object.last_name = customer.last_name;
+    }
+
+    if (customer.email === 'NULL') {
+      object.email = null;
+    } else {
+      object.email = customer.email;
+    }
+
+    if (customer.dob === 'NULL') {
+      object.dob = null;
+    } else {
+      object.dob = customer.dob;
+    }
+
+    if (customer.address_one === 'NULL') {
+      object.address_one = null;
+    } else {
+      object.address_one = customer.address_one;
+    }
+
+    if (customer.address_two === 'NULL') {
+      object.address_two = null;
+    } else {
+      object.address_two = customer.address_two;
+    }
+
+    if (customer.landmark === 'NULL') {
+      object.landmark = null;
+    } else {
+      object.landmark = customer.landmark;
+    }
+
+    if (customer.spouse_name === 'NULL') {
+      object.spouse_name = null;
+    } else {
+      object.spouse_name = customer.spouse_name;
+    }
+
+    if (customer.anniversary_date === 'NULL') {
+      object.anniversary_date = null;
+    } else {
+      object.anniversary_date = customer.anniversary_date;
+    }
+
+    // Push Array
+    array.push(object);
+  });
+
+  return array;
 }
