@@ -33,9 +33,13 @@ routes.post('/verify/otp', rewardController.requestVerifyOtp);
 // Keep Customer Data
 routes.post('/customer/data', rewardController.requestKeepCustomerData);
 
+// Keep Reward Question Response
+routes.post('/response', rewardController.requestRewardResponse);
+
 // Get Static Data
 routes.get('/static', engageController.requestSenseStatic);
 
+// Get All Reward Question and Customer Data 
 routes.get('/all/data', rewardController.requestGetAllData);
 
 module.exports = routes;

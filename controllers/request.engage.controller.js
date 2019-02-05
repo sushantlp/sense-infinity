@@ -3,6 +3,7 @@
 // Import Controller
 const engageController = require("./logic.engage.controller");
 const shareController = require("./share.controller");
+const validateController = require("./validate.controller");
 
 // Request Keep Device Data
 module.exports.requestKeepDeviceData = (req, res) => {
@@ -148,7 +149,7 @@ module.exports.requestKeepStoreComplain = (req, res) => {
     }
 
     // Validate Customer Detail
-    const validate = shareController.validateCustomerDetail(
+    const validate = validateController.validateCustomerDetail(
       complainJson,
       false
     );
@@ -213,7 +214,7 @@ module.exports.requestKeepCustomerDetail = (req, res) => {
     }
 
     // Validate Customer Detail
-    const validate = shareController.validateCustomerDetail(customerJson, true);
+    const validate = validateController.validateCustomerDetail(customerJson, true);
     if (!validate.success) {
       return res.status(400).send(validate.msg);
     }
@@ -274,7 +275,7 @@ module.exports.requestKeepFeedbackSurvey = (req, res) => {
     }
 
     // Validate Customer Detail
-    const validate = shareController.validateCustomerDetail(
+    const validate = validateController.validateCustomerDetail(
       feedbackSurveyJson,
       false
     );

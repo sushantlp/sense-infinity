@@ -3,6 +3,7 @@
 // Import Controller
 const logicRewardController = require("./logic.reward.controller");
 const shareController = require("./share.controller");
+const validateController = require("./validate.controller");
 
 // Request Verify Membership Card and Mobile
 module.exports.requestVerifyMemberMobile = (req, res) => {
@@ -232,6 +233,11 @@ module.exports.requestGetAllData = (req, res) => {
       )
       .then(response => {
 
+        // Intialize
+        const metadata = {
+          type: req.query.mobile,
+        };
+
         return res
           .status(200)
           .send(
@@ -240,7 +246,59 @@ module.exports.requestGetAllData = (req, res) => {
               response.msg,
               "/api/v1/rewards/all/data",
               200,
-              response.success, {}
+              response.success, metadata
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else {
+    return res.status(400).send("Not a good api call");
+  }
+}
+
+// Keep Reward Question Response
+module.exports.requestRewardResponse = (req, res) => {
+  if (
+    req.body.mobile !== undefined &&
+    req.body.mobile !== "" &&
+    req.body.country_code !== undefined &&
+    req.body.country_code !== "" &&
+    req.body.response !== undefined &&
+    req.body.response !== ""
+  ) {
+
+    // Validate Reward Question Response
+    const validate = validateController.validateRewardResponse(req.body.response);
+    if (!validate.success) {
+      return res.status(400).send(validate.msg);
+    }
+
+    // Logic Keep Reward Question Response 
+    return logicRewardController
+      .logicRewardResponse(
+        req.body.mobile.toString(),
+        req.body.country_code.toString(),
+        req.body.response
+      )
+      .then(response => {
+
+        // Intialize
+        const metadata = {
+          type: req.query.mobile,
+        };
+
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              "/api/v1/rewards/reward/response",
+              200,
+              response.success, metadata
             )
           );
       })

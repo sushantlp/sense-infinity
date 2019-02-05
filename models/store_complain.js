@@ -1,5 +1,6 @@
 'use strict';
 
+// Import Package 
 const moment = require('moment-timezone');
 
 // Import Config
@@ -7,15 +8,13 @@ const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var storeComplain = sequelize.define(
-    'store_complain',
-    {
+    'store_complain', {
       customer_information_id: DataTypes.INTEGER,
       store_id: DataTypes.INTEGER,
       merchant_id: DataTypes.INTEGER,
       complain: DataTypes.TEXT,
       status: DataTypes.BOOLEAN
-    },
-    {}
+    }, {}
   );
   storeComplain.associate = function(models) {
     // associations can be defined here
@@ -33,7 +32,7 @@ const now = moment()
  */
 
 // Read Store Complain Record
-module.exports.readStoreComplain = async (select, storeId, merchantId, customerId, status) => {
+module.exports.readStoreComplain = async(select, storeId, merchantId, customerId, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -53,7 +52,7 @@ module.exports.readStoreComplain = async (select, storeId, merchantId, customerI
 };
 
 // Keep Merchant Store Complain
-module.exports.keepStoreComplain = async (customerId, merchantId, storeId, desc, status) => {
+module.exports.keepStoreComplain = async(customerId, merchantId, storeId, desc, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -67,7 +66,7 @@ module.exports.keepStoreComplain = async (customerId, merchantId, storeId, desc,
       customerId,
       merchantId,
       storeId,
-      connection.escape(desc),
+      desc,
       status,
       now,
       now
@@ -77,13 +76,13 @@ module.exports.keepStoreComplain = async (customerId, merchantId, storeId, desc,
 
     return row;
   } catch (error) {
-    
+
     return Promise.reject(error);
   }
 };
 
 // Update Merchant Store Complain
-module.exports.updateStoreComplain = async (complainId, description, status) => {
+module.exports.updateStoreComplain = async(complainId, description, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();

@@ -16,6 +16,7 @@ const cardModel = require("../models/customer_membership_card");
 const smsModel = require('../models/sms');
 const rewardQuestion = require('../models/customer_reward_question');
 const rewardOption = require('../models/customer_reward_option');
+const responseOption = require('../models/reward_question_response');
 
 // Import Controller
 const shareController = require("./share.controller");
@@ -548,7 +549,6 @@ const logicRewardQuestionList = async() => {
       return [];
     }
 
-
     return await creatRewardQuestionJson(questionParse)
 
   } catch (error) {
@@ -576,10 +576,11 @@ const creatRewardQuestionJson = async(json) => {
         1
       );
 
-      object.reward_question_id = list.reward_question_id;
+      object.question_id = list.reward_question_id;
       object.question = list.reward_question;
       object.question_input_id = list.input_id;
       object.question_input_name = list.input_name;
+      object.reward_point = list.reward_point;
 
       // Parse
       questionParse = JSON.stringify(optionList);
@@ -638,7 +639,7 @@ const customerRecordJson = (json) => {
     // Block Variable
     let object = {};
 
-    object.id = customer.customer_information_id;
+    // object.id = customer.customer_information_id;
     object.mobile = customer.mobile;
     object.code = customer.country_code;
     object.gender = customer.gender_id;
@@ -705,4 +706,71 @@ const customerRecordJson = (json) => {
   });
 
   return array;
+}
+
+module.exports.logicRewardResponse = async(mobile, code, json) => {
+  try {
+
+    // Variable
+    let responsedata = {};
+
+    // Replace + 
+    code = code.replace(/\+/g, '');
+
+    // Read Customer Information Data by Mobile and Country Code
+    const customerRecord = await customerDataModel.readDataMobileCode(
+      "*",
+      mobile,
+      code,
+      1
+    );
+
+    // Parse
+    const customerStringify = JSON.stringify(customerRecord);
+    const customerParse = JSON.parse(customerStringify);
+
+    if (customerParse.length === 0) {
+      return (responsedata = {
+        success: false,
+        data: {},
+        msg: "Unknown user"
+      });
+    }
+
+    // Iterate Question Reward Response
+    iterateRewardResponse(customerParse[0].customer_information_id, json);
+
+    return (responsedata = {
+      success: true,
+      data: {},
+      msg: "Succesful"
+    });
+
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
+
+// Iterate Question Reward Response
+const iterateRewardResponse = async(id, json) => {
+  try {
+    json.map(async(reward, index) => {
+
+      // Block Variable
+      let response = undefined;
+      let optionId = 0;
+      if (reward.question_input_id !== 1 && reward.question_input_id !== 2) {
+        response = reward.question_response;
+      } else {
+        optionId = reward.option_id;
+      }
+
+      // Keep Question Reward Response
+      await responseOption.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(optionId, 10), id, response, 1);
+    });
+
+    return Promise.resolve(true);
+  } catch (error) {
+    return Promise.reject(error);
+  }
 }
