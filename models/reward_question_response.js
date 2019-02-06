@@ -87,6 +87,29 @@ module.exports.readRewardResponse = async(select, questionId, customerId, status
 };
 
 
+// Update Reward Response  
+module.exports.updateRewardResponse = async(responseId, status) => {
+  try {
+
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
+
+
+    // Query
+    const query =
+      "UPDATE `reward_question_responses` SET `status` = ?, `updated_at` = ? WHERE `question_response_id` = ?";
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [status, now, responseId]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 /**
  * End Database Read and Write
  */

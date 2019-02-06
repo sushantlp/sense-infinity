@@ -236,7 +236,7 @@ module.exports.logicRegisterEmail = async(email, mobile, code) => {
     }
 
     // Read Customer Information Data by Mobile and Country Code
-    const customerRecord = await customerDataModel.readDataMobileCode(
+    let customerParse = await customerDataModel.readDataMobileCode(
       "*",
       mobile,
       code,
@@ -244,8 +244,8 @@ module.exports.logicRegisterEmail = async(email, mobile, code) => {
     );
 
     // Parse
-    const customerStringify = JSON.stringify(customerRecord);
-    const customerParse = JSON.parse(customerStringify);
+    customerParse = JSON.stringify(customerParse);
+    customerParse = JSON.parse(customerParse);
 
     if (customerParse.length === 0) {
       return (responsedata = {
@@ -346,7 +346,7 @@ module.exports.logicVerifyOtp = async(password, mobile, code, otp) => {
     }
 
     // Read Customer Information Data by Mobile and Country Code
-    const record = await customerDataModel.readDataMobileCode(
+    let recordParse = await customerDataModel.readDataMobileCode(
       "*",
       mobile,
       code,
@@ -354,8 +354,8 @@ module.exports.logicVerifyOtp = async(password, mobile, code, otp) => {
     );
 
     // Parse
-    const recordStringify = JSON.stringify(record);
-    const recordParse = JSON.parse(recordStringify);
+    recordParse = JSON.stringify(recordParse);
+    recordParse = JSON.parse(recordParse);
 
     // Generate JWT Token
     const token = shareController.generateToken(recordParse);
@@ -410,11 +410,11 @@ module.exports.logicKeepCustomerData = async(email, mobile, code, card, firstNam
 
 
     // Read Customer Information Data by Mobile and Country Code
-    const record = await customerDataModel.readDataMobileCode("customer_information_id", mobile, code, 1);
+    const recordParse = await customerDataModel.readDataMobileCode("customer_information_id", mobile, code, 1);
 
     // Parse
-    const recordStringify = JSON.stringify(record);
-    const recordParse = JSON.parse(recordStringify);
+    recordParse = JSON.stringify(recordParse);
+    recordParse = JSON.parse(recordParse);
 
     if (recordParse.length === 0) {
       return (responsedata = {
@@ -725,7 +725,7 @@ module.exports.logicRewardResponse = async(mobile, code, json) => {
     code = code.replace(/\+/g, '');
 
     // Read Customer Information Data by Mobile and Country Code
-    const customerRecord = await customerDataModel.readDataMobileCode(
+    let customerRecord = await customerDataModel.readDataMobileCode(
       "*",
       mobile,
       code,
@@ -733,10 +733,10 @@ module.exports.logicRewardResponse = async(mobile, code, json) => {
     );
 
     // Parse
-    const customerStringify = JSON.stringify(customerRecord);
-    const customerParse = JSON.parse(customerStringify);
+    customerRecord = JSON.stringify(customerRecord);
+    customerRecord = JSON.parse(customerRecord);
 
-    if (customerParse.length === 0) {
+    if (customerRecord.length === 0) {
       return (responsedata = {
         success: false,
         data: {},
@@ -745,7 +745,7 @@ module.exports.logicRewardResponse = async(mobile, code, json) => {
     }
 
     // Iterate Question Reward Response
-    iterateRewardResponse(customerParse[0].customer_information_id, json);
+    iterateRewardResponse(customerRecord[0].customer_information_id, json);
 
     return (responsedata = {
       success: true,
@@ -761,7 +761,7 @@ module.exports.logicRewardResponse = async(mobile, code, json) => {
 // Iterate Question Reward Response
 const iterateRewardResponse = async(id, json) => {
   try {
-    json.map(async(reward, index) => {
+    json.map(async(reward) => {
 
       // Read Reward Question
       let questionParse = await rewardQuestion.readRewardQuestion("*", parseInt(reward.question_id, 10), 1);
@@ -770,27 +770,70 @@ const iterateRewardResponse = async(id, json) => {
       questionParse = JSON.stringify(questionParse);
       questionParse = JSON.parse(questionParse);
 
+      // Read All Reward Response by Question Id and Customer Id 
+      let rewardParse = await rewardResponse.readRewardResponse("*", reward.question_id, id, 1);
+
+      // Parse
+      rewardParse = JSON.stringify(rewardParse);
+      rewardParse = JSON.parse(rewardParse);
+
       if (questionParse.length !== 0) {
+
         if (questionParse[0].input_id === 1) { // Radio
           if (reward.option.length === 1) {
-            // Keep Question Reward Response
-            rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(reward.option[0], 10), id, undefined, 1);
+            if (rewardParse.length === 0) {
+              // Keep Question Reward Response
+              rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(reward.option[0], 10), id, undefined, 1);
+            } else {
+              // Update Reward Response 
+              await rewardResponse.updateRewardResponse(rewardParse[0].question_response_id, 0);
+
+              // Keep Question Reward Response
+              rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(reward.option[0], 10), id, undefined, 1);
+            }
           } else {
             console.log("Else 1")
           }
         } else if (questionParse[0].input_id === 2) { // Checkbox
+          if (rewardParse.length === 0) {
+            reward.option.map((x) => {
+              // Keep Question Reward Response
+              rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(x, 10), id, undefined, 1);
+              return;
+            });
+          } else {
 
-          reward.option.map((x) => {
-            // Keep Question Reward Response
-            rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(x, 10), id, undefined, 1);
-            return;
-          });
+            rewardParse.map(async(x) => {
+              // Update Reward Response 
+              await rewardResponse.updateRewardResponse(x.question_response_id, 0);
+
+              return;
+            });
+
+
+
+            reward.option.map((x) => {
+              // Keep Question Reward Response
+              rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(x, 10), id, undefined, 1);
+              return;
+            });
+
+          }
 
         } else if (questionParse[0].input_id === 3) { // 5 Star
 
           if (reward.option.length === 1 && reward.option[0] <= 5) {
-            // Keep Question Reward Response
-            rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
+            if (rewardParse.length === 0) {
+              // Keep Question Reward Response
+              rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
+            } else {
+
+              // Update Reward Response 
+              await rewardResponse.updateRewardResponse(rewardParse[0].question_response_id, 0);
+
+              // Keep Question Reward Response
+              rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
+            }
           } else {
             console.log("Else 3")
           }
@@ -798,8 +841,16 @@ const iterateRewardResponse = async(id, json) => {
         } else if (questionParse[0].input_id === 4) { // 10 Star
 
           if (reward.option.length === 1 && reward.option[0] <= 10) {
-            // Keep Question Reward Response
-            rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
+            if (rewardParse.length === 0) {
+              // Keep Question Reward Response
+              rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
+            } else {
+              // Update Reward Response 
+              await rewardResponse.updateRewardResponse(rewardParse[0].question_response_id, 0);
+
+              // Keep Question Reward Response
+              rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
+            }
           } else {
             console.log("Else 4")
           }
@@ -807,8 +858,16 @@ const iterateRewardResponse = async(id, json) => {
         } else { // Text
 
           if (reward.option.length === 1) {
-            // Keep Question Reward Response
-            rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
+            if (rewardParse.length === 0) {
+              // Keep Question Reward Response
+              rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
+            } else {
+              // Update Reward Response 
+              await rewardResponse.updateRewardResponse(rewardParse[0].question_response_id, 0);
+
+              // Keep Question Reward Response
+              rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
+            }
           } else {
             console.log("Else 5")
           }
