@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     question_response: DataTypes.TEXT,
     status: DataTypes.BOOLEAN
   }, {});
-  reward_question_response.associate = function(models) {
+  rewardQuestionResponse.associate = function(models) {
     // associations can be defined here
   };
   return rewardQuestionResponse;
@@ -60,6 +60,27 @@ module.exports.keepRewardResponse = async(questionId, optionId, customerId, resp
     connection.close();
 
     return row;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Read All Reward Response by Question Id and Customer Id 
+module.exports.readRewardResponse = async(select, questionId, customerId, status) => {
+  try {
+
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM reward_question_responses WHERE reward_question_id = ? AND customer_information_id = ? AND status = ? LIMIT 1`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [questionId, customerId, status]);
+
+    connection.close();
+
+    return rows;
   } catch (error) {
     return Promise.reject(error);
   }

@@ -16,7 +16,7 @@ const cardModel = require("../models/customer_membership_card");
 const smsModel = require('../models/sms');
 const rewardQuestion = require('../models/customer_reward_question');
 const rewardOption = require('../models/customer_reward_option');
-const responseOption = require('../models/reward_question_response');
+const rewardResponse = require('../models/reward_question_response');
 
 // Import Controller
 const shareController = require("./share.controller");
@@ -512,10 +512,7 @@ module.exports.logicGetAllData = async(mobile, code) => {
     const list = await Promise.all([
 
       // Get Reward Question List
-      logicRewardQuestionList(),
-
-      // Get User Reward Question Response List
-      logicUserQuestionResponse(customerParse[0].id),
+      logicRewardQuestionList(customerParse[0].customer_information_id)
 
     ]);
 
@@ -524,8 +521,7 @@ module.exports.logicGetAllData = async(mobile, code) => {
       data: {
         reward_point: customerParse[0].reward_point,
         customer_record: customerJson[0],
-        reward_question: list[0],
-        customer_reward_response: list[1]
+        reward_question: list[0]
       },
       msg: "Succesful"
     });
@@ -536,7 +532,7 @@ module.exports.logicGetAllData = async(mobile, code) => {
 }
 
 // Get Reward Question List
-const logicRewardQuestionList = async() => {
+const logicRewardQuestionList = async(customerId) => {
   try {
 
     // Read All Reward Question List
@@ -549,7 +545,7 @@ const logicRewardQuestionList = async() => {
       return [];
     }
 
-    return await creatRewardQuestionJson(questionParse)
+    return await creatRewardQuestionJson(questionParse, customerId)
 
   } catch (error) {
     return Promise.reject(error);
@@ -557,33 +553,46 @@ const logicRewardQuestionList = async() => {
 }
 
 // Create Feedback Json
-const creatRewardQuestionJson = async(json) => {
+const creatRewardQuestionJson = async(json, customerId) => {
   try {
-
-    // Variable
-    let optionList = [];
-    let questionParse = [];
 
     const jsonArray = json.map(async(list, index) => {
 
       // Block Variable
       let object = {};
+      let customerRewardResponse = null;
+
+      // Read All Reward Response by Question Id and Customer Id 
+      let rewardResponseList = await rewardResponse.readRewardResponse("*", list.reward_question_id, customerId, 1);
+
+      // Parse
+      let rewardResponseParse = JSON.stringify(rewardResponseList);
+      rewardResponseParse = JSON.parse(rewardResponseParse);
+      if (rewardResponseParse.length !== 0) {
+        if (rewardResponseParse[0].reward_option_id === 0) {
+          customerRewardResponse = rewardResponseParse[0].question_response;
+        } else {
+          customerRewardResponse = rewardResponseParse[0].reward_option_id.toString();
+        }
+      }
 
       // Read Reward Option List
-      optionList = await rewardOption.readRewardOptionList(
+      let optionList = await rewardOption.readRewardOptionList(
         "*",
         list.reward_question_id,
         1
       );
+
 
       object.question_id = list.reward_question_id;
       object.question = list.reward_question;
       object.question_input_id = list.input_id;
       object.question_input_name = list.input_name;
       object.reward_point = list.reward_point;
+      object.customer_reward_response = customerRewardResponse;
 
       // Parse
-      questionParse = JSON.stringify(optionList);
+      let questionParse = JSON.stringify(optionList);
       questionParse = JSON.parse(questionParse);
 
       // Zero Means No Record
@@ -773,7 +782,7 @@ const iterateRewardResponse = async(id, json) => {
           responseQuestion = reward.question_response;
           if (responseQuestion !== undefined && responseQuestion !== "") {
             // Keep Question Reward Response
-            await responseOption.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(optionId, 10), id, responseQuestion, 1);
+            await rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(optionId, 10), id, responseQuestion, 1);
           } else {
             console.log("Else 1")
           }
@@ -781,7 +790,7 @@ const iterateRewardResponse = async(id, json) => {
           optionId = reward.option_id;
           if (typeof optionId === 'number') {
             // Keep Question Reward Response
-            await responseOption.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(optionId, 10), id, responseQuestion, 1);
+            await rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(optionId, 10), id, responseQuestion, 1);
           } else {
             console.log("Else 2")
           }
