@@ -31,15 +31,15 @@ routes.post('/register/email', rewardController.requestRegisterEmail);
 routes.post('/verify/otp', rewardController.requestVerifyOtp);
 
 // Keep Customer Data
-routes.post('/customer/data', rewardController.requestKeepCustomerData);
+routes.post('/customer/data', authJwt, rewardController.requestKeepCustomerData);
 
 // Keep Reward Question Response
-routes.post('/response', rewardController.requestRewardResponse);
+routes.post('/response', authJwt, rewardController.requestRewardResponse);
 
 // Get Static Data
-routes.get('/static', engageController.requestSenseStatic);
+routes.get('/static', authJwt, engageController.requestSenseStatic);
 
 // Get All Reward Question and Customer Data 
-routes.get('/all/data', rewardController.requestGetAllData);
+routes.get('/all/data', authJwt, rewardController.requestGetAllData);
 
 module.exports = routes;

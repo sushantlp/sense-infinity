@@ -168,6 +168,18 @@ module.exports.requestKeepCustomerData = (req, res) => {
     req.body.hasOwnProperty('landmark')
   ) {
 
+    // Variable
+    let token = undefined;
+
+    // If Production then Execute
+    if (process.env.NODE_ENV !== "development") {
+      // Get Token In Header
+      token = req.headers["authorization"];
+    } else {
+      // Get Token In Query
+      token = req.body.token || req.query.token || req.headers["authorization"];
+    }
+
     // Logic Keep Customer Data
     return logicRewardController
       .logicKeepCustomerData(
@@ -194,6 +206,9 @@ module.exports.requestKeepCustomerData = (req, res) => {
         const metadata = {
           type: req.body.email,
         };
+
+        // Jwt Token Pass in Header
+        res.header("token", token);
 
         return res
           .status(200)
@@ -225,6 +240,18 @@ module.exports.requestGetAllData = (req, res) => {
     req.query.country_code !== ""
   ) {
 
+    // Variable
+    let token = undefined;
+
+    // If Production then Execute
+    if (process.env.NODE_ENV !== "development") {
+      // Get Token In Header
+      token = req.headers["authorization"];
+    } else {
+      // Get Token In Query
+      token = req.body.token || req.query.token || req.headers["authorization"];
+    }
+
     // Logic Get All Coupon Customer Reward 
     return logicRewardController
       .logicGetAllData(
@@ -237,6 +264,9 @@ module.exports.requestGetAllData = (req, res) => {
         const metadata = {
           type: req.query.mobile,
         };
+
+        // Jwt Token Pass in Header
+        res.header("token", token)
 
         return res
           .status(200)
@@ -276,6 +306,18 @@ module.exports.requestRewardResponse = (req, res) => {
       return res.status(400).send(validate.msg);
     }
 
+    // Variable
+    let token = undefined;
+
+    // If Production then Execute
+    if (process.env.NODE_ENV !== "development") {
+      // Get Token In Header
+      token = req.headers["authorization"];
+    } else {
+      // Get Token In Query
+      token = req.body.token || req.query.token || req.headers["authorization"];
+    }
+
     // Logic Keep Reward Question Response 
     return logicRewardController
       .logicRewardResponse(
@@ -289,6 +331,9 @@ module.exports.requestRewardResponse = (req, res) => {
         const metadata = {
           type: req.query.mobile,
         };
+
+        // Jwt Token Pass in Header
+        res.header("token", token);
 
         return res
           .status(200)
