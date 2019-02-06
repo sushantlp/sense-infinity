@@ -487,7 +487,7 @@ module.exports.logicGetAllData = async(mobile, code) => {
     code = code.replace(/\+/g, '');
 
     // Read Customer Information Data by Mobile and Country Code
-    const customerRecord = await customerDataModel.readDataMobileCode(
+    let customerParse = await customerDataModel.readDataMobileCode(
       "*",
       mobile,
       code,
@@ -495,8 +495,8 @@ module.exports.logicGetAllData = async(mobile, code) => {
     );
 
     // Parse
-    const customerStringify = JSON.stringify(customerRecord);
-    const customerParse = JSON.parse(customerStringify);
+    customerParse = JSON.stringify(customerParse);
+    customerParse = JSON.parse(customerParse);
 
     if (customerParse.length === 0) {
       return (responsedata = {
@@ -509,19 +509,15 @@ module.exports.logicGetAllData = async(mobile, code) => {
     // Customer Record Json
     const customerJson = customerRecordJson(customerParse);
 
-    const list = await Promise.all([
-
-      // Get Reward Question List
-      logicRewardQuestionList(customerParse[0].customer_information_id)
-
-    ]);
+    // Get Reward Question List
+    const list = await logicRewardQuestionList(customerParse[0].customer_information_id)
 
     return (responsedata = {
       success: true,
       data: {
         reward_point: customerParse[0].reward_point,
         customer_record: customerJson[0],
-        reward_question: list[0]
+        reward_question: list
       },
       msg: "Succesful"
     });
@@ -536,11 +532,11 @@ const logicRewardQuestionList = async(customerId) => {
   try {
 
     // Read All Reward Question List
-    const question = await rewardQuestion.readRewardQuestionList("customer_reward_questions.reward_question_id, customer_reward_questions.reward_question, customer_reward_questions.input_id, customer_reward_questions.reward_point, input_types.input_name", 1);
+    let questionParse = await rewardQuestion.readRewardQuestionList("customer_reward_questions.reward_question_id, customer_reward_questions.reward_question, customer_reward_questions.input_id, customer_reward_questions.reward_point, input_types.input_name", 1);
 
     // Parse
-    const questionStringify = JSON.stringify(question);
-    const questionParse = JSON.parse(questionStringify);
+    questionParse = JSON.stringify(questionParse);
+    questionParse = JSON.parse(questionParse);
     if (questionParse.length === 0) {
       return [];
     }
@@ -556,33 +552,29 @@ const logicRewardQuestionList = async(customerId) => {
 const creatRewardQuestionJson = async(json, customerId) => {
   try {
 
-    const jsonArray = json.map(async(list, index) => {
+    const jsonArray = json.map(async(list) => {
 
       // Block Variable
       let object = {};
-      let customerRewardResponse = null;
+      let customerRewardResponse = [];
 
       // Read All Reward Response by Question Id and Customer Id 
-      let rewardResponseList = await rewardResponse.readRewardResponse("*", list.reward_question_id, customerId, 1);
+      let rewardResponseParse = await rewardResponse.readRewardResponse("*", list.reward_question_id, customerId, 1);
 
       // Parse
-      let rewardResponseParse = JSON.stringify(rewardResponseList);
+      rewardResponseParse = JSON.stringify(rewardResponseParse);
       rewardResponseParse = JSON.parse(rewardResponseParse);
+
       if (rewardResponseParse.length !== 0) {
         if (rewardResponseParse[0].reward_option_id === 0) {
-          customerRewardResponse = rewardResponseParse[0].question_response;
+          customerRewardResponse.push(rewardResponseParse[0].question_response);
         } else {
-          customerRewardResponse = rewardResponseParse[0].reward_option_id.toString();
+          rewardResponseParse.map((x) => {
+            customerRewardResponse.push(x.reward_option_id.toString());
+            return;
+          });
         }
       }
-
-      // Read Reward Option List
-      let optionList = await rewardOption.readRewardOptionList(
-        "*",
-        list.reward_question_id,
-        1
-      );
-
 
       object.question_id = list.reward_question_id;
       object.question = list.reward_question;
@@ -591,15 +583,21 @@ const creatRewardQuestionJson = async(json, customerId) => {
       object.reward_point = list.reward_point;
       object.customer_reward_response = customerRewardResponse;
 
+      // Read Reward Option List
+      let optionList = await rewardOption.readRewardOptionList(
+        "*",
+        list.reward_question_id,
+        1
+      )
+
       // Parse
-      let questionParse = JSON.stringify(optionList);
-      questionParse = JSON.parse(questionParse);
+      optionList = JSON.stringify(optionList);
+      optionList = JSON.parse(optionList);
 
       // Zero Means No Record
-      if (questionParse.length === 0) {
+      if (optionList.length === 0) {
         object.option_list = [];
       } else {
-
         // Create Option Json
         object.option_list = createRewardOptionJson(optionList);
       }
@@ -765,34 +763,54 @@ const iterateRewardResponse = async(id, json) => {
   try {
     json.map(async(reward, index) => {
 
-
-      // Block Variable
-      let responseQuestion = undefined;
-      let optionId = 0;
-
       // Read Reward Question
-      const question = await rewardQuestion.readRewardQuestion("*", parseInt(reward.question_id, 10), 1);
+      let questionParse = await rewardQuestion.readRewardQuestion("*", parseInt(reward.question_id, 10), 1);
 
       // Parse
-      const questionStringify = JSON.stringify(question);
-      const questionParse = JSON.parse(questionStringify);
+      questionParse = JSON.stringify(questionParse);
+      questionParse = JSON.parse(questionParse);
 
       if (questionParse.length !== 0) {
-        if (questionParse[0].input_id !== 1 && questionParse[0].input_id !== 2) {
-          responseQuestion = reward.question_response;
-          if (responseQuestion !== undefined && responseQuestion !== "") {
+        if (questionParse[0].input_id === 1) { // Radio
+          if (reward.option.length === 1) {
             // Keep Question Reward Response
-            await rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(optionId, 10), id, responseQuestion, 1);
+            rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(reward.option[0], 10), id, undefined, 1);
           } else {
             console.log("Else 1")
           }
-        } else {
-          optionId = reward.option_id;
-          if (typeof optionId === 'number') {
+        } else if (questionParse[0].input_id === 2) { // Checkbox
+
+          reward.option.map((x) => {
             // Keep Question Reward Response
-            await rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(optionId, 10), id, responseQuestion, 1);
+            rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(x, 10), id, undefined, 1);
+            return;
+          });
+
+        } else if (questionParse[0].input_id === 3) { // 5 Star
+
+          if (reward.option.length === 1 && reward.option[0] <= 5) {
+            // Keep Question Reward Response
+            rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
           } else {
-            console.log("Else 2")
+            console.log("Else 3")
+          }
+
+        } else if (questionParse[0].input_id === 4) { // 10 Star
+
+          if (reward.option.length === 1 && reward.option[0] <= 10) {
+            // Keep Question Reward Response
+            rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
+          } else {
+            console.log("Else 4")
+          }
+
+        } else { // Text
+
+          if (reward.option.length === 1) {
+            // Keep Question Reward Response
+            rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
+          } else {
+            console.log("Else 5")
           }
         }
 

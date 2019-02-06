@@ -176,6 +176,8 @@ module.exports.validateRewardResponse = (json) => {
 
   for (let i = 0; i < json.length; i++) {
 
+    const instanceArray = json[i].option instanceof Array;
+
     if (!json[i].hasOwnProperty('question_id')) {
       return (responsedata = {
         success: false,
@@ -183,17 +185,24 @@ module.exports.validateRewardResponse = (json) => {
       });
     }
 
-    if (!json[i].hasOwnProperty('option_id')) {
+    if (!json[i].hasOwnProperty('option')) {
       return (responsedata = {
         success: false,
-        msg: 'Missing option id'
+        msg: 'Missing option'
       });
     }
 
-    if (!json[i].hasOwnProperty('question_response')) {
+    if (!instanceArray) {
       return (responsedata = {
         success: false,
-        msg: 'Missing question response'
+        msg: 'Option value should be array'
+      });
+    }
+
+    if (json[i].option.length === 0) {
+      return (responsedata = {
+        success: false,
+        msg: 'Option should not be empty'
       });
     }
   }

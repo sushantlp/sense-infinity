@@ -73,7 +73,7 @@ module.exports.readRewardResponse = async(select, questionId, customerId, status
     const connection = await constants.createMysqlConnection();
 
     // Query
-    const query = `SELECT ${select} FROM reward_question_responses WHERE reward_question_id = ? AND customer_information_id = ? AND status = ? LIMIT 1`;
+    const query = `SELECT ${select} FROM reward_question_responses WHERE reward_question_id = ? AND customer_information_id = ? AND status = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [questionId, customerId, status]);
