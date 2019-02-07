@@ -512,15 +512,83 @@ module.exports.logicGetAllData = async(mobile, code) => {
     // Get Reward Question List
     const list = await logicRewardQuestionList(customerParse[0].customer_information_id)
 
+    // Logic Coupon List
+    const couponList = logicCouponList(customerParse[0].customer_information_id);
+
     return (responsedata = {
       success: true,
       data: {
         reward_point: customerParse[0].reward_point,
         customer_record: customerJson[0],
-        reward_question: list
+        reward_question: list,
+        coupon_list: couponList,
       },
       msg: "Succesful"
     });
+
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
+
+// Logic Coupon List
+const logicCouponList = customerId => {
+  try {
+
+    return ([{
+      "code": "123456789123456789",
+      "valid_until": "2019-02-28",
+      "merchant_name": "Robert Downey, Jr",
+      "place": "Manhattan, New York City",
+      "offer": "free",
+      "value": 0,
+      "detail": "",
+
+    }, {
+      "code": "123456789123456788",
+      "valid_until": "2019-01-01",
+      "merchant_name": "Tom Hanks",
+      "place": "Concord, California",
+      "offer": "percent",
+      "value": 10,
+      "detail": ""
+
+    }, {
+      "code": "123456789123456787",
+      "valid_until": "2019-04-28",
+      "merchant_name": "Leonardo DiCaprio",
+      "place": " Hollywood, Los Angeles",
+      "offer": "price",
+      "value": 50,
+      "detail": ""
+
+    }, {
+      "code": "123456789123456786",
+      "valid_until": "2019-03-12",
+      "merchant_name": "Matt Damon",
+      "place": "Cambridge, Massachusetts",
+      "offer": "free",
+      "value": 0,
+      "detail": ""
+
+    }, {
+      "code": "123456789123456785",
+      "valid_until": "2019-02-28",
+      "merchant_name": "Robert Downey, Jr",
+      "place": "Manhattan, New York City,",
+      "offer": "free",
+      "value": 0,
+      "detail": ""
+
+    }, {
+      "code": "123456789123456784",
+      "valid_until": "2019-02-28",
+      "merchant_name": "Robert Downey, Jr",
+      "place": "Manhattan, New York City,",
+      "offer": "free",
+      "value": 0,
+      "detail": ""
+    }]);
 
   } catch (error) {
     return Promise.reject(error);

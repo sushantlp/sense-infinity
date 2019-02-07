@@ -42,4 +42,5 @@ routes.get('/static', authJwt, engageController.requestSenseStatic);
 // Get All Reward Question and Customer Data 
 routes.get('/all/data', rewardController.requestGetAllData);
 
+
 module.exports = routes;
