@@ -540,54 +540,54 @@ const logicCouponList = customerId => {
       "valid_until": "2019-02-28",
       "merchant_name": "Robert Downey, Jr",
       "place": "Manhattan, New York City",
-      "offer": "free",
+      "offer": "Free",
       "value": 0,
-      "detail": "",
+      "detail": "This is best strategy to get free stuff on Amazon, as fast as possible, and with the least amount of effort required too. All you need to do is sign up for an account at the website and then click to view and then “buy” the product",
 
     }, {
       "code": "123456789123456788",
       "valid_until": "2019-01-01",
       "merchant_name": "Tom Hanks",
       "place": "Concord, California",
-      "offer": "percent",
+      "offer": "Percent",
       "value": 10,
-      "detail": ""
+      "detail": "This is best strategy to get free stuff on Amazon, as fast as possible, and with the least amount of effort required too. All you need to do is sign up for an account at the website and then click to view and then “buy” the product"
 
     }, {
       "code": "123456789123456787",
       "valid_until": "2019-04-28",
       "merchant_name": "Leonardo DiCaprio",
       "place": " Hollywood, Los Angeles",
-      "offer": "price",
+      "offer": "Price",
       "value": 50,
-      "detail": ""
+      "detail": "This is best strategy to get free stuff on Amazon, as fast as possible, and with the least amount of effort required too. All you need to do is sign up for an account at the website and then click to view and then “buy” the product"
 
     }, {
       "code": "123456789123456786",
       "valid_until": "2019-03-12",
       "merchant_name": "Matt Damon",
       "place": "Cambridge, Massachusetts",
-      "offer": "free",
+      "offer": "Free",
       "value": 0,
-      "detail": ""
+      "detail": "This is best strategy to get free stuff on Amazon, as fast as possible, and with the least amount of effort required too. All you need to do is sign up for an account at the website and then click to view and then “buy” the product"
 
     }, {
       "code": "123456789123456785",
-      "valid_until": "2019-02-28",
-      "merchant_name": "Robert Downey, Jr",
-      "place": "Manhattan, New York City,",
-      "offer": "free",
+      "valid_until": "2020-08-05",
+      "merchant_name": "Tom Cruise",
+      "place": "Syracuse, New York",
+      "offer": "Free",
       "value": 0,
-      "detail": ""
+      "detail": "This is best strategy to get free stuff on Amazon, as fast as possible, and with the least amount of effort required too. All you need to do is sign up for an account at the website and then click to view and then “buy” the product"
 
     }, {
       "code": "123456789123456784",
-      "valid_until": "2019-02-28",
-      "merchant_name": "Robert Downey, Jr",
-      "place": "Manhattan, New York City,",
-      "offer": "free",
+      "valid_until": "2014-02-28",
+      "merchant_name": "Brad Pitt",
+      "place": "Shawnee, Oklahoma",
+      "offer": "Percent",
       "value": 0,
-      "detail": ""
+      "detail": "This is best strategy to get free stuff on Amazon, as fast as possible, and with the least amount of effort required too. All you need to do is sign up for an account at the website and then click to view and then “buy” the product"
     }]);
 
   } catch (error) {
