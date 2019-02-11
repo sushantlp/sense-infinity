@@ -813,7 +813,7 @@ module.exports.logicRewardResponse = async(mobile, code, json) => {
     }
 
     // Iterate Question Reward Response
-    iterateRewardResponse(customerRecord[0].customer_information_id, json);
+    iterateRewardResponse(customerRecord[0].customer_information_id, customerRecord[0].reward_point, json);
 
     return (responsedata = {
       success: true,
@@ -827,9 +827,14 @@ module.exports.logicRewardResponse = async(mobile, code, json) => {
 }
 
 // Iterate Question Reward Response
-const iterateRewardResponse = async(id, json) => {
+const iterateRewardResponse = async(id, rewardPoint, json) => {
   try {
-    json.map(async(reward) => {
+
+    // Variable
+    let point = rewardPoint;
+
+
+    json.map(async(reward, index) => {
 
       // Read Reward Question
       let questionParse = await rewardQuestion.readRewardQuestion("*", parseInt(reward.question_id, 10), 1);
@@ -852,8 +857,10 @@ const iterateRewardResponse = async(id, json) => {
             if (rewardParse.length === 0) {
               // Keep Question Reward Response
               rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(reward.option[0], 10), id, undefined, 1);
-            } else {
 
+              // Add Reward Point
+              point = point + questionParse[0].reward_point;
+            } else {
               if (reward.option[0] !== rewardParse[0].reward_option_id) {
                 // Update Reward Response 
                 await rewardResponse.updateRewardResponse(rewardParse[0].question_response_id, 0);
@@ -872,20 +879,24 @@ const iterateRewardResponse = async(id, json) => {
               rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(x, 10), id, undefined, 1);
               return;
             });
+
+            // Add Reward Point
+            point = point + questionParse[0].reward_point;
+
           } else {
 
             // Check Reward Response Duplicate
             const object = rewardResponseDuplicate(reward, rewardParse);
 
-            object.softDelete.map(async(x) => {
+            // Soft Delete
+            object.softDelete.map((x) => {
 
               // Update Reward Response By Question Id and Option Id
-              await rewardResponse.updateResponseByOption(parseInt(reward.question_id, 10), parseInt(x, 10), 0);
+              rewardResponse.updateResponseByOption(parseInt(reward.question_id, 10), parseInt(x, 10), 0);
               return;
             });
 
-
-
+            // Insert
             object.insert.map((x) => {
               // Keep Question Reward Response
               rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(x, 10), id, undefined, 1);
@@ -900,8 +911,10 @@ const iterateRewardResponse = async(id, json) => {
             if (rewardParse.length === 0) {
               // Keep Question Reward Response
               rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
-            } else {
 
+              // Add Reward Point
+              point = point + questionParse[0].reward_point;
+            } else {
               if (reward.option[0] !== rewardParse[0].question_response) {
                 // Update Reward Response 
                 await rewardResponse.updateRewardResponse(rewardParse[0].question_response_id, 0);
@@ -919,8 +932,10 @@ const iterateRewardResponse = async(id, json) => {
             if (rewardParse.length === 0) {
               // Keep Question Reward Response
               rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
-            } else {
 
+              // Add Reward Point
+              point = point + questionParse[0].reward_point;
+            } else {
               if (reward.option[0] !== rewardParse[0].question_response) {
                 // Update Reward Response 
                 await rewardResponse.updateRewardResponse(rewardParse[0].question_response_id, 0);
@@ -934,11 +949,13 @@ const iterateRewardResponse = async(id, json) => {
           }
 
         } else { // Text
-
           if (reward.option.length === 1) {
             if (rewardParse.length === 0) {
               // Keep Question Reward Response
               rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
+
+              // Add Reward Point
+              point = point + questionParse[0].reward_point;
             } else {
               // Update Reward Response 
               await rewardResponse.updateRewardResponse(rewardParse[0].question_response_id, 0);
@@ -950,7 +967,11 @@ const iterateRewardResponse = async(id, json) => {
             console.log("Else 5")
           }
         }
+      }
 
+      // Last Execute
+      if ((json.length - 1) === index) {
+        customerDataModel.updateCustomerRewardPoint(point, id);
       }
     });
 

@@ -53,7 +53,7 @@ module.exports.readCustomerDataId = async(select, id, status) => {
     const query = `SELECT ${select} FROM customer_information_data WHERE customer_information_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [mobile, status]);
+    const [rows, fields] = await connection.execute(query, [id, status]);
 
     connection.close();
 
@@ -268,6 +268,37 @@ module.exports.updateCustomerData = async(
       landmark,
       spouseName,
       anniversaryDate,
+      now,
+      id
+    ]);
+
+    connection.close();
+
+    return row;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+
+// Update Customer Reward Point
+module.exports.updateCustomerRewardPoint = async(
+  point,
+  id
+) => {
+  try {
+
+
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
+
+    // Query
+    const query =
+      "UPDATE `customer_information_data` SET `reward_point` = ?, `updated_at` = ? WHERE `customer_information_id` = ?";
+
+    // Query Database
+    const row = await connection.execute(query, [
+      point,
       now,
       id
     ]);

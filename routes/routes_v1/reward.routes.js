@@ -34,7 +34,7 @@ routes.post('/verify/otp', rewardController.requestVerifyOtp);
 routes.post('/customer/data', authJwt, rewardController.requestKeepCustomerData);
 
 // Keep Reward Question Response
-routes.post('/response', rewardController.requestRewardResponse);
+routes.post('/response', authJwt, rewardController.requestRewardResponse);
 
 // Get Static Data
 routes.get('/static', authJwt, engageController.requestSenseStatic);
