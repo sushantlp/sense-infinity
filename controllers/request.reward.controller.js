@@ -45,9 +45,8 @@ module.exports.requestVerifyMemberMobile = (req, res) => {
         console.log(error);
         return res.status(500).send("Oops our bad!!!");
       });
-  } else {
-    return res.status(400).send("Not a good api call");
-  }
+  } else return res.status(400).send("Not a good api call");
+
 };
 
 
@@ -92,9 +91,8 @@ module.exports.requestRegisterEmail = (req, res) => {
         console.log(error);
         return res.status(500).send("Oops our bad!!!");
       });
-  } else {
-    return res.status(400).send("Not a good api call");
-  }
+  } else return res.status(400).send("Not a good api call");
+
 }
 
 // Request Verify Otp
@@ -136,9 +134,7 @@ module.exports.requestVerifyOtp = (req, res) => {
         console.log(error);
         return res.status(500).send("Oops our bad!!!");
       });
-  } else {
-    return res.status(400).send("Not a good api call");
-  }
+  } else return res.status(400).send("Not a good api call");
 }
 
 // Request Keep Customer Data
@@ -220,9 +216,7 @@ module.exports.requestKeepCustomerData = (req, res) => {
         console.log(error);
         return res.status(500).send("Oops our bad!!!");
       });
-  } else {
-    return res.status(400).send("Not a good api call");
-  }
+  } else return res.status(400).send("Not a good api call");
 }
 
 // Request Get All Coupon Customer Reward 
@@ -237,10 +231,8 @@ module.exports.requestGetAllData = (req, res) => {
     // Variable
     let token = undefined;
 
-
     if (process.env.NODE_ENV !== "development") token = req.headers["authorization"];
     else token = req.body.token || req.query.token || req.headers["authorization"];
-
 
     // Logic Get All Coupon Customer Reward 
     return logicRewardController
@@ -253,6 +245,7 @@ module.exports.requestGetAllData = (req, res) => {
         // Intialize
         const metadata = {
           type: req.query.mobile,
+          count: Object.keys(response.data).length
         };
 
         // Jwt Token Pass in Header
@@ -274,9 +267,7 @@ module.exports.requestGetAllData = (req, res) => {
         console.log(error);
         return res.status(500).send("Oops our bad!!!");
       });
-  } else {
-    return res.status(400).send("Not a good api call");
-  }
+  } else return res.status(400).send("Not a good api call");
 }
 
 // Keep Reward Question Response
@@ -299,7 +290,6 @@ module.exports.requestRewardResponse = (req, res) => {
 
     if (process.env.NODE_ENV !== "development") token = req.headers["authorization"];
     else token = req.body.token || req.query.token || req.headers["authorization"];
-
 
     // Logic Keep Reward Question Response 
     return logicRewardController
@@ -334,7 +324,5 @@ module.exports.requestRewardResponse = (req, res) => {
         console.log(error);
         return res.status(500).send("Oops our bad!!!");
       });
-  } else {
-    return res.status(400).send("Not a good api call");
-  }
+  } else return res.status(400).send("Not a good api call");
 }
