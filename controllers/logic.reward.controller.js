@@ -853,11 +853,14 @@ const iterateRewardResponse = async(id, json) => {
               // Keep Question Reward Response
               rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(reward.option[0], 10), id, undefined, 1);
             } else {
-              // Update Reward Response 
-              await rewardResponse.updateRewardResponse(rewardParse[0].question_response_id, 0);
 
-              // Keep Question Reward Response
-              rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(reward.option[0], 10), id, undefined, 1);
+              if (reward.option[0] !== rewardParse[0].reward_option_id) {
+                // Update Reward Response 
+                await rewardResponse.updateRewardResponse(rewardParse[0].question_response_id, 0);
+
+                // Keep Question Reward Response
+                rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(reward.option[0], 10), id, undefined, 1);
+              }
             }
           } else {
             console.log("Else 1")
@@ -871,16 +874,19 @@ const iterateRewardResponse = async(id, json) => {
             });
           } else {
 
-            rewardParse.map(async(x) => {
-              // Update Reward Response 
-              await rewardResponse.updateRewardResponse(x.question_response_id, 0);
+            // Check Reward Response Duplicate
+            const object = rewardResponseDuplicate(reward, rewardParse);
 
+            object.softDelete.map(async(x) => {
+
+              // Update Reward Response By Question Id and Option Id
+              await rewardResponse.updateResponseByOption(parseInt(reward.question_id, 10), parseInt(x, 10), 0);
               return;
             });
 
 
 
-            reward.option.map((x) => {
+            object.insert.map((x) => {
               // Keep Question Reward Response
               rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), parseInt(x, 10), id, undefined, 1);
               return;
@@ -896,16 +902,17 @@ const iterateRewardResponse = async(id, json) => {
               rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
             } else {
 
-              // Update Reward Response 
-              await rewardResponse.updateRewardResponse(rewardParse[0].question_response_id, 0);
+              if (reward.option[0] !== rewardParse[0].question_response) {
+                // Update Reward Response 
+                await rewardResponse.updateRewardResponse(rewardParse[0].question_response_id, 0);
 
-              // Keep Question Reward Response
-              rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
+                // Keep Question Reward Response
+                rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
+              }
             }
           } else {
             console.log("Else 3")
           }
-
         } else if (questionParse[0].input_id === 4) { // 10 Star
 
           if (reward.option.length === 1 && reward.option[0] <= 10) {
@@ -913,11 +920,14 @@ const iterateRewardResponse = async(id, json) => {
               // Keep Question Reward Response
               rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
             } else {
-              // Update Reward Response 
-              await rewardResponse.updateRewardResponse(rewardParse[0].question_response_id, 0);
 
-              // Keep Question Reward Response
-              rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
+              if (reward.option[0] !== rewardParse[0].question_response) {
+                // Update Reward Response 
+                await rewardResponse.updateRewardResponse(rewardParse[0].question_response_id, 0);
+
+                // Keep Question Reward Response
+                rewardResponse.keepRewardResponse(parseInt(reward.question_id, 10), 0, id, reward.option[0], 1);
+              }
             }
           } else {
             console.log("Else 4")
@@ -947,5 +957,46 @@ const iterateRewardResponse = async(id, json) => {
     return Promise.resolve(true);
   } catch (error) {
     return Promise.reject(error);
+  }
+}
+
+
+// Check Reward Response Duplicate
+const rewardResponseDuplicate = (x, y) => {
+
+  // Variable
+  let insert = [];
+  let softDelete = [];
+  let common = [];
+
+  for (let i = 0; i < x.option.length; i++) {
+    let flag = false;
+    for (let j = 0; j < y.length; j++) {
+      if (parseInt(x.option[i], 10) === y[j].reward_option_id) {
+        flag = true;
+        common.push(x.option[i]);
+      }
+    }
+
+    if (!flag) {
+      insert.push(x.option[i]);
+      common.push(x.option[i]);
+    }
+  }
+
+  for (let i = 0; i < y.length; i++) {
+    let flag = true;
+    for (let j = 0; j < common.length; j++) {
+      if (y[i].reward_option_id === parseInt(common[j], 10)) {
+        flag = false;
+      }
+    }
+
+    if (flag) softDelete.push(y[i].reward_option_id);
+  }
+
+  return {
+    insert: insert,
+    softDelete: softDelete
   }
 }
