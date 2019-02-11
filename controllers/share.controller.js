@@ -60,8 +60,7 @@ module.exports.createJsonObject = (data, msg, location, code, bool, metadata) =>
 
 // Validate Password
 module.exports.passwordAlgorthim = (mobile, password) => {
-  // Intialize
-  let responsedata = {};
+
 
   // Split String Into Array
   const mobileSplit = mobile.split('');
@@ -89,24 +88,20 @@ module.exports.passwordAlgorthim = (mobile, password) => {
   pair1 = pair1.concat(pair2);
 
   // Validate Password
-  if (pair1 == password) {
-    return (responsedata = {
-      success: true,
-      msg: 'Succesful'
-    });
-  } else {
-    return (responsedata = {
-      success: false,
-      msg: 'Wrong password'
-    });
-  }
+  if (pair1 == password) return {
+    success: true,
+    msg: 'Succesful'
+  };
+  else return {
+    success: false,
+    msg: 'Wrong password'
+  };
+
 };
 
 // Validate Otp
 module.exports.validateOtp = async(mobile, otp) => {
   try {
-    // Intialize
-    let responsedata = {};
 
     // Read Sms Record
     const record = await smsModel.readSmsRecord('*', mobile, 1);
@@ -114,23 +109,20 @@ module.exports.validateOtp = async(mobile, otp) => {
     // Check Result Length
     if (record.length > 0) {
       // Validate OTP
-      if (parseInt(record[0].otp, 10) === parseInt(otp, 10)) {
-        return (responsedata = {
-          success: true,
-          msg: 'Succesful'
-        });
-      } else {
-        return (responsedata = {
-          success: false,
-          msg: 'Wrong otp'
-        });
-      }
-    } else {
-      return (responsedata = {
+      if (parseInt(record[0].otp, 10) === parseInt(otp, 10)) return {
+        success: true,
+        msg: 'Succesful'
+      };
+      else return {
         success: false,
-        msg: 'Empty record'
-      });
-    }
+        msg: 'Wrong otp'
+      };
+
+    } else return {
+      success: false,
+      msg: 'Empty record'
+    };
+
   } catch (error) {
     return Promise.reject(error);
   }
@@ -163,57 +155,47 @@ module.exports.reformCustomerDetail = (
   };
 
   // EMPTY || NULL || UNDEFINED
-  if (firstName !== '' && firstName !== null && typeof firstName !== undefined) {
-    reform.first_name = firstName.replace(/\b[a-z]/g, function(f) {
-      return f.toUpperCase();
-    });
-  }
+  if (firstName !== '' && firstName !== null && typeof firstName !== undefined) reform.first_name = firstName.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
 
-  if (lastName !== '' && lastName !== null && typeof lastName !== undefined) {
-    reform.last_name = lastName.replace(/\b[a-z]/g, function(f) {
-      return f.toUpperCase();
-    });
-  }
 
-  if (dob !== '' && dob !== null && typeof dob !== undefined) {
-    reform.dob = moment(new Date(dob)).format('YYYY-MM-DD');
-  }
+  if (lastName !== '' && lastName !== null && typeof lastName !== undefined) reform.last_name = lastName.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
+
+
+  if (dob !== '' && dob !== null && typeof dob !== undefined) reform.dob = moment(new Date(dob)).format('YYYY-MM-DD');
+
 
   if (flag) {
-    if (spouseName !== '' && spouseName !== null && typeof spouseName !== undefined) {
-      reform.spouse_name = spouseName.replace(/\b[a-z]/g, function(f) {
-        return f.toUpperCase();
-      });
-    }
+    if (spouseName !== '' && spouseName !== null && typeof spouseName !== undefined) reform.spouse_name = spouseName.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+
 
     if (anniversary !== '' && anniversary !== null && typeof anniversary !== undefined) {
       reform.anniversary = moment(new Date(anniversary)).format('YYYY-MM-DD');
-      if (isNaN(Date.parse(reform.anniversary))) {
-        reform.anniversary = moment(new Date('1949-08-15')).format('YYYY-MM-DD');
-      }
+      if (isNaN(Date.parse(reform.anniversary))) reform.anniversary = moment(new Date('1949-08-15')).format('YYYY-MM-DD');
     }
 
-    if (married !== '' && married !== null && typeof married !== undefined) {
-      reform.married = married;
-    }
+    if (married !== '' && married !== null && typeof married !== undefined) reform.married = married;
 
-    if (addressOne !== '' && addressOne !== null && typeof addressOne !== undefined) {
-      reform.address_one = addressOne.replace(/\b[a-z]/g, function(f) {
-        return f.toUpperCase();
-      });
-    }
 
-    if (addressTwo !== '' && addressTwo !== null && typeof addressTwo !== undefined) {
-      reform.address_two = addressTwo.replace(/\b[a-z]/g, function(f) {
-        return f.toUpperCase();
-      });
-    }
+    if (addressOne !== '' && addressOne !== null && typeof addressOne !== undefined) reform.address_one = addressOne.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
 
-    if (landmark !== '' && landmark !== null && typeof landmark !== undefined) {
-      reform.landmark = landmark.replace(/\b[a-z]/g, function(f) {
-        return f.toUpperCase();
-      });
-    }
+
+    if (addressTwo !== '' && addressTwo !== null && typeof addressTwo !== undefined) reform.address_two = addressTwo.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+
+
+    if (landmark !== '' && landmark !== null && typeof landmark !== undefined) reform.landmark = landmark.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+
   }
 
   return reform;
@@ -240,9 +222,8 @@ module.exports.sendMail = (receiver, sender, subject, text, packages) => {
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      return Promise.reject(error);
-    }
+    if (error) return Promise.reject(error);
+
     return Promise.resolve(
       "Message %s sent: %s",
       info.messageId,

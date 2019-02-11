@@ -1,7 +1,6 @@
 'use strict';
 
 // Import Controller
-// const validateController = require('./validate.controller');
 const shareController = require('./share.controller');
 
 // Import Model
@@ -14,23 +13,13 @@ const storeModel = require('../models/merchant_store');
 // Request Merchant Signup
 module.exports.requestAppSignup = (req, res) => {
   if (req.query.mobile !== undefined && req.query.mobile !== '') {
-    // Extract Parameter
-    const mobile = req.query.mobile;
-
-    // // Validate Merchant SignUp
-    // const validate = validateController.validateSignUpRequest(req, res);
-
-    // // Check Response Code
-    // if (isNaN(validate)) {
-    //   return res.status(400).send(validate[0].msg);
-    // }
 
     // Logic App Signup
-    return logicAppSignup(mobile)
+    return logicAppSignup(req.query.mobile)
       .then(response => {
         // Intialize
         const metadata = {
-          type: mobile
+          type: req.query.mobile
         };
 
         return res
@@ -64,17 +53,13 @@ module.exports.requestOtpVerify = (req, res) => {
     req.query.password !== undefined &&
     req.query.password !== ''
   ) {
-    // Extract Parameter
-    const mobile = req.query.mobile;
-    const otp = req.query.otp;
-    const password = req.query.password;
 
     // Logic Otp Verify
-    return logicOtpVerify(mobile, otp, password)
+    return logicOtpVerify(req.query.mobile, req.query.otp, req.query.password)
       .then(response => {
         // Intialize
         const metadata = {
-          type: mobile
+          type: req.query.mobile
         };
         return res
           .status(200)
@@ -116,32 +101,29 @@ module.exports.requestRefreshToken = async(req, res) => {
 // Logic App Signup
 const logicAppSignup = async mobile => {
   try {
-    // Intialize
-    let responsedata = {};
+
 
     // Read Merchant Record
     const merchant = await merchantModel.readMerchantByMobile('*', mobile, 1);
 
     // Check Sms Limit Per Day
-    if (merchant.length < 1) {
-      return (responsedata = {
-        success: false,
-        data: [],
-        msg: 'Unknown merchant'
-      });
-    }
+    if (merchant.length < 1) return {
+      success: false,
+      data: [],
+      msg: 'Unknown merchant'
+    };
+
 
     // Read Daily Sms Limit
     const limit = await smsModel.dailySmsLimit('*', mobile);
 
     // Check Sms Limit Per Day
-    if (limit.length > 3) {
-      return (responsedata = {
-        success: false,
-        data: [],
-        msg: 'You have exceeded your OTP request limit, please try again 24 hour'
-      });
-    }
+    if (limit.length > 3) return {
+      success: false,
+      data: [],
+      msg: 'You have exceeded your OTP request limit, please try again 24 hour'
+    };
+
 
     // Generate OTP
     const random = shareController.generateRandomNumber(4);
@@ -152,11 +134,11 @@ const logicAppSignup = async mobile => {
     // Keep Sms Record
     smsModel.keepSmsOtp(mobile, random, 1);
 
-    return (responsedata = {
+    return {
       success: true,
       data: [],
       msg: 'Otp send respective user mobile number'
-    });
+    };
   } catch (error) {
     console.log(error);
     return Promise.reject(error);
@@ -166,15 +148,12 @@ const logicAppSignup = async mobile => {
 // Logic Otp Verify
 const logicOtpVerify = async(mobile, otp, password) => {
   try {
-    // Intialize
-    let responsedata = {};
+
 
     // Validate Password
     const passwordValidate = shareController.passwordAlgorthim(mobile, password);
+    if (!passwordValidate.success) return passwordValidate;
 
-    if (!passwordValidate.success) {
-      return passwordValidate;
-    }
 
     // Parallel Read User Table Record And Validate Otp
     const parallel = await Promise.all([
@@ -184,9 +163,7 @@ const logicOtpVerify = async(mobile, otp, password) => {
     ]);
 
     if (parallel.length > 0) {
-      if (!parallel[0].success) {
-        return parallel[0];
-      }
+      if (!parallel[0].success) return parallel[0];
 
       const merchantStore = await storeModel.readStoreRecord(
         'store_id AS store_unique, store_name AS name, address',
@@ -200,14 +177,14 @@ const logicOtpVerify = async(mobile, otp, password) => {
       // Update Sms Record
       smsModel.updateSmsOtp(mobile, null, 0);
 
-      return (responsedata = {
+      return {
         success: true,
         data: {
           token: token,
           store: merchantStore
         },
         msg: 'Successful'
-      });
+      };
     } else {
       return Promise.reject('Oops our bad!!!');
     }

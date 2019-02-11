@@ -26,9 +26,6 @@ const shareController = require("./share.controller");
 module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
   try {
 
-    // Variable
-    let responsedata = {};
-
     // Replace + 
     code = code.replace(/\+/g, '');
 
@@ -55,15 +52,15 @@ module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
 
 
     if (customerParse.length === 0 && cardParse.length !== 0) {
-      return (responsedata = {
+      return {
         success: false,
         data: [],
         msg: "Memebership card already using other user"
-      });
+      };
     } else if (customerParse.length === 0 && cardParse.length === 0) {
 
       // Keep Customer Information Data
-      const lastRecord = await customerDataModel.keepCustomerData(
+      let lastRecord = await customerDataModel.keepCustomerData(
         undefined,
         undefined,
         undefined,
@@ -106,34 +103,32 @@ module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
       );
 
       // Parse
-      const lastStringify = JSON.stringify(lastRecord);
-      const lastParse = JSON.parse(lastStringify);
+      lastRecord = JSON.stringify(lastRecord);
+      lastRecord = JSON.parse(lastRecord);
 
       // Keep Customer Membership Card
       cardModel.keepCustomerMembershipCard(
-        lastParse[0].insertId,
+        lastRecord[0].insertId,
         card.toString(),
         1
       );
 
-
-      return (responsedata = {
+      return {
         success: true,
         data: [],
         msg: "Succesful"
-      });
+      };
     } else if (customerParse.length !== 0 && cardParse.length === 0) {
 
       // Read Membership Card Record by Customer Information Id
       const customerCard = await cardModel.readMembershipCardId("*", customerParse[0].customer_information_id, 1);
 
-      if (customerCard.length !== 0) {
-        return (responsedata = {
-          success: false,
-          data: [],
-          msg: "Wrong Membership card"
-        });
-      }
+      if (customerCard.length !== 0) return {
+        success: false,
+        data: [],
+        msg: "Wrong Membership card"
+      };
+
 
       // Keep Customer Membership Card
       cardModel.keepCustomerMembershipCard(
@@ -165,21 +160,19 @@ module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
         1
       );
 
-
-      return (responsedata = {
+      return {
         success: true,
         data: [],
         msg: "Succesful"
-      });
+      };
     } else {
 
-      if (cardParse[0].customer_information_id !== customerParse[0].customer_information_id) {
-        return (responsedata = {
-          success: false,
-          data: [],
-          msg: "Wrong Membership card"
-        });
-      }
+      if (cardParse[0].customer_information_id !== customerParse[0].customer_information_id) return {
+        success: false,
+        data: [],
+        msg: "Wrong Membership card"
+      };
+
 
       // Keep Information Track
       customerTrackModel.keepInformationTrack(
@@ -204,14 +197,12 @@ module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
         1
       );
 
-      return (responsedata = {
+      return {
         success: true,
         data: [],
         msg: "Succesful"
-      });
+      };
     }
-
-
   } catch (error) {
     return Promise.reject(error);
   }
@@ -221,19 +212,15 @@ module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
 module.exports.logicRegisterEmail = async(email, mobile, code) => {
   try {
 
-    // Variable
-    let responsedata = {};
-
     // Replace + 
     code = code.replace(/\+/g, '');
 
-    if (!EMAIL_REG.test(email)) {
-      return (responsedata = {
-        success: false,
-        data: [],
-        msg: "Invalid email"
-      });
-    }
+    if (!EMAIL_REG.test(email)) return {
+      success: false,
+      data: [],
+      msg: "Invalid email"
+    };
+
 
     // Read Customer Information Data by Mobile and Country Code
     let customerParse = await customerDataModel.readDataMobileCode(
@@ -247,13 +234,12 @@ module.exports.logicRegisterEmail = async(email, mobile, code) => {
     customerParse = JSON.stringify(customerParse);
     customerParse = JSON.parse(customerParse);
 
-    if (customerParse.length === 0) {
-      return (responsedata = {
-        success: false,
-        data: [],
-        msg: "Wrong user"
-      });
-    }
+    if (customerParse.length === 0) return {
+      success: false,
+      data: [],
+      msg: "Wrong user"
+    };
+
 
     // Update Customer Information Data
     customerDataModel.updateCustomerData(
@@ -309,11 +295,11 @@ module.exports.logicRegisterEmail = async(email, mobile, code) => {
     // Send Mail
     shareController.sendMail(email, "contact@sense8.tech", "OTP", "", random);
 
-    return (responsedata = {
+    return {
       success: true,
       data: [],
       msg: "Succesful"
-    });
+    };
 
   } catch (error) {
     return Promise.reject(error);
@@ -323,9 +309,6 @@ module.exports.logicRegisterEmail = async(email, mobile, code) => {
 // Logic Verify Otp
 module.exports.logicVerifyOtp = async(password, mobile, code, otp) => {
   try {
-
-    // Variable
-    let responsedata = {};
 
     // Replace + 
     code = code.replace(/\+/g, '');
@@ -361,13 +344,13 @@ module.exports.logicVerifyOtp = async(password, mobile, code, otp) => {
     // Update Sms Record
     smsModel.updateSmsOtp(newMobile, null, 0);
 
-    return (responsedata = {
+    return {
       success: true,
       data: {
         token: token,
       },
       msg: 'Successful'
-    });
+    };
 
   } catch (error) {
     return Promise.reject(error);
@@ -378,19 +361,15 @@ module.exports.logicVerifyOtp = async(password, mobile, code, otp) => {
 module.exports.logicKeepCustomerData = async(email, mobile, code, card, firstName, lastName, dob, gender, married, spouse, anniversary, addressOne, addressTwo, landmark, city, locality) => {
   try {
 
-    // Intialize
-    let responsedata = {};
-
     // Replace + 
     code = code.replace(/\+/g, '');
 
-    if (!EMAIL_REG.test(email)) {
-      return (responsedata = {
-        success: false,
-        data: [],
-        msg: "Invalid email"
-      });
-    }
+    if (!EMAIL_REG.test(email)) return {
+      success: false,
+      data: [],
+      msg: "Invalid email"
+    };
+
 
     // Reform Customer Detail
     const reform = shareController.reformCustomerDetail(
@@ -408,19 +387,18 @@ module.exports.logicKeepCustomerData = async(email, mobile, code, card, firstNam
 
 
     // Read Customer Information Data by Mobile and Country Code
-    const recordParse = await customerDataModel.readDataMobileCode("customer_information_id", mobile, code, 1);
+    let recordParse = await customerDataModel.readDataMobileCode("customer_information_id", mobile, code, 1);
 
     // Parse
     recordParse = JSON.stringify(recordParse);
     recordParse = JSON.parse(recordParse);
 
-    if (recordParse.length === 0) {
-      return (responsedata = {
-        success: false,
-        data: {},
-        msg: "Unknown user"
-      });
-    }
+    if (recordParse.length === 0) return {
+      success: false,
+      data: {},
+      msg: "Unknown user"
+    };
+
 
     // Update Customer Information Data
     customerDataModel.updateCustomerData(
@@ -463,11 +441,11 @@ module.exports.logicKeepCustomerData = async(email, mobile, code, card, firstNam
       1
     );
 
-    return (responsedata = {
+    return {
       success: true,
       data: [],
       msg: "Succesful"
-    });
+    };
   } catch (error) {
     return Promise.reject(error);
   }
@@ -478,7 +456,6 @@ module.exports.logicGetAllData = async(mobile, code) => {
   try {
 
     // Variable
-    let responsedata = {};
     let rewardPoint = 0;
 
     // Replace + 
@@ -496,13 +473,12 @@ module.exports.logicGetAllData = async(mobile, code) => {
     customerParse = JSON.stringify(customerParse);
     customerParse = JSON.parse(customerParse);
 
-    if (customerParse.length === 0) {
-      return (responsedata = {
-        success: false,
-        data: {},
-        msg: "Unknown user"
-      });
-    }
+    if (customerParse.length === 0) return {
+      success: false,
+      data: {},
+      msg: "Unknown user"
+    };
+
 
     // Customer Record Json
     const customerJson = customerRecordJson(customerParse);
@@ -513,7 +489,7 @@ module.exports.logicGetAllData = async(mobile, code) => {
     // Logic Coupon List
     const couponList = logicCouponList(customerParse[0].customer_information_id);
 
-    return (responsedata = {
+    return {
       success: true,
       data: {
         reward_point: customerParse[0].reward_point,
@@ -522,7 +498,7 @@ module.exports.logicGetAllData = async(mobile, code) => {
         coupon_list: couponList,
       },
       msg: "Succesful"
-    });
+    };
 
   } catch (error) {
     return Promise.reject(error);
@@ -756,9 +732,6 @@ const customerRecordJson = (json) => {
 module.exports.logicRewardResponse = async(mobile, code, json) => {
   try {
 
-    // Variable
-    let responsedata = {};
-
     // Replace + 
     code = code.replace(/\+/g, '');
 
@@ -774,22 +747,21 @@ module.exports.logicRewardResponse = async(mobile, code, json) => {
     customerRecord = JSON.stringify(customerRecord);
     customerRecord = JSON.parse(customerRecord);
 
-    if (customerRecord.length === 0) {
-      return (responsedata = {
-        success: false,
-        data: {},
-        msg: "Unknown user"
-      });
-    }
+    if (customerRecord.length === 0) return {
+      success: false,
+      data: {},
+      msg: "Unknown user"
+    };
+
 
     // Iterate Question Reward Response
     iterateRewardResponse(customerRecord[0].customer_information_id, customerRecord[0].reward_point, json);
 
-    return (responsedata = {
+    return {
       success: true,
       data: {},
       msg: "Succesful"
-    });
+    };
 
   } catch (error) {
     return Promise.reject(error);

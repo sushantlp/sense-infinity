@@ -43,8 +43,7 @@ const backDate = moment()
 // Logic Sense Static
 module.exports.logicSenseStatic = async appVersion => {
   try {
-    // Intialize
-    let responsedata = {};
+
 
     // Read Sense Constant Record
     const senseConstant = await senseConstModel.readSenseConstant(
@@ -54,24 +53,21 @@ module.exports.logicSenseStatic = async appVersion => {
     );
 
     // Zero Means Empty Record
-    if (senseConstant.length === 0) {
-      return (responsedata = {
-        success: false,
-        data: {},
-        msg: "Empty sense constant"
-      });
-    }
+    if (senseConstant.length === 0) return {
+      success: false,
+      data: {},
+      msg: "Empty sense constant"
+    };
+
 
     // Check Sense Static App Version
-    if (appVersion === parseFloat(senseConstant[0].value)) {
-      return (responsedata = {
-        success: true,
-        data: {},
-        msg: "Upto date"
-      });
-    } else {
-      appVersion = parseFloat(senseConstant[0].value);
-    }
+    if (appVersion === parseFloat(senseConstant[0].value)) return {
+      success: true,
+      data: {},
+      msg: "Upto date"
+    };
+    else appVersion = parseFloat(senseConstant[0].value);
+
 
     // Parallel City Locality Gender Record
     const parallel = await Promise.all([
@@ -89,11 +85,9 @@ module.exports.logicSenseStatic = async appVersion => {
       )
     ]);
 
-    if (parallel.length === 0) {
-      return Promise.reject("Oops our bad!!!");
-    }
+    if (parallel.length === 0) return Promise.reject("Oops our bad!!!");
 
-    return (responsedata = {
+    return {
       success: true,
       data: {
         city: parallel[0],
@@ -102,7 +96,7 @@ module.exports.logicSenseStatic = async appVersion => {
       },
       msg: "Succesful",
       version: appVersion
-    });
+    };
   } catch (error) {
     return Promise.reject(error);
   }
@@ -115,7 +109,7 @@ module.exports.requestLogicKeepComplain = async(
   storeId
 ) => {
   try {
-    let responsedata = {};
+
 
     // Read Merchant Record
     const merchantRecord = await merchantModel.readMerchantByMobile(
@@ -124,13 +118,12 @@ module.exports.requestLogicKeepComplain = async(
       1
     );
 
-    if (merchantRecord.length === 0) {
-      return (responsedata = {
-        success: false,
-        data: [],
-        msg: "Empty merchant record"
-      });
-    }
+    if (merchantRecord.length === 0) return {
+      success: false,
+      data: [],
+      msg: "Empty merchant record"
+    };
+
 
     // Merchant Constant Table Exist
     const senseConstant = await databaseController.showConstantTable(
@@ -150,11 +143,11 @@ module.exports.requestLogicKeepComplain = async(
     // Logic Read Complain
     await logicKeepComplain(mobile, storeId, complainJson, merchantRecord);
 
-    return (responsedata = {
+    return {
       success: true,
       data: [],
       msg: "Succesful"
-    });
+    };
   } catch (error) {
     return Promise.reject(error);
   }
@@ -182,25 +175,25 @@ const logicKeepComplain = async(
     );
 
     // Read Merchant Store Record By Store Id
-    const storeRecord = await storeModel.readStoreById("city_id", storeId, 1);
+    let storeRecord = await storeModel.readStoreById("city_id", storeId, 1);
 
     // Parse
-    const storeStringify = JSON.stringify(storeRecord);
-    const storeParse = JSON.parse(storeStringify);
+    storeRecord = JSON.stringify(storeRecord);
+    storeRecord = JSON.parse(storeRecord);
 
-    if (storeParse.length !== 0) {
+    if (storeRecord.length !== 0) {
       // Read City Record By City Id
-      const cityRecord = await cityModel.readCityBYId(
+      let cityRecord = await cityModel.readCityBYId(
         "*",
-        storeParse[0].city_id,
+        storeRecord[0].city_id,
         1
       );
 
       // Parse
-      const cityStringify = JSON.stringify(cityRecord);
-      const cityParse = JSON.parse(cityStringify);
+      cityRecord = JSON.stringify(cityRecord);
+      cityRecord = JSON.parse(cityRecord);
 
-      if (cityParse.length !== 0) cityCode = cityParse[0].country_code;
+      if (cityRecord.length !== 0) cityCode = cityRecord[0].country_code;
 
     }
 
@@ -209,15 +202,15 @@ const logicKeepComplain = async(
       let customerId = undefined;
 
       // Read Customer Information Data By Mobile
-      const customerRecord = await customerDataModel.readCustomerDataMobile(
+      let customerRecord = await customerDataModel.readCustomerDataMobile(
         "*",
         json.customer_mobile,
         1
       );
 
       // Parse
-      const customerStringify = JSON.stringify(customerRecord);
-      const customerParse = JSON.parse(customerStringify);
+      customerRecord = JSON.stringify(customerRecord);
+      customerRecord = JSON.parse(customerRecord);
 
       // Reform Customer Detail
       const reform = shareController.reformCustomerDetail(
@@ -233,9 +226,9 @@ const logicKeepComplain = async(
         false
       );
 
-      if (customerParse.length === 0) {
+      if (customerRecord.length === 0) {
         // Keep Customer Information Data
-        const lastRecord = await customerDataModel.keepCustomerData(
+        let lastRecord = await customerDataModel.keepCustomerData(
           reform.first_name,
           reform.last_name,
           json.email,
@@ -278,11 +271,11 @@ const logicKeepComplain = async(
         );
 
         // Parse
-        const jsonStringify = JSON.stringify(lastRecord);
-        const jsonParse = JSON.parse(jsonStringify);
+        lastRecord = JSON.stringify(lastRecord);
+        lastRecord = JSON.parse(lastRecord);
 
         // ReIntialize
-        customerId = jsonParse[0].insertId;
+        customerId = lastRecord[0].insertId;
 
         // Keep Merchant Store Complain
         complainModel.keepStoreComplain(
@@ -303,14 +296,14 @@ const logicKeepComplain = async(
           json.email,
           reform.dob,
           json.gender_id,
-          customerParse[0].city_id,
-          customerParse[0].locality_id,
-          customerParse[0].married,
-          customerParse[0].address_one,
-          customerParse[0].address_two,
-          customerParse[0].landmark,
-          customerParse[0].spouse_name,
-          customerParse[0].anniversary_date,
+          customerRecord[0].city_id,
+          customerRecord[0].locality_id,
+          customerRecord[0].married,
+          customerRecord[0].address_one,
+          customerRecord[0].address_two,
+          customerRecord[0].landmark,
+          customerRecord[0].spouse_name,
+          customerRecord[0].anniversary_date,
           customerId
         );
 
@@ -323,16 +316,16 @@ const logicKeepComplain = async(
           cityCode,
           reform.dob,
           json.gender_id,
-          customerParse[0].city_id,
-          customerParse[0].locality_id,
-          customerParse[0].merchant_id,
+          customerRecord[0].city_id,
+          customerRecord[0].locality_id,
+          customerRecord[0].merchant_id,
           storeId,
-          customerParse[0].married,
-          customerParse[0].address_one,
-          customerParse[0].address_two,
-          customerParse[0].landmark,
-          customerParse[0].spouse_name,
-          customerParse[0].anniversary_date,
+          customerRecord[0].married,
+          customerRecord[0].address_one,
+          customerRecord[0].address_two,
+          customerRecord[0].landmark,
+          customerRecord[0].spouse_name,
+          customerRecord[0].anniversary_date,
           Gateway.CLUB_CARD,
           1
         );
@@ -362,23 +355,18 @@ const logicKeepComplain = async(
           );
 
           // Check Complain Keep or Update
-          if (createdDate >= backDate && createdDate <= todayDate) {
-            // Update Merchant Store Complain
-            complainModel.updateStoreComplain(
-              complainRecord[0].complain_id,
-              json.description,
-              1
-            );
-          } else {
-            // Keep Merchant Store Complain
-            complainModel.keepStoreComplain(
-              customerId,
-              merchantRecord[0].merchant_id,
-              storeId,
-              json.description,
-              1
-            );
-          }
+          if (createdDate >= backDate && createdDate <= todayDate) complainModel.updateStoreComplain(
+            complainRecord[0].complain_id,
+            json.description,
+            1
+          );
+          else complainModel.keepStoreComplain(
+            customerId,
+            merchantRecord[0].merchant_id,
+            storeId,
+            json.description,
+            1
+          );
         }
       }
 
@@ -391,15 +379,13 @@ const logicKeepComplain = async(
         1
       );
 
-      if (linkValue.length === 0) {
-        // Keep Merchant Link Customer
-        linkModel.keepMerchantLinkCustomer(
-          merchantRecord[0].merchant_id,
-          storeId,
-          customerId,
-          1
-        );
-      }
+      if (linkValue.length === 0) linkModel.keepMerchantLinkCustomer(
+        merchantRecord[0].merchant_id,
+        storeId,
+        customerId,
+        1
+      );
+
 
       if (versionFlag.customer) {
         // Reintialize Variable
@@ -432,7 +418,7 @@ module.exports.requestLogicKeepCustomer = async(
   storeId
 ) => {
   try {
-    let responsedata = {};
+
 
     // Read Merchant Record
     const merchantRecord = await merchantModel.readMerchantByMobile(
@@ -441,13 +427,12 @@ module.exports.requestLogicKeepCustomer = async(
       1
     );
 
-    if (merchantRecord.length === 0) {
-      return (responsedata = {
-        success: false,
-        data: [],
-        msg: "Empty merchant record"
-      });
-    }
+    if (merchantRecord.length === 0) return {
+      success: false,
+      data: [],
+      msg: "Empty merchant record"
+    };
+
     // Merchant Constant Table Exist
     const senseConstant = await databaseController.showConstantTable(
       mobile,
@@ -466,11 +451,11 @@ module.exports.requestLogicKeepCustomer = async(
     // Logic Read Customer
     await logicKeepCustomer(mobile, storeId, customerJson, merchantRecord);
 
-    return (responsedata = {
+    return {
       success: true,
       data: [],
       msg: "Succesful"
-    });
+    };
   } catch (error) {
     return Promise.reject(error);
   }
@@ -523,19 +508,24 @@ const logicKeepCustomer = async(
       1
     );
 
+    // Parse
+    customerRecord = JSON.stringify(customerRecord);
+    customerRecord = JSON.parse(customerRecord);
+
     // Read City Record By City Id
-    const cityRecord = await cityModel.readCityBYId("*", json.city_id, 1);
+    let cityRecord = await cityModel.readCityBYId("*", json.city_id, 1);
 
     // Parse
-    const cityStringify = JSON.stringify(cityRecord);
-    const cityParse = JSON.parse(cityStringify);
+    cityRecord = JSON.stringify(cityRecord);
+    cityRecord = JSON.parse(cityRecord);
 
-    if (cityParse.length !== 0) cityCode = cityParse[0].country_code;
+    if (cityRecord.length !== 0) cityCode = cityRecord[0].country_code;
 
 
     if (customerRecord.length === 0) {
+
       // Keep Customer Information Data
-      const lastRecord = await customerDataModel.keepCustomerData(
+      let lastRecord = await customerDataModel.keepCustomerData(
         reform.first_name,
         reform.last_name,
         json.email,
@@ -555,8 +545,8 @@ const logicKeepCustomer = async(
       );
 
       // Parse
-      const jsonStringify = JSON.stringify(lastRecord);
-      const jsonParse = JSON.parse(jsonStringify);
+      lastRecord = JSON.stringify(lastRecord);
+      lastRecord = JSON.parse(lastRecord);
 
       // ReIntialize
       customerId = jsonParse[0].insertId;
@@ -592,15 +582,13 @@ const logicKeepCustomer = async(
       1
     );
 
-    if (linkValue.length === 0) {
-      // Keep Merchant Link Customer
-      linkModel.keepMerchantLinkCustomer(
-        merchantRecord[0].merchant_id,
-        storeId,
-        customerId,
-        1
-      );
-    }
+    if (linkValue.length === 0) linkModel.keepMerchantLinkCustomer(
+      merchantRecord[0].merchant_id,
+      storeId,
+      customerId,
+      1
+    );
+
     if (json.membership_number !== null && json.membership_number !== undefined && json.membership_number !== "") {
 
       // Read Membership Card Record
@@ -678,8 +666,7 @@ module.exports.requestLogicFeedbackSurvey = async(
   storeId
 ) => {
   try {
-    // Intialize
-    let responsedata = {};
+
 
     // Merchant Constant Table Exist
     const senseConstant = await databaseController.showConstantTable(
@@ -703,13 +690,12 @@ module.exports.requestLogicFeedbackSurvey = async(
       1
     );
 
-    if (merchantRecord.length === 0) {
-      return (responsedata = {
-        success: false,
-        data: [],
-        msg: "Empty merchant record"
-      });
-    }
+    if (merchantRecord.length === 0) return {
+      success: false,
+      data: [],
+      msg: "Empty merchant record"
+    };
+
 
     // Create Dynamic Feedback And Survey
     await databaseController.createFeedbackQuestionTable(mobile, storeId);
@@ -727,11 +713,11 @@ module.exports.requestLogicFeedbackSurvey = async(
       merchantRecord
     );
 
-    return (responsedata = {
+    return {
       success: true,
       data: [],
       msg: "Succesful"
-    });
+    };
   } catch (error) {
     return Promise.reject(error);
   }
@@ -774,35 +760,39 @@ const logicFeedbackSurvey = async(
     });
 
     // Read Merchant Store Record By Store Id
-    const storeRecord = await storeModel.readStoreById("city_id", storeId, 1);
+    let storeRecord = await storeModel.readStoreById("city_id", storeId, 1);
 
     // Parse
-    const storeStringify = JSON.stringify(storeRecord);
-    const storeParse = JSON.parse(storeStringify);
+    storeRecord = JSON.stringify(storeRecord);
+    storeRecord = JSON.parse(storeRecord);
 
-    if (storeParse.length !== 0) {
+    if (storeRecord.length !== 0) {
       // Read City Record By City Id
-      const cityRecord = await cityModel.readCityBYId(
+      let cityRecord = await cityModel.readCityBYId(
         "*",
-        storeParse[0].city_id,
+        storeRecord[0].city_id,
         1
       );
 
       // Parse
-      const cityStringify = JSON.stringify(cityRecord);
-      const cityParse = JSON.parse(cityStringify);
+      cityRecord = JSON.stringify(cityRecord);
+      cityRecord = JSON.parse(cityRecord);
 
-      if (cityParse.length !== 0) cityCode = cityParse[0].country_code;
+      if (cityRecord.length !== 0) cityCode = cityRecord[0].country_code;
 
     }
 
     const promises = feedbackSurveyJson.map(async(json, index) => {
       // Read Customer Information Data By Mobile
-      const customerRecord = await customerDataModel.readCustomerDataMobile(
+      let customerRecord = await customerDataModel.readCustomerDataMobile(
         "*",
         json.customer_mobile,
         1
       );
+
+      // Parse
+      customerRecord = JSON.stringify(customerRecord);
+      customerRecord = JSON.parse(customerRecord);
 
       // Declare
       let customerId = undefined;
@@ -823,7 +813,7 @@ const logicFeedbackSurvey = async(
 
       if (customerRecord.length === 0) {
         // Keep Customer Information Data
-        const lastRecord = await customerDataModel.keepCustomerData(
+        let lastRecord = await customerDataModel.keepCustomerData(
           reform.first_name,
           reform.last_name,
           json.email,
@@ -843,11 +833,11 @@ const logicFeedbackSurvey = async(
         );
 
         // Parse
-        const jsonStringify = JSON.stringify(lastRecord);
-        const jsonParse = JSON.parse(jsonStringify);
+        lastRecord = JSON.stringify(lastRecord);
+        lastRecord = JSON.parse(lastRecord);
 
         // ReInitialize
-        customerId = jsonParse[0].insertId;
+        customerId = lastRecord[0].insertId;
 
         // Keep Information Track
         customerTrackModel.keepInformationTrack(
@@ -943,21 +933,19 @@ const logicFeedbackSurvey = async(
         1
       );
 
-      if (linkValue.length === 0) {
-        // Keep Merchant Link Customer
-        linkModel.keepMerchantLinkCustomer(
-          merchantRecord[0].merchant_id,
-          storeId,
-          customerId,
-          1
-        );
-      }
+      if (linkValue.length === 0) linkModel.keepMerchantLinkCustomer(
+        merchantRecord[0].merchant_id,
+        storeId,
+        customerId,
+        1
+      );
+
 
       // Survey
       if (json.customer_survey != null) {
         json.customer_survey.map(async(survey, index) => {
           // Read One Record Merchant Store Survey
-          const surveyRecord = await databaseController.readLimitMerchantSurvey(
+          let surveyRecord = await databaseController.readLimitMerchantSurvey(
             "*",
             mobile,
             storeId,
@@ -966,6 +954,10 @@ const logicFeedbackSurvey = async(
             survey.role_id,
             1
           );
+
+          // Parse
+          surveyRecord = JSON.stringify(surveyRecord);
+          surveyRecord = JSON.parse(surveyRecord);
 
           if (surveyRecord.length === 0) {
             // Keep Merchant Store Survey Table
@@ -985,30 +977,26 @@ const logicFeedbackSurvey = async(
             );
 
             // Check Survey Keep or Update
-            if (createdDate >= backDate && createdDate <= todayDate) {
-              // Update Merchant Store Survey
-              await databaseController.updateMerchantSurveyTable(
-                mobile,
-                storeId,
-                surveyRecord[0].keep_survey_id,
-                survey.question_id,
-                survey.option_id,
-                customerId,
-                survey.role_id,
-                1
-              );
-            } else {
-              // Keep Merchant Store Survey Table
-              await databaseController.keepMerchantSurveyTable(
-                mobile,
-                storeId,
-                survey.question_id,
-                survey.option_id,
-                customerId,
-                survey.role_id,
-                1
-              );
-            }
+            if (createdDate >= backDate && createdDate <= todayDate) await databaseController.updateMerchantSurveyTable(
+              mobile,
+              storeId,
+              surveyRecord[0].keep_survey_id,
+              survey.question_id,
+              survey.option_id,
+              customerId,
+              survey.role_id,
+              1
+            );
+            else await databaseController.keepMerchantSurveyTable(
+              mobile,
+              storeId,
+              survey.question_id,
+              survey.option_id,
+              customerId,
+              survey.role_id,
+              1
+            );
+
           }
 
           if (versionFlag.survey) {
@@ -1033,7 +1021,7 @@ const logicFeedbackSurvey = async(
       if (json.customer_feedback != null) {
         json.customer_feedback.map(async(feedback, index) => {
           // Read One Record Merchant Store Feedback
-          const feedbackRecord = await databaseController.readLimitMerchantFeedback(
+          let feedbackRecord = await databaseController.readLimitMerchantFeedback(
             "*",
             mobile,
             storeId,
@@ -1042,6 +1030,10 @@ const logicFeedbackSurvey = async(
             feedback.role_id,
             1
           );
+
+          // Parse
+          feedbackRecord = JSON.stringify(feedbackRecord);
+          feedbackRecord = JSON.parse(feedbackRecord);
 
           if (feedbackRecord.length === 0) {
             // Keep Merchant Store Feedback Table
@@ -1061,30 +1053,26 @@ const logicFeedbackSurvey = async(
             );
 
             // Check Survey Keep or Update
-            if (createdDate >= backDate && createdDate <= todayDate) {
-              // Update Merchant Store Feedback
-              await databaseController.updateMerchantFeedbackTable(
-                mobile,
-                storeId,
-                feedbackRecord[0].keep_feed_id,
-                feedback.question_id,
-                feedback.option_id,
-                customerId,
-                feedback.role_id,
-                1
-              );
-            } else {
-              // Keep Merchant Store Feedback Table
-              await databaseController.keepMerchantFeedbackTable(
-                mobile,
-                storeId,
-                feedback.question_id,
-                feedback.option_id,
-                customerId,
-                feedback.role_id,
-                1
-              );
-            }
+            if (createdDate >= backDate && createdDate <= todayDate) await databaseController.updateMerchantFeedbackTable(
+              mobile,
+              storeId,
+              feedbackRecord[0].keep_feed_id,
+              feedback.question_id,
+              feedback.option_id,
+              customerId,
+              feedback.role_id,
+              1
+            );
+            else await databaseController.keepMerchantFeedbackTable(
+              mobile,
+              storeId,
+              feedback.question_id,
+              feedback.option_id,
+              customerId,
+              feedback.role_id,
+              1
+            );
+
           }
 
           if (versionFlag.feedback) {
@@ -1122,7 +1110,6 @@ module.exports.logicGetFeedback = async(
 ) => {
   try {
     // Intialize
-    let responsedata = {};
     let merchantFlag = false;
     let senseFlag = false;
 
@@ -1167,13 +1154,12 @@ module.exports.logicGetFeedback = async(
 
 
     // Both flag true then return
-    if (merchantFlag && senseFlag) {
-      return (responsedata = {
-        success: true,
-        data: [],
-        msg: "Upto date"
-      });
-    }
+    if (merchantFlag && senseFlag) return {
+      success: true,
+      data: [],
+      msg: "Upto date"
+    };
+
 
     // Logic Read Feedback
     const feedback = await logicReadFeedback(
@@ -1183,13 +1169,13 @@ module.exports.logicGetFeedback = async(
       senseFlag
     );
 
-    return (responsedata = {
+    return {
       success: true,
       data: feedback,
       msg: "Successful",
       sense_version: senseVersion,
       merchant_version: merchantVersion
-    });
+    };
   } catch (error) {
     return Promise.reject(error);
   }
@@ -1217,15 +1203,13 @@ const logicReadFeedback = async(mobile, storeId, merchantFlag, senseFlag) => {
         1
       );
 
-      if (merchantFeed.length !== 0) {
-        // Create Feedback Json
-        merchantArray = await creatFeedbackJson(
-          merchantFeed,
-          1,
-          mobile,
-          storeId
-        );
-      }
+      if (merchantFeed.length !== 0) merchantArray = await creatFeedbackJson(
+        merchantFeed,
+        1,
+        mobile,
+        storeId
+      );
+
     }
 
     // Admin Version
@@ -1236,15 +1220,13 @@ const logicReadFeedback = async(mobile, storeId, merchantFlag, senseFlag) => {
         1
       );
 
-      if (adminFeed.length !== 0) {
-        // Create Feedback Json
-        adminArray = await creatFeedbackJson(
-          adminFeed,
-          2,
-          undefined,
-          undefined
-        );
-      }
+      if (adminFeed.length !== 0) adminArray = await creatFeedbackJson(
+        adminFeed,
+        2,
+        undefined,
+        undefined
+      );
+
     }
     return merchantArray.concat(adminArray);
   } catch (error) {
@@ -1260,22 +1242,18 @@ const creatFeedbackJson = async(json, role, mobile, storeId) => {
     const jsonArray = json.map(async(feed, index) => {
       // Block
       let lowerObject = {};
-      if (role === 1) {
-        // Read Merchant Feedback Option Record
-        option = await databaseController.readFeedbackOption(
-          mobile,
-          storeId,
-          feed.feed_ques_id,
-          1
-        );
-      } else {
-        // Read Admin Feedback Option
-        option = await feedbackOptionModel.readAdminFeedbackOption(
-          "*",
-          feed.feed_ques_id,
-          1
-        );
-      }
+      if (role === 1) option = await databaseController.readFeedbackOption(
+        mobile,
+        storeId,
+        feed.feed_ques_id,
+        1
+      );
+      else option = await feedbackOptionModel.readAdminFeedbackOption(
+        "*",
+        feed.feed_ques_id,
+        1
+      );
+
 
       lowerObject.feedback_id = feed.feed_ques_id;
       lowerObject.feedback_question = feed.feed_question;
@@ -1284,12 +1262,8 @@ const creatFeedbackJson = async(json, role, mobile, storeId) => {
       lowerObject.role_id = role;
 
       // Zero Means No Record
-      if (option.length === 0) {
-        lowerObject.option_json = [];
-      } else {
-        // Create Feedback Option Json
-        lowerObject.option_json = createFeedbackOptionJson(option);
-      }
+      if (option.length === 0) lowerObject.option_json = [];
+      else lowerObject.option_json = createFeedbackOptionJson(option);
 
       return lowerObject;
     });
@@ -1328,7 +1302,6 @@ module.exports.logicGetSurvey = async(
 ) => {
   try {
     // Intialize
-    let responsedata = {};
     let merchantFlag = false;
     let senseFlag = false;
 
@@ -1373,13 +1346,12 @@ module.exports.logicGetSurvey = async(
 
 
     // Both flag true then return
-    if (merchantFlag && senseFlag) {
-      return (responsedata = {
-        success: true,
-        data: [],
-        msg: "Upto date"
-      });
-    }
+    if (merchantFlag && senseFlag) return {
+      success: true,
+      data: [],
+      msg: "Upto date"
+    };
+
 
     // Logic Read Survey
     const survey = await logicReadSurvey(
@@ -1389,13 +1361,13 @@ module.exports.logicGetSurvey = async(
       senseFlag
     );
 
-    return (responsedata = {
+    return {
       success: true,
       data: survey,
       msg: "Sucessful",
       sense_version: senseVersion,
       merchant_version: merchantVersion
-    });
+    };
   } catch (error) {
     return Promise.reject(error);
   }
@@ -1453,22 +1425,17 @@ const creatSurveyJson = async(json, role, mobile, storeId) => {
     const jsonArray = json.map(async(survey, index) => {
       // Block
       let lowerObject = {};
-      if (role === 1) {
-        // Read Merchant Survey Option Record
-        option = await databaseController.readSurveyOption(
-          mobile,
-          storeId,
-          survey.survey_ques_id,
-          1
-        );
-      } else {
-        // Read Admin Survey Option
-        option = await surveyOptionModel.readAdminSurveyOption(
-          "*",
-          survey.survey_ques_id,
-          1
-        );
-      }
+      if (role === 1) option = await databaseController.readSurveyOption(
+        mobile,
+        storeId,
+        survey.survey_ques_id,
+        1
+      );
+      else option = await surveyOptionModel.readAdminSurveyOption(
+        "*",
+        survey.survey_ques_id,
+        1
+      );
 
       lowerObject.survey_id = survey.survey_ques_id;
       lowerObject.survey_question = survey.survey_question;
@@ -1479,7 +1446,6 @@ const creatSurveyJson = async(json, role, mobile, storeId) => {
       // Zero Means No Record
       if (option.length === 0) lowerObject.option_json = [];
       else lowerObject.option_json = createSurveyOptionJson(option);
-
 
       return lowerObject;
     });
@@ -1512,8 +1478,6 @@ const createSurveyOptionJson = json => {
 // Logic Customer Data
 module.exports.logicCustomerData = async(customerVersion, mobile, storeId) => {
   try {
-    // Intialize
-    let responsedata = {};
 
     // Read Merchant Record
     const merchantRecord = await merchantModel.readMerchantByMobile(
@@ -1550,15 +1514,13 @@ module.exports.logicCustomerData = async(customerVersion, mobile, storeId) => {
 
 
     // Customer version
-    if (customerVersion === parseFloat(constant[0].value)) {
-      return (responsedata = {
-        success: true,
-        data: [],
-        msg: "Upto date"
-      });
-    } else {
-      customerVersion = parseFloat(constant[0].value);
-    }
+    if (customerVersion === parseFloat(constant[0].value)) return {
+      success: true,
+      data: [],
+      msg: "Upto date"
+    };
+    else customerVersion = parseFloat(constant[0].value);
+
 
     // Read Merchant Customer Idenitity Record
     const record = await linkModel.readMerchantStoreCustomer(
@@ -1568,12 +1530,12 @@ module.exports.logicCustomerData = async(customerVersion, mobile, storeId) => {
       1
     );
 
-    return (responsedata = {
+    return {
       success: true,
       data: record,
       msg: "Succesful",
       customer_version: customerVersion
-    });
+    };
   } catch (error) {
     return Promise.reject(error);
   }
@@ -1582,8 +1544,6 @@ module.exports.logicCustomerData = async(customerVersion, mobile, storeId) => {
 // Logic Device Data
 module.exports.logicDeviceData = async(deviceJson, mobile, storeId) => {
   try {
-    // Intialize
-    let responsedata = {};
 
     deviceJson.map((json, index) => {
       if (
@@ -1614,11 +1574,12 @@ module.exports.logicDeviceData = async(deviceJson, mobile, storeId) => {
       }
     });
 
-    return (responsedata = {
+    return {
       success: true,
       data: [],
       msg: "Succesful"
-    });
+    };
+
   } catch (error) {
     return Promise.reject(error);
   }
@@ -1629,7 +1590,6 @@ const logicMerchantConstant = async(mobile, storeId) => {
   try {
     // Block Variable
     const seed = [];
-    let responsedata = {};
 
     seed.push({
       name: "CUSTOMER_FEEDBACK_APP_VERSION",
@@ -1662,11 +1622,11 @@ const logicMerchantConstant = async(mobile, storeId) => {
       );
     });
 
-    return (responsedata = {
+    return {
       success: true,
       data: [],
       msg: "Succesful"
-    });
+    };
   } catch (error) {
     return Promise.reject(error);
   }
