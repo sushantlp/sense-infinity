@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     reward_question_id: DataTypes.INTEGER,
     status: DataTypes.BOOLEAN
   }, {});
-  customer_reward_option.associate = function(models) {
+  customerRewardOption.associate = function(models) {
     // associations can be defined here
   };
   return customerRewardOption;

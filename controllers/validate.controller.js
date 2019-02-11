@@ -6,9 +6,7 @@ module.exports.validateSignUpRequest = (req, res) => {
 
   const errors = req.validationErrors();
 
-  if (errors) {
-    return errors;
-  }
+  if (errors) return errors;
 
   return 1;
 };

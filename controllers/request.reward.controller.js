@@ -171,14 +171,8 @@ module.exports.requestKeepCustomerData = (req, res) => {
     // Variable
     let token = undefined;
 
-    // If Production then Execute
-    if (process.env.NODE_ENV !== "development") {
-      // Get Token In Header
-      token = req.headers["authorization"];
-    } else {
-      // Get Token In Query
-      token = req.body.token || req.query.token || req.headers["authorization"];
-    }
+    if (process.env.NODE_ENV !== "development") token = req.headers["authorization"];
+    else token = req.body.token || req.query.token || req.headers["authorization"];
 
     // Logic Keep Customer Data
     return logicRewardController
@@ -243,14 +237,10 @@ module.exports.requestGetAllData = (req, res) => {
     // Variable
     let token = undefined;
 
-    // If Production then Execute
-    if (process.env.NODE_ENV !== "development") {
-      // Get Token In Header
-      token = req.headers["authorization"];
-    } else {
-      // Get Token In Query
-      token = req.body.token || req.query.token || req.headers["authorization"];
-    }
+
+    if (process.env.NODE_ENV !== "development") token = req.headers["authorization"];
+    else token = req.body.token || req.query.token || req.headers["authorization"];
+
 
     // Logic Get All Coupon Customer Reward 
     return logicRewardController
@@ -302,21 +292,14 @@ module.exports.requestRewardResponse = (req, res) => {
 
     // Validate Reward Question Response
     const validate = validateController.validateRewardResponse(req.body.response);
-    if (!validate.success) {
-      return res.status(400).send(validate.msg);
-    }
+    if (!validate.success) return res.status(400).send(validate.msg);
 
     // Variable
     let token = undefined;
 
-    // If Production then Execute
-    if (process.env.NODE_ENV !== "development") {
-      // Get Token In Header
-      token = req.headers["authorization"];
-    } else {
-      // Get Token In Query
-      token = req.body.token || req.query.token || req.headers["authorization"];
-    }
+    if (process.env.NODE_ENV !== "development") token = req.headers["authorization"];
+    else token = req.body.token || req.query.token || req.headers["authorization"];
+
 
     // Logic Keep Reward Question Response 
     return logicRewardController

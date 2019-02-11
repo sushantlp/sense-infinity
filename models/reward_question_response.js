@@ -38,9 +38,8 @@ module.exports.keepRewardResponse = async(questionId, optionId, customerId, resp
     const connection = await constants.createMysqlConnection();
 
 
-    if (response === undefined) {
-      response = connection.escape(response);
-    }
+    if (response === undefined) response = connection.escape(response);
+
 
     // Query
     const query =

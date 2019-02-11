@@ -130,37 +130,15 @@ module.exports.keepCustomerData = async(
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
 
-    if (firstName === undefined) {
-      firstName = connection.escape(firstName);
-    }
+    if (firstName === undefined) firstName = connection.escape(firstName);
+    if (lastName === undefined) lastName = connection.escape(lastName);
+    if (email === undefined) email = connection.escape(email);
+    if (addressOne === undefined) addressOne = connection.escape(addressOne);
+    if (addressTwo === undefined) addressTwo = connection.escape(addressTwo);
+    if (landmark === undefined) landmark = connection.escape(landmark);
+    if (spouseName === undefined) spouseName = connection.escape(spouseName);
+    if (anniversaryDate === undefined || anniversaryDate === null) anniversaryDate = connection.escape(anniversaryDate);
 
-    if (lastName === undefined) {
-      lastName = connection.escape(lastName);
-    }
-
-    if (email === undefined) {
-      email = connection.escape(email);
-    }
-
-    if (addressOne === undefined) {
-      addressOne = connection.escape(addressOne);
-    }
-
-    if (addressTwo === undefined) {
-      addressTwo = connection.escape(addressTwo);
-    }
-
-    if (landmark === undefined) {
-      landmark = connection.escape(landmark);
-    }
-
-    if (spouseName === undefined) {
-      spouseName = connection.escape(spouseName);
-    }
-
-    if (anniversaryDate === undefined || anniversaryDate === null) {
-      anniversaryDate = connection.escape(anniversaryDate);
-    }
 
     // Query
     const query =
@@ -217,37 +195,15 @@ module.exports.updateCustomerData = async(
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
 
-    if (firstName === undefined) {
-      firstName = connection.escape(firstName);
-    }
+    if (firstName === undefined) firstName = connection.escape(firstName);
+    if (lastName === undefined) lastName = connection.escape(lastName);
+    if (email === undefined) email = connection.escape(email);
+    if (addressOne === undefined) addressOne = connection.escape(addressOne);
+    if (addressTwo === undefined) addressTwo = connection.escape(addressTwo);
+    if (landmark === undefined) landmark = connection.escape(landmark);
+    if (spouseName === undefined) spouseName = connection.escape(spouseName);
+    if (anniversaryDate === undefined) anniversaryDate = connection.escape(anniversaryDate);
 
-    if (lastName === undefined) {
-      lastName = connection.escape(lastName);
-    }
-
-    if (email === undefined) {
-      email = connection.escape(email);
-    }
-
-    if (addressOne === undefined) {
-      addressOne = connection.escape(addressOne);
-    }
-
-    if (addressTwo === undefined) {
-      addressTwo = connection.escape(addressTwo);
-    }
-
-    if (landmark === undefined) {
-      landmark = connection.escape(landmark);
-    }
-
-    if (spouseName === undefined) {
-      spouseName = connection.escape(spouseName);
-    }
-
-    if (anniversaryDate === undefined) {
-      anniversaryDate = connection.escape(anniversaryDate);
-    }
 
     // Query
     const query =
@@ -287,7 +243,6 @@ module.exports.updateCustomerRewardPoint = async(
   id
 ) => {
   try {
-
 
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();

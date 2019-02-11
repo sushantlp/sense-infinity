@@ -200,9 +200,8 @@ const logicKeepComplain = async(
       const cityStringify = JSON.stringify(cityRecord);
       const cityParse = JSON.parse(cityStringify);
 
-      if (cityParse.length !== 0) {
-        cityCode = cityParse[0].country_code;
-      }
+      if (cityParse.length !== 0) cityCode = cityParse[0].country_code;
+
     }
 
     const promises = complainJson.map(async(json, index) => {
@@ -531,9 +530,8 @@ const logicKeepCustomer = async(
     const cityStringify = JSON.stringify(cityRecord);
     const cityParse = JSON.parse(cityStringify);
 
-    if (cityParse.length !== 0) {
-      cityCode = cityParse[0].country_code;
-    }
+    if (cityParse.length !== 0) cityCode = cityParse[0].country_code;
+
 
     if (customerRecord.length === 0) {
       // Keep Customer Information Data
@@ -766,19 +764,13 @@ const logicFeedbackSurvey = async(
       1
     );
 
-    if (constant.length === 0) {
-      return Promise.reject("Oops our bad!!!");
-    }
+    if (constant.length === 0) return Promise.reject("Oops our bad!!!");
 
     // Iterate
     constant.map((version, index) => {
-      if (version.name === "CUSTOMER_SURVEY_APP_VERSION") {
-        surveyVersion = version;
-      } else if (version.name === "CUSTOMER_FEEDBACK_APP_VERSION") {
-        feedbackVersion = version;
-      } else if (version.name === "CUSTOMER_IDENTITY_APP_VERSION") {
-        customerVersion = version;
-      }
+      if (version.name === "CUSTOMER_SURVEY_APP_VERSION") surveyVersion = version;
+      else if (version.name === "CUSTOMER_FEEDBACK_APP_VERSION") feedbackVersion = version;
+      else if (version.name === "CUSTOMER_IDENTITY_APP_VERSION") customerVersion = version;
     });
 
     // Read Merchant Store Record By Store Id
@@ -800,9 +792,8 @@ const logicFeedbackSurvey = async(
       const cityStringify = JSON.stringify(cityRecord);
       const cityParse = JSON.parse(cityStringify);
 
-      if (cityParse.length !== 0) {
-        cityCode = cityParse[0].country_code;
-      }
+      if (cityParse.length !== 0) cityCode = cityParse[0].country_code;
+
     }
 
     const promises = feedbackSurveyJson.map(async(json, index) => {
@@ -1162,23 +1153,18 @@ module.exports.logicGetFeedback = async(
       senseConstModel.readSenseConstant("*", "CUSTOMER_FEEDBACK_APP_VERSION", 1)
     ]);
 
-    if (parallel.length === 0) {
-      return Promise.reject("Oops our bad!!!");
-    }
+    if (parallel.length === 0) return Promise.reject("Oops our bad!!!");
+
 
     // Merchant app version
-    if (merchantVersion === parseFloat(parallel[0][0].value)) {
-      merchantFlag = true;
-    } else {
-      merchantVersion = parseFloat(parallel[0][0].value);
-    }
+    if (merchantVersion === parseFloat(parallel[0][0].value)) merchantFlag = true;
+    else merchantVersion = parseFloat(parallel[0][0].value);
+
 
     // Admin app version
-    if (senseVersion === parseFloat(parallel[1][0].value)) {
-      senseFlag = true;
-    } else {
-      senseVersion = parseFloat(parallel[1][0].value);
-    }
+    if (senseVersion === parseFloat(parallel[1][0].value)) senseFlag = true;
+    else senseVersion = parseFloat(parallel[1][0].value);
+
 
     // Both flag true then return
     if (merchantFlag && senseFlag) {
@@ -1373,23 +1359,18 @@ module.exports.logicGetSurvey = async(
       senseConstModel.readSenseConstant("*", "CUSTOMER_SURVEY_APP_VERSION", 1)
     ]);
 
-    if (parallel.length === 0) {
-      return Promise.reject("Oops our bad!!!");
-    }
+    if (parallel.length === 0) return Promise.reject("Oops our bad!!!");
+
 
     // Merchant app version
-    if (merchantVersion === parseFloat(parallel[0][0].value)) {
-      merchantFlag = true;
-    } else {
-      merchantVersion = parseFloat(parallel[0][0].value);
-    }
+    if (merchantVersion === parseFloat(parallel[0][0].value)) merchantFlag = true;
+    else merchantVersion = parseFloat(parallel[0][0].value);
+
 
     // Admin app version
-    if (senseVersion === parseFloat(parallel[1][0].value)) {
-      senseFlag = true;
-    } else {
-      senseVersion = parseFloat(parallel[1][0].value);
-    }
+    if (senseVersion === parseFloat(parallel[1][0].value)) senseFlag = true;
+    else senseVersion = parseFloat(parallel[1][0].value);
+
 
     // Both flag true then return
     if (merchantFlag && senseFlag) {
@@ -1442,10 +1423,8 @@ const logicReadSurvey = async(mobile, storeId, merchantFlag, senseFlag) => {
         1
       );
 
-      if (merchantFeed.length !== 0) {
-        // Create Survey Json
-        merchantArray = await creatSurveyJson(merchantFeed, 1, mobile, storeId);
-      }
+      if (merchantFeed.length !== 0) merchantArray = await creatSurveyJson(merchantFeed, 1, mobile, storeId);
+
     }
 
     // Admin Version
@@ -1457,10 +1436,8 @@ const logicReadSurvey = async(mobile, storeId, merchantFlag, senseFlag) => {
         1
       );
 
-      if (adminFeed.length !== 0) {
-        // Create Survey Json
-        adminArray = await creatSurveyJson(adminFeed, 2, undefined, undefined);
-      }
+      if (adminFeed.length !== 0) adminArray = await creatSurveyJson(adminFeed, 2, undefined, undefined);
+
     }
     return merchantArray.concat(adminArray);
   } catch (error) {
@@ -1500,12 +1477,9 @@ const creatSurveyJson = async(json, role, mobile, storeId) => {
       lowerObject.role_id = role;
 
       // Zero Means No Record
-      if (option.length === 0) {
-        lowerObject.option_json = [];
-      } else {
-        // Create Survey Option Json
-        lowerObject.option_json = createSurveyOptionJson(option);
-      }
+      if (option.length === 0) lowerObject.option_json = [];
+      else lowerObject.option_json = createSurveyOptionJson(option);
+
 
       return lowerObject;
     });
@@ -1572,9 +1546,8 @@ module.exports.logicCustomerData = async(customerVersion, mobile, storeId) => {
       1
     );
 
-    if (constant.length === 0) {
-      return Promise.reject("Oops our bad!!!");
-    }
+    if (constant.length === 0) return Promise.reject("Oops our bad!!!");
+
 
     // Customer version
     if (customerVersion === parseFloat(constant[0].value)) {

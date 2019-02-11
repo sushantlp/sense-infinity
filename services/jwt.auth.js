@@ -10,14 +10,13 @@ const jwt = require('jsonwebtoken');
 module.exports.authJwt = (req, res, next) => {
   let token = false;
 
-  if (process.env.NODE_ENV !== 'development') {
-    token = req.headers['authorization'];
-  } else {
-    token = req.body.token || req.query.token || req.headers['authorization'];
-  }
+  if (process.env.NODE_ENV !== 'development') token = req.headers['authorization'];
+  else token = req.body.token || req.query.token || req.headers['authorization'];
 
   if (token) {
-    jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] }, (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET, {
+      algorithms: ['HS256']
+    }, (err, decoded) => {
       if (err) {
         // Refresh JWT Token
         const refresh = shareController.refreshToken(token);

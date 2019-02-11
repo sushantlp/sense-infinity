@@ -335,15 +335,13 @@ module.exports.logicVerifyOtp = async(password, mobile, code, otp) => {
 
     // Validate Password
     const passwordValidate = shareController.passwordAlgorthim(mobile, password);
-    if (!passwordValidate.success) {
-      return passwordValidate;
-    }
+    if (!passwordValidate.success) return passwordValidate;
+
 
     // Validate Otp
     const validate = await shareController.validateOtp(newMobile, otp);
-    if (!validate.success) {
-      return validate;
-    }
+    if (!validate.success) return validate;
+
 
     // Read Customer Information Data by Mobile and Country Code
     let recordParse = await customerDataModel.readDataMobileCode(
@@ -605,10 +603,9 @@ const logicRewardQuestionList = async(customerId) => {
     // Parse
     questionParse = JSON.stringify(questionParse);
     questionParse = JSON.parse(questionParse);
-    if (questionParse.length === 0) {
-      return [];
-    }
+    if (questionParse.length === 0) return [];
 
+    // Create Feedback Json
     return await creatRewardQuestionJson(questionParse, customerId)
 
   } catch (error) {
@@ -663,12 +660,8 @@ const creatRewardQuestionJson = async(json, customerId) => {
       optionList = JSON.parse(optionList);
 
       // Zero Means No Record
-      if (optionList.length === 0) {
-        object.option_list = [];
-      } else {
-        // Create Option Json
-        object.option_list = createRewardOptionJson(optionList);
-      }
+      if (optionList.length === 0) object.option_list = [];
+      else object.option_list = createRewardOptionJson(optionList);
 
       return object;
     });
@@ -699,11 +692,6 @@ const createRewardOptionJson = (json) => {
 }
 
 
-const logicUserQuestionResponse = async() => {
-  return [];
-}
-
-
 // Customer Record Json
 const customerRecordJson = (json) => {
 
@@ -722,59 +710,41 @@ const customerRecordJson = (json) => {
     object.locality = customer.locality_id;
     object.married = customer.married;
 
-    if (customer.first_name === 'NULL') {
-      object.first_name = null;
-    } else {
-      object.first_name = customer.first_name;
-    }
+    if (customer.first_name === 'NULL') object.first_name = null;
+    else object.first_name = customer.first_name;
 
-    if (customer.last_name === 'NULL') {
-      object.last_name = null;
-    } else {
-      object.last_name = customer.last_name;
-    }
 
-    if (customer.email === 'NULL') {
-      object.email = null;
-    } else {
-      object.email = customer.email;
-    }
+    if (customer.last_name === 'NULL') object.last_name = null;
+    else object.last_name = customer.last_name;
 
-    if (customer.dob === 'NULL') {
-      object.dob = null;
-    } else {
-      object.dob = customer.dob;
-    }
 
-    if (customer.address_one === 'NULL') {
-      object.address_one = null;
-    } else {
-      object.address_one = customer.address_one;
-    }
+    if (customer.email === 'NULL') object.email = null;
+    else object.email = customer.email;
 
-    if (customer.address_two === 'NULL') {
-      object.address_two = null;
-    } else {
-      object.address_two = customer.address_two;
-    }
 
-    if (customer.landmark === 'NULL') {
-      object.landmark = null;
-    } else {
-      object.landmark = customer.landmark;
-    }
+    if (customer.dob === 'NULL') object.dob = null;
+    else object.dob = customer.dob;
 
-    if (customer.spouse_name === 'NULL') {
-      object.spouse_name = null;
-    } else {
-      object.spouse_name = customer.spouse_name;
-    }
 
-    if (customer.anniversary_date === 'NULL') {
-      object.anniversary_date = null;
-    } else {
-      object.anniversary_date = customer.anniversary_date;
-    }
+    if (customer.address_one === 'NULL') object.address_one = null;
+    else object.address_one = customer.address_one;
+
+
+    if (customer.address_two === 'NULL') object.address_two = null;
+    else object.address_two = customer.address_two;
+
+
+    if (customer.landmark === 'NULL') object.landmark = null;
+    else object.landmark = customer.landmark;
+
+
+    if (customer.spouse_name === 'NULL') object.spouse_name = null;
+    else object.spouse_name = customer.spouse_name;
+
+
+    if (customer.anniversary_date === 'NULL') object.anniversary_date = null;
+    else object.anniversary_date = customer.anniversary_date;
+
 
     // Push Array
     array.push(object);

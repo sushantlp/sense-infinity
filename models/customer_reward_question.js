@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     reward_point: DataTypes.INTEGER,
     status: DataTypes.BOOLEAN
   }, {});
-  customer_reward_question.associate = function(models) {
+  customerRewardQuestion.associate = function(models) {
     // associations can be defined here
   };
   return customerRewardQuestion;
