@@ -1,26 +1,26 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('merchant_link_customers', {
-      merchant_link_customer_id: {
+    return queryInterface.createTable('partner_link_customers', {
+      partner_link_customer_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      merchant_id: {
+      partner_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'merchants',
-          key: 'merchant_id'
+          model: 'partners',
+          key: 'partner_id'
         }
       },
       store_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'merchant_stores',
+          model: 'partner_stores',
           key: 'store_id'
         }
       },
@@ -49,6 +49,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('merchant_link_customers');
+    return queryInterface.dropTable('partner_link_customers');
   }
 };

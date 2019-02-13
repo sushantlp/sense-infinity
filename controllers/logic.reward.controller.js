@@ -206,6 +206,7 @@ module.exports.logicVerifyMemberMobile = async(card, mobile, code) => {
   } catch (error) {
     return Promise.reject(error);
   }
+
 };
 
 // Logic Register Email
@@ -304,6 +305,7 @@ module.exports.logicRegisterEmail = async(email, mobile, code) => {
   } catch (error) {
     return Promise.reject(error);
   }
+
 }
 
 // Logic Verify Otp
@@ -355,6 +357,7 @@ module.exports.logicVerifyOtp = async(password, mobile, code, otp) => {
   } catch (error) {
     return Promise.reject(error);
   }
+
 }
 
 // Logic Keep Customer Data
@@ -446,9 +449,10 @@ module.exports.logicKeepCustomerData = async(email, mobile, code, card, firstNam
       data: [],
       msg: "Succesful"
     };
-  } catch (error) {
+} catch (error) {
     return Promise.reject(error);
   }
+
 }
 
 // Logic Get All Coupon Customer Reward
@@ -484,7 +488,7 @@ module.exports.logicGetAllData = async(mobile, code) => {
     const customerJson = customerRecordJson(customerParse);
 
     // Get Reward Question List
-    const list = await logicRewardQuestionList(customerParse[0].customer_information_id)
+    const list = await logicRewardQuestionList(customerParse[0].customer_information_id);
 
     // Logic Coupon List
     const couponList = logicCouponList(customerParse[0].customer_information_id);
@@ -503,6 +507,7 @@ module.exports.logicGetAllData = async(mobile, code) => {
   } catch (error) {
     return Promise.reject(error);
   }
+
 }
 
 // Logic Coupon List
@@ -560,13 +565,14 @@ const logicCouponList = customerId => {
       "merchant_name": "Brad Pitt",
       "place": "Shawnee, Oklahoma",
       "offer": "Percent",
-      "value": 0,
+      "value": 10,
       "detail": "This is best strategy to get free stuff on Amazon, as fast as possible, and with the least amount of effort required too. All you need to do is sign up for an account at the website and then click to view and then “buy” the product"
     }]);
 
   } catch (error) {
     return Promise.reject(error);
   }
+
 }
 
 // Get Reward Question List
@@ -587,6 +593,7 @@ const logicRewardQuestionList = async(customerId) => {
   } catch (error) {
     return Promise.reject(error);
   }
+
 }
 
 // Create Feedback Json
@@ -644,9 +651,9 @@ const creatRewardQuestionJson = async(json, customerId) => {
 
     return await Promise.all(jsonArray);
   } catch (error) {
-
     return Promise.reject(error);
   }
+
 };
 
 // Create Option Json
@@ -766,6 +773,7 @@ module.exports.logicRewardResponse = async(mobile, code, json) => {
   } catch (error) {
     return Promise.reject(error);
   }
+
 }
 
 // Iterate Question Reward Response
@@ -912,15 +920,15 @@ const iterateRewardResponse = async(id, rewardPoint, json) => {
       }
 
       // Last Execute
-      if ((json.length - 1) === index) {
-        customerDataModel.updateCustomerRewardPoint(point, id);
-      }
+      if ((json.length - 1) === index) customerDataModel.updateCustomerRewardPoint(point, id);
+
     });
 
     return Promise.resolve(true);
   } catch (error) {
     return Promise.reject(error);
   }
+
 }
 
 
@@ -950,9 +958,7 @@ const rewardResponseDuplicate = (x, y) => {
   for (let i = 0; i < y.length; i++) {
     let flag = true;
     for (let j = 0; j < common.length; j++) {
-      if (y[i].reward_option_id === parseInt(common[j], 10)) {
-        flag = false;
-      }
+      if (y[i].reward_option_id === parseInt(common[j], 10)) flag = false;
     }
 
     if (flag) softDelete.push(y[i].reward_option_id);

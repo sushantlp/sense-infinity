@@ -23,12 +23,12 @@ const feedbackOptionModel = require("../models/feedback_option");
 const surveyModel = require("../models/survey_question");
 const surveyOptionModel = require("../models/survey_option");
 const complainModel = require("../models/store_complain");
-const merchantModel = require("../models/merchant");
-const storeModel = require("../models/merchant_store");
+const merchantModel = require("../models/partner");
+const storeModel = require("../models/partner_store");
 const cardModel = require("../models/customer_membership_card");
 const customerDataModel = require("../models/customer_information_data");
 const customerTrackModel = require("../models/customer_information_track");
-const linkModel = require("../models/merchant_link_customer");
+const linkModel = require("../models/partner_link_customer");
 
 // Current Date and Time
 const todayDate = moment()
@@ -113,7 +113,7 @@ module.exports.requestLogicKeepComplain = async(
 
     // Read Merchant Record
     const merchantRecord = await merchantModel.readMerchantByMobile(
-      "merchant_id",
+      "partner_id",
       mobile,
       1
     );
@@ -258,7 +258,7 @@ const logicKeepComplain = async(
           json.gender_id,
           0,
           0,
-          merchantRecord[0].merchant_id,
+          merchantRecord[0].partner_id,
           storeId,
           0,
           undefined,
@@ -280,7 +280,7 @@ const logicKeepComplain = async(
         // Keep Merchant Store Complain
         complainModel.keepStoreComplain(
           customerId,
-          merchantRecord[0].merchant_id,
+          merchantRecord[0].partner_id,
           storeId,
           json.description,
           1
@@ -318,7 +318,7 @@ const logicKeepComplain = async(
           json.gender_id,
           customerRecord[0].city_id,
           customerRecord[0].locality_id,
-          customerRecord[0].merchant_id,
+          merchantRecord[0].partner_id,
           storeId,
           customerRecord[0].married,
           customerRecord[0].address_one,
@@ -334,7 +334,7 @@ const logicKeepComplain = async(
         const complainRecord = await complainModel.readStoreComplain(
           "*",
           storeId,
-          merchantRecord[0].merchant_id,
+          merchantRecord[0].partner_id,
           customerId,
           1
         );
@@ -343,7 +343,7 @@ const logicKeepComplain = async(
           // Keep Merchant Store Complain
           complainModel.keepStoreComplain(
             customerId,
-            merchantRecord[0].merchant_id,
+            merchantRecord[0].partner_id,
             storeId,
             json.description,
             1
@@ -362,7 +362,7 @@ const logicKeepComplain = async(
           );
           else complainModel.keepStoreComplain(
             customerId,
-            merchantRecord[0].merchant_id,
+            merchantRecord[0].partner_id,
             storeId,
             json.description,
             1
@@ -373,14 +373,14 @@ const logicKeepComplain = async(
       // Read Merchant Link Customer
       const linkValue = await linkModel.readMerchantLinkCustomer(
         "*",
-        merchantRecord[0].merchant_id,
+        merchantRecord[0].partner_id,
         storeId,
         customerId,
         1
       );
 
       if (linkValue.length === 0) linkModel.keepMerchantLinkCustomer(
-        merchantRecord[0].merchant_id,
+        merchantRecord[0].partner_id,
         storeId,
         customerId,
         1
@@ -422,7 +422,7 @@ module.exports.requestLogicKeepCustomer = async(
 
     // Read Merchant Record
     const merchantRecord = await merchantModel.readMerchantByMobile(
-      "merchant_id",
+      "partner_id",
       mobile,
       1
     );
@@ -576,14 +576,14 @@ const logicKeepCustomer = async(
     // Read Merchant Link Customer
     const linkValue = await linkModel.readMerchantLinkCustomer(
       "*",
-      merchantRecord[0].merchant_id,
+      merchantRecord[0].partner_id,
       storeId,
       customerId,
       1
     );
 
     if (linkValue.length === 0) linkModel.keepMerchantLinkCustomer(
-      merchantRecord[0].merchant_id,
+      merchantRecord[0].partner_id,
       storeId,
       customerId,
       1
@@ -643,7 +643,7 @@ const logicKeepCustomer = async(
       json.gender_id,
       json.city_id,
       json.locality_id,
-      merchantRecord[0].merchant_id,
+      merchantRecord[0].partner_id,
       storeId,
       json.married,
       reform.address_one,
@@ -685,7 +685,7 @@ module.exports.requestLogicFeedbackSurvey = async(
 
     // Read Merchant Record
     const merchantRecord = await merchantModel.readMerchantByMobile(
-      "merchant_id",
+      "partner_id",
       mobile,
       1
     );
@@ -721,6 +721,7 @@ module.exports.requestLogicFeedbackSurvey = async(
   } catch (error) {
     return Promise.reject(error);
   }
+
 };
 
 // Logic Feedback Survey
@@ -850,7 +851,7 @@ const logicFeedbackSurvey = async(
           json.gender_id,
           0,
           0,
-          merchantRecord[0].merchant_id,
+          merchantRecord[0].partner_id,
           storeId,
           0,
           undefined,
@@ -894,7 +895,7 @@ const logicFeedbackSurvey = async(
           json.gender_id,
           customerRecord[0].city_id,
           customerRecord[0].locality_id,
-          merchantRecord[0].merchant_id,
+          merchantRecord[0].partner_id,
           storeId,
           customerRecord[0].married,
           customerRecord[0].address_one,
@@ -927,14 +928,14 @@ const logicFeedbackSurvey = async(
       // Read Merchant Link Customer
       const linkValue = await linkModel.readMerchantLinkCustomer(
         "*",
-        merchantRecord[0].merchant_id,
+        merchantRecord[0].partner_id,
         storeId,
         customerId,
         1
       );
 
       if (linkValue.length === 0) linkModel.keepMerchantLinkCustomer(
-        merchantRecord[0].merchant_id,
+        merchantRecord[0].partner_id,
         storeId,
         customerId,
         1
@@ -1481,7 +1482,7 @@ module.exports.logicCustomerData = async(customerVersion, mobile, storeId) => {
 
     // Read Merchant Record
     const merchantRecord = await merchantModel.readMerchantByMobile(
-      "merchant_id",
+      "partner_id",
       mobile,
       1
     );
@@ -1525,7 +1526,7 @@ module.exports.logicCustomerData = async(customerVersion, mobile, storeId) => {
     // Read Merchant Customer Idenitity Record
     const record = await linkModel.readMerchantStoreCustomer(
       "customer_information_data.customer_information_id AS cust_identity_id, customer_information_data.first_name, customer_information_data.last_name, customer_information_data.email, customer_information_data.mobile, customer_information_data.dob, customer_information_data.married, customer_information_data.spouse_name, customer_information_data.anniversary_date, customer_information_data.address_one, customer_information_data.address_two, customer_information_data.landmark, customer_information_data.gender_id, customer_information_data.city_id AS city_unique, customer_information_data.locality_id AS locality_unique, cities.city_name, localities.locality_name, genders.name AS gender_name, customer_membership_cards.membership_card_number AS membership_card",
-      merchantRecord[0].merchant_id,
+      merchantRecord[0].partner_id,
       storeId,
       1
     );

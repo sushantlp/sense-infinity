@@ -7,8 +7,8 @@ const shareController = require('./share.controller');
 const smsModel = require('../models/sms');
 const errorModel = require('../models/error_log');
 const userModel = require('../models/user');
-const merchantModel = require('../models/merchant');
-const storeModel = require('../models/merchant_store');
+const merchantModel = require('../models/partner');
+const storeModel = require('../models/partner_store');
 
 // Request Merchant Signup
 module.exports.requestAppSignup = (req, res) => {
@@ -167,7 +167,7 @@ const logicOtpVerify = async(mobile, otp, password) => {
 
       const merchantStore = await storeModel.readStoreRecord(
         'store_id AS store_unique, store_name AS name, address',
-        parallel[2][0].merchant_id,
+        parallel[2][0].partner_id,
         1
       );
 

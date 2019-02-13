@@ -39,7 +39,7 @@ module.exports = {
       locality_id: {
         type: Sequelize.INTEGER
       },
-      merchant_id: {
+      partner_id: {
         type: Sequelize.INTEGER,
       },
       store_id: {

@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     'store_complain', {
       customer_information_id: DataTypes.INTEGER,
       store_id: DataTypes.INTEGER,
-      merchant_id: DataTypes.INTEGER,
+      partner_id: DataTypes.INTEGER,
       complain: DataTypes.TEXT,
       status: DataTypes.BOOLEAN
     }, {}
@@ -38,7 +38,7 @@ module.exports.readStoreComplain = async(select, storeId, merchantId, customerId
     const connection = await constants.createMysqlConnection();
 
     // Query
-    const query = `SELECT ${select} FROM store_complains WHERE store_id = ? AND customer_information_id = ? AND merchant_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
+    const query = `SELECT ${select} FROM store_complains WHERE store_id = ? AND customer_information_id = ? AND partner_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [storeId, customerId, merchantId, status]);
@@ -59,7 +59,7 @@ module.exports.keepStoreComplain = async(customerId, merchantId, storeId, desc, 
 
     // Query
     const query =
-      'INSERT INTO `store_complains` (`customer_information_id`,`merchant_id`,`store_id`,`complain`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?)';
+      'INSERT INTO `store_complains` (`customer_information_id`,`partner_id`,`store_id`,`complain`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?)';
 
     // Query Database
     const row = await connection.execute(query, [

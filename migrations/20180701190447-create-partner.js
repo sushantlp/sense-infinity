@@ -1,8 +1,8 @@
 "use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("merchants", {
-      merchant_id: {
+    return queryInterface.createTable("partners", {
+      partner_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
@@ -22,8 +22,7 @@ module.exports = {
       },
       email: {
         type: Sequelize.STRING,
-        allowNull: true,
-        unique: true
+        allowNull: true
       },
       mobile: {
         type: Sequelize.STRING,
@@ -42,11 +41,6 @@ module.exports = {
           key: "category_id"
         }
       },
-      manager_id: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-      },
       status: {
         type: Sequelize.BOOLEAN,
         defaultValue: 0
@@ -64,6 +58,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("merchants");
+    return queryInterface.dropTable("partners");
   }
 };

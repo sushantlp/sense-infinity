@@ -16,16 +16,16 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'merchant_stores',
+          model: 'partner_stores',
           key: 'store_id'
         }
       },
-      merchant_id: {
+      partner_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'merchants',
-          key: 'merchant_id'
+          model: 'partners',
+          key: 'partner_id'
         }
       },
       complain: {

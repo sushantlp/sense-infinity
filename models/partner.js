@@ -6,9 +6,8 @@ const moment = require('moment-timezone');
 const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
-  var merchant = sequelize.define(
-    'merchant',
-    {
+  var partner = sequelize.define(
+    'partner', {
       first_name: DataTypes.STRING,
       last_name: DataTypes.STRING,
       business_name: DataTypes.STRING,
@@ -20,15 +19,13 @@ module.exports = (sequelize, DataTypes) => {
       longitude: DataTypes.DOUBLE,
       latitude: DataTypes.DOUBLE,
       category_id: DataTypes.INTEGER,
-      manager_id: DataTypes.INTEGER,
       status: DataTypes.BOOLEAN
-    },
-    {}
+    }, {}
   );
-  merchant.associate = function(models) {
+  partner.associate = function(models) {
     // associations can be defined here
   };
-  return merchant;
+  return partner;
 };
 
 // Current Date and Time
@@ -41,13 +38,13 @@ const now = moment()
  */
 
 // Read Merchant Record
-module.exports.readMerchantByMobile = async (select, mobile, status) => {
+module.exports.readMerchantByMobile = async(select, mobile, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
 
     // Query
-    const query = `SELECT ${select} FROM merchants WHERE mobile = ? AND status = ? LIMIT 1`;
+    const query = `SELECT ${select} FROM partners WHERE mobile = ? AND status = ? LIMIT 1`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [mobile, status]);

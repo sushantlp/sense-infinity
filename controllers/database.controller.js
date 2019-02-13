@@ -55,7 +55,7 @@ module.exports.sequelizeConnection = () => {
  */
 
 // Create Merchant Constant Store Table
-module.exports.createConstantTable = async (merchantMobile, storeId) => {
+module.exports.createConstantTable = async(merchantMobile, storeId) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -78,7 +78,7 @@ module.exports.createConstantTable = async (merchantMobile, storeId) => {
 };
 
 // Merchant Constant Table Exist
-module.exports.showConstantTable = async (merchantMobile, storeId) => {
+module.exports.showConstantTable = async(merchantMobile, storeId) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -101,7 +101,7 @@ module.exports.showConstantTable = async (merchantMobile, storeId) => {
 };
 
 // Read Constant Record
-module.exports.readConstantRecord = async (select, merchantMobile, storeId, status) => {
+module.exports.readConstantRecord = async(select, merchantMobile, storeId, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -124,7 +124,7 @@ module.exports.readConstantRecord = async (select, merchantMobile, storeId, stat
 };
 
 // Read Constant Record By Name
-module.exports.readConstantRecordName = async (select, merchantMobile, storeId, name, status) => {
+module.exports.readConstantRecordName = async(select, merchantMobile, storeId, name, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -147,7 +147,7 @@ module.exports.readConstantRecordName = async (select, merchantMobile, storeId, 
 };
 
 // Keep Merchant Constant Table
-module.exports.keepMerchantConstantTable = async (merchantMobile, storeId, name, value, comment, status) => {
+module.exports.keepMerchantConstantTable = async(merchantMobile, storeId, name, value, comment, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -170,7 +170,7 @@ module.exports.keepMerchantConstantTable = async (merchantMobile, storeId, name,
 };
 
 // Update Constant Record
-module.exports.updateMerchantConstantTable = async (merchantMobile, storeId, constantId, value, status) => {
+module.exports.updateMerchantConstantTable = async(merchantMobile, storeId, constantId, value, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -193,7 +193,7 @@ module.exports.updateMerchantConstantTable = async (merchantMobile, storeId, con
 };
 
 // Merchant Feedback Question Table Exist
-module.exports.showFeedbackQuestionTable = async (merchantMobile, storeId) => {
+module.exports.showFeedbackQuestionTable = async(merchantMobile, storeId) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -216,7 +216,7 @@ module.exports.showFeedbackQuestionTable = async (merchantMobile, storeId) => {
 };
 
 // Merchant Feedback Option Table Exist
-module.exports.showFeedbackOptionTable = async (merchantMobile, storeId) => {
+module.exports.showFeedbackOptionTable = async(merchantMobile, storeId) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -239,13 +239,13 @@ module.exports.showFeedbackOptionTable = async (merchantMobile, storeId) => {
 };
 
 // Merchant Keep Feedback Table Exist
-module.exports.showKeepFeedbackTable = async (merchantMobile, storeId) => {
+module.exports.showKeepFeedbackTable = async(merchantMobile, storeId) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
 
     // Dynamic Table
-    const KeepFeedback = `${merchantMobile}_${storeId}_keep_merchant_feedbacks`;
+    const KeepFeedback = `${merchantMobile}_${storeId}_keep_partner_feedbacks`;
 
     // Query
     const query = `SHOW TABLES LIKE '${KeepFeedback}'`;
@@ -262,13 +262,13 @@ module.exports.showKeepFeedbackTable = async (merchantMobile, storeId) => {
 };
 
 // Create Merchant Feedback Store Table
-module.exports.createFeedbackStoreTable = async (merchantMobile, storeId) => {
+module.exports.createFeedbackStoreTable = async(merchantMobile, storeId) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
 
     // Dynamic Table
-    const KeepFeedback = `${merchantMobile}_${storeId}_keep_merchant_feedbacks`;
+    const KeepFeedback = `${merchantMobile}_${storeId}_keep_partner_feedbacks`;
 
     // Query
     const query = `CREATE TABLE IF NOT EXISTS ${KeepFeedback} (keep_feed_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, feed_ques_id INTEGER NOT NULL, feed_option_id INTEGER NOT NULL, customer_information_id INT(11) NOT NULL, FOREIGN KEY (customer_information_id) REFERENCES customer_information_data (customer_information_id), role_id INTEGER NOT NULL, status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(keep_feed_id))`;
@@ -285,7 +285,7 @@ module.exports.createFeedbackStoreTable = async (merchantMobile, storeId) => {
 };
 
 // Create Merchant Feedback Question Table
-module.exports.createFeedbackQuestionTable = async (merchantMobile, storeId) => {
+module.exports.createFeedbackQuestionTable = async(merchantMobile, storeId) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -308,7 +308,7 @@ module.exports.createFeedbackQuestionTable = async (merchantMobile, storeId) => 
 };
 
 // Create Merchant Feedback Option Table
-module.exports.createFeedbackOptionTable = async (merchantMobile, storeId) => {
+module.exports.createFeedbackOptionTable = async(merchantMobile, storeId) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -332,7 +332,7 @@ module.exports.createFeedbackOptionTable = async (merchantMobile, storeId) => {
 };
 
 // Read Merchant Feedback Question Record
-module.exports.readFeedbackQuestion = async (merchantMobile, storeId, status) => {
+module.exports.readFeedbackQuestion = async(merchantMobile, storeId, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -355,7 +355,7 @@ module.exports.readFeedbackQuestion = async (merchantMobile, storeId, status) =>
 };
 
 // Read Merchant Feedback Option Record
-module.exports.readFeedbackOption = async (merchantMobile, storeId, quesId, status) => {
+module.exports.readFeedbackOption = async(merchantMobile, storeId, quesId, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -378,7 +378,7 @@ module.exports.readFeedbackOption = async (merchantMobile, storeId, quesId, stat
 };
 
 // Survey Question Table Exist
-module.exports.showSurveyQuestionTable = async (merchantMobile, storeId) => {
+module.exports.showSurveyQuestionTable = async(merchantMobile, storeId) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -401,7 +401,7 @@ module.exports.showSurveyQuestionTable = async (merchantMobile, storeId) => {
 };
 
 // Survey Option Table Exist
-module.exports.showSurveyOptionTable = async (merchantMobile, storeId) => {
+module.exports.showSurveyOptionTable = async(merchantMobile, storeId) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -424,13 +424,13 @@ module.exports.showSurveyOptionTable = async (merchantMobile, storeId) => {
 };
 
 // Keep Merchant Survey Table Exist
-module.exports.showKeepSurveyTable = async (merchantMobile, storeId) => {
+module.exports.showKeepSurveyTable = async(merchantMobile, storeId) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
 
     // Dynamic Table
-    const KeepSurvey = `${merchantMobile}_${storeId}_keep_merchant_surveys`;
+    const KeepSurvey = `${merchantMobile}_${storeId}_keep_partner_surveys`;
 
     // Query
     const query = `SHOW TABLES LIKE '${KeepSurvey}'`;
@@ -447,13 +447,13 @@ module.exports.showKeepSurveyTable = async (merchantMobile, storeId) => {
 };
 
 // Create Merchant Survey Store Table
-module.exports.createSurveyStoreTable = async (merchantMobile, storeId) => {
+module.exports.createSurveyStoreTable = async(merchantMobile, storeId) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
 
     // Dynamic Table
-    const KeepSurvey = `${merchantMobile}_${storeId}_keep_merchant_surveys`;
+    const KeepSurvey = `${merchantMobile}_${storeId}_keep_partner_surveys`;
 
     // Query
     const query = `CREATE TABLE IF NOT EXISTS ${KeepSurvey} (keep_survey_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, survey_ques_id INTEGER NOT NULL, survey_option_id INTEGER NOT NULL, customer_information_id INT(11) NOT NULL, FOREIGN KEY (customer_information_id) REFERENCES customer_information_data (customer_information_id), role_id INTEGER NOT NULL, status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(keep_survey_id))`;
@@ -470,7 +470,7 @@ module.exports.createSurveyStoreTable = async (merchantMobile, storeId) => {
 };
 
 // Create Merchant Survey Question Table
-module.exports.createSurveyQuestionTable = async (merchantMobile, storeId) => {
+module.exports.createSurveyQuestionTable = async(merchantMobile, storeId) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -493,7 +493,7 @@ module.exports.createSurveyQuestionTable = async (merchantMobile, storeId) => {
 };
 
 // Create Merchant Survey Option Table
-module.exports.createSurveyOptionTable = async (merchantMobile, storeId) => {
+module.exports.createSurveyOptionTable = async(merchantMobile, storeId) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -517,7 +517,7 @@ module.exports.createSurveyOptionTable = async (merchantMobile, storeId) => {
 };
 
 // Read Merchant Survey Question Record
-module.exports.readSurveyQuestion = async (merchantMobile, storeId, status) => {
+module.exports.readSurveyQuestion = async(merchantMobile, storeId, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -540,7 +540,7 @@ module.exports.readSurveyQuestion = async (merchantMobile, storeId, status) => {
 };
 
 // Read Merchant Survey Option Record
-module.exports.readSurveyOption = async (select, merchantMobile, storeId, quesId, status) => {
+module.exports.readSurveyOption = async(select, merchantMobile, storeId, quesId, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -563,7 +563,7 @@ module.exports.readSurveyOption = async (select, merchantMobile, storeId, quesId
 };
 
 // Read One Record Merchant Store Survey
-module.exports.readLimitMerchantSurvey = async (
+module.exports.readLimitMerchantSurvey = async(
   select,
   merchantMobile,
   storeId,
@@ -577,7 +577,7 @@ module.exports.readLimitMerchantSurvey = async (
     const connection = await constants.createMysqlConnection();
 
     // Dynamic Table
-    const KeepSurvey = `${merchantMobile}_${storeId}_keep_merchant_surveys`;
+    const KeepSurvey = `${merchantMobile}_${storeId}_keep_partner_surveys`;
 
     // Query
     const query = `SELECT ${select} FROM ${KeepSurvey} WHERE customer_information_id = ? AND survey_ques_id = ? AND role_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
@@ -594,7 +594,7 @@ module.exports.readLimitMerchantSurvey = async (
 };
 
 // Read One Record Merchant Store Feedback
-module.exports.readLimitMerchantFeedback = async (
+module.exports.readLimitMerchantFeedback = async(
   select,
   merchantMobile,
   storeId,
@@ -608,7 +608,7 @@ module.exports.readLimitMerchantFeedback = async (
     const connection = await constants.createMysqlConnection();
 
     // Dynamic Table
-    const KeepFeedback = `${merchantMobile}_${storeId}_keep_merchant_feedbacks`;
+    const KeepFeedback = `${merchantMobile}_${storeId}_keep_partner_feedbacks`;
 
     // Query
     const query = `SELECT ${select} FROM ${KeepFeedback} WHERE customer_information_id = ? AND feed_ques_id = ? AND role_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
@@ -625,7 +625,7 @@ module.exports.readLimitMerchantFeedback = async (
 };
 
 // Keep Merchant Store Feedback Table
-module.exports.keepMerchantFeedbackTable = async (
+module.exports.keepMerchantFeedbackTable = async(
   merchantMobile,
   storeId,
   questionId,
@@ -639,7 +639,7 @@ module.exports.keepMerchantFeedbackTable = async (
     const connection = await constants.createMysqlConnection();
 
     // Dynamic Table
-    const KeepFeedback = `${merchantMobile}_${storeId}_keep_merchant_feedbacks`;
+    const KeepFeedback = `${merchantMobile}_${storeId}_keep_partner_feedbacks`;
 
     // Query
     const query = `INSERT INTO ${KeepFeedback} (feed_ques_id, feed_option_id, customer_information_id, role_id, status, created_at, updated_at) VALUES (?,?,?,?,?,?,?)`;
@@ -664,7 +664,7 @@ module.exports.keepMerchantFeedbackTable = async (
 };
 
 // Keep Merchant Store Survey Table
-module.exports.keepMerchantSurveyTable = async (
+module.exports.keepMerchantSurveyTable = async(
   merchantMobile,
   storeId,
   questionId,
@@ -678,7 +678,7 @@ module.exports.keepMerchantSurveyTable = async (
     const connection = await constants.createMysqlConnection();
 
     // Dynamic Table
-    const KeepSurvey = `${merchantMobile}_${storeId}_keep_merchant_surveys`;
+    const KeepSurvey = `${merchantMobile}_${storeId}_keep_partner_surveys`;
 
     // Query
     const query = `INSERT INTO ${KeepSurvey} (survey_ques_id, survey_option_id, customer_information_id, role_id, status, created_at, updated_at) VALUES (?,?,?,?,?,?,?)`;
@@ -703,7 +703,7 @@ module.exports.keepMerchantSurveyTable = async (
 };
 
 // Update Merchant Store Feedback Table
-module.exports.updateMerchantFeedbackTable = async (
+module.exports.updateMerchantFeedbackTable = async(
   merchantMobile,
   storeId,
   keepFeedId,
@@ -718,7 +718,7 @@ module.exports.updateMerchantFeedbackTable = async (
     const connection = await constants.createMysqlConnection();
 
     // Dynamic Table
-    const KeepFeedback = `${merchantMobile}_${storeId}_keep_merchant_feedbacks`;
+    const KeepFeedback = `${merchantMobile}_${storeId}_keep_partner_feedbacks`;
 
     // Query
     const query = `UPDATE ${KeepFeedback} SET feed_ques_id = ?, feed_option_id = ?, customer_information_id = ?, role_id = ?, status = ?, updated_at = ? WHERE keep_feed_id = ?`;
@@ -743,7 +743,7 @@ module.exports.updateMerchantFeedbackTable = async (
 };
 
 // Update Merchant Store Survey Table
-module.exports.updateMerchantSurveyTable = async (
+module.exports.updateMerchantSurveyTable = async(
   merchantMobile,
   storeId,
   keepSurveyId,
@@ -758,7 +758,7 @@ module.exports.updateMerchantSurveyTable = async (
     const connection = await constants.createMysqlConnection();
 
     // Dynamic Table
-    const KeepSurvey = `${merchantMobile}_${storeId}_keep_merchant_surveys`;
+    const KeepSurvey = `${merchantMobile}_${storeId}_keep_partner_surveys`;
 
     // Query
     const query = `UPDATE ${KeepSurvey} SET survey_ques_id = ?, survey_option_id = ?, customer_information_id = ?, role_id = ?, status = ?, updated_at = ? WHERE keep_survey_id = ?`;

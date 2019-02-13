@@ -4,10 +4,9 @@
 const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
-  var merchantStore = sequelize.define(
-    'merchant_store',
-    {
-      merchant_id: DataTypes.INTEGER,
+  var partnerStore = sequelize.define(
+    'partner_store', {
+      partner_id: DataTypes.INTEGER,
       store_name: DataTypes.STRING,
       address: DataTypes.TEXT,
       address_op1: DataTypes.TEXT,
@@ -19,13 +18,12 @@ module.exports = (sequelize, DataTypes) => {
       latitude: DataTypes.DOUBLE,
       status: DataTypes.BOOLEAN,
       sense: DataTypes.BOOLEAN
-    },
-    {}
+    }, {}
   );
-  merchantStore.associate = function(models) {
+  partnerStore.associate = function(models) {
     // associations can be defined here
   };
-  return merchantStore;
+  return partnerStore;
 };
 
 /**
@@ -33,13 +31,13 @@ module.exports = (sequelize, DataTypes) => {
  */
 
 // Read Merchant Store Record
-module.exports.readStoreRecord = async (select, merchantId, status) => {
+module.exports.readStoreRecord = async(select, merchantId, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
 
     // Query
-    const query = `SELECT ${select} FROM merchant_stores WHERE merchant_id = ? AND status = ?`;
+    const query = `SELECT ${select} FROM partner_stores WHERE partner_id = ? AND status = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [merchantId, status]);
@@ -53,14 +51,14 @@ module.exports.readStoreRecord = async (select, merchantId, status) => {
 };
 
 // Read Merchant Store Record By Store Id
-module.exports.readStoreById = async (select, storeId, status) => {
+module.exports.readStoreById = async(select, storeId, status) => {
   try {
 
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
 
     // Query
-    const query = `SELECT ${select} FROM merchant_stores WHERE store_id = ? AND status = ? LIMIT 1`;
+    const query = `SELECT ${select} FROM partner_stores WHERE store_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [storeId, status]);

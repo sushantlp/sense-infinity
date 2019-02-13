@@ -14,7 +14,10 @@ module.exports = {
       store_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: "merchant_stores", key: "store_id" }
+        references: {
+          model: "partner_stores",
+          key: "store_id"
+        }
       },
       longitude: {
         type: Sequelize.DOUBLE,

@@ -21,7 +21,7 @@ const routes = new Router();
 // Verify Membership Mobile
 routes.post(
   "/verify/membership/mobile",
-  rewardController.requestVerifyMemberMobile
+  RewardApiController.requestVerifyMemberMobile
 );
 
 // Register Membership Email
@@ -34,7 +34,7 @@ routes.post('/verify/otp', RewardApiController.requestVerifyOtp);
 routes.post('/customer/data', authJwt, RewardApiController.requestKeepCustomerData);
 
 // Keep Reward Question Response
-routes.post('/response', RewardApiController.requestRewardResponse);
+routes.post('/response', authJwt, RewardApiController.requestRewardResponse);
 
 // Get Static Data
 routes.get('/static', authJwt, EngageApiController.requestSenseStatic);
