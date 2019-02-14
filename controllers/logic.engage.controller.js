@@ -549,7 +549,7 @@ const logicKeepCustomer = async(
       lastRecord = JSON.parse(lastRecord);
 
       // ReIntialize
-      customerId = jsonParse[0].insertId;
+      customerId = lastRecord[0].insertId;
     } else {
       // ReIntialize
       customerId = customerRecord[0].customer_information_id;

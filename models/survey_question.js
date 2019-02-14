@@ -8,14 +8,12 @@ const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var surveyQuestion = sequelize.define(
-    'survey_question',
-    {
+    'survey_question', {
       survey_question: DataTypes.STRING,
       input_id: DataTypes.INTEGER,
       category_id: DataTypes.INTEGER,
       status: DataTypes.BOOLEAN
-    },
-    {}
+    }, {}
   );
   surveyQuestion.associate = function(models) {
     // associations can be defined here
@@ -33,13 +31,13 @@ const now = moment()
  */
 
 // Read Admin Survey Question
-module.exports.readAdminSurveyQuestion = async (select, mobile, status) => {
+module.exports.readAdminSurveyQuestion = async(select, mobile, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
 
     // Query
-    const query = `SELECT ${select} FROM survey_questions LEFT JOIN input_types ON survey_questions.input_id = input_types.input_id LEFT JOIN merchants ON survey_questions.category_id = merchants.category_id WHERE survey_questions.status = ? AND merchants.mobile = ?`;
+    const query = `SELECT ${select} FROM survey_questions LEFT JOIN input_types ON survey_questions.input_id = input_types.input_id LEFT JOIN partners ON survey_questions.category_id = partners.category_id WHERE survey_questions.status = ? AND partners.mobile = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [status, mobile]);
