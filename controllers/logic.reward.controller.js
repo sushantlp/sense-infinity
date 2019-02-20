@@ -449,7 +449,7 @@ module.exports.logicKeepCustomerData = async(email, mobile, code, card, firstNam
       data: [],
       msg: "Succesful"
     };
-} catch (error) {
+  } catch (error) {
     return Promise.reject(error);
   }
 
@@ -614,6 +614,7 @@ const creatRewardQuestionJson = async(json, customerId) => {
       rewardResponseParse = JSON.parse(rewardResponseParse);
 
       if (rewardResponseParse.length !== 0) {
+
         if (rewardResponseParse[0].reward_option_id === 0) {
           customerRewardResponse.push(rewardResponseParse[0].question_response);
         } else {
@@ -801,7 +802,6 @@ const iterateRewardResponse = async(id, rewardPoint, json) => {
       rewardParse = JSON.parse(rewardParse);
 
       if (questionParse.length !== 0) {
-
         if (questionParse[0].input_id === 1) { // Radio
           if (reward.option.length === 1) {
             if (rewardParse.length === 0) {
@@ -811,7 +811,7 @@ const iterateRewardResponse = async(id, rewardPoint, json) => {
               // Add Reward Point
               point = point + questionParse[0].reward_point;
             } else {
-              if (reward.option[0] !== rewardParse[0].reward_option_id) {
+              if (parseInt(reward.option[0], 10) !== rewardParse[0].reward_option_id) {
                 // Update Reward Response 
                 await rewardResponse.updateRewardResponse(rewardParse[0].question_response_id, 0);
 
