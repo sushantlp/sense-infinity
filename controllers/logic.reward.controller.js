@@ -785,7 +785,7 @@ const iterateRewardResponse = async(id, rewardPoint, json) => {
     let point = rewardPoint;
 
 
-    json.map(async(reward, index) => {
+    const promises = json.map(async(reward, index) => {
 
       // Read Reward Question
       let questionParse = await rewardQuestion.readRewardQuestion("*", parseInt(reward.question_id, 10), 1);
@@ -810,6 +810,7 @@ const iterateRewardResponse = async(id, rewardPoint, json) => {
 
               // Add Reward Point
               point = point + questionParse[0].reward_point;
+              console.log(point + "Radio");
             } else {
               if (parseInt(reward.option[0], 10) !== rewardParse[0].reward_option_id) {
                 // Update Reward Response 
@@ -832,7 +833,7 @@ const iterateRewardResponse = async(id, rewardPoint, json) => {
 
             // Add Reward Point
             point = point + questionParse[0].reward_point;
-
+            console.log(point + "Checkbox");
           } else {
 
             // Check Reward Response Duplicate
@@ -864,6 +865,8 @@ const iterateRewardResponse = async(id, rewardPoint, json) => {
 
               // Add Reward Point
               point = point + questionParse[0].reward_point;
+
+              console.log(point + "5 Star");
             } else {
               if (reward.option[0] !== rewardParse[0].question_response) {
                 // Update Reward Response 
@@ -885,6 +888,8 @@ const iterateRewardResponse = async(id, rewardPoint, json) => {
 
               // Add Reward Point
               point = point + questionParse[0].reward_point;
+
+              console.log(point + "10 Star");
             } else {
               if (reward.option[0] !== rewardParse[0].question_response) {
                 // Update Reward Response 
@@ -906,6 +911,8 @@ const iterateRewardResponse = async(id, rewardPoint, json) => {
 
               // Add Reward Point
               point = point + questionParse[0].reward_point;
+
+              console.log(point + "Text");
             } else {
               // Update Reward Response 
               await rewardResponse.updateRewardResponse(rewardParse[0].question_response_id, 0);
@@ -918,13 +925,11 @@ const iterateRewardResponse = async(id, rewardPoint, json) => {
           }
         }
       }
-
-      // Last Execute
-      if ((json.length - 1) === index) customerDataModel.updateCustomerRewardPoint(point, id);
-
     });
 
-    return Promise.resolve(true);
+    await Promise.all(promises);
+
+    return customerDataModel.updateCustomerRewardPoint(point, id);
   } catch (error) {
     return Promise.reject(error);
   }

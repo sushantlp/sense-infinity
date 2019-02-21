@@ -667,7 +667,6 @@ module.exports.requestLogicFeedbackSurvey = async(
 ) => {
   try {
 
-
     // Merchant Constant Table Exist
     const senseConstant = await databaseController.showConstantTable(
       mobile,
@@ -733,6 +732,7 @@ const logicFeedbackSurvey = async(
 ) => {
   try {
     // Intialize
+    let cityCode = 0;
     let surveyVersion = undefined;
     let feedbackVersion = undefined;
     let customerVersion = undefined;
@@ -741,7 +741,6 @@ const logicFeedbackSurvey = async(
       feedback: true,
       customer: true
     };
-    let cityCode = 0;
 
     // Read Constant Record
     const constant = await databaseController.readConstantRecord(
