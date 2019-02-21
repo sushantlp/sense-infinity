@@ -367,12 +367,14 @@ module.exports.logicKeepCustomerData = async(email, mobile, code, card, firstNam
     // Replace + 
     code = code.replace(/\+/g, '');
 
+    // Variable
+    let newDob = undefined;
+
     if (!EMAIL_REG.test(email)) return {
       success: false,
       data: [],
       msg: "Invalid email"
     };
-
 
     // Reform Customer Detail
     const reform = shareController.reformCustomerDetail(
@@ -388,7 +390,6 @@ module.exports.logicKeepCustomerData = async(email, mobile, code, card, firstNam
       true
     );
 
-
     // Read Customer Information Data by Mobile and Country Code
     let recordParse = await customerDataModel.readDataMobileCode("customer_information_id", mobile, code, 1);
 
@@ -402,13 +403,18 @@ module.exports.logicKeepCustomerData = async(email, mobile, code, card, firstNam
       msg: "Unknown user"
     };
 
+    if (reform.dob === 'Invalid date') {
+      newDob = moment(new Date('1949-08-15')).format('YYYY-MM-DD');
+    } else {
+      newDob = reform.dob;
+    }
 
     // Update Customer Information Data
     customerDataModel.updateCustomerData(
       reform.first_name,
       reform.last_name,
       email,
-      reform.dob,
+      newDob,
       parseInt(gender, 10),
       parseInt(city, 10),
       parseInt(locality, 10),
@@ -428,7 +434,7 @@ module.exports.logicKeepCustomerData = async(email, mobile, code, card, firstNam
       email,
       mobile,
       code,
-      reform.dob,
+      newDob,
       parseInt(gender, 10),
       parseInt(city, 10),
       parseInt(locality, 10),

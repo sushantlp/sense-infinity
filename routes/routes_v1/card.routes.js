@@ -37,7 +37,7 @@ routes.post('/keep/feedback/survey', authJwt, EngageApiController.requestKeepFee
 routes.get('/get/static', authJwt, EngageApiController.requestSenseStatic);
 
 // Get Feedback
-routes.get('/get/feedback', authJwt, EngageApiController.requestReadFeedbackData);
+routes.get('/get/feedback', EngageApiController.requestReadFeedbackData);
 
 // Get Survey
 routes.get('/get/survey', authJwt, EngageApiController.requestReadSurveyData);

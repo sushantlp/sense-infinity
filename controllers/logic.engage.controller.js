@@ -161,6 +161,8 @@ const logicKeepComplain = async(
       customer: true
     };
     let cityCode = 0;
+    let newDob = undefined;
+
     // Read Constant Record
     const constant = await databaseController.readConstantRecordName(
       "*",
@@ -222,6 +224,12 @@ const logicKeepComplain = async(
         false
       );
 
+      if (reform.dob === 'Invalid date') {
+        newDob = moment(new Date('1949-08-15')).format('YYYY-MM-DD');
+      } else {
+        newDob = reform.dob;
+      }
+
       if (customerRecord.length === 0) {
         // Keep Customer Information Data
         let lastRecord = await customerDataModel.keepCustomerData(
@@ -230,7 +238,7 @@ const logicKeepComplain = async(
           json.email,
           json.customer_mobile.toString(),
           cityCode,
-          reform.dob,
+          newDob,
           parseInt(json.gender_id, 10),
           0,
           0,
@@ -250,7 +258,7 @@ const logicKeepComplain = async(
           json.email,
           json.customer_mobile.toString(),
           cityCode,
-          reform.dob,
+          newDob,
           parseInt(json.gender_id, 10),
           0,
           0,
@@ -290,7 +298,7 @@ const logicKeepComplain = async(
           reform.first_name,
           reform.last_name,
           json.email,
-          reform.dob,
+          newDob,
           parseInt(json.gender_id, 10),
           customerRecord[0].city_id,
           customerRecord[0].locality_id,
@@ -310,7 +318,7 @@ const logicKeepComplain = async(
           json.email,
           json.customer_mobile.toString(),
           cityCode,
-          reform.dob,
+          newDob,
           parseInt(json.gender_id, 10),
           customerRecord[0].city_id,
           customerRecord[0].locality_id,
@@ -467,6 +475,7 @@ const logicKeepCustomer = async(
   let versionFlag = {
     customer: true
   };
+  let newDob = undefined;
 
   // Read Constant Record
   const constant = await databaseController.readConstantRecordName(
@@ -495,6 +504,12 @@ const logicKeepCustomer = async(
       json.landmark,
       true
     );
+
+    if (reform.dob === 'Invalid date') {
+      newDob = moment(new Date('1949-08-15')).format('YYYY-MM-DD');
+    } else {
+      newDob = reform.dob;
+    }
 
     // Read Customer Information Data By Mobile
     let customerRecord = await customerDataModel.readCustomerDataMobile(
@@ -526,7 +541,7 @@ const logicKeepCustomer = async(
         json.email,
         json.customer_mobile.toString(),
         cityCode,
-        reform.dob,
+        newDob,
         parseInt(json.gender_id, 10),
         parseInt(json.city_id, 10),
         parseInt(json.locality_id, 10),
@@ -554,7 +569,7 @@ const logicKeepCustomer = async(
         reform.first_name,
         reform.last_name,
         json.email,
-        reform.dob,
+        newDob,
         parseInt(json.gender_id, 10),
         parseInt(json.city_id, 10),
         parseInt(json.locality_id, 10),
@@ -634,7 +649,7 @@ const logicKeepCustomer = async(
       json.email,
       json.customer_mobile,
       cityCode,
-      reform.dob,
+      newDob,
       parseInt(json.gender_id, 10),
       parseInt(json.city_id, 10),
       parseInt(json.locality_id, 10),
@@ -736,6 +751,7 @@ const logicFeedbackSurvey = async(
       feedback: true,
       customer: true
     };
+    let newDob = undefined;
 
     // Read Constant Record
     const constant = await databaseController.readConstantRecord(
@@ -806,6 +822,12 @@ const logicFeedbackSurvey = async(
         false
       );
 
+      if (reform.dob === 'Invalid date') {
+        newDob = moment(new Date('1949-08-15')).format('YYYY-MM-DD');
+      } else {
+        newDob = reform.dob;
+      }
+
       if (customerRecord.length === 0) {
         // Keep Customer Information Data
         let lastRecord = await customerDataModel.keepCustomerData(
@@ -814,7 +836,7 @@ const logicFeedbackSurvey = async(
           json.email,
           json.customer_mobile.toString(),
           cityCode,
-          reform.dob,
+          newDob,
           parseInt(json.gender_id, 10),
           0,
           0,
@@ -841,7 +863,7 @@ const logicFeedbackSurvey = async(
           json.email,
           json.customer_mobile.toString(),
           cityCode,
-          reform.dob,
+          newDob,
           parseInt(json.gender_id, 10),
           0,
           0,
@@ -862,7 +884,7 @@ const logicFeedbackSurvey = async(
           reform.first_name,
           reform.last_name,
           json.email,
-          reform.dob,
+          newDob,
           parseInt(json.gender_id, 10),
           customerRecord[0].city_id,
           customerRecord[0].locality_id,
@@ -885,7 +907,7 @@ const logicFeedbackSurvey = async(
           json.email,
           json.customer_mobile,
           cityCode,
-          reform.dob,
+          newDob,
           parseInt(json.gender_id, 10),
           customerRecord[0].city_id,
           customerRecord[0].locality_id,
