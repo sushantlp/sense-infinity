@@ -44,7 +44,6 @@ const backDate = moment()
 module.exports.logicSenseStatic = async appVersion => {
   try {
 
-
     // Read Sense Constant Record
     const senseConstant = await senseConstModel.readSenseConstant(
       "*",
@@ -59,7 +58,6 @@ module.exports.logicSenseStatic = async appVersion => {
       msg: "Empty sense constant"
     };
 
-
     // Check Sense Static App Version
     if (appVersion === parseFloat(senseConstant[0].value)) return {
       success: true,
@@ -67,7 +65,6 @@ module.exports.logicSenseStatic = async appVersion => {
       msg: "Upto date"
     };
     else appVersion = parseFloat(senseConstant[0].value);
-
 
     // Parallel City Locality Gender Record
     const parallel = await Promise.all([
@@ -109,7 +106,6 @@ module.exports.requestLogicKeepComplain = async(
   storeId
 ) => {
   try {
-
 
     // Read Merchant Record
     const merchantRecord = await merchantModel.readMerchantByMobile(
@@ -235,7 +231,7 @@ const logicKeepComplain = async(
           json.customer_mobile.toString(),
           cityCode,
           reform.dob,
-          json.gender_id,
+          parseInt(json.gender_id, 10),
           0,
           0,
           0,
@@ -255,11 +251,11 @@ const logicKeepComplain = async(
           json.customer_mobile.toString(),
           cityCode,
           reform.dob,
-          json.gender_id,
+          parseInt(json.gender_id, 10),
           0,
           0,
           merchantRecord[0].partner_id,
-          storeId,
+          parseInt(storeId, 10),
           0,
           undefined,
           undefined,
@@ -281,7 +277,7 @@ const logicKeepComplain = async(
         complainModel.keepStoreComplain(
           customerId,
           merchantRecord[0].partner_id,
-          storeId,
+          parseInt(storeId, 10),
           json.description,
           1
         );
@@ -295,7 +291,7 @@ const logicKeepComplain = async(
           reform.last_name,
           json.email,
           reform.dob,
-          json.gender_id,
+          parseInt(json.gender_id, 10),
           customerRecord[0].city_id,
           customerRecord[0].locality_id,
           customerRecord[0].married,
@@ -315,7 +311,7 @@ const logicKeepComplain = async(
           json.customer_mobile.toString(),
           cityCode,
           reform.dob,
-          json.gender_id,
+          parseInt(json.gender_id, 10),
           customerRecord[0].city_id,
           customerRecord[0].locality_id,
           merchantRecord[0].partner_id,
@@ -363,7 +359,7 @@ const logicKeepComplain = async(
           else complainModel.keepStoreComplain(
             customerId,
             merchantRecord[0].partner_id,
-            storeId,
+            parseInt(storeId, 10),
             json.description,
             1
           );
@@ -374,14 +370,14 @@ const logicKeepComplain = async(
       const linkValue = await linkModel.readMerchantLinkCustomer(
         "*",
         merchantRecord[0].partner_id,
-        storeId,
+        parseInt(storeId, 10),
         customerId,
         1
       );
 
       if (linkValue.length === 0) linkModel.keepMerchantLinkCustomer(
         merchantRecord[0].partner_id,
-        storeId,
+        parseInt(storeId, 10),
         customerId,
         1
       );
@@ -418,7 +414,6 @@ module.exports.requestLogicKeepCustomer = async(
   storeId
 ) => {
   try {
-
 
     // Read Merchant Record
     const merchantRecord = await merchantModel.readMerchantByMobile(
@@ -532,10 +527,10 @@ const logicKeepCustomer = async(
         json.customer_mobile.toString(),
         cityCode,
         reform.dob,
-        json.gender_id,
-        json.city_id,
-        json.locality_id,
-        json.married,
+        parseInt(json.gender_id, 10),
+        parseInt(json.city_id, 10),
+        parseInt(json.locality_id, 10),
+        parseInt(json.married, 10),
         reform.address_one,
         reform.address_two,
         reform.landmark,
@@ -560,10 +555,10 @@ const logicKeepCustomer = async(
         reform.last_name,
         json.email,
         reform.dob,
-        json.gender_id,
-        json.city_id,
-        json.locality_id,
-        json.married,
+        parseInt(json.gender_id, 10),
+        parseInt(json.city_id, 10),
+        parseInt(json.locality_id, 10),
+        parseInt(json.married, 10),
         reform.address_one,
         reform.address_two,
         reform.landmark,
@@ -577,14 +572,14 @@ const logicKeepCustomer = async(
     const linkValue = await linkModel.readMerchantLinkCustomer(
       "*",
       merchantRecord[0].partner_id,
-      storeId,
+      parseInt(storeId, 10),
       customerId,
       1
     );
 
     if (linkValue.length === 0) linkModel.keepMerchantLinkCustomer(
       merchantRecord[0].partner_id,
-      storeId,
+      parseInt(storeId, 10),
       customerId,
       1
     );
@@ -640,12 +635,12 @@ const logicKeepCustomer = async(
       json.customer_mobile,
       cityCode,
       reform.dob,
-      json.gender_id,
-      json.city_id,
-      json.locality_id,
+      parseInt(json.gender_id, 10),
+      parseInt(json.city_id, 10),
+      parseInt(json.locality_id, 10),
       merchantRecord[0].partner_id,
-      storeId,
-      json.married,
+      parseInt(storeId, 10),
+      parseInt(json.married, 10),
       reform.address_one,
       reform.address_two,
       reform.landmark,
@@ -705,7 +700,7 @@ module.exports.requestLogicFeedbackSurvey = async(
     await databaseController.createSurveyStoreTable(mobile, storeId);
 
     // Logic Feedback Survey
-    await logicFeedbackSurvey(
+    logicFeedbackSurvey(
       feedbackSurveyJson,
       mobile,
       storeId,
@@ -820,7 +815,7 @@ const logicFeedbackSurvey = async(
           json.customer_mobile.toString(),
           cityCode,
           reform.dob,
-          json.gender_id,
+          parseInt(json.gender_id, 10),
           0,
           0,
           0,
@@ -847,11 +842,11 @@ const logicFeedbackSurvey = async(
           json.customer_mobile.toString(),
           cityCode,
           reform.dob,
-          json.gender_id,
+          parseInt(json.gender_id, 10),
           0,
           0,
           merchantRecord[0].partner_id,
-          storeId,
+          parseInt(storeId, 10),
           0,
           undefined,
           undefined,
@@ -868,7 +863,7 @@ const logicFeedbackSurvey = async(
           reform.last_name,
           json.email,
           reform.dob,
-          json.gender_id,
+          parseInt(json.gender_id, 10),
           customerRecord[0].city_id,
           customerRecord[0].locality_id,
           customerRecord[0].married,
@@ -891,11 +886,11 @@ const logicFeedbackSurvey = async(
           json.customer_mobile,
           cityCode,
           reform.dob,
-          json.gender_id,
+          parseInt(json.gender_id, 10),
           customerRecord[0].city_id,
           customerRecord[0].locality_id,
           merchantRecord[0].partner_id,
-          storeId,
+          parseInt(storeId, 10),
           customerRecord[0].married,
           customerRecord[0].address_one,
           customerRecord[0].address_two,
@@ -928,18 +923,17 @@ const logicFeedbackSurvey = async(
       const linkValue = await linkModel.readMerchantLinkCustomer(
         "*",
         merchantRecord[0].partner_id,
-        storeId,
+        parseInt(storeId, 10),
         customerId,
         1
       );
 
       if (linkValue.length === 0) linkModel.keepMerchantLinkCustomer(
         merchantRecord[0].partner_id,
-        storeId,
+        parseInt(storeId, 10),
         customerId,
         1
       );
-
 
       // Survey
       if (json.customer_survey != null) {
@@ -950,8 +944,8 @@ const logicFeedbackSurvey = async(
             mobile,
             storeId,
             customerId,
-            survey.question_id,
-            survey.role_id,
+            parseInt(survey.question_id, 10),
+            parseInt(survey.role_id, 10),
             1
           );
 
@@ -964,10 +958,10 @@ const logicFeedbackSurvey = async(
             await databaseController.keepMerchantSurveyTable(
               mobile,
               storeId,
-              survey.question_id,
-              survey.option_id,
+              parseInt(survey.question_id, 10),
+              parseInt(survey.option_id, 10),
               customerId,
-              survey.role_id,
+              parseInt(survey.role_id, 10),
               1
             );
           } else {
@@ -981,19 +975,19 @@ const logicFeedbackSurvey = async(
               mobile,
               storeId,
               surveyRecord[0].keep_survey_id,
-              survey.question_id,
-              survey.option_id,
+              parseInt(survey.question_id, 10),
+              parseInt(survey.option_id, 10),
               customerId,
-              survey.role_id,
+              parseInt(survey.role_id, 10),
               1
             );
             else await databaseController.keepMerchantSurveyTable(
               mobile,
               storeId,
-              survey.question_id,
-              survey.option_id,
+              parseInt(survey.question_id, 10),
+              parseInt(survey.option_id, 10),
               customerId,
-              survey.role_id,
+              parseInt(survey.role_id, 10),
               1
             );
 
@@ -1026,8 +1020,8 @@ const logicFeedbackSurvey = async(
             mobile,
             storeId,
             customerId,
-            feedback.question_id,
-            feedback.role_id,
+            parseInt(feedback.question_id, 10),
+            parseInt(feedback.role_id, 10),
             1
           );
 
@@ -1040,10 +1034,10 @@ const logicFeedbackSurvey = async(
             await databaseController.keepMerchantFeedbackTable(
               mobile,
               storeId,
-              feedback.question_id,
-              feedback.option_id,
+              parseInt(feedback.question_id, 10),
+              parseInt(feedback.option_id, 10),
               customerId,
-              feedback.role_id,
+              parseInt(feedback.role_id, 10),
               1
             );
           } else {
@@ -1057,19 +1051,19 @@ const logicFeedbackSurvey = async(
               mobile,
               storeId,
               feedbackRecord[0].keep_feed_id,
-              feedback.question_id,
-              feedback.option_id,
+              parseInt(feedback.question_id, 10),
+              parseInt(feedback.option_id, 10),
               customerId,
-              feedback.role_id,
+              parseInt(feedback.role_id, 10),
               1
             );
             else await databaseController.keepMerchantFeedbackTable(
               mobile,
               storeId,
-              feedback.question_id,
-              feedback.option_id,
+              parseInt(feedback.question_id, 10),
+              parseInt(feedback.option_id, 10),
               customerId,
-              feedback.role_id,
+              parseInt(feedback.role_id, 10),
               1
             );
 
@@ -1209,7 +1203,6 @@ const logicReadFeedback = async(mobile, storeId, merchantFlag, senseFlag) => {
         mobile,
         storeId
       );
-
     }
 
     // Admin Version
@@ -1226,7 +1219,6 @@ const logicReadFeedback = async(mobile, storeId, merchantFlag, senseFlag) => {
         undefined,
         undefined
       );
-
     }
     return merchantArray.concat(adminArray);
   } catch (error) {
@@ -1253,7 +1245,6 @@ const creatFeedbackJson = async(json, role, mobile, storeId) => {
         feed.feed_ques_id,
         1
       );
-
 
       lowerObject.feedback_id = feed.feed_ques_id;
       lowerObject.feedback_question = feed.feed_question;
@@ -1396,7 +1387,6 @@ const logicReadSurvey = async(mobile, storeId, merchantFlag, senseFlag) => {
       );
 
       if (merchantFeed.length !== 0) merchantArray = await creatSurveyJson(merchantFeed, 1, mobile, storeId);
-
     }
 
     // Admin Version

@@ -8,8 +8,8 @@ module.exports = (sequelize, DataTypes) => {
     'partner_store', {
       partner_id: DataTypes.INTEGER,
       store_name: DataTypes.STRING,
-      address: DataTypes.TEXT,
-      address_op1: DataTypes.TEXT,
+      address_one: DataTypes.TEXT,
+      address_two: DataTypes.TEXT,
       landmark: DataTypes.TEXT,
       city_id: DataTypes.INTEGER,
       locality_id: DataTypes.INTEGER,

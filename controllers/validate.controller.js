@@ -9,6 +9,57 @@ module.exports.validateSignUpRequest = (req, res) => {
 };
 
 
+// Validate Survey Feedback
+module.exports.validateSurveyFeedback = (json) => {
+  for (let i = 0; i < json.length; i++) {
+
+    // Survey
+    if (json[i].customer_survey !== null) {
+      for (let j = 0; j < json[i].customer_survey.length; j++) {
+        if (!json[i].customer_survey[j].hasOwnProperty('question_id') || json[i].customer_survey[j]['question_id'] === '') return {
+          success: false,
+          msg: 'Survey question id should not be empty or null'
+        };
+
+        if (!json[i].customer_survey[j].hasOwnProperty('option_id') || json[i].customer_survey[j]['option_id'] === '') return {
+          success: false,
+          msg: 'Survey option id should not be empty or null'
+        };
+
+        if (!json[i].customer_survey[j].hasOwnProperty('role_id') || json[i].customer_survey[j]['role_id'] === '') return {
+          success: false,
+          msg: 'Survey role id should not be empty or null'
+        };
+      }
+    }
+
+    // Feedback
+    if (json[i].customer_feedback !== null) {
+      for (let j = 0; j < json[i].customer_feedback.length; j++) {
+        if (!json[i].customer_feedback[j].hasOwnProperty('question_id') || json[i].customer_feedback[j]['question_id'] === '') return {
+          success: false,
+          msg: 'Feedback question id should not be empty or null'
+        };
+
+        if (!json[i].customer_feedback[j].hasOwnProperty('option_id') || json[i].customer_feedback[j]['option_id'] === '') return {
+          success: false,
+          msg: 'Feedback option id should not be empty or null'
+        };
+
+        if (!json[i].customer_feedback[j].hasOwnProperty('role_id') || json[i].customer_feedback[j]['role_id'] === '') return {
+          success: false,
+          msg: 'Feedback role id should not be empty or null'
+        };
+      }
+    }
+  }
+
+  return {
+    success: true,
+    msg: 'Succesful'
+  };
+};
+
 // Validate Customer Detail
 module.exports.validateCustomerDetail = (loop, bool) => {
   for (let i = 0; i < loop.length; i++) {

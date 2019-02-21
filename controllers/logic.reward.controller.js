@@ -774,8 +774,7 @@ module.exports.logicRewardResponse = async(mobile, code, json) => {
   } catch (error) {
     return Promise.reject(error);
   }
-
-}
+};
 
 // Iterate Question Reward Response
 const iterateRewardResponse = async(id, rewardPoint, json) => {
@@ -926,15 +925,12 @@ const iterateRewardResponse = async(id, rewardPoint, json) => {
         }
       }
     });
-
     await Promise.all(promises);
-
     return customerDataModel.updateCustomerRewardPoint(point, id);
   } catch (error) {
     return Promise.reject(error);
   }
-
-}
+};
 
 
 // Check Reward Response Duplicate
@@ -973,4 +969,4 @@ const rewardResponseDuplicate = (x, y) => {
     insert: insert,
     softDelete: softDelete
   }
-}
+};

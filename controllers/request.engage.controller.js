@@ -222,11 +222,15 @@ module.exports.requestKeepFeedbackSurvey = (req, res) => {
     else token = req.body.token || req.query.token || req.headers["authorization"];
 
     // Validate Customer Detail
-    const validate = validateController.validateCustomerDetail(
+    const validate1 = validateController.validateCustomerDetail(
       req.body.feedback_survey,
       false
     );
-    if (!validate.success) return res.status(400).send(validate.msg);
+    if (!validate1.success) return res.status(400).send(validate1.msg);
+
+    // Validate Survey Feedback 
+    const validate2 = validateController.validateSurveyFeedback(req.body.feedback_survey);
+    if (!validate2.success) return res.status(400).send(validate2.msg);
 
     // Request Logic Keep Feedback Survey
     return engageController

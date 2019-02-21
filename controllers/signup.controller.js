@@ -158,7 +158,7 @@ const logicOtpVerify = async(mobile, otp, password) => {
     // Parallel Read User Table Record And Validate Otp
     const parallel = await Promise.all([
       shareController.validateOtp(mobile, otp),
-      userModel.readUserRecord('user_id,name,mobile,email,password', mobile, 1, 1),
+      userModel.readUserRecord('user_id, name, mobile, email, password', mobile, 1, 1),
       merchantModel.readMerchantByMobile('*', mobile, 1)
     ]);
 
@@ -166,7 +166,7 @@ const logicOtpVerify = async(mobile, otp, password) => {
       if (!parallel[0].success) return parallel[0];
 
       const merchantStore = await storeModel.readStoreRecord(
-        'store_id AS store_unique, store_name AS name, address',
+        'store_id AS store_unique, store_name AS name',
         parallel[2][0].partner_id,
         1
       );
