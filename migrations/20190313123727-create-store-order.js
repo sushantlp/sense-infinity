@@ -1,17 +1,17 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('store_counters', {
+    return queryInterface.createTable('store_orders', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      store_counter_id: {
+      store_order_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        unique: 'actions_unique',
+        unique: 'actions_unique'
       },
       store_id: {
         type: Sequelize.INTEGER,
@@ -21,7 +21,15 @@ module.exports = {
           key: 'store_id'
         }
       },
-      status: {
+      warehouse_user_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'warehouse_user_lists',
+          key: 'warehouse_user_id'
+        }
+      },
+      order_status: {
         type: Sequelize.BOOLEAN,
         defaultValue: 0
       },
@@ -38,6 +46,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('store_counters');
+    return queryInterface.dropTable('store_orders');
   }
 };

@@ -11,6 +11,7 @@ module.exports = {
       warehouse_user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        unique: 'actions_unique'
       },
       warehouse_role_id: {
         type: Sequelize.INTEGER,

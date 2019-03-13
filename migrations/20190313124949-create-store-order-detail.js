@@ -1,54 +1,42 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('warehouse_employee_lists', {
+    return queryInterface.createTable('store_order_details', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      warehouse_employe_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        unique: 'actions_unique'
-      },
-      first_name: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      last_name: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      birth_date: {
-        type: Sequelize.DATE,
-        allowNull: true,
-      },
-      mobile: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      email: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      dept_name: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      gender_id: {
-        type: Sequelize.INTEGER
-      },
-      store_id: {
+      store_order_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'partner_stores',
-          key: 'store_id'
+          model: 'store_orders',
+          key: 'store_order_id'
         }
       },
-      status: {
+      barcode: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      product_name: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      unit: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      request_quantity: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      received_quantity: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      order_status: {
         type: Sequelize.BOOLEAN,
         defaultValue: 0
       },
@@ -65,6 +53,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('warehouse_employee_lists');
+    return queryInterface.dropTable('store_order_details');
   }
 };

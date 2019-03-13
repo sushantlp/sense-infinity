@@ -10,7 +10,8 @@ module.exports = {
       },
       warehouse_information_id: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        unique: 'actions_unique'
       },
       partner_id: {
         type: Sequelize.INTEGER,
