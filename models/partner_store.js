@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
   var partnerStore = sequelize.define(
     'partner_store', {
       partner_id: DataTypes.INTEGER,
+      store_code: DataTypes.INTEGER,
       store_name: DataTypes.STRING,
       address_one: DataTypes.TEXT,
       address_two: DataTypes.TEXT,
@@ -16,6 +17,11 @@ module.exports = (sequelize, DataTypes) => {
       pincode: DataTypes.INTEGER,
       longitude: DataTypes.DOUBLE,
       latitude: DataTypes.DOUBLE,
+      gstin_no: DataTypes.STRING,
+      store_mobile: DataTypes.STRING,
+      store_email: DataTypes.STRING,
+      refund_on_discount: DataTypes.BOOLEAN,
+      refund_policy: DataTypes.TEXT,
       status: DataTypes.BOOLEAN,
       sense: DataTypes.BOOLEAN
     }, {}

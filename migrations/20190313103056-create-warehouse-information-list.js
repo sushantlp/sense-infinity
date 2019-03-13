@@ -1,14 +1,14 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('partner_stores', {
-      store_id: {
+    return queryInterface.createTable('warehouse_information_lists', {
+      id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      store_code: {
+      warehouse_information_id: {
         type: Sequelize.INTEGER,
         allowNull: false
       },
@@ -20,96 +20,67 @@ module.exports = {
           key: 'partner_id'
         }
       },
-      store_name: {
+      business_name: {
         type: Sequelize.STRING,
         allowNull: true
       },
       address_one: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING,
         allowNull: true
       },
       address_two: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING,
         allowNull: true
       },
       landmark: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING,
         allowNull: true
       },
       city_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        defaultValue: 0,
-        references: {
-          model: 'cities',
-          key: 'city_id'
-        }
+        allowNull: true
       },
       locality_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        defaultValue: 0,
-        references: {
-          model: 'localities',
-          key: 'locality_id'
-        }
+        allowNull: true
       },
-      pincode: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-      },
-      longitude: {
-        type: Sequelize.DOUBLE,
-        allowNull: true,
-        defaultValue: 0
-      },
-      latitude: {
-        type: Sequelize.DOUBLE,
-        allowNull: true,
-        defaultValue: 0
-      },
-      gstin_no: {
+      gstin: {
         type: Sequelize.STRING,
         allowNull: true
       },
-      store_mobile: {
+      cin: {
         type: Sequelize.STRING,
         allowNull: true
       },
-      store_email: {
+      pan: {
         type: Sequelize.STRING,
         allowNull: true
       },
-      refund_on_discount: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 1
+      mobile: {
+        type: Sequelize.STRING,
+        allowNull: true
       },
-      refund_policy: {
-        type: Sequelize.TEXT('long'),
+      email: {
+        type: Sequelize.STRING,
         allowNull: true
       },
       status: {
         type: Sequelize.BOOLEAN,
         defaultValue: 0
       },
-      sense: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0
-      },
       createdAt: {
-        field: 'created_at',
+        field: "created_at",
         allowNull: false,
         type: Sequelize.DATE
       },
       updatedAt: {
-        field: 'updated_at',
+        field: "updated_at",
         allowNull: false,
         type: Sequelize.DATE
       }
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('partner_stores');
+    return queryInterface.dropTable('warehouse_information_lists');
   }
 };

@@ -8,15 +8,15 @@ const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var city = sequelize.define(
-    'city',
-    {
+    'city', {
       city_name: DataTypes.STRING,
       longitude: DataTypes.DOUBLE,
       latitude: DataTypes.DOUBLE,
       country_code: DataTypes.STRING,
+      currency_hex_code: DataTypes.STRING,
+      currency_text: DataTypes.STRING,
       status: DataTypes.BOOLEAN
-    },
-    {}
+    }, {}
   );
   city.associate = function(models) {
     // associations can be defined here
@@ -34,7 +34,7 @@ const now = moment()
  */
 
 // Read City Record
-module.exports.readCityRecord = async (select, status) => {
+module.exports.readCityRecord = async(select, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -55,7 +55,7 @@ module.exports.readCityRecord = async (select, status) => {
 
 
 // Read City Record By City Id
-module.exports.readCityBYId = async (select,cityId,status) => {
+module.exports.readCityBYId = async(select, cityId, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -64,7 +64,7 @@ module.exports.readCityBYId = async (select,cityId,status) => {
     const query = `SELECT ${select} FROM cities WHERE city_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [cityId,status]);
+    const [rows, fields] = await connection.execute(query, [cityId, status]);
 
     connection.close();
 
