@@ -2,7 +2,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('warehouse_payment_types', {
-      warehouse_payment_type_id: {
+      warehouse_payment_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
