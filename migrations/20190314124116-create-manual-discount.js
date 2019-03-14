@@ -1,12 +1,28 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('invoice_payments', {
-      invoice_payment_id: {
+    return queryInterface.createTable('manual_discounts', {
+      manual_discount_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
+      },
+      store_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'partner_stores',
+          key: 'store_id'
+        }
+      },
+      warehouse_user_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'warehouse_user_lists',
+          foreignKey: 'warehouse_user_id'
+        }
       },
       invoice_no: {
         type: Sequelize.INTEGER,
@@ -16,33 +32,9 @@ module.exports = {
           foreignKey: 'invoice_no'
         }
       },
-      payment_amount: {
+      discount_amount: {
         type: Sequelize.FLOAT,
         defaultValue: 0
-      },
-      transaction_id: {
-        type: Sequelize.STRING,
-        allowNull: true
-      },
-      card_no: {
-        type: Sequelize.STRING,
-        allowNull: true
-      },
-      store_counter_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'store_counters',
-          foreignKey: 'store_counter_id'
-        }
-      },
-      warehouse_payment_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'warehouse_payment_types',
-          key: 'warehouse_payment_id'
-        }
       },
       status: {
         type: Sequelize.BOOLEAN,
@@ -61,6 +53,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('invoice_payments');
+    return queryInterface.dropTable('manual_discounts');
   }
 };
