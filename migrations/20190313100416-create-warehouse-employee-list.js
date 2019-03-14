@@ -15,27 +15,27 @@ module.exports = {
       },
       first_name: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       last_name: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       birth_date: {
         type: Sequelize.DATE,
-        allowNull: true,
+        allowNull: true
       },
       mobile: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       email: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       dept_name: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       gender_id: {
         type: Sequelize.INTEGER

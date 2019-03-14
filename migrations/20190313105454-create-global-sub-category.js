@@ -10,7 +10,7 @@ module.exports = {
       },
       global_sub_category_name: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: false
       },
       global_category_id: {
         type: Sequelize.INTEGER,

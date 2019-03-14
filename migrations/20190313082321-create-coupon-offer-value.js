@@ -18,12 +18,11 @@ module.exports = {
       },
       value: {
         type: Sequelize.FLOAT,
-        allowNull: false,
         defaultValue: 0
       },
       description: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       status: {
         type: Sequelize.BOOLEAN,

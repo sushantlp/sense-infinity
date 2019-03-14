@@ -1,33 +1,12 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('invoices', {
-      id: {
+    return queryInterface.createTable('login_histories', {
+      login_history_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
-      },
-      invoice_no: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        unique: 'actions_unique'
-      },
-      store_counter_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'store_counters',
-          key: 'store_counter_id'
-        }
-      },
-      warehouse_user_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'warehouse_user_lists',
-          key: 'warehouse_user_id'
-        }
       },
       store_id: {
         type: Sequelize.INTEGER,
@@ -37,51 +16,55 @@ module.exports = {
           key: 'store_id'
         }
       },
-      customer_name: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      customer_mobile: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      membership_code: {
+      store_counter_id: {
         type: Sequelize.INTEGER,
-        allowNull: true,
+        allowNull: false,
+        references: {
+          model: 'store_counters',
+          foreignKey: 'store_counter_id'
+        }
       },
-      total_amount: {
-        type: Sequelize.FLOAT,
-        defaultValue: 0
+      warehouse_user_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'warehouse_user_lists',
+          foreignKey: 'warehouse_user_id'
+        }
       },
-      invoice_cashback: {
-        type: Sequelize.FLOAT,
-        defaultValue: 0
-      },
-      invoice_total_saving: {
-        type: Sequelize.FLOAT,
-        defaultValue: 0
-      },
-      invoice_loyalty_used: {
-        type: Sequelize.FLOAT,
-        defaultValue: 0
-      },
-      invoice_total_amount: {
-        type: Sequelize.FLOAT,
-        defaultValue: 0
-      },
-      gstin_name: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      gstin_number: {
-        type: Sequelize.STRING,
+      login_time: {
+        type: Sequelize.TIME,
         allowNull: true
       },
-      return_status: {
-        type: Sequelize.BOOLEAN,
+      logout_time: {
+        type: Sequelize.TIME,
+        allowNull: true
+      },
+      opening_amount: {
+        type: Sequelize.FLOAT,
         defaultValue: 0
       },
-      round_off_amount: {
+      closing_amount: {
+        type: Sequelize.FLOAT,
+        defaultValue: 0
+      },
+      total_invoice: {
+        type: Sequelize.FLOAT,
+        defaultValue: 0
+      },
+      cash_amount: {
+        type: Sequelize.FLOAT,
+        defaultValue: 0
+      },
+      card_amount: {
+        type: Sequelize.FLOAT,
+        defaultValue: 0
+      },
+      sodexo_amount: {
+        type: Sequelize.FLOAT,
+        defaultValue: 0
+      },
+      total_amount: {
         type: Sequelize.FLOAT,
         defaultValue: 0
       },
@@ -102,6 +85,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('invoices');
+    return queryInterface.dropTable('login_histories');
   }
 };

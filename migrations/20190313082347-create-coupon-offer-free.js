@@ -22,11 +22,11 @@ module.exports = {
       },
       quantity: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        defaultValue: 0
       },
       description: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       status: {
         type: Sequelize.BOOLEAN,

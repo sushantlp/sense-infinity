@@ -10,11 +10,11 @@ module.exports = {
       },
       scope_name: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: false
       },
       scope_description: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       status: {
         type: Sequelize.BOOLEAN,

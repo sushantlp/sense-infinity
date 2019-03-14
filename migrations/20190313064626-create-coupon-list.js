@@ -10,11 +10,11 @@ module.exports = {
       },
       coupon_code: { // (p(3) + c(2) + y(2) + s(3) + 8)
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: false
       },
       expiry: {
         type: Sequelize.DATE,
-        allowNull: false,
+        allowNull: false
       },
       status: {
         type: Sequelize.BOOLEAN,

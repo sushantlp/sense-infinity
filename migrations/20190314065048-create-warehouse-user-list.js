@@ -1,42 +1,43 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('store_order_details', {
+    return queryInterface.createTable('warehouse_user_lists', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      store_order_id: {
+      warehouse_user_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        unique: 'actions_unique'
+      },
+      warehouse_role_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'store_orders',
-          key: 'store_order_id'
+          model: 'warehouse_role_lists',
+          key: 'warehouse_role_id'
         }
       },
-      barcode: {
-        type: Sequelize.STRING,
+      warehouse_employe_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'warehouse_employee_lists',
+          foreignKey: 'warehouse_employe_id'
+        }
+      },
+      partner_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
-      product_name: {
+      password: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: false
       },
-      unit: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      request_quantity: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      received_quantity: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      order_status: {
+      status: {
         type: Sequelize.BOOLEAN,
         defaultValue: 0
       },
@@ -53,6 +54,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('store_order_details');
+    return queryInterface.dropTable('warehouse_user_lists');
   }
 };

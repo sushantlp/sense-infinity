@@ -10,7 +10,7 @@ module.exports = {
       },
       offer_static_name: { // (free,price,percent)
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: false
       },
       status: {
         type: Sequelize.BOOLEAN,

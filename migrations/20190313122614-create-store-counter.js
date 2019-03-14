@@ -11,7 +11,7 @@ module.exports = {
       store_counter_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        unique: 'actions_unique',
+        unique: 'actions_unique'
       },
       store_id: {
         type: Sequelize.INTEGER,

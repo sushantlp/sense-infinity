@@ -14,7 +14,7 @@ module.exports = {
       },
       product_sub_unit_value: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: false
       },
       status: {
         type: Sequelize.BOOLEAN,

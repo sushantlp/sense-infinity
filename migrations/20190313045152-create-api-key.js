@@ -37,8 +37,8 @@ module.exports = {
         allowNull: false,
       },
       rate_limit: {
-        type: Sequelize.INTEGER
-        allowNull: false,
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       status: {
         type: Sequelize.BOOLEAN,
