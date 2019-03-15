@@ -8,6 +8,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      product_unit_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'product_units',
+          key: 'product_unit_id'
+        }
+      },
       product_sub_unit_name: {
         type: Sequelize.STRING,
         allowNull: false,

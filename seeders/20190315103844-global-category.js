@@ -3,27 +3,33 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert(
-      "product_units", [{
-        product_unit_name: "Kg",
-        product_unit_value: "Kilograms",
+      "global_categories", [{
+        global_category_name: "FOOD",
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        product_unit_name: "Ltr",
-        product_unit_value: "Litres",
+        global_category_name: "CLEANING",
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        product_unit_name: "M",
-        product_unit_value: "Meters",
+        global_category_name: "STATIONARY",
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        product_unit_name: "Pc",
-        product_unit_value: "Pieces",
+        global_category_name: "PERSONAL CARE",
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_category_name: "PET FOOD",
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_category_name: "MISCELLANEOUS",
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
@@ -32,6 +38,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete("product_units", null, {});
+    return queryInterface.bulkDelete("global_categories", null, {});
   }
 };

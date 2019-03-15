@@ -2,25 +2,68 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    /*
-      Add altering commands here.
-      Return a promise to correctly handle asynchronicity.
-
-      Example:
-      return queryInterface.bulkInsert('Person', [{
-        name: 'John Doe',
-        isBetaMember: false
-      }], {});
-    */
+    return queryInterface.bulkInsert(
+      "product_sub_units", [{
+        product_unit_id: 1,
+        product_sub_unit_name: "Kg",
+        product_sub_unit_value: "Kilograms",
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        product_unit_id: 1,
+        product_sub_unit_name: "Gm",
+        product_sub_unit_value: "Grams",
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        product_unit_id: 1,
+        product_sub_unit_name: "Mg",
+        product_sub_unit_value: "Milligrams",
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        product_unit_id: 2,
+        product_sub_unit_name: "Ltr",
+        product_sub_unit_value: "Litres",
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        product_unit_id: 2,
+        product_sub_unit_name: "Ml",
+        product_sub_unit_value: "Millilitres",
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        product_unit_id: 3,
+        product_sub_unit_name: "M",
+        product_sub_unit_value: "Meters",
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        product_unit_id: 3,
+        product_sub_unit_name: "In",
+        product_sub_unit_value: "Inches",
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        product_unit_id: 3,
+        product_sub_unit_name: "Cm",
+        product_sub_unit_value: "Centimeters",
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }], {}
+    );
   },
 
   down: (queryInterface, Sequelize) => {
-    /*
-      Add reverting commands here.
-      Return a promise to correctly handle asynchronicity.
-
-      Example:
-      return queryInterface.bulkDelete('Person', null, {});
-    */
+    return queryInterface.bulkDelete("product_sub_units", null, {});
   }
 };

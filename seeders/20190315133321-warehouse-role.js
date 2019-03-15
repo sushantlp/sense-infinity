@@ -3,27 +3,23 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert(
-      "product_units", [{
-        product_unit_name: "Kg",
-        product_unit_value: "Kilograms",
+      "warehouse_role_lists", [{
+        name: "System Administrator",
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        product_unit_name: "Ltr",
-        product_unit_value: "Litres",
+        name: "Administrator",
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        product_unit_name: "M",
-        product_unit_value: "Meters",
+        name: "Manager",
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        product_unit_name: "Pc",
-        product_unit_value: "Pieces",
+        name: "Biller",
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
@@ -32,6 +28,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete("product_units", null, {});
+    return queryInterface.bulkDelete("warehouse_role_lists", null, {});
   }
 };
