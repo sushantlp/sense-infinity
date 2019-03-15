@@ -25,7 +25,7 @@ module.exports = {
         allowNull: true
       },
       card_no: {
-        type: Sequelize.STRING,
+        type: Sequelize.BIGINT,
         allowNull: true
       },
       store_counter_id: {

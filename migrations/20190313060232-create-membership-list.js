@@ -9,7 +9,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       membership_code: { // (p(3) + c(2) + y(2) + 9)
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
         allowNull: false,
       },
       status: {

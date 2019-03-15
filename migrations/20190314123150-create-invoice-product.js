@@ -21,7 +21,7 @@ module.exports = {
         allowNull: false
       },
       product_barcode: {
-        type: Sequelize.STRING,
+        type: Sequelize.BIGINT,
         allowNull: false
       },
       product_unit: {

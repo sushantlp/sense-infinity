@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     store_id: DataTypes.INTEGER,
     customer_name: DataTypes.STRING,
     customer_mobile: DataTypes.INTEGER,
-    membership_code: DataTypes.STRING,
+    membership_code: DataTypes.BIGINT,
     total_amount: DataTypes.FLOAT,
     invoice_cashback: DataTypes.FLOAT,
     invoice_total_saving: DataTypes.FLOAT,

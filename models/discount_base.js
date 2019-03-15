@@ -1,12 +1,12 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var discount_base = sequelize.define('discount_base', {
-    firstName: DataTypes.STRING,
-    lastName: DataTypes.STRING,
-    email: DataTypes.STRING
+  var discountBase = sequelize.define('discount_base', {
+    discount_base_type: DataTypes.STRING,
+    discount_id: DataTypes.INTEGER,
+    status: DataTypes.BOOLEAN
   }, {});
-  discount_base.associate = function(models) {
+  discountBase.associate = function(models) {
     // associations can be defined here
   };
-  return discount_base;
+  return discountBase;
 };

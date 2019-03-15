@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var warehouse_employee_list = sequelize.define('warehouse_employee_list', {
+  var warehouseEmployeeList = sequelize.define('warehouse_employee_list', {
     warehouse_employe_id: DataTypes.INTEGER,
     first_name: DataTypes.STRING,
     last_name: DataTypes.STRING,
@@ -12,8 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     store_id: DataTypes.INTEGER,
     status: DataTypes.BOOLEAN
   }, {});
-  warehouse_employee_list.associate = function(models) {
+  warehouseEmployeeList.associate = function(models) {
     // associations can be defined here
   };
-  return warehouse_employee_list;
+  return warehouseEmployeeList;
 };

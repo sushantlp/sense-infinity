@@ -46,7 +46,7 @@ module.exports = {
         allowNull: false
       },
       membership_code: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
         allowNull: true
       },
       total_amount: {

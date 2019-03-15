@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var login_history = sequelize.define('login_history', {
+  var loginHistory = sequelize.define('login_history', {
     store_id: DataTypes.INTEGER,
     store_counter_id: DataTypes.INTEGER,
     warehouse_user_id: DataTypes.INTEGER,
@@ -15,8 +15,8 @@ module.exports = (sequelize, DataTypes) => {
     total_amount: DataTypes.FLOAT,
     status: DataTypes.BOOLEAN
   }, {});
-  login_history.associate = function(models) {
+  loginHistory.associate = function(models) {
     // associations can be defined here
   };
-  return login_history;
+  return loginHistory;
 };

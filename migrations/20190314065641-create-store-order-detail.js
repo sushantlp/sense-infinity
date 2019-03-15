@@ -17,7 +17,7 @@ module.exports = {
         }
       },
       barcode: {
-        type: Sequelize.STRING,
+        type: Sequelize.BIGINT,
         allowNull: false
       },
       product_name: {

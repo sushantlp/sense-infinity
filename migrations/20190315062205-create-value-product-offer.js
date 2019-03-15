@@ -1,20 +1,32 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('coupon_lists', {
-      coupon_id: {
+    return queryInterface.createTable('value_product_offers', {
+      value_product_offer_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      coupon_code: { // (p(3) + c(2) + y(2) + s(3) + 8)
+      product_discount_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'product_discounts',
+          foreignKey: 'product_discount_id'
+        }
+      },
+      product_barcode: {
         type: Sequelize.BIGINT,
         allowNull: false
       },
-      expiry: {
-        type: Sequelize.DATE,
-        allowNull: false
+      buy_product_quantity: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+      },
+      offer_value: {
+        type: Sequelize.FLOAT,
+        defaultValue: 0
       },
       status: {
         type: Sequelize.BOOLEAN,
@@ -33,6 +45,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('coupon_lists');
+    return queryInterface.dropTable('value_product_offers');
   }
 };

@@ -1,12 +1,12 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var global_sub_category = sequelize.define('global_sub_category', {
+  var globalSubCategory = sequelize.define('global_sub_category', {
     global_sub_category_name: DataTypes.STRING,
     global_category_id: DataTypes.INTEGER,
     status: DataTypes.BOOLEAN
   }, {});
-  global_sub_category.associate = function(models) {
+  globalSubCategory.associate = function(models) {
     // associations can be defined here
   };
-  return global_sub_category;
+  return globalSubCategory;
 };

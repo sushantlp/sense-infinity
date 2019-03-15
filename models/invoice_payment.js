@@ -5,11 +5,11 @@ module.exports = (sequelize, DataTypes) => {
     warehouse_payment_id: DataTypes.INTEGER,
     payment_amount: DataTypes.FLOAT,
     transaction_id: DataTypes.STRING,
-    card_no: DataTypes.STRING,
+    card_no: DataTypes.BIGINT,
     store_counter_id: DataTypes.INTEGER,
     status: DataTypes.BOOLEAN
   }, {});
-  invoice_payment.associate = function(models) {
+  invoicePayment.associate = function(models) {
     // associations can be defined here
   };
   return invoicePayment;

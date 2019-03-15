@@ -1,9 +1,9 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var invoice_product = sequelize.define('invoice_product', {
+  var invoiceProduct = sequelize.define('invoice_product', {
     invoice_no: DataTypes.INTEGER,
     product_name: DataTypes.STRING,
-    product_barcode: DataTypes.STRING,
+    product_barcode: DataTypes.BIGINT,
     product_unit: DataTypes.STRING,
     product_quantity: DataTypes.FLOAT,
     product_sgst: DataTypes.FLOAT,
@@ -16,8 +16,8 @@ module.exports = (sequelize, DataTypes) => {
     return_status: DataTypes.BOOLEAN,
     status: DataTypes.BOOLEAN
   }, {});
-  invoice_product.associate = function(models) {
+  invoiceProduct.associate = function(models) {
     // associations can be defined here
   };
-  return invoice_product;
+  return invoiceProduct;
 };

@@ -17,7 +17,7 @@ module.exports = {
         }
       },
       coupon_code: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
         defaultValue: 0
       },
       applicable_on: {

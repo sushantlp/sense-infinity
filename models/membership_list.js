@@ -1,11 +1,11 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var membership_list = sequelize.define('membership_list', {
-    membership_code: DataTypes.INTEGER,
+  var membershipList = sequelize.define('membership_list', {
+    membership_code: DataTypes.BIGINT,
     status: DataTypes.BOOLEAN
   }, {});
-  membership_list.associate = function(models) {
+  membershipList.associate = function(models) {
     // associations can be defined here
   };
-  return membership_list;
+  return membershipList;
 };

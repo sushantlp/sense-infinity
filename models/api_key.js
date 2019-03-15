@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var api_key = sequelize.define('api_key', {
+  var apiKey = sequelize.define('api_key', {
     user_id: DataTypes.INTEGER,
     role_id: DataTypes.INTEGER,
     api_name: DataTypes.STRING,
@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
     rate_limit: DataTypes.INTEGER,
     status: DataTypes.BOOLEAN
   }, {});
-  api_key.associate = function(models) {
+  apiKey.associate = function(models) {
     // associations can be defined here
   };
-  return api_key;
+  return apiKey;
 };
