@@ -2,7 +2,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('scope_lists', {
-      scope_id: {
+      scope_list_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,

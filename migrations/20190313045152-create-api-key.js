@@ -2,7 +2,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('api_keys', {
-      api_id: {
+      api_key_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,

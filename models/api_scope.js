@@ -1,8 +1,8 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   var apiScope = sequelize.define('api_scope', {
-    api_id: DataTypes.INTEGER,
-    scope_id: DataTypes.INTEGER,
+    api_key_id: DataTypes.INTEGER,
+    scope_list_id: DataTypes.INTEGER,
     status: DataTypes.BOOLEAN
   }, {});
   apiScope.associate = function(models) {

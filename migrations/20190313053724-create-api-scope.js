@@ -8,20 +8,20 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      api_id: {
+      api_key_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           model: 'api_keys',
-          key: 'api_id'
+          key: 'api_key_id'
         }
       },
-      scope_id: {
+      scope_list_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           model: 'scope_lists',
-          key: 'scope_id'
+          key: 'scope_list_id'
         }
       },
       status: {
