@@ -10,25 +10,25 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        discount_type: "Percent",
+        discount_base_type: "Percent",
         discount_id: 1,
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        discount_type: "Cash",
+        discount_base_type: "Cash",
         discount_id: 2,
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        discount_type: "Percent",
+        discount_base_type: "Percent",
         discount_id: 2,
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        discount_type: "Quantity",
+        discount_base_type: "Quantity",
         discount_id: 2,
         status: 1,
         created_at: new Date(),
