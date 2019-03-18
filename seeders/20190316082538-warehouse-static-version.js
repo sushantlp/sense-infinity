@@ -10,67 +10,49 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        discount_type: "Locality Version",
+        warehouse_static_name: "Locality Version",
         warehouse_static_version: 1.0,
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        discount_type: "Discount Type",
+        warehouse_static_name: "Discount Type Version",
         warehouse_static_version: 1.0,
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        discount_type: "Discount Base",
+        warehouse_static_name: "Discount Base Version",
         warehouse_static_version: 1.0,
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        discount_type: "Gender",
+        warehouse_static_name: "Gender Version",
         warehouse_static_version: 1.0,
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        discount_type: "Warehouse Payment Type",
+        warehouse_static_name: "Warehouse Payment Version",
         warehouse_static_version: 1.0,
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        discount_type: "Global Category",
+        warehouse_static_name: "Global Category Version",
         warehouse_static_version: 1.0,
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        discount_type: "Global Category",
+        warehouse_static_name: "Global Sub Category Version",
         warehouse_static_version: 1.0,
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        discount_type: "Global Category",
-        warehouse_static_version: 1.0,
-        status: 1,
-        created_at: new Date(),
-        updated_at: new Date()
-      }, {
-        discount_type: "Global Sub Category",
-        warehouse_static_version: 1.0,
-        status: 1,
-        created_at: new Date(),
-        updated_at: new Date()
-      }, {
-        discount_type: "Global Sub Sub Category",
-        warehouse_static_version: 1.0,
-        status: 1,
-        created_at: new Date(),
-        updated_at: new Date()
-      }, {
-        discount_type: "Global Category",
+        warehouse_static_name: "Global Sub Sub Category Version",
         warehouse_static_version: 1.0,
         status: 1,
         created_at: new Date(),
