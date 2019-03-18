@@ -233,3 +233,57 @@ module.exports.validateRewardResponse = (json) => {
   };
 
 }
+
+// Validate Warehouse Static Version
+module.exports.warehouseStaticVersion = (version) => {
+
+  if (!version.hasOwnProperty('city_version')) return {
+    success: false,
+    msg: 'Missing city version'
+  };
+
+  if (!version.hasOwnProperty('locality_version')) return {
+    success: false,
+    msg: 'Missing locality version'
+  };
+
+  if (!version.hasOwnProperty('discount_type_version')) return {
+    success: false,
+    msg: 'Missing discount type version'
+  };
+
+  if (!version.hasOwnProperty('discount_base_version')) return {
+    success: false,
+    msg: 'Missing discount base version'
+  };
+
+  if (!version.hasOwnProperty('gender_version')) return {
+    success: false,
+    msg: 'Missing locality version'
+  };
+
+  if (!version.hasOwnProperty('warehouse_payment_version')) return {
+    success: false,
+    msg: 'Missing gender version'
+  };
+
+  if (!version.hasOwnProperty('global_category_version')) return {
+    success: false,
+    msg: 'Missing category version'
+  };
+
+  if (!version.hasOwnProperty('global_sub_category_version')) return {
+    success: false,
+    msg: 'Missing sub category version'
+  };
+
+  if (!version.hasOwnProperty('global_sub_sub_category_version')) return {
+    success: false,
+    msg: 'Missing sub sub category version'
+  };
+
+  return {
+    success: true,
+    msg: 'Succesful'
+  };
+}
