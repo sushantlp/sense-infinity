@@ -20,11 +20,11 @@ module.exports.requestGetWarehouseStaticData = (req, res) => {
     if (!validate.success) return res.status(400).send(validate.msg);
 
     // Variable
-    const apiKey = req.headers["api_key"];
+    // const apiKey = req.headers["api_key"];
 
     // Logic Pos Warehouse Controller
     return posWarehoseController
-      .logicWarehouseStaticData(req.body.version, apiKey)
+      .logicWarehouseStaticData(req.body.version)
       .then(response => {
 
         // Intialize
@@ -40,7 +40,7 @@ module.exports.requestGetWarehouseStaticData = (req, res) => {
               response.msg,
               "/api/v1/warehouses/static",
               200,
-              response.success, metadata
+              response.success, response.version
             )
           );
       })

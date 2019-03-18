@@ -1,12 +1,15 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var membership_sync = sequelize.define('membership_sync', {
-    firstName: DataTypes.STRING,
-    lastName: DataTypes.STRING,
-    email: DataTypes.STRING
+  var membershipSync = sequelize.define('membership_sync', {
+    partner_id: DataTypes.INTEGER,
+    store_id: DataTypes.INTEGER,
+    membership_start_id: DataTypes.INTEGER,
+    membership_end_id: DataTypes.INTEGER,
+    sync_status: DataTypes.BOOLEAN,
+    status: DataTypes.BOOLEAN,
   }, {});
-  membership_sync.associate = function(models) {
+  membershipSync.associate = function(models) {
     // associations can be defined here
   };
-  return membership_sync;
+  return membershipSync;
 };

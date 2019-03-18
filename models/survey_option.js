@@ -8,13 +8,11 @@ const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var surveyOption = sequelize.define(
-    'survey_option',
-    {
+    'survey_option', {
       option_value: DataTypes.STRING,
       survey_ques_id: DataTypes.INTEGER,
       status: DataTypes.BOOLEAN
-    },
-    {}
+    }, {}
   );
   surveyOption.associate = function(models) {
     // associations can be defined here
@@ -32,7 +30,7 @@ const now = moment()
  */
 
 // Read Admin Survey Option
-module.exports.readAdminSurveyOption = async (select, quesId, status) => {
+module.exports.readAdminSurveyOption = async(select, quesId, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
