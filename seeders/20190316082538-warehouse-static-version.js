@@ -57,6 +57,12 @@ module.exports = {
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
+      }, {
+        warehouse_static_name: "Warehouse Role Version",
+        warehouse_static_version: 1.0,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
       }], {}
     );
   },
