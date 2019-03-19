@@ -6,6 +6,12 @@ const localityModel = require("../models/locality");
 const cityModel = require("../models/city");
 const genderModel = require("../models/gender");
 const roleModel = require("../models/warehouse_role_list");
+const productUnitModel = require("../models/product_unit");
+const productSubUnitModel = require("../models/product_sub_unit");
+const orderStatusModel = require("../models/order_status");
+const couponTypeModel = require("../models/coupon_type");
+const couponSubTypeModel = require("../models/coupon_sub_type");
+const itemConditionModel = require("../models/item_condition");
 const discountTypeModel = require("../models/discount_type");
 const discountBaseModel = require("../models/discount_base");
 const warehousePaymentModel = require("../models/warehouse_payment_type");
@@ -273,6 +279,156 @@ module.exports.logicWarehouseStaticData = async version => {
           dataObj.warehouse_role_list = [];
           versionObj.warehouse_role_version = parseFloat(staticVersion.warehouse_static_version);
         }
+      } else if (staticVersion.warehouse_static_name === 'Coupon Type Version') {
+
+        if (parseFloat(staticVersion.warehouse_static_version) !== parseFloat(version.coupon_type_version)) {
+
+          // Read Coupon Type List
+          let couponType = await couponTypeModel.readCouponType(
+            "coupon_type_id AS coupon_type_unique, coupon_type_name",
+            1
+          )
+
+          // Parse
+          couponType = JSON.stringify(couponType);
+          couponType = JSON.parse(couponType);
+
+          // Object Push
+          dataObj.coupon_type_list = couponType;
+          versionObj.coupon_type_version = parseFloat(staticVersion.warehouse_static_version);
+
+        } else {
+
+          // Object Push
+          dataObj.coupon_type_list = [];
+          versionObj.coupon_type_version = parseFloat(staticVersion.warehouse_static_version);
+        }
+
+      } else if (staticVersion.warehouse_static_name === 'Coupon Sub Type Version') {
+
+        if (parseFloat(staticVersion.warehouse_static_version) !== parseFloat(version.coupon_sub_type_version)) {
+
+          // Read Sub Coupon Type List
+          let couponSubType = await couponSubTypeModel.readSubCouponType(
+            "coupon_sub_type_id AS coupon_sub_type_unique, coupon_type_id AS coupon_type_unique, coupon_sub_type_name AS coupon_name",
+            1
+          )
+
+          // Parse
+          couponSubType = JSON.stringify(couponSubType);
+          couponSubType = JSON.parse(couponSubType);
+
+          // Object Push
+          dataObj.coupon_sub_type_list = couponSubType;
+          versionObj.coupon_sub_type_version = parseFloat(staticVersion.warehouse_static_version);
+
+        } else {
+
+          // Object Push
+          dataObj.coupon_sub_type_list = [];
+          versionObj.coupon_sub_type_version = parseFloat(staticVersion.warehouse_static_version);
+        }
+
+      } else if (staticVersion.warehouse_static_name === 'Item Condition Version') {
+
+        if (parseFloat(staticVersion.warehouse_static_version) !== parseFloat(version.item_condition_version)) {
+
+          // Read Item Condition List
+          let itemCondition = await itemConditionModel.readItemCondition(
+            "item_condition_id AS item_condition_unique, item_condition_name",
+            1
+          )
+
+          // Parse
+          itemCondition = JSON.stringify(itemCondition);
+          itemCondition = JSON.parse(itemCondition);
+
+          // Object Push
+          dataObj.item_condition_list = itemCondition;
+          versionObj.item_condition_version = parseFloat(staticVersion.warehouse_static_version);
+
+        } else {
+
+          // Object Push
+          dataObj.item_condition_list = [];
+          versionObj.item_condition_version = parseFloat(staticVersion.warehouse_static_version);
+        }
+
+      } else if (staticVersion.warehouse_static_name === 'Order Status Version') {
+
+        if (parseFloat(staticVersion.warehouse_static_version) !== parseFloat(version.order_status_version)) {
+
+          // Read Order Status List
+          let orderStatus = await orderStatusModel.readOrderStatus(
+            "order_status_id AS order_status_unique, order_status_name",
+            1
+          )
+
+          // Parse
+          orderStatus = JSON.stringify(orderStatus);
+          orderStatus = JSON.parse(orderStatus);
+
+          // Object Push
+          dataObj.order_status_list = orderStatus;
+          versionObj.order_status_version = parseFloat(staticVersion.warehouse_static_version);
+
+        } else {
+
+          // Object Push
+          dataObj.order_status_list = [];
+          versionObj.order_status_version = parseFloat(staticVersion.warehouse_static_version);
+        }
+
+      } else if (staticVersion.warehouse_static_name === 'Product Unit Version') {
+
+        if (parseFloat(staticVersion.warehouse_static_version) !== parseFloat(version.product_unit_version)) {
+
+          // Read Product Unit List
+          let productUnit = await productUnitModel.readProductUnit(
+            "product_unit_id AS unit_unique, product_unit_name AS unit_name, product_unit_value AS unit_value",
+            1
+          )
+
+          // Parse
+          productUnit = JSON.stringify(productUnit);
+          productUnit = JSON.parse(productUnit);
+
+          // Object Push
+          dataObj.product_unit_list = productUnit;
+          versionObj.product_unit_version = parseFloat(staticVersion.warehouse_static_version);
+
+        } else {
+
+          // Object Push
+          dataObj.product_unit_list = [];
+          versionObj.product_unit_version = parseFloat(staticVersion.warehouse_static_version);
+        }
+
+      } else if (staticVersion.warehouse_static_name === 'Product Sub Unit Version') {
+
+        if (parseFloat(staticVersion.warehouse_static_version) !== parseFloat(version.product_sub_unit_version)) {
+
+          // Read Product Sub Unit List
+          let productSubUnit = await productSubUnitModel.readProductSubUnit(
+            "product_sub_unit_id AS sub_unit_unique, product_unit_id AS unit_unique, product_sub_unit_name AS sub_unit_name, product_sub_unit_value AS sub_unit_value",
+            1
+          )
+
+          // Parse
+          productSubUnit = JSON.stringify(productSubUnit);
+          productSubUnit = JSON.parse(productSubUnit);
+
+          // Object Push
+          dataObj.product_sub_unit_list = productSubUnit;
+          versionObj.product_sub_unit_version = parseFloat(staticVersion.warehouse_static_version);
+
+        } else {
+
+          // Object Push
+          dataObj.product_sub_unit_list = [];
+          versionObj.product_sub_unit_version = parseFloat(staticVersion.warehouse_static_version);
+        }
+
       }
     });
 

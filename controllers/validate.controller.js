@@ -292,6 +292,11 @@ module.exports.warehouseStaticVersion = (version) => {
     msg: 'Missing coupon type version'
   };
 
+  if (!version.hasOwnProperty('coupon_sub_type_version')) return {
+    success: false,
+    msg: 'Missing coupon sub type version'
+  };
+
   if (!version.hasOwnProperty('item_condition_version')) return {
     success: false,
     msg: 'Missing item condition version'
