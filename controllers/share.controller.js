@@ -53,7 +53,7 @@ module.exports.createJsonObject = (data, msg, location, code, bool, metadata) =>
     message: msg,
     requestLocation: location,
     status: code,
-    bool: bool,
+    success: bool,
     metadata: metadata
   });
 };

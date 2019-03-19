@@ -17,5 +17,8 @@ const routes = new Router();
 // Get Warehouse Static Data
 routes.get('/static', PosWarehouseApiController.requestGetWarehouseStaticData);
 
+// Keep Warehouse User And Employee Detail
+routes.post('/critical/detail', PosWarehouseApiController.requestKeepCriticalData);
+
 
 module.exports = routes;

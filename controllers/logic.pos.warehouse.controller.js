@@ -5,6 +5,7 @@ const warehouseStaticModel = require("../models/warehouse_static_version");
 const localityModel = require("../models/locality");
 const cityModel = require("../models/city");
 const genderModel = require("../models/gender");
+const roleModel = require("../models/warehouse_role_list");
 const discountTypeModel = require("../models/discount_type");
 const discountBaseModel = require("../models/discount_base");
 const warehousePaymentModel = require("../models/warehouse_payment_type");
@@ -247,6 +248,30 @@ module.exports.logicWarehouseStaticData = async version => {
           // Object Push
           dataObj.global_sub_sub_category = [];
           versionObj.global_sub_sub_category_version = parseFloat(staticVersion.warehouse_static_version);
+        }
+      } else if (staticVersion.warehouse_static_name === 'Warehouse Role Version') {
+
+        if (parseFloat(staticVersion.warehouse_static_version) !== parseFloat(version.warehouse_role_version)) {
+
+          // Read Warehouse Role List
+          let roleList = await roleModel.readWarehouseRoleList(
+            "warehouse_role_id AS role_unique, name AS role_name",
+            1
+          )
+
+          // Parse
+          roleList = JSON.stringify(roleList);
+          roleList = JSON.parse(roleList);
+
+          // Object Push
+          dataObj.warehouse_role_list = roleList;
+          versionObj.warehouse_role_version = parseFloat(staticVersion.warehouse_static_version);
+
+        } else {
+
+          // Object Push
+          dataObj.warehouse_role_list = [];
+          versionObj.warehouse_role_version = parseFloat(staticVersion.warehouse_static_version);
         }
       }
     });

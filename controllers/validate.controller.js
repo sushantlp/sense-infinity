@@ -262,6 +262,11 @@ module.exports.warehouseStaticVersion = (version) => {
     msg: 'Missing locality version'
   };
 
+  if (!version.hasOwnProperty('warehouse_role_version')) return {
+    success: false,
+    msg: 'Missing warehouse role version'
+  };
+
   if (!version.hasOwnProperty('warehouse_payment_version')) return {
     success: false,
     msg: 'Missing gender version'
@@ -280,6 +285,31 @@ module.exports.warehouseStaticVersion = (version) => {
   if (!version.hasOwnProperty('global_sub_sub_category_version')) return {
     success: false,
     msg: 'Missing sub sub category version'
+  };
+
+  if (!version.hasOwnProperty('coupon_type_version')) return {
+    success: false,
+    msg: 'Missing coupon type version'
+  };
+
+  if (!version.hasOwnProperty('item_condition_version')) return {
+    success: false,
+    msg: 'Missing item condition version'
+  };
+
+  if (!version.hasOwnProperty('order_status_version')) return {
+    success: false,
+    msg: 'Missing order status version'
+  };
+
+  if (!version.hasOwnProperty('product_unit_version')) return {
+    success: false,
+    msg: 'Missing product unit version'
+  };
+
+  if (!version.hasOwnProperty('product_sub_unit_version')) return {
+    success: false,
+    msg: 'Missing product sub unit version'
   };
 
   return {

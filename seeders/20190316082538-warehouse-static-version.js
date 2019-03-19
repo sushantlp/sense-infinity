@@ -63,6 +63,42 @@ module.exports = {
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
+      }, {
+        warehouse_static_name: "Coupon Type Version",
+        warehouse_static_version: 1.0,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        warehouse_static_name: "Coupon Sub Type Version",
+        warehouse_static_version: 1.0,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        warehouse_static_name: "Item Condition Version",
+        warehouse_static_version: 1.0,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        warehouse_static_name: "Order Status Version",
+        warehouse_static_version: 1.0,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        warehouse_static_name: "Product Unit Version",
+        warehouse_static_version: 1.0,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        warehouse_static_name: "Product Sub Unit Version",
+        warehouse_static_version: 1.0,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
       }], {}
     );
   },
