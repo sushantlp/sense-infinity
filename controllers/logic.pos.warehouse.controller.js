@@ -33,16 +33,16 @@ module.exports.logicWarehouseStaticData = async version => {
       1
     );
 
+    // Parse
+    warehouseStatic = JSON.stringify(warehouseStatic);
+    warehouseStatic = JSON.parse(warehouseStatic);
+
     // Zero Means Empty Record
     if (warehouseStatic.length === 0) return {
       success: false,
       data: {},
       msg: "Empty warehouse static version"
     };
-
-    // Parse
-    warehouseStatic = JSON.stringify(warehouseStatic);
-    warehouseStatic = JSON.parse(warehouseStatic);
 
     const promises = warehouseStatic.map(async(staticVersion, index) => {
 

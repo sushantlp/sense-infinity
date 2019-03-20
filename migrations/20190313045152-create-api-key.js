@@ -16,14 +16,6 @@ module.exports = {
           key: 'user_id'
         }
       },
-      role_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'user_roles',
-          key: 'role_id'
-        }
-      },
       api_name: {
         type: Sequelize.STRING,
         allowNull: false
@@ -36,7 +28,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      rate_limit: {
+      rate_limit: { // second
         type: Sequelize.INTEGER,
         allowNull: false
       },

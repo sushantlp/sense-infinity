@@ -11,6 +11,11 @@ const {
 const PosWarehouseApiController = require('../../controllers/request.pos.warehouse.controller');
 
 
+// Api Key Auth
+const {
+  apiKeyAuth
+} = require('../../services/api.key.auth');
+
 
 const routes = new Router();
 
@@ -18,7 +23,10 @@ const routes = new Router();
 routes.post('/static', PosWarehouseApiController.requestGetWarehouseStaticData);
 
 // Keep Warehouse User And Employee Detail
-// routes.post('/critical/detail', PosWarehouseApiController.requestKeepCriticalData);
+routes.post('/critical', PosWarehouseApiController.requestKeepCriticalData);
+
+// Keep Warehouse Stores Detail
+routes.post('/stores', apiKeyAuth, PosWarehouseApiController.requestKeepStoreDetail);
 
 
 module.exports = routes;
