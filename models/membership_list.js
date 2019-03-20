@@ -1,4 +1,8 @@
 'use strict';
+
+// Import Config
+const constants = require('../config/constants');
+
 module.exports = (sequelize, DataTypes) => {
   var membershipList = sequelize.define('membership_list', {
     membership_code: DataTypes.BIGINT,

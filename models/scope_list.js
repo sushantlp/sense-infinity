@@ -1,4 +1,8 @@
 'use strict';
+
+// Import Config
+const constants = require('../config/constants');
+
 module.exports = (sequelize, DataTypes) => {
   var scopeList = sequelize.define('scope_list', {
     scope_name: DataTypes.STRING,

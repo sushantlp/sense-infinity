@@ -1,4 +1,8 @@
 'use strict';
+
+// Import Config
+const constants = require('../config/constants');
+
 module.exports = (sequelize, DataTypes) => {
   var couponSync = sequelize.define('coupon_sync', {
     partner_id: DataTypes.INTEGER,

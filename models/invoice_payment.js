@@ -1,4 +1,8 @@
 'use strict';
+
+// Import Config
+const constants = require('../config/constants');
+
 module.exports = (sequelize, DataTypes) => {
   var invoicePayment = sequelize.define('invoice_payment', {
     invoice_no: DataTypes.INTEGER,

@@ -1,4 +1,8 @@
 'use strict';
+
+// Import Config
+const constants = require('../config/constants');
+
 module.exports = (sequelize, DataTypes) => {
   var stapleProduct = sequelize.define('staple_product', {
     product_barcode: DataTypes.BIGINT,

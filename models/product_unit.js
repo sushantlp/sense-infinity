@@ -1,4 +1,8 @@
 'use strict';
+
+// Import Config
+const constants = require('../config/constants');
+
 module.exports = (sequelize, DataTypes) => {
   var productUnit = sequelize.define('product_unit', {
     product_unit_name: DataTypes.STRING,

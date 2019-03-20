@@ -1,4 +1,8 @@
 'use strict';
+
+// Import Config
+const constants = require('../config/constants');
+
 module.exports = (sequelize, DataTypes) => {
   var warehouseEmployeeList = sequelize.define('warehouse_employee_list', {
     warehouse_employe_id: DataTypes.INTEGER,

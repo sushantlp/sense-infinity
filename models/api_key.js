@@ -1,4 +1,8 @@
 'use strict';
+
+// Import Config
+const constants = require('../config/constants');
+
 module.exports = (sequelize, DataTypes) => {
   var apiKey = sequelize.define('api_key', {
     user_id: DataTypes.INTEGER,

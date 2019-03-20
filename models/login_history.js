@@ -1,4 +1,8 @@
 'use strict';
+
+// Import Config
+const constants = require('../config/constants');
+
 module.exports = (sequelize, DataTypes) => {
   var loginHistory = sequelize.define('login_history', {
     store_id: DataTypes.INTEGER,
