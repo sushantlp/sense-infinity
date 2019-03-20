@@ -9,7 +9,7 @@ const apiKeyModal = require("../models/api_key");
 // Validate Api Key 
 module.exports.apiKeyAuth = async(req, res, next) => {
 
-  const header = req.headers["api_key"];
+  const header = req.headers["Api-Key"];
 
   if (header !== undefined) {
 
@@ -27,7 +27,7 @@ module.exports.apiKeyAuth = async(req, res, next) => {
     // Zero Means Empty Record
     if (keyData.length === 0) return res.status(401).send(shareController.createJsonObject([], 'Wrong secret key', null, 401, false, null));
 
-    // req.body('user_key', keyData[0].user_id);
+    res.userKey = keyData[0].user_id;
 
     return next();
   } else return res.status(401).send(shareController.createJsonObject([], 'Empty partner secret key', null, 401, false, null));

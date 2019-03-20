@@ -1,9 +1,14 @@
 "use strict";
 
+// Import Controller
+const shareController = require("./share.controller");
+
 // Import Model
 const warehouseStaticModel = require("../models/warehouse_static_version");
 const localityModel = require("../models/locality");
 const cityModel = require("../models/city");
+const userModel = require("../models/user");
+const partnerModel = require("../models/partner");
 const genderModel = require("../models/gender");
 const roleModel = require("../models/warehouse_role_list");
 const productUnitModel = require("../models/product_unit");
@@ -444,3 +449,34 @@ module.exports.logicWarehouseStaticData = async version => {
     return Promise.reject(error);
   }
 };
+
+// Logic Keep Warehouse Stores
+module.exports.logicKeepStoreDetail = async(stores, id) => {
+  try {
+
+
+    // Read User Record By Id
+    let userRecord = await userModel.readUserById("*", id, 1);
+
+    // Parse
+    userRecord = JSON.stringify(userRecord);
+    userRecord = JSON.parse(userRecord);
+
+    // Read Partner Record
+    let partnerRecord = await partnerModel.readPartnerByMobile("*", userRecord[0].mobile, 1);
+
+    // Parse
+    partnerRecord = JSON.stringify(partnerRecord);
+    partnerRecord = JSON.parse(partnerRecord);
+
+    if (partnerRecord.length === 0) return {
+      success: false,
+      data: [],
+      msg: 'Unknown partner'
+    };
+
+
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}

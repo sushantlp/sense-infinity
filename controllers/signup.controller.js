@@ -7,7 +7,7 @@ const shareController = require('./share.controller');
 const smsModel = require('../models/sms');
 const errorModel = require('../models/error_log');
 const userModel = require('../models/user');
-const merchantModel = require('../models/partner');
+const partnerModel = require('../models/partner');
 const storeModel = require('../models/partner_store');
 
 // Request Merchant Signup
@@ -103,8 +103,8 @@ const logicAppSignup = async mobile => {
   try {
 
 
-    // Read Merchant Record
-    const merchant = await merchantModel.readMerchantByMobile('*', mobile, 1);
+    // Read Partner Record
+    const merchant = await partnerModel.readPartnerByMobile('*', mobile, 1);
 
     // Check Sms Limit Per Day
     if (merchant.length < 1) return {
@@ -159,7 +159,7 @@ const logicOtpVerify = async(mobile, otp, password) => {
     const parallel = await Promise.all([
       shareController.validateOtp(mobile, otp),
       userModel.readUserRecord('user_id, name, mobile, email, password', mobile, 1, 1),
-      merchantModel.readMerchantByMobile('*', mobile, 1)
+      partnerModel.readPartnerByMobile('*', mobile, 1)
     ]);
 
     if (parallel.length > 0) {

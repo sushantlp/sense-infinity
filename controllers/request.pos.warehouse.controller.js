@@ -103,10 +103,11 @@ module.exports.requestKeepCriticalData = (req, res) => {
 
 // Request Keep Warehouse Stores Detail
 module.exports.requestKeepStoreDetail = (req, res) => {
-  console.log(req.body);
   if (
     req.body.stores !== undefined &&
-    req.body.stores !== ""
+    req.body.stores !== "" &&
+    res.userKey !== undefined &&
+    res.userKey !== ""
   ) {
 
     // Validate Warehouse Static Version
@@ -116,12 +117,9 @@ module.exports.requestKeepStoreDetail = (req, res) => {
 
     if (!validate.success) return res.status(400).send(validate.msg);
 
-    // Variable
-    const apiKey = req.headers["api_key"];
-
-    // Logic Pos Warehouse Controller
+    // Logic Keep Warehouse Stores
     return posWarehoseController
-      .logicKeepStoreDetail(req.body.stores)
+    .logicKeepStoreDetail(req.body.stores, res.userKey)
       .then(response => {
 
         // Intialize

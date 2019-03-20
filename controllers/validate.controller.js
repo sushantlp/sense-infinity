@@ -322,3 +322,78 @@ module.exports.warehouseStaticVersion = (version) => {
     msg: 'Succesful'
   };
 }
+
+// Validate Warehouse Stores Parameter
+module.exports.warehouseStores = (stores) => {
+  for (let i = 0; i < stores.length; i++) {
+
+    if (!stores[i].hasOwnProperty('store_code') || !Number.isInteger(stores[i].store_code)) return {
+      success: false,
+      msg: 'Missing store code parameter'
+    };
+
+    if (!stores[i].hasOwnProperty('store_name') || stores[i].store_name === undefined || stores[i].store_name === "") return {
+      success: false,
+      msg: 'Missing store name parameter'
+    };
+
+    if (!stores[i].hasOwnProperty('address_one')) return {
+      success: false,
+      msg: 'Missing address one parameter'
+    };
+
+    if (!stores[i].hasOwnProperty('address_two')) return {
+      success: false,
+      msg: 'Missing address two parameter'
+    };
+
+    if (!stores[i].hasOwnProperty('landmark')) return {
+      success: false,
+      msg: 'Missing landmark parameter'
+    };
+
+    if (!stores[i].hasOwnProperty('city_id') || !Number.isInteger(stores[i].city_id)) return {
+      success: false,
+      msg: 'Missing city id parameter'
+    };
+
+    if (!stores[i].hasOwnProperty('locality_id') || !Number.isInteger(stores[i].locality_id)) return {
+      success: false,
+      msg: 'Missing locality id parameter'
+    };
+
+    if (!stores[i].hasOwnProperty('gstin_no')) return {
+      success: false,
+      msg: 'Missing gstin number parameter'
+    };
+
+    if (!stores[i].hasOwnProperty('store_mobile') || stores[i].store_mobile === undefined || stores[i].store_mobile === "") return {
+      success: false,
+      msg: 'Missing store mobile parameter'
+    };
+
+    if (!stores[i].hasOwnProperty('store_email')) return {
+      success: false,
+      msg: 'Missing store email parameter'
+    };
+
+    if (!stores[i].hasOwnProperty('refund_on_discount')) return {
+      success: false,
+      msg: 'Missing refund on discount parameter'
+    };
+
+    if (!stores[i].hasOwnProperty('refund_policy')) return {
+      success: false,
+      msg: 'Missing refund policy parameter'
+    };
+  }
+
+  if (stores.length !== 0) return {
+    success: true,
+    msg: 'Succesful'
+  };
+  else return {
+    success: false,
+    msg: 'Empty json'
+  };
+}

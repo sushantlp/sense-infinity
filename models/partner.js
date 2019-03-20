@@ -37,8 +37,8 @@ const now = moment()
  * Start Database Read and Write
  */
 
-// Read Merchant Record
-module.exports.readMerchantByMobile = async(select, mobile, status) => {
+// Read Partner Record
+module.exports.readPartnerByMobile = async(select, mobile, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();

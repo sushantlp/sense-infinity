@@ -23,7 +23,7 @@ const feedbackOptionModel = require("../models/feedback_option");
 const surveyModel = require("../models/survey_question");
 const surveyOptionModel = require("../models/survey_option");
 const complainModel = require("../models/store_complain");
-const merchantModel = require("../models/partner");
+const partnerModel = require("../models/partner");
 const storeModel = require("../models/partner_store");
 const cardModel = require("../models/customer_membership_card");
 const customerDataModel = require("../models/customer_information_data");
@@ -107,8 +107,8 @@ module.exports.requestLogicKeepComplain = async(
 ) => {
   try {
 
-    // Read Merchant Record
-    const merchantRecord = await merchantModel.readMerchantByMobile(
+    // Read Partner Record
+    const merchantRecord = await partnerModel.readPartnerByMobile(
       "partner_id",
       mobile,
       1
@@ -423,8 +423,8 @@ module.exports.requestLogicKeepCustomer = async(
 ) => {
   try {
 
-    // Read Merchant Record
-    const merchantRecord = await merchantModel.readMerchantByMobile(
+    // Read Partner Record
+    const merchantRecord = await partnerModel.readPartnerByMobile(
       "partner_id",
       mobile,
       1
@@ -692,8 +692,8 @@ module.exports.requestLogicFeedbackSurvey = async(
       await logicMerchantConstant(mobile, storeId);
     }
 
-    // Read Merchant Record
-    const merchantRecord = await merchantModel.readMerchantByMobile(
+    // Read Partner Record
+    const merchantRecord = await partnerModel.readPartnerByMobile(
       "partner_id",
       mobile,
       1
@@ -1491,8 +1491,8 @@ const createSurveyOptionJson = json => {
 module.exports.logicCustomerData = async(customerVersion, mobile, storeId) => {
   try {
 
-    // Read Merchant Record
-    const merchantRecord = await merchantModel.readMerchantByMobile(
+    // Read Partner Record
+    const merchantRecord = await partnerModel.readPartnerByMobile(
       "partner_id",
       mobile,
       1

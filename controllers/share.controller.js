@@ -231,3 +231,58 @@ module.exports.sendMail = (receiver, sender, subject, text, packages) => {
     );
   });
 };
+
+
+// Reform Stores Detail
+module.exports.reformStoresDetail = (
+  storeName,
+  addressOne,
+  addressTwo,
+  landmark,
+  gstinNo,
+  storeEmail,
+  refundDiscount,
+  refundPolicy
+) => {
+  // Variable
+  let reform = {
+    storeName: undefined,
+    addressOne: undefined,
+    addressTwo: undefined,
+    landmark: undefined,
+    gstinNo: undefined,
+    storeEmail: undefined,
+    refundDiscount: undefined,
+    refundPolicy: undefined,
+  };
+
+  // EMPTY || NULL || UNDEFINED
+  if (storeName !== '' && storeName !== null && typeof storeName !== undefined) reform.storeName = storeName.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
+
+  if (addressOne !== '' && addressOne !== null && typeof addressOne !== undefined) reform.address_one = addressOne.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
+
+
+  if (addressTwo !== '' && addressTwo !== null && typeof addressTwo !== undefined) reform.address_two = addressTwo.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
+
+
+  if (landmark !== '' && landmark !== null && typeof landmark !== undefined) reform.landmark = landmark.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
+
+
+  if (gstinNo !== '' && gstinNo !== null && typeof gstinNo !== undefined) reform.gstinNo = gstinNo;
+
+  if (storeEmail !== '' && storeEmail !== null && typeof storeEmail !== undefined) reform.storeEmail = storeEmail;
+
+  if (refundDiscount !== '' && refundDiscount !== null && typeof refundDiscount !== undefined) reform.refundDiscount = refundDiscount;
+
+  if (refundPolicy !== '' && refundPolicy !== null && typeof refundPolicy !== undefined) reform.refundPolicy = refundPolicy;
+
+  return reform;
+};
