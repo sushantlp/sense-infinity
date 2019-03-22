@@ -547,3 +547,42 @@ const iterateKeepStoreDetail = async(stores, partner) => {
 
   });
 }
+
+
+// Logic Keep Warehouse Detail
+module.exports.logicKeepWarehouseDetail = async(warehouses, id) => {
+  try {
+
+    // Read User Record By Id
+    let userRecord = await userModel.readUserById("*", id, 1);
+
+    // Parse
+    userRecord = JSON.stringify(userRecord);
+    userRecord = JSON.parse(userRecord);
+
+    // Read Partner Record
+    let partnerRecord = await partnerModel.readPartnerByMobile("*", userRecord[0].mobile, 1);
+
+    // Parse
+    partnerRecord = JSON.stringify(partnerRecord);
+    partnerRecord = JSON.parse(partnerRecord);
+
+    if (partnerRecord.length === 0) return {
+      success: false,
+      data: [],
+      msg: 'Unknown partner'
+    };
+
+    // Iterate Keep Store Detail
+    KeepStoreDetail(stores, partnerRecord);
+
+    return {
+      success: true,
+      data: [],
+      msg: 'Succesful'
+    };
+
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}

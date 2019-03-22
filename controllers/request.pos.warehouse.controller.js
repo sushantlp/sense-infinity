@@ -102,7 +102,7 @@ module.exports.requestKeepStoreDetail = (req, res) => {
     res.userKey !== ""
   ) {
 
-    // Validate Warehouse Static Version
+    // Validate Warehouse Stores Parameter
     const validate = validateController.warehouseStores(
       req.body.stores
     );
@@ -122,7 +122,50 @@ module.exports.requestKeepStoreDetail = (req, res) => {
               response.msg,
               "/api/v1/warehouses/stores",
               200,
-              response.success,
+              response.success, {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+
+};
+
+
+
+// Request Keep Warehouse Detail
+module.exports.requestKeepWarehouseDetail = (req, res) => {
+  if (
+    req.body.warehouses !== undefined &&
+    req.body.warehouses !== "" &&
+    res.userKey !== undefined &&
+    res.userKey !== ""
+  ) {
+
+    // Validate Warehouse Detail Parameter
+    const validate = validateController.warehouseDetail(
+      req.body.warehouses
+    );
+
+    if (!validate.success) return res.status(400).send(validate.msg);
+
+    // Logic Keep Warehouse Detail
+    return posWarehoseController
+    .logicKeepWarehouseDetail(req.body.warehouses, res.userKey)
+      .then(response => {
+
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              "/api/v1/warehouses/information",
+              200,
+              response.success, {}
             )
           );
       })

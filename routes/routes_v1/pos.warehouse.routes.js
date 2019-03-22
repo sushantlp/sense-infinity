@@ -25,8 +25,10 @@ routes.post('/static', PosWarehouseApiController.requestGetWarehouseStaticData);
 // Keep Warehouse User And Employee Detail
 routes.post('/critical', PosWarehouseApiController.requestKeepCriticalData);
 
+// Keep Warehouse Information
+routes.post('/information', apiKeyAuth, PosWarehouseApiController.requestKeepWarehouseDetail);
+
 // Keep Warehouse Stores Detail
 routes.post('/stores', apiKeyAuth, PosWarehouseApiController.requestKeepStoreDetail);
-
 
 module.exports = routes;

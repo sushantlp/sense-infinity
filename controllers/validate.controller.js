@@ -397,3 +397,71 @@ module.exports.warehouseStores = (stores) => {
     msg: 'Empty json'
   };
 }
+
+// Validate Warehouse Detail
+module.exports.warehouseDetail = (warehouses) => {
+  if (!warehouses.hasOwnProperty('warehouse_id')) return {
+    success: false,
+    msg: 'Missing warehouse unique'
+  };
+
+  if (!warehouses.hasOwnProperty('business_name') || Number.isInteger(warehouses.business_name)) return {
+    success: false,
+    msg: 'Missing business name'
+  };
+
+  if (!warehouses.hasOwnProperty('address_one') || Number.isInteger(warehouses.address_one)) return {
+    success: false,
+    msg: 'Missing address one'
+  };
+
+  if (!warehouses.hasOwnProperty('address_two') || Number.isInteger(warehouses.address_two)) return {
+    success: false,
+    msg: 'Missing address two'
+  };
+
+  if (!warehouses.hasOwnProperty('landmark') || Number.isInteger(warehouses.landmark)) return {
+    success: false,
+    msg: 'Missing landmark'
+  };
+
+  if (!warehouses.hasOwnProperty('city_id') || !Number.isInteger(warehouses.city_id)) return {
+    success: false,
+    msg: 'Missing city'
+  };
+
+  if (!warehouses.hasOwnProperty('locality_id') || !Number.isInteger(warehouses.locality_id)) return {
+    success: false,
+    msg: 'Missing locality'
+  };
+
+  if (!warehouses.hasOwnProperty('gstin')) return {
+    success: false,
+    msg: 'Missing gstin'
+  };
+
+  if (!warehouses.hasOwnProperty('cin')) return {
+    success: false,
+    msg: 'Missing cin'
+  };
+
+  if (!warehouses.hasOwnProperty('pan')) return {
+    success: false,
+    msg: 'Missing pan'
+  };
+
+  if (!warehouses.hasOwnProperty('mobile')) return {
+    success: false,
+    msg: 'Missing mobile'
+  };
+
+  if (!warehouses.hasOwnProperty('email')) return {
+    success: false,
+    msg: 'Missing email'
+  };
+
+  return {
+    success: true,
+    msg: 'Succesful'
+  };
+}
