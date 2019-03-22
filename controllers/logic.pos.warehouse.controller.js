@@ -490,9 +490,9 @@ module.exports.logicKeepStoreDetail = async(stores, id) => {
 }
 
 // Iterate Keep Store Detail
-const iterateKeepStoreDetail = (stores, partner) => {
+const iterateKeepStoreDetail = async(stores, partner) => {
 
-  stores.map((store, index) => {
+  stores.map(async(store, index) => {
 
     const reform = shareController.reformStoresDetail(store.store_name,
       store.address_one,
@@ -503,22 +503,47 @@ const iterateKeepStoreDetail = (stores, partner) => {
       store.refund_on_discount,
       store.refund_policy);
 
-    // Keep Partner Stores Data
-    partnerStoreModel.keepStoreData(
-      store.store_code,
-      partner[0].partner_id,
-      reform.storeName,
-      reform.addressOne,
-      reform.addressTwo,
-      reform.landmark,
-      store.city_id,
-      store.locality_id,
-      reform.gstin_no,
-      store.store_mobile,
-      reform.storeEmail,
-      reform.refundDiscount,
-      reform.refundPolicy,
-      1
-    );
+    // Read Partner Store Record By Store Code
+    let storeCode = await partnerStoreModel.readStoreByCode("*", store.store_code, 1);
+
+    // Parse
+    storeCode = JSON.stringify(storeCode);
+    storeCode = JSON.parse(storeCode);
+
+    if (storeCode.length === 0) {
+      // Keep Partner Stores Data
+      partnerStoreModel.keepStoreData(
+        store.store_code,
+        partner[0].partner_id,
+        reform.storeName,
+        reform.addressOne,
+        reform.addressTwo,
+        reform.landmark,
+        store.city_id,
+        store.locality_id,
+        reform.gstin_no,
+        store.store_mobile,
+        reform.storeEmail,
+        reform.refundDiscount,
+        reform.refundPolicy,
+        1
+      );
+    } else {
+
+      // Update Partner Store Data
+      partnerStoreModel.updateStoreData(storeCode[0].store_id,
+        reform.storeName,
+        reform.addressOne,
+        reform.addressTwo,
+        reform.landmark,
+        store.city_id,
+        store.locality_id,
+        reform.gstin_no,
+        store.store_mobile,
+        reform.storeEmail,
+        reform.refundDiscount,
+        reform.refundPolicy);
+    }
+
   });
 }

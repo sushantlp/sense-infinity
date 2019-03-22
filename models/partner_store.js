@@ -85,6 +85,27 @@ module.exports.readStoreById = async(select, storeId, status) => {
   }
 };
 
+// Read Partner Store Record By Store Code
+module.exports.readStoreByCode = async(select, code, status) => {
+  try {
+
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM partner_stores WHERE store_code = ? AND status = ? LIMIT 1`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [code, status]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 // Keep Partner Stores Data
 module.exports.keepStoreData = async(
   storeCode,
@@ -137,6 +158,64 @@ module.exports.keepStoreData = async(
       status,
       now,
       now
+    ]);
+
+    connection.close();
+
+    return row;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Update Partner Store Data
+module.exports.updateStoreData = async(
+  storeId,
+  storeName,
+  addressOne,
+  addressTwo,
+  landmark,
+  cityId,
+  localityId,
+  gstinNo,
+  storeMobile,
+  storeEmail,
+  refundDiscount,
+  refundPolicy
+) => {
+  try {
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
+
+    if (storeName === undefined) storeName = connection.escape(storeName);
+    if (addressOne === undefined) addressOne = connection.escape(addressOne);
+    if (addressTwo === undefined) addressTwo = connection.escape(addressTwo);
+    if (addressOne === undefined) addressOne = connection.escape(addressOne);
+    if (landmark === undefined) landmark = connection.escape(landmark);
+    if (gstinNo === undefined) gstinNo = connection.escape(gstinNo);
+    if (storeEmail === undefined) storeEmail = connection.escape(storeEmail);
+    if (refundPolicy === undefined) refundPolicy = connection.escape(refundPolicy);
+
+
+    // Query
+    const query =
+      "UPDATE `partner_stores` SET `store_name` = ?, `address_one` = ?, `address_two` = ?, `landmark` = ?, `city_id` = ?, `locality_id` = ?, `gstin_no` = ?, `store_mobile` = ?, `store_email` = ?, `refund_on_discount` = ?, `refund_policy` = ?, `updated_at` = ? WHERE `store_id` = ?";
+
+    // Query Database
+    const row = await connection.execute(query, [
+      storeName,
+      addressOne,
+      addressTwo,
+      landmark,
+      cityId,
+      localityId,
+      gstinNo,
+      storeMobile,
+      storeEmail,
+      refundDiscount,
+      refundPolicy,
+      now,
+      storeId
     ]);
 
     connection.close();
