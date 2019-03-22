@@ -252,7 +252,7 @@ module.exports.reformStoresDetail = (
     landmark: undefined,
     gstinNo: undefined,
     storeEmail: undefined,
-    refundDiscount: undefined,
+    refundDiscount: 0,
     refundPolicy: undefined,
   };
 
@@ -261,12 +261,12 @@ module.exports.reformStoresDetail = (
     return f.toUpperCase();
   });
 
-  if (addressOne !== '' && addressOne !== null && typeof addressOne !== undefined) reform.address_one = addressOne.replace(/\b[a-z]/g, function(f) {
+  if (addressOne !== '' && addressOne !== null && typeof addressOne !== undefined) reform.addressOne = addressOne.replace(/\b[a-z]/g, function(f) {
     return f.toUpperCase();
   });
 
 
-  if (addressTwo !== '' && addressTwo !== null && typeof addressTwo !== undefined) reform.address_two = addressTwo.replace(/\b[a-z]/g, function(f) {
+  if (addressTwo !== '' && addressTwo !== null && typeof addressTwo !== undefined) reform.addressTwo = addressTwo.replace(/\b[a-z]/g, function(f) {
     return f.toUpperCase();
   });
 

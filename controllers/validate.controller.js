@@ -327,27 +327,27 @@ module.exports.warehouseStaticVersion = (version) => {
 module.exports.warehouseStores = (stores) => {
   for (let i = 0; i < stores.length; i++) {
 
-    if (!stores[i].hasOwnProperty('store_code') || !Number.isInteger(stores[i].store_code)) return {
+    if (!stores[i].hasOwnProperty('store_code')) return {
       success: false,
       msg: 'Missing store code parameter'
     };
 
-    if (!stores[i].hasOwnProperty('store_name') || stores[i].store_name === undefined || stores[i].store_name === "") return {
+    if (!stores[i].hasOwnProperty('store_name') || stores[i].store_name === undefined || stores[i].store_name === "" || Number.isInteger(stores[i].store_name)) return {
       success: false,
       msg: 'Missing store name parameter'
     };
 
-    if (!stores[i].hasOwnProperty('address_one')) return {
+    if (!stores[i].hasOwnProperty('address_one') || Number.isInteger(stores[i].address_one)) return {
       success: false,
       msg: 'Missing address one parameter'
     };
 
-    if (!stores[i].hasOwnProperty('address_two')) return {
+    if (!stores[i].hasOwnProperty('address_two') || Number.isInteger(stores[i].address_two)) return {
       success: false,
       msg: 'Missing address two parameter'
     };
 
-    if (!stores[i].hasOwnProperty('landmark')) return {
+    if (!stores[i].hasOwnProperty('landmark') || Number.isInteger(stores[i].landmark)) return {
       success: false,
       msg: 'Missing landmark parameter'
     };
@@ -382,7 +382,7 @@ module.exports.warehouseStores = (stores) => {
       msg: 'Missing refund on discount parameter'
     };
 
-    if (!stores[i].hasOwnProperty('refund_policy')) return {
+    if (!stores[i].hasOwnProperty('refund_policy') || Number.isInteger(stores[i].refund_policy)) return {
       success: false,
       msg: 'Missing refund policy parameter'
     };

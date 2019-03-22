@@ -9,6 +9,7 @@ const localityModel = require("../models/locality");
 const cityModel = require("../models/city");
 const userModel = require("../models/user");
 const partnerModel = require("../models/partner");
+const partnerStoreModel = require("../models/partner_store");
 const genderModel = require("../models/gender");
 const roleModel = require("../models/warehouse_role_list");
 const productUnitModel = require("../models/product_unit");
@@ -454,7 +455,6 @@ module.exports.logicWarehouseStaticData = async version => {
 module.exports.logicKeepStoreDetail = async(stores, id) => {
   try {
 
-
     // Read User Record By Id
     let userRecord = await userModel.readUserById("*", id, 1);
 
@@ -475,8 +475,50 @@ module.exports.logicKeepStoreDetail = async(stores, id) => {
       msg: 'Unknown partner'
     };
 
+    // Iterate Keep Store Detail
+    iterateKeepStoreDetail(stores, partnerRecord);
+
+    return {
+      success: true,
+      data: [],
+      msg: 'Succesful'
+    };
 
   } catch (error) {
     return Promise.reject(error);
   }
+}
+
+// Iterate Keep Store Detail
+const iterateKeepStoreDetail = (stores, partner) => {
+
+  stores.map((store, index) => {
+
+    const reform = shareController.reformStoresDetail(store.store_name,
+      store.address_one,
+      store.address_two,
+      store.landmark,
+      store.gstin_no,
+      store.store_email,
+      store.refund_on_discount,
+      store.refund_policy);
+
+    // Keep Partner Stores Data
+    partnerStoreModel.keepStoreData(
+      store.store_code,
+      partner[0].partner_id,
+      reform.storeName,
+      reform.addressOne,
+      reform.addressTwo,
+      reform.landmark,
+      store.city_id,
+      store.locality_id,
+      reform.gstin_no,
+      store.store_mobile,
+      reform.storeEmail,
+      reform.refundDiscount,
+      reform.refundPolicy,
+      1
+    );
+  });
 }

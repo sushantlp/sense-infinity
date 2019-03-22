@@ -1,5 +1,8 @@
 'use strict';
 
+// Import Package
+const moment = require("moment-timezone");
+
 // Import Config
 const constants = require('../config/constants');
 
@@ -31,6 +34,11 @@ module.exports = (sequelize, DataTypes) => {
   };
   return partnerStore;
 };
+
+// Current Date and Time
+const now = moment()
+  .tz("Asia/Kolkata")
+  .format("YYYY-MM-DD HH-m-ss");
 
 /**
  * Start Database Read and Write
@@ -76,6 +84,69 @@ module.exports.readStoreById = async(select, storeId, status) => {
     return Promise.reject(error);
   }
 };
+
+// Keep Partner Stores Data
+module.exports.keepStoreData = async(
+  storeCode,
+  partnerId,
+  storeName,
+  addressOne,
+  addressTwo,
+  landmark,
+  cityId,
+  localityId,
+  gstinNo,
+  storeMobile,
+  storeEmail,
+  refundDiscount,
+  refundPolicy,
+  status
+) => {
+  try {
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
+
+    if (storeName === undefined) storeName = connection.escape(storeName);
+    if (addressOne === undefined) addressOne = connection.escape(addressOne);
+    if (addressTwo === undefined) addressTwo = connection.escape(addressTwo);
+    if (addressOne === undefined) addressOne = connection.escape(addressOne);
+    if (landmark === undefined) landmark = connection.escape(landmark);
+    if (gstinNo === undefined) gstinNo = connection.escape(gstinNo);
+    if (storeEmail === undefined) storeEmail = connection.escape(storeEmail);
+    if (refundPolicy === undefined) refundPolicy = connection.escape(refundPolicy);
+
+    // Query
+    const query =
+      "INSERT INTO `partner_stores` (`store_code`,`partner_id`,`store_name`,`address_one`,`address_two`,`landmark`,`city_id`,`locality_id`,`gstin_no`,`store_mobile`,`store_email`,`refund_on_discount`,`refund_policy`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+    // Query Database
+    const row = await connection.execute(query, [
+      storeCode,
+      partnerId,
+      storeName,
+      addressOne,
+      addressTwo,
+      landmark,
+      cityId,
+      localityId,
+      gstinNo,
+      storeMobile,
+      storeEmail,
+      refundDiscount,
+      refundPolicy,
+      status,
+      now,
+      now
+    ]);
+
+    connection.close();
+
+    return row;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 
 /**
  * End Database Read and Write

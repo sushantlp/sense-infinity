@@ -19,18 +19,10 @@ module.exports.requestGetWarehouseStaticData = (req, res) => {
 
     if (!validate.success) return res.status(400).send(validate.msg);
 
-    // Variable
-    // const apiKey = req.headers["api_key"];
-
     // Logic Pos Warehouse Controller
     return posWarehoseController
       .logicWarehouseStaticData(req.body.version)
       .then(response => {
-
-        // Intialize
-        const metadata = {
-          version: []
-        };
 
         return res
           .status(200)
@@ -119,13 +111,8 @@ module.exports.requestKeepStoreDetail = (req, res) => {
 
     // Logic Keep Warehouse Stores
     return posWarehoseController
-    .logicKeepStoreDetail(req.body.stores, res.userKey)
+      .logicKeepStoreDetail(req.body.stores, res.userKey)
       .then(response => {
-
-        // Intialize
-        const metadata = {
-          version: []
-        };
 
         return res
           .status(200)
@@ -133,9 +120,9 @@ module.exports.requestKeepStoreDetail = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              "/api/v1/warehouses/static",
+              "/api/v1/warehouses/stores",
               200,
-              response.success, response.version
+              response.success,
             )
           );
       })

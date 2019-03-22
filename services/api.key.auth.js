@@ -9,7 +9,7 @@ const apiKeyModal = require("../models/api_key");
 // Validate Api Key 
 module.exports.apiKeyAuth = async(req, res, next) => {
 
-  const header = req.headers["Api-Key"];
+  const header = req.headers["api-key"];
 
   if (header !== undefined) {
 
