@@ -24,6 +24,7 @@ const warehousePaymentModel = require("../models/warehouse_payment_type");
 const globalCategoryModel = require("../models/global_category");
 const globalSubCategoryModel = require("../models/global_sub_category");
 const globalSubSubCategoryModel = require("../models/global_sub_sub_category");
+const warehouseInformationModel = require("../models/warehouse_information_list");
 
 // Logic Get Warehouse Static Data
 module.exports.logicWarehouseStaticData = async version => {
@@ -491,61 +492,64 @@ module.exports.logicKeepStoreDetail = async(stores, id) => {
 
 // Iterate Keep Store Detail
 const iterateKeepStoreDetail = async(stores, partner) => {
+  try {
+    stores.map(async(store, index) => {
 
-  stores.map(async(store, index) => {
+      const reform = shareController.reformStoresDetail(store.store_name,
+        store.address_one,
+        store.address_two,
+        store.landmark,
+        store.gstin_no,
+        store.store_email,
+        store.refund_on_discount,
+        store.refund_policy);
 
-    const reform = shareController.reformStoresDetail(store.store_name,
-      store.address_one,
-      store.address_two,
-      store.landmark,
-      store.gstin_no,
-      store.store_email,
-      store.refund_on_discount,
-      store.refund_policy);
+      // Read Partner Store Record By Store Code
+      let storeCode = await partnerStoreModel.readStoreByCode("*", store.store_code, 1);
 
-    // Read Partner Store Record By Store Code
-    let storeCode = await partnerStoreModel.readStoreByCode("*", store.store_code, 1);
+      // Parse
+      storeCode = JSON.stringify(storeCode);
+      storeCode = JSON.parse(storeCode);
 
-    // Parse
-    storeCode = JSON.stringify(storeCode);
-    storeCode = JSON.parse(storeCode);
+      if (storeCode.length === 0) {
+        // Keep Partner Stores Data
+        partnerStoreModel.keepStoreData(
+          store.store_code,
+          partner[0].partner_id,
+          reform.storeName,
+          reform.addressOne,
+          reform.addressTwo,
+          reform.landmark,
+          store.city_id,
+          store.locality_id,
+          reform.gstinNo,
+          store.store_mobile,
+          reform.storeEmail,
+          reform.refundDiscount,
+          reform.refundPolicy,
+          1
+        );
+      } else {
 
-    if (storeCode.length === 0) {
-      // Keep Partner Stores Data
-      partnerStoreModel.keepStoreData(
-        store.store_code,
-        partner[0].partner_id,
-        reform.storeName,
-        reform.addressOne,
-        reform.addressTwo,
-        reform.landmark,
-        store.city_id,
-        store.locality_id,
-        reform.gstin_no,
-        store.store_mobile,
-        reform.storeEmail,
-        reform.refundDiscount,
-        reform.refundPolicy,
-        1
-      );
-    } else {
+        // Update Partner Store Data
+        partnerStoreModel.updateStoreData(storeCode[0].store_id,
+          reform.storeName,
+          reform.addressOne,
+          reform.addressTwo,
+          reform.landmark,
+          store.city_id,
+          store.locality_id,
+          reform.gstinNo,
+          store.store_mobile,
+          reform.storeEmail,
+          reform.refundDiscount,
+          reform.refundPolicy);
+      }
 
-      // Update Partner Store Data
-      partnerStoreModel.updateStoreData(storeCode[0].store_id,
-        reform.storeName,
-        reform.addressOne,
-        reform.addressTwo,
-        reform.landmark,
-        store.city_id,
-        store.locality_id,
-        reform.gstin_no,
-        store.store_mobile,
-        reform.storeEmail,
-        reform.refundDiscount,
-        reform.refundPolicy);
-    }
-
-  });
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
 }
 
 
@@ -573,14 +577,68 @@ module.exports.logicKeepWarehouseDetail = async(warehouses, id) => {
       msg: 'Unknown partner'
     };
 
-    // Iterate Keep Store Detail
-    KeepStoreDetail(stores, partnerRecord);
+    // Object Keep Warehouse Detail
+    objectKeepWarehouseDetail(warehouses, partnerRecord);
 
     return {
       success: true,
       data: [],
       msg: 'Succesful'
     };
+
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
+
+// Object Keep Warehouse Detail
+const objectKeepWarehouseDetail = async(warehouses, partner) => {
+  try {
+
+    const reform = shareController.reformWarehouseDetail(warehouses.business_name,
+      warehouses.address_one,
+      warehouses.address_two,
+      warehouses.landmark,
+      warehouses.gstin,
+      warehouses.cin,
+      warehouses.pan,
+      warehouses.email);
+
+    // Read Warehouse Data By Code
+    let warehouseRecord = await warehouseInformationModel.readWarehouseDataByCode("*", warehouses.warehouse_unique, 1);
+
+    // Parse
+    warehouseRecord = JSON.stringify(warehouseRecord);
+    warehouseRecord = JSON.parse(warehouseRecord);
+
+    if (warehouseRecord.length === 0) {
+      warehouseInformationModel.keepWarehouseData(warehouses.warehouse_unique, partner[0].partner_id,
+        reform.businessName,
+        reform.addressOne,
+        reform.addressTwo,
+        reform.landmark,
+        warehouses.city_id,
+        warehouses.locality_id,
+        reform.gstin,
+        reform.cin,
+        reform.pan,
+        warehouses.mobile,
+        reform.email,
+        1);
+    } else {
+      warehouseInformationModel.keepWarehouseData(warehouseRecord[0].id,
+        reform.businessName,
+        reform.addressOne,
+        reform.addressTwo,
+        reform.landmark,
+        warehouses.city_id,
+        warehouses.locality_id,
+        reform.gstin,
+        reform.cin,
+        reform.pan,
+        warehouses.mobile,
+        reform.email);
+    }
 
   } catch (error) {
     return Promise.reject(error);

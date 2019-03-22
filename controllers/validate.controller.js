@@ -400,7 +400,7 @@ module.exports.warehouseStores = (stores) => {
 
 // Validate Warehouse Detail
 module.exports.warehouseDetail = (warehouses) => {
-  if (!warehouses.hasOwnProperty('warehouse_id')) return {
+  if (!warehouses.hasOwnProperty('warehouse_unique')) return {
     success: false,
     msg: 'Missing warehouse unique'
   };

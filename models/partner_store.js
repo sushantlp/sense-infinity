@@ -45,7 +45,7 @@ const now = moment()
  */
 
 // Read Merchant Store Record
-module.exports.readStoreRecord = async(select, merchantId, status) => {
+module.exports.readStoreRecord = async(select, partnerId, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
@@ -54,7 +54,7 @@ module.exports.readStoreRecord = async(select, merchantId, status) => {
     const query = `SELECT ${select} FROM partner_stores WHERE partner_id = ? AND status = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [merchantId, status]);
+    const [rows, fields] = await connection.execute(query, [partnerId, status]);
 
     connection.close();
 
@@ -124,6 +124,7 @@ module.exports.keepStoreData = async(
   status
 ) => {
   try {
+    console.log(gstinNo);
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
 
@@ -186,7 +187,7 @@ module.exports.updateStoreData = async(
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
-
+    console.log(gstinNo);
     if (storeName === undefined) storeName = connection.escape(storeName);
     if (addressOne === undefined) addressOne = connection.escape(addressOne);
     if (addressTwo === undefined) addressTwo = connection.escape(addressTwo);

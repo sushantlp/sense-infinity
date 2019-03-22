@@ -255,8 +255,8 @@ module.exports.reformStoresDetail = (
     refundDiscount: 0,
     refundPolicy: undefined,
   };
-
-  // EMPTY || NULL || UNDEFINED
+  console.log(gstinNo)
+    // EMPTY || NULL || UNDEFINED
   if (storeName !== '' && storeName !== null && typeof storeName !== undefined) reform.storeName = storeName.replace(/\b[a-z]/g, function(f) {
     return f.toUpperCase();
   });
@@ -283,6 +283,61 @@ module.exports.reformStoresDetail = (
   if (refundDiscount !== '' && refundDiscount !== null && typeof refundDiscount !== undefined) reform.refundDiscount = refundDiscount;
 
   if (refundPolicy !== '' && refundPolicy !== null && typeof refundPolicy !== undefined) reform.refundPolicy = refundPolicy;
+
+  console.log(reform.gstinNo)
+  return reform;
+};
+
+// Reform Stores Detail
+module.exports.reformWarehouseDetail = (
+  businessName,
+  addressOne,
+  addressTwo,
+  landmark,
+  gstin,
+  cin,
+  pan,
+  email
+) => {
+  // Variable
+  let reform = {
+    businessName: undefined,
+    addressOne: undefined,
+    addressTwo: undefined,
+    landmark: undefined,
+    gstin: undefined,
+    cin: undefined,
+    pan: 0,
+    email: undefined,
+  };
+
+  // EMPTY || NULL || UNDEFINED
+  if (businessName !== '' && businessName !== null && typeof businessName !== undefined) reform.businessName = businessName.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
+
+  if (addressOne !== '' && addressOne !== null && typeof addressOne !== undefined) reform.addressOne = addressOne.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
+
+
+  if (addressTwo !== '' && addressTwo !== null && typeof addressTwo !== undefined) reform.addressTwo = addressTwo.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
+
+
+  if (landmark !== '' && landmark !== null && typeof landmark !== undefined) reform.landmark = landmark.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
+
+
+  if (gstin !== '' && gstin !== null && typeof gstin !== undefined) reform.gstin = gstin;
+
+  if (email !== '' && email !== null && typeof email !== undefined) reform.email = email;
+
+  if (cin !== '' && cin !== null && typeof cin !== undefined) reform.cin = cin;
+
+  if (pan !== '' && pan !== null && typeof pan !== undefined) reform.pan = pan;
 
   return reform;
 };
