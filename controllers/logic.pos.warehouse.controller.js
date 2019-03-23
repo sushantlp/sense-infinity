@@ -595,6 +595,7 @@ module.exports.logicKeepWarehouseDetail = async(warehouses, id) => {
 const objectKeepWarehouseDetail = async(warehouses, partner) => {
   try {
 
+    // Reform Warehouse Detail
     const reform = shareController.reformWarehouseDetail(warehouses.business_name,
       warehouses.address_one,
       warehouses.address_two,
@@ -612,6 +613,8 @@ const objectKeepWarehouseDetail = async(warehouses, partner) => {
     warehouseRecord = JSON.parse(warehouseRecord);
 
     if (warehouseRecord.length === 0) {
+
+      // Keep Customer Information Data
       warehouseInformationModel.keepWarehouseData(warehouses.warehouse_unique, partner[0].partner_id,
         reform.businessName,
         reform.addressOne,
@@ -626,7 +629,9 @@ const objectKeepWarehouseDetail = async(warehouses, partner) => {
         reform.email,
         1);
     } else {
-      warehouseInformationModel.keepWarehouseData(warehouseRecord[0].id,
+
+      // Update Customer Information Data
+      warehouseInformationModel.updateWarehouseData(warehouseRecord[0].id,
         reform.businessName,
         reform.addressOne,
         reform.addressTwo,

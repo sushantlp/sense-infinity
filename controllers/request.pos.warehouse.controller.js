@@ -48,8 +48,10 @@ module.exports.requestGetWarehouseStaticData = (req, res) => {
 // Request Keep Warehouse User Employee Data
 module.exports.requestKeepCriticalData = (req, res) => {
   if (
-    req.body.version !== undefined &&
-    req.body.version !== ""
+    req.body.critical !== undefined &&
+    req.body.critical !== "" &&
+    res.userKey !== undefined &&
+    res.userKey !== ""
   ) {
 
     // Validate Warehouse Static Version
@@ -154,7 +156,7 @@ module.exports.requestKeepWarehouseDetail = (req, res) => {
 
     // Logic Keep Warehouse Detail
     return posWarehoseController
-    .logicKeepWarehouseDetail(req.body.warehouses, res.userKey)
+      .logicKeepWarehouseDetail(req.body.warehouses, res.userKey)
       .then(response => {
 
         return res

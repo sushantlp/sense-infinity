@@ -20,10 +20,10 @@ const {
 const routes = new Router();
 
 // Get Warehouse Static Data
-routes.post('/static', PosWarehouseApiController.requestGetWarehouseStaticData);
+routes.post('/static', apiKeyAuth, PosWarehouseApiController.requestGetWarehouseStaticData);
 
 // Keep Warehouse User And Employee Detail
-routes.post('/critical', PosWarehouseApiController.requestKeepCriticalData);
+routes.post('/critical', apiKeyAuth, PosWarehouseApiController.requestKeepCriticalData);
 
 // Keep Warehouse Information
 routes.post('/information', apiKeyAuth, PosWarehouseApiController.requestKeepWarehouseDetail);
