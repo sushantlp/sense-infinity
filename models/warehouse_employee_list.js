@@ -1,5 +1,8 @@
 'use strict';
 
+// Import Package
+const moment = require("moment-timezone");
+
 // Import Config
 const constants = require('../config/constants');
 
@@ -21,3 +24,150 @@ module.exports = (sequelize, DataTypes) => {
   };
   return warehouseEmployeeList;
 };
+
+
+// Current Date and Time
+const now = moment()
+  .tz("Asia/Kolkata")
+  .format("YYYY-MM-DD HH-m-ss");
+
+
+/**
+ * Start Database Read and Write
+ */
+
+// Read Warehouse Employee By Employee Id
+module.exports.readEmployeeByEmployeeId = async(select, employeeId, status) => {
+  try {
+
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM warehouse_employee_lists WHERE warehouse_employe_id = ? AND status = ? LIMIT 1`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [userId, status]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Read Warehouse Employee By Id
+module.exports.readEmployeeById = async(select, Id, status) => {
+  try {
+
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM warehouse_employee_lists WHERE id = ? AND status = ? LIMIT 1`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [Id, status]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Keep Warehouse Employee Data
+module.exports.keepEmployeeData = async(
+  employeId,
+  firstName,
+  lastName,
+  birthDate,
+  mobile,
+  email,
+  deptName,
+  genderId,
+  storeId,
+  status
+) => {
+  try {
+
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
+
+    // Query
+    const query =
+      "INSERT INTO `warehouse_employee_lists` (`warehouse_employe_id`, `first_name`, `last_name`, `birth_date`, `mobile`, `email`, `dept_name`, `gender_id`, `store_id`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+
+    // Query Database
+    const row = await connection.execute(query, [
+      employeId,
+      firstName,
+      lastName,
+      birthDate,
+      mobile,
+      email,
+      deptName,
+      genderId,
+      storeId,
+      status,
+      now,
+      now
+    ]);
+
+    connection.close();
+
+    return row;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Update Warehouse Employee Data
+module.exports.updateEmployeeData = async(
+  firstName,
+  lastName,
+  birthDate,
+  mobile,
+  email,
+  deptName,
+  genderId,
+  storeId,
+  id
+) => {
+  try {
+
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
+
+    // Query
+    const query =
+      "UPDATE `warehouse_employee_lists` SET `first_name` = ?, `last_name` = ?, `birth_date` = ?, `mobile` = ?, `email` = ?, `dept_name` = ?, `gender_id` = ?, `store_id` = ?, `updated_at` = ? WHERE `id` = ?";
+
+    // Query Database
+    const row = await connection.execute(query, [
+      firstName,
+      lastName,
+      birthDate,
+      mobile,
+      email,
+      deptName,
+      genderId,
+      storeId,
+      now,
+      id
+    ]);
+
+    connection.close();
+
+    return row;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+
+/**
+ * End Database Read and Write
+ */

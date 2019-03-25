@@ -273,7 +273,6 @@ module.exports.reformStoresDetail = (
 
   if (refundPolicy !== '' && refundPolicy !== null && typeof refundPolicy !== undefined) reform.refundPolicy = refundPolicy;
 
-  console.log(reform.gstinNo)
   return reform;
 };
 
@@ -334,14 +333,16 @@ module.exports.reformSecretDetail = (
   firstName,
   lastName,
   birthDate,
-  departmentName
+  departmentName,
+  email
 ) => {
   // Variable
   let reform = {
     firstName: undefined,
     lastName: undefined,
     birthDate: undefined,
-    departmentName: undefined
+    departmentName: undefined,
+    email: undefined,
   };
 
   // EMPTY || NULL || UNDEFINED
@@ -358,6 +359,8 @@ module.exports.reformSecretDetail = (
   if (departmentName !== '' && departmentName !== null && typeof departmentName !== undefined) reform.departmentName = departmentName.replace(/\b[a-z]/g, function(f) {
     return f.toUpperCase();
   });
+
+  if (email !== '' && email !== null && typeof email !== undefined) reform.email = email;
 
   return reform;
 };

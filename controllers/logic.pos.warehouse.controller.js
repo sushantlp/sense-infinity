@@ -25,6 +25,8 @@ const globalCategoryModel = require("../models/global_category");
 const globalSubCategoryModel = require("../models/global_sub_category");
 const globalSubSubCategoryModel = require("../models/global_sub_sub_category");
 const warehouseInformationModel = require("../models/warehouse_information_list");
+const warehouseUserModel = require("../models/warehouse_user_list");
+const employeeListModel = require("../models/warehouse_employee_list");
 
 // Logic Get Warehouse Static Data
 module.exports.logicWarehouseStaticData = async version => {
@@ -452,10 +454,9 @@ module.exports.logicWarehouseStaticData = async version => {
   }
 };
 
-// Logic Keep Warehouse Stores
-module.exports.logicKeepStoreDetail = async(stores, id) => {
+// Call User Partner Data
+const userPartnerData = async(id) => {
   try {
-
     // Read User Record By Id
     let userRecord = await userModel.readUserById("*", id, 1);
 
@@ -469,6 +470,19 @@ module.exports.logicKeepStoreDetail = async(stores, id) => {
     // Parse
     partnerRecord = JSON.stringify(partnerRecord);
     partnerRecord = JSON.parse(partnerRecord);
+
+    return partnerRecord;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
+
+// Logic Keep Warehouse Stores
+module.exports.logicKeepStoreDetail = async(stores, id) => {
+  try {
+
+    // Call User Partner Data
+    const partnerRecord = await userPartnerData(id);
 
     if (partnerRecord.length === 0) return {
       success: false,
@@ -557,19 +571,8 @@ const iterateKeepStoreDetail = async(stores, partner) => {
 module.exports.logicKeepWarehouseDetail = async(warehouses, id) => {
   try {
 
-    // Read User Record By Id
-    let userRecord = await userModel.readUserById("*", id, 1);
-
-    // Parse
-    userRecord = JSON.stringify(userRecord);
-    userRecord = JSON.parse(userRecord);
-
-    // Read Partner Record
-    let partnerRecord = await partnerModel.readPartnerByMobile("*", userRecord[0].mobile, 1);
-
-    // Parse
-    partnerRecord = JSON.stringify(partnerRecord);
-    partnerRecord = JSON.parse(partnerRecord);
+    // Call User Partner Data
+    const partnerRecord = await userPartnerData(id);
 
     if (partnerRecord.length === 0) return {
       success: false,
@@ -655,26 +658,14 @@ const objectKeepWarehouseDetail = async(warehouses, partner) => {
 module.exports.logicKeepSecretData = async(secrets, id) => {
   try {
 
-    // Read User Record By Id
-    let userRecord = await userModel.readUserById("*", id, 1);
-
-    // Parse
-    userRecord = JSON.stringify(userRecord);
-    userRecord = JSON.parse(userRecord);
-
-    // Read Partner Record
-    let partnerRecord = await partnerModel.readPartnerByMobile("*", userRecord[0].mobile, 1);
-
-    // Parse
-    partnerRecord = JSON.stringify(partnerRecord);
-    partnerRecord = JSON.parse(partnerRecord);
+    // Call User Partner Data
+    const partnerRecord = await userPartnerData(id);
 
     if (partnerRecord.length === 0) return {
       success: false,
       data: [],
       msg: 'Unknown partner'
     };
-
 
     return {
       success: true,
