@@ -47,7 +47,7 @@ module.exports.readEmployeeByEmployeeId = async(select, employeeId, status) => {
     const query = `SELECT ${select} FROM warehouse_employee_lists WHERE warehouse_employe_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [userId, status]);
+    const [rows, fields] = await connection.execute(query, [employeeId, status]);
 
     connection.close();
 
@@ -96,6 +96,12 @@ module.exports.keepEmployeeData = async(
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
 
+    if (firstName === undefined) firstName = connection.escape(firstName);
+    if (lastName === undefined) lastName = connection.escape(lastName);
+    if (email === undefined) email = connection.escape(email);
+    if (birthDate === undefined) birthDate = connection.escape(birthDate);
+    if (deptName === undefined) deptName = connection.escape(deptName);
+
     // Query
     const query =
       "INSERT INTO `warehouse_employee_lists` (`warehouse_employe_id`, `first_name`, `last_name`, `birth_date`, `mobile`, `email`, `dept_name`, `gender_id`, `store_id`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -140,6 +146,12 @@ module.exports.updateEmployeeData = async(
 
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
+
+    if (firstName === undefined) firstName = connection.escape(firstName);
+    if (lastName === undefined) lastName = connection.escape(lastName);
+    if (email === undefined) email = connection.escape(email);
+    if (birthDate === undefined) birthDate = connection.escape(birthDate);
+    if (deptName === undefined) deptName = connection.escape(deptName);
 
     // Query
     const query =

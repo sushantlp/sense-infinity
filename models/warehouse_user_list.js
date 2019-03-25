@@ -112,7 +112,7 @@ module.exports.keepWarehouseUserData = async(
   }
 };
 
-// Update Warehouse User Data
+// Update Warehouse User Password
 module.exports.updateWarehouseUserPassword = async(
   password,
   id
