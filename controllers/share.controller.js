@@ -159,20 +159,16 @@ module.exports.reformCustomerDetail = (
     return f.toUpperCase();
   });
 
-
   if (lastName !== '' && lastName !== null && typeof lastName !== undefined) reform.last_name = lastName.replace(/\b[a-z]/g, function(f) {
     return f.toUpperCase();
   });
 
-
   if (dob !== '' && dob !== null && typeof dob !== undefined) reform.dob = moment(new Date(dob)).format('YYYY-MM-DD');
-
 
   if (flag) {
     if (spouseName !== '' && spouseName !== null && typeof spouseName !== undefined) reform.spouse_name = spouseName.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
-
 
     if (anniversary !== '' && anniversary !== null && typeof anniversary !== undefined) {
       reform.anniversary = moment(new Date(anniversary)).format('YYYY-MM-DD');
@@ -181,21 +177,17 @@ module.exports.reformCustomerDetail = (
 
     if (married !== '' && married !== null && typeof married !== undefined) reform.married = married;
 
-
     if (addressOne !== '' && addressOne !== null && typeof addressOne !== undefined) reform.address_one = addressOne.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
-
 
     if (addressTwo !== '' && addressTwo !== null && typeof addressTwo !== undefined) reform.address_two = addressTwo.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
 
-
     if (landmark !== '' && landmark !== null && typeof landmark !== undefined) reform.landmark = landmark.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
-
   }
 
   return reform;
@@ -265,16 +257,13 @@ module.exports.reformStoresDetail = (
     return f.toUpperCase();
   });
 
-
   if (addressTwo !== '' && addressTwo !== null && typeof addressTwo !== undefined) reform.addressTwo = addressTwo.replace(/\b[a-z]/g, function(f) {
     return f.toUpperCase();
   });
 
-
   if (landmark !== '' && landmark !== null && typeof landmark !== undefined) reform.landmark = landmark.replace(/\b[a-z]/g, function(f) {
     return f.toUpperCase();
   });
-
 
   if (gstinNo !== '' && gstinNo !== null && typeof gstinNo !== undefined) reform.gstinNo = gstinNo;
 
@@ -288,7 +277,7 @@ module.exports.reformStoresDetail = (
   return reform;
 };
 
-// Reform Stores Detail
+// Reform Warehouse Detail
 module.exports.reformWarehouseDetail = (
   businessName,
   addressOne,
@@ -320,16 +309,13 @@ module.exports.reformWarehouseDetail = (
     return f.toUpperCase();
   });
 
-
   if (addressTwo !== '' && addressTwo !== null && typeof addressTwo !== undefined) reform.addressTwo = addressTwo.replace(/\b[a-z]/g, function(f) {
     return f.toUpperCase();
   });
 
-
   if (landmark !== '' && landmark !== null && typeof landmark !== undefined) reform.landmark = landmark.replace(/\b[a-z]/g, function(f) {
     return f.toUpperCase();
   });
-
 
   if (gstin !== '' && gstin !== null && typeof gstin !== undefined) reform.gstin = gstin;
 
@@ -338,6 +324,40 @@ module.exports.reformWarehouseDetail = (
   if (cin !== '' && cin !== null && typeof cin !== undefined) reform.cin = cin;
 
   if (pan !== '' && pan !== null && typeof pan !== undefined) reform.pan = pan;
+
+  return reform;
+};
+
+
+// Reform Secret Detail
+module.exports.reformSecretDetail = (
+  firstName,
+  lastName,
+  birthDate,
+  departmentName
+) => {
+  // Variable
+  let reform = {
+    firstName: undefined,
+    lastName: undefined,
+    birthDate: undefined,
+    departmentName: undefined
+  };
+
+  // EMPTY || NULL || UNDEFINED
+  if (firstName !== '' && firstName !== null && typeof firstName !== undefined) reform.firstName = firstName.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
+
+  if (lastName !== '' && lastName !== null && typeof lastName !== undefined) reform.lastName = lastName.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
+
+  if (birthDate !== '' && birthDate !== null && typeof birthDate !== undefined) reform.birthDate = moment(new Date(birthDate)).format('YYYY-MM-DD');
+
+  if (departmentName !== '' && departmentName !== null && typeof departmentName !== undefined) reform.departmentName = departmentName.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
 
   return reform;
 };

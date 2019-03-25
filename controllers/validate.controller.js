@@ -400,7 +400,7 @@ module.exports.warehouseStores = (stores) => {
 
 // Validate Warehouse Detail
 module.exports.warehouseDetail = (warehouses) => {
-  if (!warehouses.hasOwnProperty('warehouse_unique')) return {
+  if (!warehouses.hasOwnProperty('warehouse_unique') || !Number.isInteger(warehouses.warehouse_unique)) return {
     success: false,
     msg: 'Missing warehouse unique'
   };
@@ -464,4 +464,73 @@ module.exports.warehouseDetail = (warehouses) => {
     success: true,
     msg: 'Succesful'
   };
-}
+};
+
+
+// Validate Warehouse Secrets
+module.exports.warehouseSecrets = (secrets) => {
+  if (!secrets.hasOwnProperty('warehouse_user_unique') || !Number.isInteger(secrets.warehouse_user_unique)) return {
+    success: false,
+    msg: 'Missing warehouse user unique'
+  };
+
+  if (!secrets.hasOwnProperty('password') || secrets.password === null || secrets.password === undefined) return {
+    success: false,
+    msg: 'Missing password'
+  };
+
+  if (!secrets.hasOwnProperty('role_unique') || !Number.isInteger(secrets.role_unique)) return {
+    success: false,
+    msg: 'Missing role unique'
+  };
+
+  if (!secrets.hasOwnProperty('employe_unique') || !Number.isInteger(secrets.employe_unique)) return {
+    success: false,
+    msg: 'Missing employe unique'
+  };
+
+  if (!secrets.hasOwnProperty('first_name') || Number.isInteger(secrets.first_name)) return {
+    success: false,
+    msg: 'Missing first name'
+  };
+
+  if (!secrets.hasOwnProperty('last_name') || Number.isInteger(secrets.last_name)) return {
+    success: false,
+    msg: 'Missing last name'
+  };
+
+  if (!secrets.hasOwnProperty('gender_id') || !Number.isInteger(secrets.gender_id)) return {
+    success: false,
+    msg: 'Missing gender id'
+  };
+
+  if (!secrets.hasOwnProperty('birth_date')) return {
+    success: false,
+    msg: 'Missing birth date'
+  };
+
+  if (!secrets.hasOwnProperty('mobile')) return {
+    success: false,
+    msg: 'Missing mobile'
+  };
+
+  if (!secrets.hasOwnProperty('email')) return {
+    success: false,
+    msg: 'Missing email'
+  };
+
+  if (!secrets.hasOwnProperty('department_name')) return {
+    success: false,
+    msg: 'Missing department name'
+  };
+
+  if (!secrets.hasOwnProperty('branch_unique') || !Number.isInteger(secrets.branch_unique)) return {
+    success: false,
+    msg: 'Missing branch unique'
+  };
+
+  return {
+    success: true,
+    msg: 'Succesful'
+  };
+};
