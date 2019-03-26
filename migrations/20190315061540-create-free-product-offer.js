@@ -13,7 +13,7 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'product_discounts',
-          foreignKey: 'product_discount_id'
+          key: 'id'
         }
       },
       buy_product_barcode: {

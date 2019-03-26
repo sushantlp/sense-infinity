@@ -1,5 +1,8 @@
 "use strict";
 
+// Import Package
+const bcrypt = require("bcrypt");
+
 // Import Controller
 const shareController = require("./share.controller");
 
@@ -27,6 +30,7 @@ const globalSubSubCategoryModel = require("../models/global_sub_sub_category");
 const warehouseInformationModel = require("../models/warehouse_information_list");
 const warehouseUserModel = require("../models/warehouse_user_list");
 const employeeListModel = require("../models/warehouse_employee_list");
+const systemPasswordModel = require("../models/system_administrator_password");
 
 // Logic Get Warehouse Static Data
 module.exports.logicWarehouseStaticData = async version => {
@@ -52,6 +56,14 @@ module.exports.logicWarehouseStaticData = async version => {
       data: {},
       msg: "Empty warehouse static version"
     };
+
+    // // System Administrator
+    // dataObj.system_administrator = {
+    //   // system_administrator_id: 1,
+    //   system_role_id: 1,
+    //   system_password: bcrypt.hashSync(process.env.SALT_KEY, 10),
+    //   employee_id: null
+    // }
 
     const promises = warehouseStatic.map(async(staticVersion, index) => {
 
@@ -438,6 +450,29 @@ module.exports.logicWarehouseStaticData = async version => {
           versionObj.product_sub_unit_version = parseFloat(staticVersion.warehouse_static_version);
         }
 
+      } else if (staticVersion.warehouse_static_name === 'System Administrator Version') {
+
+        if (parseFloat(staticVersion.warehouse_static_version) !== parseFloat(version.system_administrator_version)) {
+
+          // Read System Password Administrator
+          let systemPassword = await systemPasswordModel.readSystemPassword(
+            "warehouse_role_id AS role_unique, password", 1);
+
+          // Parse
+          systemPassword = JSON.stringify(systemPassword);
+          systemPassword = JSON.parse(systemPassword);
+
+          // Object Push
+          dataObj.system_administrator_list = systemPassword;
+          versionObj.system_administrator_version = parseFloat(staticVersion.warehouse_static_version);
+
+        } else {
+
+          // Object Push
+          dataObj.system_administrator_list = [];
+          versionObj.system_administrator_version = parseFloat(staticVersion.warehouse_static_version);
+        }
+
       }
     });
 
@@ -700,7 +735,7 @@ const jsonKeepSecretData = async(secrets, partner) => {
       employeeRecord = JSON.stringify(employeeRecord);
       employeeRecord = JSON.parse(employeeRecord);
 
-      if (employeeRecord.length === 0) employeeListModel.keepEmployeeData(secret.employe_unique,
+      if (employeeRecord.length === 0) await employeeListModel.keepEmployeeData(secret.employe_unique,
         reform.firstName,
         reform.lastName,
         reform.birthDate,
@@ -710,7 +745,7 @@ const jsonKeepSecretData = async(secrets, partner) => {
         secret.gender_id,
         secret.branch_unique,
         1);
-      else employeeListModel.updateEmployeeData(reform.firstName,
+      else await employeeListModel.updateEmployeeData(reform.firstName,
         reform.lastName,
         reform.birthDate,
         secret.mobile,
@@ -728,13 +763,13 @@ const jsonKeepSecretData = async(secrets, partner) => {
       UserRecord = JSON.stringify(UserRecord);
       UserRecord = JSON.parse(UserRecord);
 
-      if (UserRecord.length === 0) warehouseUserModel.keepWarehouseUserData(secret.warehouse_user_unique,
+      if (UserRecord.length === 0) await warehouseUserModel.keepWarehouseUserData(secret.warehouse_user_unique,
         secret.role_unique,
         secret.employe_unique,
         partner[0].partner_id,
         secret.password,
         1);
-      else warehouseUserModel.updateWarehouseUserPassword(secret.password, UserRecord[0].id);
+      else await warehouseUserModel.updateWarehouseUserPassword(secret.password, UserRecord[0].id);
     });
   } catch (error) {
     return Promise.reject(error);

@@ -21,7 +21,7 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'warehouse_user_lists',
-          foreignKey: 'warehouse_user_id'
+          key: 'id'
         }
       },
       invoice_no: {
@@ -29,7 +29,7 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'invoices',
-          foreignKey: 'invoice_no'
+          key: 'id'
         }
       },
       discount_amount: {

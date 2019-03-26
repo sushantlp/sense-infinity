@@ -18,7 +18,7 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'store_counters',
-          foreignKey: 'store_counter_id'
+          key: 'id'
         }
       },
       warehouse_user_id: {
@@ -26,7 +26,7 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'warehouse_user_lists',
-          foreignKey: 'warehouse_user_id'
+          key: 'id'
         }
       },
       store_id: {

@@ -1,36 +1,24 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('invoice_coupons', {
-      invoice_coupon_id: {
+    return queryInterface.createTable('system_administrator_passwords', {
+      system_password_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      invoice_no: {
+      warehouse_role_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'invoices',
-          key: 'id'
+          model: 'warehouse_role_lists',
+          key: 'warehouse_role_id'
         }
       },
-      coupon_code: {
-        type: Sequelize.BIGINT,
-        defaultValue: 0
-      },
-      applicable_on: {
+      password: {
         type: Sequelize.STRING,
-        allowNull: true,
-      },
-      discount: {
-        type: Sequelize.FLOAT,
-        defaultValue: 0
-      },
-      cashback: {
-        type: Sequelize.FLOAT,
-        defaultValue: 0
+        allowNull: false
       },
       status: {
         type: Sequelize.BOOLEAN,
@@ -49,6 +37,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('invoice_coupons');
+    return queryInterface.dropTable('system_administrator_passwords');
   }
 };

@@ -59,6 +59,13 @@ module.exports = {
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
+      }, {
+        product_unit_id: 4,
+        product_sub_unit_name: "Pc",
+        product_sub_unit_value: "Pieces",
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
       }], {}
     );
   },

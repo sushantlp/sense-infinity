@@ -543,6 +543,12 @@ module.exports = {
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "MISCELLANEOUS",
+        global_sub_category_id: 23,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
       }], {}
     );
   },

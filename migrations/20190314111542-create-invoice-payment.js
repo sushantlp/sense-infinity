@@ -13,7 +13,7 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'invoices',
-          foreignKey: 'invoice_no'
+          key: 'id'
         }
       },
       payment_amount: {
@@ -33,7 +33,7 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'store_counters',
-          foreignKey: 'store_counter_id'
+          key: 'id'
         }
       },
       warehouse_payment_id: {

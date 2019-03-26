@@ -21,17 +21,13 @@ module.exports = {
           key: 'warehouse_role_id'
         }
       },
-      warehouse_employe_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'warehouse_employee_lists',
-          foreignKey: 'warehouse_employe_id'
-        }
-      },
       partner_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        references: {
+          model: 'partners',
+          key: 'partner_id'
+        }
       },
       password: {
         type: Sequelize.STRING,

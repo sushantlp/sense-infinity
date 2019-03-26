@@ -13,7 +13,7 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'invoices',
-          foreignKey: 'invoice_no'
+          key: 'id'
         }
       },
       product_name: {

@@ -13,7 +13,7 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'store_orders',
-          foreignKey: 'store_order_id'
+          key: 'id'
         }
       },
       barcode: {

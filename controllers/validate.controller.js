@@ -317,6 +317,11 @@ module.exports.warehouseStaticVersion = (version) => {
     msg: 'Missing product sub unit version'
   };
 
+  if (!version.hasOwnProperty('system_administrator_version')) return {
+    success: false,
+    msg: 'Missing system administrator version'
+  };
+
   return {
     success: true,
     msg: 'Succesful'

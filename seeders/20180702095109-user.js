@@ -1,5 +1,6 @@
 "use strict";
 
+// Import Package
 const bcrypt = require("bcrypt");
 
 module.exports = {

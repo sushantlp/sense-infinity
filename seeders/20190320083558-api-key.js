@@ -5,7 +5,6 @@ module.exports = {
     return queryInterface.bulkInsert(
       "api_keys", [{
         user_id: 1,
-        role_id: 1,
         api_name: "Warehouse Api Key",
         key_prefix: "zaCELgL",
         api_key: "0imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx",
