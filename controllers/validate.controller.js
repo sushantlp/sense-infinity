@@ -525,40 +525,59 @@ module.exports.warehouseSecrets = (secrets) => {
 
     for (let i = 0; i < secrets.length; i++) {
 
-      if (!secrets[i].hasOwnProperty('warehouse_user_unique')) return {
-        success: false,
-        msg: 'Missing warehouse user unique'
-      };
+      if (!secrets[i].hasOwnProperty('warehouse_user_unique') ||
+        !Number.isInteger(secrets[i].warehouse_user_unique))
+        return {
+          success: false,
+          msg: 'Missing warehouse user unique'
+        };
 
       if (!secrets[i].hasOwnProperty('password')) return {
         success: false,
         msg: 'Missing password'
       };
 
-      if (!secrets[i].hasOwnProperty('role_unique')) return {
-        success: false,
-        msg: 'Missing role unique'
-      };
+      if (!secrets[i].hasOwnProperty('role_unique') ||
+        !Number.isInteger(secrets[i].role_unique))
+        return {
+          success: false,
+          msg: 'Missing role unique'
+        };
 
-      if (!secrets[i].hasOwnProperty('employe_unique')) return {
-        success: false,
-        msg: 'Missing employe unique'
-      };
+      if (!secrets[i].hasOwnProperty('employe_unique') ||
+        !Number.isInteger(secrets[i].employe_unique))
+        return {
+          success: false,
+          msg: 'Missing employe unique'
+        };
 
-      if (!secrets[i].hasOwnProperty('first_name') || Number.isInteger(secrets[i].first_name)) return {
-        success: false,
-        msg: 'Missing first name'
-      };
+      if (!secrets[i].hasOwnProperty('branch_unique') ||
+        !Number.isInteger(secrets[i].branch_unique))
+        return {
+          success: false,
+          msg: 'Missing branch unique'
+        };
 
-      if (!secrets[i].hasOwnProperty('last_name') || Number.isInteger(secrets[i].last_name)) return {
-        success: false,
-        msg: 'Missing last name'
-      };
+      if (!secrets[i].hasOwnProperty('first_name') ||
+        Number.isInteger(secrets[i].first_name))
+        return {
+          success: false,
+          msg: 'Missing first name'
+        };
 
-      if (!secrets[i].hasOwnProperty('gender_id') || !Number.isInteger(secrets[i].gender_id)) return {
-        success: false,
-        msg: 'Missing gender id'
-      };
+      if (!secrets[i].hasOwnProperty('last_name') ||
+        Number.isInteger(secrets[i].last_name))
+        return {
+          success: false,
+          msg: 'Missing last name'
+        };
+
+      if (!secrets[i].hasOwnProperty('gender_id') ||
+        !Number.isInteger(secrets[i].gender_id))
+        return {
+          success: false,
+          msg: 'Missing gender id'
+        };
 
       if (!secrets[i].hasOwnProperty('birth_date')) return {
         success: false,
@@ -579,12 +598,8 @@ module.exports.warehouseSecrets = (secrets) => {
         success: false,
         msg: 'Missing department name'
       };
-
-      if (!secrets[i].hasOwnProperty('branch_unique') || !Number.isInteger(secrets[i].branch_unique)) return {
-        success: false,
-        msg: 'Missing branch unique'
-      };
     }
+
     if (secrets.length !== 0) return {
       success: true,
       msg: 'Succesful'

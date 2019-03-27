@@ -10,7 +10,6 @@ module.exports = (sequelize, DataTypes) => {
   var warehouseUserList = sequelize.define('warehouse_user_list', {
     warehouse_user_id: DataTypes.INTEGER,
     warehouse_role_id: DataTypes.INTEGER,
-    warehouse_employe_id: DataTypes.INTEGER,
     partner_id: DataTypes.INTEGER,
     password: DataTypes.STRING,
     status: DataTypes.BOOLEAN
@@ -78,7 +77,6 @@ module.exports.readWarehouseUserById = async(select, Id, status) => {
 module.exports.keepWarehouseUserData = async(
   userId,
   roleId,
-  employeId,
   partnerId,
   password,
   status
@@ -90,13 +88,12 @@ module.exports.keepWarehouseUserData = async(
 
     // Query
     const query =
-      "INSERT INTO `warehouse_user_lists` (`warehouse_user_id`,`warehouse_role_id`,`warehouse_employe_id`,`partner_id`,`password`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?)";
+      "INSERT INTO `warehouse_user_lists` (`warehouse_user_id`,`warehouse_role_id`,`partner_id`,`password`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?)";
 
     // Query Database
     const row = await connection.execute(query, [
       userId,
       roleId,
-      employeId,
       partnerId,
       password,
       status,
