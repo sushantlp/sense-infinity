@@ -13,6 +13,14 @@ module.exports = {
         allowNull: false,
         unique: 'actions_unique'
       },
+      store_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'partner_stores',
+          key: 'store_id'
+        }
+      },
       first_name: {
         type: Sequelize.STRING,
         allowNull: true
@@ -39,14 +47,6 @@ module.exports = {
       },
       gender_id: {
         type: Sequelize.INTEGER
-      },
-      store_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'partner_stores',
-          key: 'store_id'
-        }
       },
       status: {
         type: Sequelize.BOOLEAN,

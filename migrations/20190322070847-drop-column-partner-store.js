@@ -8,6 +8,7 @@ module.exports = {
       queryInterface.removeColumn('partner_stores', 'longitude'),
       queryInterface.removeColumn('partner_stores', 'latitude'),
       queryInterface.removeColumn('partner_stores', 'sense'),
+      queryInterface.removeColumn('partner_stores', 'gstin_no'),
     ]);
 
   },
@@ -33,6 +34,11 @@ module.exports = {
         'partner_stores',
         'sense',
         Sequelize.BOOLEAN
+      ),
+      queryInterface.addColumn(
+        'partner_stores',
+        'gstin_no',
+        Sequelize.STRING
       ),
     ]);
   }

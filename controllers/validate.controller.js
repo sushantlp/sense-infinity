@@ -403,11 +403,6 @@ module.exports.warehouseStores = (stores) => {
         msg: 'Missing locality id parameter'
       };
 
-      if (!stores[i].hasOwnProperty('gstin_no')) return {
-        success: false,
-        msg: 'Missing gstin number parameter'
-      };
-
       if (!stores[i].hasOwnProperty('store_mobile') || stores[i].store_mobile === undefined || stores[i].store_mobile === "") return {
         success: false,
         msg: 'Missing store mobile parameter'
@@ -530,22 +525,22 @@ module.exports.warehouseSecrets = (secrets) => {
 
     for (let i = 0; i < secrets.length; i++) {
 
-      if (!secrets[i].hasOwnProperty('warehouse_user_unique') || !Number.isInteger(secrets[i].warehouse_user_unique)) return {
+      if (!secrets[i].hasOwnProperty('warehouse_user_unique')) return {
         success: false,
         msg: 'Missing warehouse user unique'
       };
 
-      if (!secrets[i].hasOwnProperty('password') || secrets[i].password === null || secrets[i].password === undefined) return {
+      if (!secrets[i].hasOwnProperty('password')) return {
         success: false,
         msg: 'Missing password'
       };
 
-      if (!secrets[i].hasOwnProperty('role_unique') || !Number.isInteger(secrets[i].role_unique)) return {
+      if (!secrets[i].hasOwnProperty('role_unique')) return {
         success: false,
         msg: 'Missing role unique'
       };
 
-      if (!secrets[i].hasOwnProperty('employe_unique') || !Number.isInteger(secrets[i].employe_unique)) return {
+      if (!secrets[i].hasOwnProperty('employe_unique')) return {
         success: false,
         msg: 'Missing employe unique'
       };

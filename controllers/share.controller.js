@@ -231,7 +231,6 @@ module.exports.reformStoresDetail = (
   addressOne,
   addressTwo,
   landmark,
-  gstinNo,
   storeEmail,
   refundDiscount,
   refundPolicy
@@ -242,7 +241,6 @@ module.exports.reformStoresDetail = (
     addressOne: undefined,
     addressTwo: undefined,
     landmark: undefined,
-    gstinNo: undefined,
     storeEmail: undefined,
     refundDiscount: 0,
     refundPolicy: undefined,
@@ -264,8 +262,6 @@ module.exports.reformStoresDetail = (
   if (landmark !== '' && landmark !== null && typeof landmark !== undefined) reform.landmark = landmark.replace(/\b[a-z]/g, function(f) {
     return f.toUpperCase();
   });
-
-  if (gstinNo !== '' && gstinNo !== null && typeof gstinNo !== undefined) reform.gstinNo = gstinNo;
 
   if (storeEmail !== '' && storeEmail !== null && typeof storeEmail !== undefined) reform.storeEmail = storeEmail;
 

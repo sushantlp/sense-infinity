@@ -116,7 +116,6 @@ module.exports.keepStoreData = async(
   landmark,
   cityId,
   localityId,
-  gstinNo,
   storeMobile,
   storeEmail,
   refundDiscount,
@@ -133,13 +132,12 @@ module.exports.keepStoreData = async(
     if (addressTwo === undefined) addressTwo = connection.escape(addressTwo);
     if (addressOne === undefined) addressOne = connection.escape(addressOne);
     if (landmark === undefined) landmark = connection.escape(landmark);
-    if (gstinNo === undefined) gstinNo = connection.escape(gstinNo);
     if (storeEmail === undefined) storeEmail = connection.escape(storeEmail);
     if (refundPolicy === undefined) refundPolicy = connection.escape(refundPolicy);
 
     // Query
     const query =
-      "INSERT INTO `partner_stores` (`store_code`,`partner_id`,`store_name`,`address_one`,`address_two`,`landmark`,`city_id`,`locality_id`,`gstin_no`,`store_mobile`,`store_email`,`refund_on_discount`,`refund_policy`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO `partner_stores` (`store_code`,`partner_id`,`store_name`,`address_one`,`address_two`,`landmark`,`city_id`,`locality_id`,`store_mobile`,`store_email`,`refund_on_discount`,`refund_policy`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     // Query Database
     const row = await connection.execute(query, [
@@ -151,7 +149,6 @@ module.exports.keepStoreData = async(
       landmark,
       cityId,
       localityId,
-      gstinNo,
       storeMobile,
       storeEmail,
       refundDiscount,
@@ -178,7 +175,6 @@ module.exports.updateStoreData = async(
   landmark,
   cityId,
   localityId,
-  gstinNo,
   storeMobile,
   storeEmail,
   refundDiscount,
@@ -193,14 +189,13 @@ module.exports.updateStoreData = async(
     if (addressTwo === undefined) addressTwo = connection.escape(addressTwo);
     if (addressOne === undefined) addressOne = connection.escape(addressOne);
     if (landmark === undefined) landmark = connection.escape(landmark);
-    if (gstinNo === undefined) gstinNo = connection.escape(gstinNo);
     if (storeEmail === undefined) storeEmail = connection.escape(storeEmail);
     if (refundPolicy === undefined) refundPolicy = connection.escape(refundPolicy);
 
 
     // Query
     const query =
-      "UPDATE `partner_stores` SET `store_name` = ?, `address_one` = ?, `address_two` = ?, `landmark` = ?, `city_id` = ?, `locality_id` = ?, `gstin_no` = ?, `store_mobile` = ?, `store_email` = ?, `refund_on_discount` = ?, `refund_policy` = ?, `updated_at` = ? WHERE `store_id` = ?";
+      "UPDATE `partner_stores` SET `store_name` = ?, `address_one` = ?, `address_two` = ?, `landmark` = ?, `city_id` = ?, `locality_id` = ?, `store_mobile` = ?, `store_email` = ?, `refund_on_discount` = ?, `refund_policy` = ?, `updated_at` = ? WHERE `store_id` = ?";
 
     // Query Database
     const row = await connection.execute(query, [
@@ -210,7 +205,6 @@ module.exports.updateStoreData = async(
       landmark,
       cityId,
       localityId,
-      gstinNo,
       storeMobile,
       storeEmail,
       refundDiscount,

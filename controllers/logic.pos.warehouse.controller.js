@@ -548,7 +548,6 @@ const iterateKeepStoreDetail = async(stores, partner) => {
         store.address_one,
         store.address_two,
         store.landmark,
-        store.gstin_no,
         store.store_email,
         store.refund_on_discount,
         store.refund_policy);
@@ -588,7 +587,6 @@ const iterateKeepStoreDetail = async(stores, partner) => {
           reform.landmark,
           store.city_id,
           store.locality_id,
-          reform.gstinNo,
           store.store_mobile,
           reform.storeEmail,
           reform.refundDiscount,
