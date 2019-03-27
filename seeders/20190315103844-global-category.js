@@ -14,17 +14,22 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        global_category_name: "STATIONARY",
-        status: 1,
-        created_at: new Date(),
-        updated_at: new Date()
-      }, {
         global_category_name: "PERSONAL CARE",
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        global_category_name: "PET FOOD",
+        global_category_name: "STATIONARY",
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_category_name: "PET",
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_category_name: "POOJA",
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
