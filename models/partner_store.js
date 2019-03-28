@@ -123,7 +123,7 @@ module.exports.keepStoreData = async(
   status
 ) => {
   try {
-    console.log(gstinNo);
+
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
 
@@ -183,7 +183,7 @@ module.exports.updateStoreData = async(
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
-    console.log(gstinNo);
+
     if (storeName === undefined) storeName = connection.escape(storeName);
     if (addressOne === undefined) addressOne = connection.escape(addressOne);
     if (addressTwo === undefined) addressTwo = connection.escape(addressTwo);

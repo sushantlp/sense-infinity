@@ -51,7 +51,7 @@ module.exports.readUserEmployeeConnect = async(select, userId, employeId) => {
 };
 
 // Read Warehouse User And Employee Connect
-module.exports.readUserEmployeeConnect = async(select, userId, employeId, status) => {
+module.exports.readUserEmployeeConnectStatus = async(select, userId, employeId, status) => {
   try {
 
     // Create Mysql Connection
@@ -84,13 +84,13 @@ module.exports.keepUserEmployeeConnect = async(
 
     // Query
     const query =
-      "INSERT INTO `warehouse_user_lists` (`warehouse_user_id`,`warehouse_employe_id`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?)";
+      "INSERT INTO `warehouse_user_employee_connects` (`warehouse_user_id`,`warehouse_employe_id`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?)";
 
     // Query Database
     const row = await connection.execute(query, [
       userId,
       employeId,
-      status
+      status,
       now,
       now
     ]);
@@ -115,7 +115,7 @@ module.exports.updateUserEmployeeConnect = async(
 
     // Query
     const query =
-      "UPDATE `warehouse_user_lists` SET `status` = ?, `updated_at` = ? WHERE `id` = ?";
+      "UPDATE `warehouse_user_employee_connects` SET `status` = ?, `updated_at` = ? WHERE `id` = ?";
 
     // Query Database
     const row = await connection.execute(query, [

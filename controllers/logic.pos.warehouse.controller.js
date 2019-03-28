@@ -31,6 +31,8 @@ const warehouseInformationModel = require("../models/warehouse_information_list"
 const warehouseUserModel = require("../models/warehouse_user_list");
 const employeeListModel = require("../models/warehouse_employee_list");
 const systemPasswordModel = require("../models/system_administrator_password");
+const userEmployeeConnectModel = require("../models/warehouse_user_employee_connect");
+
 
 // Logic Get Warehouse Static Data
 module.exports.logicWarehouseStaticData = async version => {
@@ -717,6 +719,9 @@ module.exports.logicKeepSecretData = async(secrets, id) => {
 const jsonKeepSecretData = async(secrets, partner) => {
   try {
 
+    let user = undefined;
+    let employee = undefined;
+
     secrets.map(async(secret, index) => {
 
       /** Role 1 (System Administrator) Password (HASH) And Other Role Password (SHA-1) **/
@@ -725,55 +730,129 @@ const jsonKeepSecretData = async(secrets, partner) => {
       const reform = shareController.reformSecretDetail(secret.first_name,
         secret.last_name, secret.birth_date, secret.department_name, secret.email);
 
-      // If Warehouse User Not Empty or Null
-      if (secret.warehouse_user_unique > 0) {
+      if (secret.warehouse_user_unique > 0 && secret.employe_unique > 0) {
 
-      }
+        // Read Warehouse User By User Id
+        let UserRecord = await warehouseUserModel.readWarehouseUserByUserId("*", secret.warehouse_user_unique, 1);
 
-      // Read Warehouse User By User Id
-      let UserRecord = await warehouseUserModel.readWarehouseUserByUserId("*", secret.warehouse_user_unique, 1);
+        // Parse
+        UserRecord = JSON.stringify(UserRecord);
+        UserRecord = JSON.parse(UserRecord);
 
-      // Parse
-      UserRecord = JSON.stringify(UserRecord);
-      UserRecord = JSON.parse(UserRecord);
+        if (UserRecord.length === 0) {
+          const recentId = await warehouseUserModel.keepWarehouseUserData(secret.warehouse_user_unique,
+            secret.role_unique,
+            partner[0].partner_id,
+            secret.password,
+            1);
 
-      if (UserRecord.length === 0) await warehouseUserModel.keepWarehouseUserData(secret.warehouse_user_unique,
-        secret.role_unique,
-        secret.employe_unique,
-        partner[0].partner_id,
-        secret.password,
-        1);
-      else await warehouseUserModel.updateWarehouseUserPassword(secret.password, UserRecord[0].id);
-
-      // Read Warehouse Employee By Employee Id
-      let employeeRecord = await employeeListModel.readEmployeeByEmployeeId("*", secret.employe_unique, 1);
-
-      // Parse
-      employeeRecord = JSON.stringify(employeeRecord);
-      employeeRecord = JSON.parse(employeeRecord);
-
-      if (employeeRecord.length === 0) await employeeListModel.keepEmployeeData(secret.employe_unique,
-        reform.firstName,
-        reform.lastName,
-        reform.birthDate,
-        secret.mobile,
-        reform.email,
-        reform.departmentName,
-        secret.gender_id,
-        secret.branch_unique,
-        1);
-      else await employeeListModel.updateEmployeeData(reform.firstName,
-        reform.lastName,
-        reform.birthDate,
-        secret.mobile,
-        reform.email,
-        reform.departmentName,
-        secret.gender_id,
-        secret.branch_unique,
-        employeeRecord[0].id);
+          // Intialize Recent User Id
+          user = recentId[0].insertId
 
 
+        } else {
+          warehouseUserModel.updateWarehouseUserPassword(secret.password, UserRecord[0].id);
 
+          // Intialize User Id
+          user = UserRecord[0].id
+        }
+
+        // Read Warehouse Employee By Employee Id
+        let employeeRecord = await employeeListModel.readEmployeeByEmployeeId("*", secret.employe_unique, 1);
+
+        // Parse
+        employeeRecord = JSON.stringify(employeeRecord);
+        employeeRecord = JSON.parse(employeeRecord);
+
+        if (employeeRecord.length === 0) {
+          const recentId = await employeeListModel.keepEmployeeData(secret.employe_unique,
+            reform.firstName,
+            reform.lastName,
+            reform.birthDate,
+            secret.mobile,
+            reform.email,
+            reform.departmentName,
+            secret.gender_id,
+            secret.branch_unique,
+            1);
+
+          // Intialize Recent Employee Id
+          employee = recentId[0].insertId
+
+        } else {
+          employeeListModel.updateEmployeeData(reform.firstName,
+            reform.lastName,
+            reform.birthDate,
+            secret.mobile,
+            reform.email,
+            reform.departmentName,
+            secret.gender_id,
+            secret.branch_unique,
+            employeeRecord[0].id);
+
+          // Intialize Recent Employee Id
+          employee = employeeRecord[0].id
+        }
+
+        // Read Warehouse User And Employee Connect
+        let connectRecord = await userEmployeeConnectModel.readUserEmployeeConnect("*", user, employee);
+
+        // Parse
+        connectRecord = JSON.stringify(connectRecord);
+        connectRecord = JSON.parse(connectRecord);
+
+        if (connectRecord.length === 0) userEmployeeConnectModel.keepUserEmployeeConnect(user, employee, 1);
+        else
+        if (connectRecord[0].status === 0)
+          userEmployeeConnectModel.updateUserEmployeeConnect(1, connectRecord[0].user_employee_id);
+
+      } else if (secret.warehouse_user_unique > 0) {
+
+        // Read Warehouse User By User Id
+        let UserRecord = await warehouseUserModel.readWarehouseUserByUserId("*", secret.warehouse_user_unique, 1);
+
+        // Parse
+        UserRecord = JSON.stringify(UserRecord);
+        UserRecord = JSON.parse(UserRecord);
+
+        if (UserRecord.length === 0) warehouseUserModel.keepWarehouseUserData(secret.warehouse_user_unique,
+          secret.role_unique,
+          partner[0].partner_id,
+          secret.password,
+          1);
+        else warehouseUserModel.updateWarehouseUserPassword(secret.password, UserRecord[0].id);
+
+
+      } else if (secret.employe_unique > 0) {
+
+        // Read Warehouse Employee By Employee Id
+        let employeeRecord = await employeeListModel.readEmployeeByEmployeeId("*", secret.employe_unique, 1);
+
+        // Parse
+        employeeRecord = JSON.stringify(employeeRecord);
+        employeeRecord = JSON.parse(employeeRecord);
+
+        if (employeeRecord.length === 0) employeeListModel.keepEmployeeData(secret.employe_unique,
+          reform.firstName,
+          reform.lastName,
+          reform.birthDate,
+          secret.mobile,
+          reform.email,
+          reform.departmentName,
+          secret.gender_id,
+          secret.branch_unique,
+          1);
+        else employeeListModel.updateEmployeeData(reform.firstName,
+          reform.lastName,
+          reform.birthDate,
+          secret.mobile,
+          reform.email,
+          reform.departmentName,
+          secret.gender_id,
+          secret.branch_unique,
+          employeeRecord[0].id);
+
+      } else console.log("Else secret")
     });
   } catch (error) {
     return Promise.reject(error);

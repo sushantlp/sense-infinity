@@ -551,7 +551,14 @@ module.exports.warehouseSecrets = (secrets) => {
           msg: 'Missing branch unique'
         };
 
-      if (secrets[i].warehouse_user_unique > 0) {
+      if (!secrets[i].hasOwnProperty('employe_unique') ||
+        !Number.isInteger(secrets[i].employe_unique))
+        return {
+          success: false,
+          msg: 'Missing employe unique'
+        };
+
+      if (secrets[i].warehouse_user_unique > 0 && secrets[i].employe_unique > 0) {
 
         if (secrets[i].password === null ||
           secrets[i].password === undefined ||
@@ -561,30 +568,36 @@ module.exports.warehouseSecrets = (secrets) => {
             msg: 'Password should not be empty or null'
           };
 
-        if (secrets[i].role_unique === null ||
-          secrets[i].role_unique === undefined ||
-          secrets[i].role_unique === "")
-          return {
-            success: false,
-            msg: 'Role should not be empty or null'
-          };
-
-        if (secrets[i].branch_unique === null ||
-          secrets[i].branch_unique === undefined ||
-          secrets[i].branch_unique === "")
-          return {
-            success: false,
-            msg: 'Branch should not be empty or null'
-          };
-
-      }
-
-      if (!secrets[i].hasOwnProperty('employe_unique') ||
-        !Number.isInteger(secrets[i].employe_unique))
-        return {
+        if (secrets[i].role_unique === 0) return {
           success: false,
-          msg: 'Missing employe unique'
+          msg: 'Role should not be empty or null'
         };
+
+        if (secrets[i].branch_unique === 0) return {
+          success: false,
+          msg: 'Branch should not be zero'
+        };
+
+      } else if (secrets[i].warehouse_user_unique > 0) {
+        if (secrets[i].password === null ||
+          secrets[i].password === undefined ||
+          secrets[i].password === "")
+          return {
+            success: false,
+            msg: 'Password should not be empty or null'
+          };
+
+        if (secrets[i].role_unique === 0) return {
+          success: false,
+          msg: 'Role should not be empty or null'
+        };
+      } else if (secrets[i].employe_unique > 0) {
+
+        if (secrets[i].branch_unique === 0) return {
+          success: false,
+          msg: 'Branch should not be zero'
+        };
+      }
 
       if (!secrets[i].hasOwnProperty('first_name') ||
         Number.isInteger(secrets[i].first_name))
