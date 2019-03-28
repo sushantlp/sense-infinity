@@ -245,8 +245,8 @@ module.exports.reformStoresDetail = (
     refundDiscount: 0,
     refundPolicy: undefined,
   };
-  console.log(gstinNo)
-    // EMPTY || NULL || UNDEFINED
+
+  // EMPTY || NULL || UNDEFINED
   if (storeName !== '' && storeName !== null && typeof storeName !== undefined) reform.storeName = storeName.replace(/\b[a-z]/g, function(f) {
     return f.toUpperCase();
   });

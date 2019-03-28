@@ -957,6 +957,366 @@ module.exports = {
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "SHAMPOO",
+        global_sub_category_id: 23,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "HAIR OIL",
+        global_sub_category_id: 23,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "HAIR COLOR",
+        global_sub_category_id: 23,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "HAIR CONDITIONER",
+        global_sub_category_id: 23,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "HAIR GEL",
+        global_sub_category_id: 23,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "HAIR ACCESSORIES",
+        global_sub_category_id: 23,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "HAIR SYRUM",
+        global_sub_category_id: 23,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "HAIR MASK",
+        global_sub_category_id: 23,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "NOTEBOOK",
+        global_sub_category_id: 24,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "DAIRY",
+        global_sub_category_id: 24,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "A4 SIZE PAPER",
+        global_sub_category_id: 24,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "NOTEBOOK",
+        global_sub_category_id: 24,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "PENCIL",
+        global_sub_category_id: 25,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "PEN",
+        global_sub_category_id: 25,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "ERASER",
+        global_sub_category_id: 25,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "SHARPENER",
+        global_sub_category_id: 25,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "DRAWING BOOK",
+        global_sub_category_id: 25,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "WATER COLOR",
+        global_sub_category_id: 25,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "CRAYONS",
+        global_sub_category_id: 25,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "COLOR PEN",
+        global_sub_category_id: 25,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "SCETCH PENS",
+        global_sub_category_id: 25,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "MARKER",
+        global_sub_category_id: 25,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "PERMANENT MARKERS",
+        global_sub_category_id: 25,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "HIGHLIGHTER",
+        global_sub_category_id: 25,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "OFFICE ITEM",
+        global_sub_category_id: 26,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "FILES AND FOLDERS",
+        global_sub_category_id: 26,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "ADHESIVE",
+        global_sub_category_id: 26,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "ENVELOP",
+        global_sub_category_id: 26,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "SCALES",
+        global_sub_category_id: 26,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "PEN BOX",
+        global_sub_category_id: 26,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "PAPER WEIGHT",
+        global_sub_category_id: 26,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "PAPER TRAY",
+        global_sub_category_id: 26,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "GLUE STICK",
+        global_sub_category_id: 26,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "CALCULATER",
+        global_sub_category_id: 26,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "SCHOOL BAG",
+        global_sub_category_id: 27,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "LUNCH BOX",
+        global_sub_category_id: 27,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "BOOKS",
+        global_sub_category_id: 27,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "MATHS BOX",
+        global_sub_category_id: 27,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "WHITE BOARD MARKER",
+        global_sub_category_id: 27,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "DOG FOOD",
+        global_sub_category_id: 28,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "CAT FOOD",
+        global_sub_category_id: 28,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "DOG ACCESSIORIES",
+        global_sub_category_id: 29,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "CAT ACCESSIORIES",
+        global_sub_category_id: 29,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "AGARBATTI",
+        global_sub_category_id: 30,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "OIL",
+        global_sub_category_id: 30,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "DHOOP",
+        global_sub_category_id: 30,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "COTTON BATTI",
+        global_sub_category_id: 30,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "CAMPHOR",
+        global_sub_category_id: 30,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "POOJA ACCESSIORIES",
+        global_sub_category_id: 30,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "CAR ACCESSIORIES",
+        global_sub_category_id: 31,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "CAR CLEANING",
+        global_sub_category_id: 31,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "ELECTRONIC ITEM",
+        global_sub_category_id: 31,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "PLASTIC ITEM",
+        global_sub_category_id: 31,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "LOCK AND KEY",
+        global_sub_category_id: 31,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "TORCHES",
+        global_sub_category_id: 31,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "BATTERY",
+        global_sub_category_id: 31,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "LIFE HACK KIT",
+        global_sub_category_id: 31,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "ESSENTIAL KIT",
+        global_sub_category_id: 31,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        global_sub_sub_category_name: "TRAVELLING ESSENTIALS",
+        global_sub_category_id: 31,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+      global_sub_sub_category_name: "SEWING KIT",
+        global_sub_category_id: 31,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
       }], {}
     );
   },

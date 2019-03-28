@@ -570,7 +570,6 @@ const iterateKeepStoreDetail = async(stores, partner) => {
           reform.landmark,
           store.city_id,
           store.locality_id,
-          reform.gstinNo,
           store.store_mobile,
           reform.storeEmail,
           reform.refundDiscount,
@@ -726,6 +725,10 @@ const jsonKeepSecretData = async(secrets, partner) => {
       const reform = shareController.reformSecretDetail(secret.first_name,
         secret.last_name, secret.birth_date, secret.department_name, secret.email);
 
+      // If Warehouse User Not Empty or Null
+      if (secret.warehouse_user_unique > 0) {
+
+      }
 
       // Read Warehouse User By User Id
       let UserRecord = await warehouseUserModel.readWarehouseUserByUserId("*", secret.warehouse_user_unique, 1);
