@@ -31,7 +31,7 @@ const warehouseInformationModel = require("../models/warehouse_information_list"
 const warehouseUserModel = require("../models/warehouse_user_list");
 const employeeListModel = require("../models/warehouse_employee_list");
 const systemPasswordModel = require("../models/system_administrator_password");
-const userEmployeeConnectModel = require("../models/warehouse_user_employee_connect");
+const taxModel = require("../models/tax_table");
 
 
 // Logic Get Warehouse Static Data
@@ -58,14 +58,6 @@ module.exports.logicWarehouseStaticData = async version => {
       data: {},
       msg: "Empty warehouse static version"
     };
-
-    // // System Administrator
-    // dataObj.system_administrator = {
-    //   // system_administrator_id: 1,
-    //   system_role_id: 1,
-    //   system_password: bcrypt.hashSync(process.env.SALT_KEY, 10),
-    //   employee_id: null
-    // }
 
     const promises = warehouseStatic.map(async(staticVersion, index) => {
 
@@ -473,6 +465,31 @@ module.exports.logicWarehouseStaticData = async version => {
           // Object Push
           dataObj.system_administrator_list = [];
           versionObj.system_administrator_version = parseFloat(staticVersion.warehouse_static_version);
+        }
+
+      } else if (staticVersion.warehouse_static_name === 'Tax Version') {
+
+        if (parseFloat(staticVersion.warehouse_static_version) !== parseFloat(version.tax_version)) {
+
+          // Read Tax Table Record
+          let taxRecord = await taxModel.readTax(
+            "tax_id AS tax_unique, hsn, sgst, cgst, igst, status", 1);
+
+          // Parse
+          taxRecord = JSON.stringify(taxRecord);
+          taxRecord = JSON.parse(taxRecord);
+
+          // Object Push
+          dataObj.tax_list = taxRecord;
+          versionObj.tax_version = parseFloat(staticVersion.warehouse_static_version);
+
+          // Update Change Status Tax
+          taxModel.changeStatusTax(0);
+        } else {
+
+          // Object Push
+          dataObj.tax_list = [];
+          versionObj.tax_version = parseFloat(staticVersion.warehouse_static_version);
         }
 
       }

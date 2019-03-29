@@ -349,6 +349,11 @@ module.exports.warehouseStaticVersion = (version) => {
       msg: 'Missing system administrator version'
     };
 
+    if (!version.hasOwnProperty('tax_version')) return {
+      success: false,
+      msg: 'Missing tax version'
+    };
+
     return {
       success: true,
       msg: 'Succesful'

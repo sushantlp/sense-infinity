@@ -12,6 +12,14 @@ module.exports = {
         type: Sequelize.BIGINT,
         allowNull: false
       },
+      staple_product_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'staple_products',
+          key: 'staple_product_id'
+        }
+      },
       product_unit_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -42,6 +50,10 @@ module.exports = {
       },
       product_mrp: {
         type: Sequelize.FLOAT,
+        defaultValue: 0
+      },
+      change_status: {
+        type: Sequelize.BOOLEAN,
         defaultValue: 0
       },
       status: {
