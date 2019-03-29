@@ -1,8 +1,8 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('staple_products', {
-      staple_product_id: {
+    return queryInterface.createTable('staple_product_sizes', {
+      staple_product_size_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
@@ -11,38 +11,6 @@ module.exports = {
       product_barcode: {
         type: Sequelize.BIGINT,
         allowNull: false
-      },
-      product_name: {
-        type: Sequelize.STRING,
-        allowNull: true
-      },
-      product_brand_name: {
-        type: Sequelize.STRING,
-        allowNull: true
-      },
-      global_category_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'global_categories',
-          key: 'global_category_id'
-        }
-      },
-      global_sub_category_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'global_sub_categories',
-          key: 'global_sub_category_id'
-        }
-      },
-      global_sub_sub_category_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'global_sub_sub_categories',
-          key: 'global_sub_sub_category_id'
-        }
       },
       product_unit_id: {
         type: Sequelize.INTEGER,
@@ -76,26 +44,6 @@ module.exports = {
         type: Sequelize.FLOAT,
         defaultValue: 0
       },
-      sgst: {
-        type: Sequelize.FLOAT,
-        defaultValue: 0
-      },
-      cgst: {
-        type: Sequelize.FLOAT,
-        defaultValue: 0
-      },
-      igst: {
-        type: Sequelize.FLOAT,
-        defaultValue: 0
-      },
-      product_description: {
-        type: Sequelize.STRING,
-        allowNull: true
-      },
-      image_url: {
-        type: Sequelize.STRING,
-        allowNull: true
-      },
       status: {
         type: Sequelize.BOOLEAN,
         defaultValue: 0
@@ -113,6 +61,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('staple_products');
+    return queryInterface.dropTable('staple_product_sizes');
   }
 };
