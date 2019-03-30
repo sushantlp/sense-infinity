@@ -31,4 +31,7 @@ routes.post('/information', apiKeyAuth, PosWarehouseApiController.requestKeepWar
 // Keep Warehouse Stores Detail
 routes.post('/stores', apiKeyAuth, PosWarehouseApiController.requestKeepStoreDetail);
 
+// Get Staple Master Product
+routes.get('/products', apiKeyAuth, PosWarehouseApiController.requestGetMasterProduct);
+
 module.exports = routes;

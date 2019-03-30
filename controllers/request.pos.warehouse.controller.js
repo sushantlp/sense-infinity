@@ -125,7 +125,6 @@ module.exports.requestKeepStoreDetail = (req, res) => {
 };
 
 
-
 // Request Keep Warehouse Detail
 module.exports.requestKeepWarehouseDetail = (req, res) => {
   if (
@@ -153,6 +152,36 @@ module.exports.requestKeepWarehouseDetail = (req, res) => {
               response.data,
               response.msg,
               "/api/v1/warehouses/information",
+              200,
+              response.success, {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
+
+
+// Request Get Staple Master Product
+module.exports.requestGetMasterProduct = (req, res) => {
+  if (res.userKey !== undefined &&
+    res.userKey !== ""
+  ) {
+
+    // Logic Get Staple Master Product
+    return posWarehoseController
+      .logicGetMasterProduct(res.userKey)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              "/api/v1/warehouses/products",
               200,
               response.success, {}
             )

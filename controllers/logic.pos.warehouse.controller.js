@@ -32,6 +32,7 @@ const warehouseUserModel = require("../models/warehouse_user_list");
 const employeeListModel = require("../models/warehouse_employee_list");
 const systemPasswordModel = require("../models/system_administrator_password");
 const taxModel = require("../models/tax_table");
+const userEmployeeConnectModel = require("../models/warehouse_user_employee_connect");
 
 
 // Logic Get Warehouse Static Data
@@ -484,7 +485,7 @@ module.exports.logicWarehouseStaticData = async version => {
           versionObj.tax_version = parseFloat(staticVersion.warehouse_static_version);
 
           // Update Change Status Tax
-          taxModel.changeStatusTax(0);
+          // taxModel.changeStatusTax(0);
         } else {
 
           // Object Push
@@ -871,6 +872,33 @@ const jsonKeepSecretData = async(secrets, partner) => {
 
       } else console.log("Else secret")
     });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
+
+// Logic Get Staple Master Product
+module.exports.logicGetMasterProduct = async(id) => {
+  try {
+
+    // Call User Partner Data
+    const partnerRecord = await userPartnerData(id);
+
+    if (partnerRecord.length === 0) return {
+      success: false,
+      data: [],
+      msg: 'Unknown partner'
+    };
+
+    // Json Keep Secret Data
+    jsonKeepSecretData(secrets, partnerRecord)
+
+    return {
+      success: true,
+      data: [],
+      msg: 'Succesful'
+    };
+
   } catch (error) {
     return Promise.reject(error);
   }
