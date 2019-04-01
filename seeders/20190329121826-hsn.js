@@ -8,7 +8,38 @@ module.exports = {
         sgst: 2.5,
         cgst: 2.5,
         igst: 2.5,
-        change_status: 1,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        hsn: 1235,
+        sgst: 2.5,
+        cgst: 2.5,
+        igst: 2.5,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        hsn: 1236,
+        sgst: 2.5,
+        cgst: 2.5,
+        igst: 2.5,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        hsn: 1237,
+        sgst: 2.5,
+        cgst: 2.5,
+        igst: 2.5,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      }, {
+        hsn: 1238,
+        sgst: 2.5,
+        cgst: 2.5,
+        igst: 2.5,
         status: 1,
         created_at: new Date(),
         updated_at: new Date()

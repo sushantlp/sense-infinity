@@ -17,7 +17,6 @@ module.exports = (sequelize, DataTypes) => {
     sgst: DataTypes.FLOAT,
     cgst: DataTypes.FLOAT,
     igst: DataTypes.FLOAT,
-    change_status: DataTypes.BOOLEAN,
     status: DataTypes.BOOLEAN
   }, {});
   stapleProduct.associate = function(models) {

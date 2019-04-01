@@ -7,17 +7,15 @@ const moment = require("moment-timezone");
 const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
-  var taxTable = sequelize.define('tax_table', {
-    hsn: DataTypes.INTEGER,
-    sgst: DataTypes.FLOAT,
-    cgst: DataTypes.FLOAT,
-    igst: DataTypes.FLOAT,
+  var taxSync = sequelize.define('tax_sync', {
+    partner_id: DataTypes.INTEGER,
+    attributes: DataTypes.JSON,
     status: DataTypes.BOOLEAN
   }, {});
-  taxTable.associate = function(models) {
+  taxSync.associate = function(models) {
     // associations can be defined here
   };
-  return taxTable;
+  return taxSync;
 };
 
 
@@ -32,17 +30,17 @@ const now = moment()
  */
 
 
-// Read Tax Table Record
-module.exports.readTax = async(select, taxId) => {
+// Read Tax Sync Record
+module.exports.readTaxSync = async(select, partnerId, status) => {
   try {
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
 
     // Query
-    const query = `SELECT ${select} FROM tax_tables WHERE tax_id = ?`;
+    const query = `SELECT ${select} FROM tax_syncs WHERE partner_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [taxId]);
+    const [rows, fields] = await connection.execute(query, [partnerId, status]);
 
     connection.close();
 
@@ -52,21 +50,30 @@ module.exports.readTax = async(select, taxId) => {
   }
 };
 
-// Read Tax Table Record By Array
-module.exports.readTaxByArray = async(select, marks, ids) => {
+
+// Update Tax Sync Record
+module.exports.updateTaxSync = async(
+  status, id
+) => {
   try {
+
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
 
     // Query
-    const query = `SELECT ${select} FROM tax_tables WHERE tax_id IN (${marks})`;
+    const query =
+      "UPDATE `tax_syncs` SET `status` = ?, `updated_at` = ? WHERE `tax_sync_id` = ?";
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, ids);
+    const row = await connection.execute(query, [
+      status,
+      now,
+      id
+    ]);
 
     connection.close();
 
-    return rows;
+    return row;
   } catch (error) {
     return Promise.reject(error);
   }

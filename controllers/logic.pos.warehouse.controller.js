@@ -32,16 +32,26 @@ const warehouseUserModel = require("../models/warehouse_user_list");
 const employeeListModel = require("../models/warehouse_employee_list");
 const systemPasswordModel = require("../models/system_administrator_password");
 const taxModel = require("../models/tax_table");
+const taxSyncModel = require("../models/tax_sync");
 const userEmployeeConnectModel = require("../models/warehouse_user_employee_connect");
 
 
 // Logic Get Warehouse Static Data
-module.exports.logicWarehouseStaticData = async version => {
+module.exports.logicWarehouseStaticData = async(version, id) => {
   try {
 
     // Variable
     let dataObj = {};
     let versionObj = {};
+
+    // Call User Partner Data
+    const partnerRecord = await userPartnerData(id);
+
+    if (partnerRecord.length === 0) return {
+      success: false,
+      data: [],
+      msg: 'Unknown partner'
+    };
 
     // Read Sense Constant Record
     let warehouseStatic = await warehouseStaticModel.readAllWarehouseVersion(
@@ -470,25 +480,27 @@ module.exports.logicWarehouseStaticData = async version => {
 
       } else if (staticVersion.warehouse_static_name === 'Tax Version') {
 
-        if (parseFloat(staticVersion.warehouse_static_version) !== parseFloat(version.tax_version)) {
+        // Read Tax Sync Record
+        let taxSyncRecord = await taxSyncModel.readTaxSync(
+          "*", partnerRecord[0].partner_id, 1);
 
-          // Read Tax Table Record
-          let taxRecord = await taxModel.readTax(
-            "tax_id AS tax_unique, hsn, sgst, cgst, igst, status", 1);
+        // Parse
+        taxSyncRecord = JSON.stringify(taxSyncRecord);
+        taxSyncRecord = JSON.parse(taxSyncRecord);
 
-          // Parse
-          taxRecord = JSON.stringify(taxRecord);
-          taxRecord = JSON.parse(taxRecord);
+        if (taxSyncRecord.length > 0) {
+
+          // Logic Tax Sync Data
+          const taxSync = await taxSyncData(taxSyncRecord[0].attributes.hsn);
+
+          // Update Tax Sync Record
+          taxSyncModel.updateTaxSync(0, taxSyncRecord[0].tax_sync_id);
 
           // Object Push
-          dataObj.tax_list = taxRecord;
+          dataObj.tax_list = taxSync;
           versionObj.tax_version = parseFloat(staticVersion.warehouse_static_version);
-
-          // Update Change Status Tax
-          // taxModel.changeStatusTax(0);
         } else {
-
-          // Object Push
+          //   // Object Push
           dataObj.tax_list = [];
           versionObj.tax_version = parseFloat(staticVersion.warehouse_static_version);
         }
@@ -508,6 +520,32 @@ module.exports.logicWarehouseStaticData = async version => {
     return Promise.reject(error);
   }
 };
+
+// Logic Tax Sync Data
+const taxSyncData = async(values) => {
+  try {
+
+    let arr = [];
+
+    values.map(async(value) => {
+      arr.push(value.tax_id);
+    });
+
+    // then, create a dynamic list of comma-separated question marks
+    const marks = new Array(arr.length).fill('?').join(',');
+
+    //  Read Tax Table Record By Array
+    let tax = await taxModel.readTaxByArray("tax_id AS tax_unique, hsn, sgst, cgst, igst, status", marks, arr);
+
+    // Parse
+    tax = JSON.stringify(tax);
+    tax = JSON.parse(tax);
+
+    return tax;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
 
 // Call User Partner Data
 const userPartnerData = async(id) => {

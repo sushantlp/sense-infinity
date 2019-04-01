@@ -16,7 +16,6 @@ module.exports = (sequelize, DataTypes) => {
     product_selling_mrp: DataTypes.FLOAT,
     product_margin: DataTypes.FLOAT,
     product_mrp: DataTypes.FLOAT,
-    change_status: DataTypes.BOOLEAN,
     status: DataTypes.BOOLEAN
   }, {});
   stapleProductSize.associate = function(models) {

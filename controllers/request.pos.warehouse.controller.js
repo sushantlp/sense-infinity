@@ -9,7 +9,9 @@ const shareController = require("./share.controller");
 module.exports.requestGetWarehouseStaticData = (req, res) => {
   if (
     req.body.version !== undefined &&
-    req.body.version !== ""
+    req.body.version !== "" &&
+    res.userKey !== undefined &&
+    res.userKey !== ""
   ) {
 
     // Validate Warehouse Static Version
@@ -21,7 +23,7 @@ module.exports.requestGetWarehouseStaticData = (req, res) => {
 
     // Logic Pos Warehouse Controller
     return posWarehoseController
-      .logicWarehouseStaticData(req.body.version)
+    .logicWarehouseStaticData(req.body.version, res.userKey)
       .then(response => {
         return res
           .status(200)

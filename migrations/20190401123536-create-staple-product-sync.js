@@ -1,28 +1,24 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('tax_tables', {
-      tax_id: {
+    return queryInterface.createTable('staple_product_syncs', {
+      staple_product_sync_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      hsn: {
+      partner_id: {
         type: Sequelize.INTEGER,
-        defaultValue: 0
+        allowNull: false,
+        references: {
+          model: 'partners',
+          key: 'partner_id'
+        }
       },
-      sgst: {
-        type: Sequelize.FLOAT,
-        defaultValue: 0
-      },
-      cgst: {
-        type: Sequelize.FLOAT,
-        defaultValue: 0
-      },
-      igst: {
-        type: Sequelize.FLOAT,
-        defaultValue: 0
+      attributes: {
+        type: Sequelize.JSON,
+        allowNull: false
       },
       status: {
         type: Sequelize.BOOLEAN,
@@ -41,6 +37,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('tax_tables');
+    return queryInterface.dropTable('staple_product_syncs');
   }
 };

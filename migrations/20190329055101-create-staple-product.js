@@ -56,10 +56,6 @@ module.exports = {
         type: Sequelize.FLOAT,
         defaultValue: 0
       },
-      change_status: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0
-      },
       status: {
         type: Sequelize.BOOLEAN,
         defaultValue: 0
