@@ -33,6 +33,7 @@ const employeeListModel = require("../models/warehouse_employee_list");
 const systemPasswordModel = require("../models/system_administrator_password");
 const taxModel = require("../models/tax_table");
 const taxSyncModel = require("../models/tax_sync");
+const stapleSyncModel = require("../models/staple_product_sync");
 const userEmployeeConnectModel = require("../models/warehouse_user_employee_connect");
 
 
@@ -493,8 +494,8 @@ module.exports.logicWarehouseStaticData = async(version, id) => {
           // Logic Tax Sync Data
           const taxSync = await taxSyncData(taxSyncRecord[0].attributes.hsn);
 
-          // Update Tax Sync Record
-          taxSyncModel.updateTaxSync(0, taxSyncRecord[0].tax_sync_id);
+          // Update Status Tax Sync Record
+          taxSyncModel.updateStatusTaxSync(0, taxSyncRecord[0].tax_sync_id);
 
           // Object Push
           dataObj.tax_list = taxSync;

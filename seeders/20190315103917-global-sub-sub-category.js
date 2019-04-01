@@ -1024,7 +1024,7 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        global_sub_sub_category_name: "NOTEBOOK",
+        global_sub_sub_category_name: "NOTEPAD",
         global_sub_category_id: 24,
         status: 1,
         created_at: new Date(),
