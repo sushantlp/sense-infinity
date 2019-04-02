@@ -912,10 +912,12 @@ const jsonKeepSecretData = async(secrets, partner) => {
 
       } else console.log("Else secret")
     });
+
+    return Promise.resolve(true);
   } catch (error) {
     return Promise.reject(error);
   }
-}
+};
 
 // Logic Get Staple Master Product
 module.exports.logicGetMasterProduct = async(id) => {
@@ -986,4 +988,15 @@ module.exports.logicKeepWarehouseProduct = async(id, products) => {
   } catch (error) {
     return Promise.reject(error);
   }
-}
+};
+
+// Json Keep Warehouse Product
+const jsonKeepWarehouseProduct = async(products, partnerRecord) => {
+  try {
+    products.map(async(product, index) => {
+
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

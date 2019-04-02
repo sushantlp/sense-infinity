@@ -939,7 +939,7 @@ module.exports.keepWarehouseProduct = async(
 
     // Query
     const query = `INSERT INTO 
-      ${ProductTable} (
+        ${ProductTable} (
         product_barcode, 
         product_name, 
         brand_name, 
@@ -963,7 +963,8 @@ module.exports.keepWarehouseProduct = async(
         status, 
         created_at, 
         updated_at) 
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+        VALUES 
+        (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
@@ -971,6 +972,65 @@ module.exports.keepWarehouseProduct = async(
       subSubcategoryId, unitId, subUnitId, productSize, sellingPrice, productMargin,
       productPrice, productQuantity, sgst, cgst, igst, hsn, sodexo, staple, status, now, now
     ]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Update Warehouse Product Detail
+module.exports.updateWarehouseProduct = async(
+  partnerMobile, productName, brandName, description, categoryId, subCategoryId,
+  subSubcategoryId, unitId, subUnitId, productSize, sellingPrice, productMargin,
+  productPrice, productQuantity, sgst, cgst, igst, hsn, sodexo, staple, status, id
+) => {
+  try {
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
+
+    // Dynamic Table
+    const ProductTable = `${partnerMobile}_warehouse_products`;
+
+    // Query
+    const query = `UPDATE ${KeepSurvey} SET product_name = ?, brand_name = ?, description = ?, global_category_id = ?,
+      global_sub_category_id = ?, global_sub_sub_category_id = ?, product_unit_id = ?, product_sub_unit_id = ?,
+      product_size = ?, selling_price = ?, product_margin = ?, actual_price = ?, product_quantity = ?, sgst = ?, cgst = ?, 
+      igst = ?, hsn = ?, sodexo = ?, staple = ?, status = ?, updated_at = ? WHERE product_id = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [
+      productName, brandName, description, categoryId, subCategoryId, subSubcategoryId,
+      unitId, subUnitId, productSize, sellingPrice, productMargin, productPrice,
+      productQuantity, sgst, cgst, igst, hsn, sodexo, staple, status, now, id
+    ]);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Read Warehouse Product By Barcode
+module.exports.readWarehouseProduct = async(
+  select, partnerMobile, barcode
+) => {
+  try {
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
+
+    // Dynamic Table
+    const ProductTable = `${partnerMobile}_warehouse_products`;
+
+    // Query
+    const query = `SELECT ${select} FROM ${partnerMobile} WHERE product_barcode = ? LIMIT 1`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [barcode]);
 
     connection.close();
 
