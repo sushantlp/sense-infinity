@@ -22,19 +22,11 @@ module.exports = {
       },
       product_unit_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'product_units',
-          key: 'product_unit_id'
-        }
+        allowNull: false
       },
       product_sub_unit_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'product_sub_units',
-          key: 'product_sub_unit_id'
-        }
+        allowNull: false
       },
       product_unit_size: {
         type: Sequelize.FLOAT,

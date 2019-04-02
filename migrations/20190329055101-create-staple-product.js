@@ -22,27 +22,15 @@ module.exports = {
       },
       global_category_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'global_categories',
-          key: 'global_category_id'
-        }
+        allowNull: false
       },
       global_sub_category_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'global_sub_categories',
-          key: 'global_sub_category_id'
-        }
+        allowNull: false
       },
       global_sub_sub_category_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'global_sub_sub_categories',
-          key: 'global_sub_sub_category_id'
-        }
+        allowNull: false
       },
       sgst: {
         type: Sequelize.FLOAT,

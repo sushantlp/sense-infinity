@@ -885,16 +885,11 @@ module.exports.createWarehouseProductTable = async(partnerMobile) => {
       product_name VARCHAR(100) NOT NULL,
       brand_name VARCHAR(100) NULL,
       description TEXT NULL,
-      global_category_id INT(11) NOT NULL,
-      FOREIGN KEY(global_category_id) REFERENCES global_categories(global_category_id),
-      global_sub_category_id INT(11) NOT NULL,
-      FOREIGN KEY(global_sub_category_id) REFERENCES global_sub_categories(global_sub_category_id),
-      global_sub_sub_category_id INT(11) NOT NULL,
-      FOREIGN KEY(global_sub_sub_category_id) REFERENCES global_sub_sub_categories(global_sub_sub_category_id),
-      product_unit_id INT(11) NOT NULL,
-      FOREIGN KEY(product_unit_id) REFERENCES product_units(product_unit_id),
-      product_sub_unit_id INT(11) NOT NULL,
-      FOREIGN KEY(product_sub_unit_id) REFERENCES product_sub_units(product_sub_unit_id),
+      global_category_id INTEGER NOT NULL,
+      global_sub_category_id INTEGER NOT NULL,
+      global_sub_sub_category_id INTEGER NOT NULL,
+      product_unit_id INTEGER NOT NULL,
+      product_sub_unit_id INTEGER NOT NULL,
       product_size INTEGER NOT NULL,
       selling_price FLOAT NOT NULL,
       product_margin FLOAT NOT NULL,
@@ -968,7 +963,7 @@ module.exports.keepWarehouseProduct = async(
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
-      partnerMobile, barcode, productName, brandName, description, categoryId, subCategoryId,
+      barcode, productName, brandName, description, categoryId, subCategoryId,
       subSubcategoryId, unitId, subUnitId, productSize, sellingPrice, productMargin,
       productPrice, productQuantity, sgst, cgst, igst, hsn, sodexo, staple, status, now, now
     ]);
@@ -988,6 +983,7 @@ module.exports.updateWarehouseProduct = async(
   productPrice, productQuantity, sgst, cgst, igst, hsn, sodexo, staple, status, id
 ) => {
   try {
+
     // Create Mysql Connection
     const connection = await constants.createMysqlConnection();
 
@@ -995,10 +991,9 @@ module.exports.updateWarehouseProduct = async(
     const ProductTable = `${partnerMobile}_warehouse_products`;
 
     // Query
-    const query = `UPDATE ${KeepSurvey} SET product_name = ?, brand_name = ?, description = ?, global_category_id = ?,
+    const query = `UPDATE ${ProductTable} SET product_name = ?, brand_name = ?, description = ?, global_category_id = ?,
       global_sub_category_id = ?, global_sub_sub_category_id = ?, product_unit_id = ?, product_sub_unit_id = ?,
-      product_size = ?, selling_price = ?, product_margin = ?, actual_price = ?, product_quantity = ?, sgst = ?, cgst = ?, 
-      igst = ?, hsn = ?, sodexo = ?, staple = ?, status = ?, updated_at = ? WHERE product_id = ?`;
+      product_size = ?, selling_price = ?, product_margin = ?, actual_price = ?, product_quantity = ?, sgst = ?, cgst = ?, igst = ?, hsn = ?, sodexo = ?, staple = ?, status = ?, updated_at = ? WHERE product_id = ?`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [
@@ -1027,7 +1022,7 @@ module.exports.readWarehouseProduct = async(
     const ProductTable = `${partnerMobile}_warehouse_products`;
 
     // Query
-    const query = `SELECT ${select} FROM ${partnerMobile} WHERE product_barcode = ? LIMIT 1`;
+    const query = `SELECT ${select} FROM ${ProductTable} WHERE product_barcode = ? LIMIT 1`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query, [barcode]);

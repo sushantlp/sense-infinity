@@ -977,7 +977,7 @@ module.exports.logicKeepWarehouseProduct = async(id, products) => {
     }
 
     // Json Keep Warehouse Product
-    jsonKeepWarehouseProduct(products, partnerRecord)
+    jsonKeepWarehouseProduct(products, partnerRecord, firstTime)
 
     return {
       success: true,
@@ -991,10 +991,20 @@ module.exports.logicKeepWarehouseProduct = async(id, products) => {
 };
 
 // Json Keep Warehouse Product
-const jsonKeepWarehouseProduct = async(products, partnerRecord) => {
+const jsonKeepWarehouseProduct = async(products, partnerRecord, firstTime) => {
   try {
     products.map(async(product, index) => {
 
+      // Read Warehouse Product By Barcode
+      let productRecord = await databaseController.readWarehouseProduct("*", partnerRecord[0].mobile, product.product_barcode);
+
+      // Parse
+      productRecord = JSON.stringify(productRecord);
+      productRecord = JSON.parse(productRecord);
+
+      if (productRecord.length === 0) databaseController.keepWarehouseProduct(partnerRecord[0].mobile, product.product_barcode, product.product_name, product.brand_name, product.description, product.category_unique, product.sub_category_unique, product.sub_sub_category_unique, product.unit_unique, product.unit_sub_unique, product.product_size, product.selling_price, product.product_margin, product.product_price, product.product_quantity, product.sgst, product.cgst, product.igst, product.hsn, product.sodexo, product.staple, product.status);
+
+      else databaseController.updateWarehouseProduct(partnerRecord[0].mobile, product.product_name, product.brand_name, product.description, product.category_unique, product.sub_category_unique, product.sub_sub_category_unique, product.unit_unique, product.unit_sub_unique, product.product_size, product.selling_price, product.product_margin, product.product_price, product.product_quantity, product.sgst, product.cgst, product.igst, product.hsn, product.sodexo, product.staple, product.status, productRecord[0].product_id);
     });
   } catch (error) {
     return Promise.reject(error);
