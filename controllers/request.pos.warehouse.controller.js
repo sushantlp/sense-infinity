@@ -203,12 +203,12 @@ module.exports.requestKeepWarehouseProduct = (req, res) => {
     req.body.products !== ""
   ) {
 
-    // Validate Warehouse Product Detail Parameter
-    // const validate = validateController.warehouseProductDetail(
-    //   req.body.products
-    // );
+    Validate Warehouse Product Detail Parameter
+    const validate = validateController.warehouseProductDetail(
+      req.body.products
+    );
 
-    // if (!validate.success) return res.status(400).send(validate.msg);
+    if (!validate.success) return res.status(400).send(validate.msg);
 
     // Logic Get Staple Master Product
     return posWarehoseController

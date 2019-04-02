@@ -677,7 +677,9 @@ module.exports.warehouseProductDetail = (products) => {
         };
 
       if (!products[i].hasOwnProperty('product_name') ||
-        Number.isInteger(products[i].product_name))
+        Number.isInteger(products[i].product_name) ||
+        products[i].product_name === undefined ||
+        products[i].product_name === null)
         return {
           success: false,
           msg: 'Missing product name'
@@ -728,18 +730,11 @@ module.exports.warehouseProductDetail = (products) => {
           msg: 'Missing unit sub unique'
         };
 
-      if (!products[i].hasOwnProperty('unit_unique') ||
-        !Number.isInteger(products[i].unit_unique))
+      if (!products[i].hasOwnProperty('product_size') ||
+        !Number.isInteger(products[i].product_size))
         return {
           success: false,
-          msg: 'Missing unit unique'
-        };
-
-      if (!products[i].hasOwnProperty('size') ||
-        !Number.isInteger(products[i].size))
-        return {
-          success: false,
-          msg: 'Missing size'
+          msg: 'Missing product size'
         };
 
       if (!products[i].hasOwnProperty('selling_price') ||
@@ -749,11 +744,11 @@ module.exports.warehouseProductDetail = (products) => {
           msg: 'Missing selling price'
         };
 
-      if (!products[i].hasOwnProperty('margin') ||
-        !Number.isInteger(products[i].margin))
+      if (!products[i].hasOwnProperty('product_margin') ||
+        !Number.isInteger(products[i].product_margin))
         return {
           success: false,
-          msg: 'Missing margin'
+          msg: 'Missing product margin'
         };
 
       if (!products[i].hasOwnProperty('sgst') ||
@@ -791,11 +786,11 @@ module.exports.warehouseProductDetail = (products) => {
           msg: 'Missing sodexo'
         };
 
-      if (!products[i].hasOwnProperty('quantity') ||
-        !Number.isInteger(products[i].quantity))
+      if (!products[i].hasOwnProperty('product_quantity') ||
+        !Number.isInteger(products[i].product_quantity))
         return {
           success: false,
-          msg: 'Missing quantity'
+          msg: 'Missing product quantity'
         };
 
       if (!products[i].hasOwnProperty('product_price') ||

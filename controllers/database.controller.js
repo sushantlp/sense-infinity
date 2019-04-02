@@ -883,7 +883,6 @@ module.exports.createWarehouseProductTable = async(partnerMobile) => {
       product_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
       product_barcode BIGINT NOT NULL UNIQUE,
       product_name VARCHAR(100) NOT NULL,
-      FULLTEXT(product_name),
       brand_name VARCHAR(100) NULL,
       description TEXT NULL,
       global_category_id INT(11) NOT NULL,
@@ -898,7 +897,7 @@ module.exports.createWarehouseProductTable = async(partnerMobile) => {
       FOREIGN KEY(product_sub_unit_id) REFERENCES product_sub_units(product_sub_unit_id),
       product_size INTEGER NOT NULL,
       selling_price FLOAT NOT NULL,
-      margin FLOAT NOT NULL,
+      product_margin FLOAT NOT NULL,
       actual_price FLOAT NOT NULL,
       product_quantity FLOAT NOT NULL,
       sgst FLOAT NOT NULL,
@@ -910,6 +909,7 @@ module.exports.createWarehouseProductTable = async(partnerMobile) => {
       status BOOL DEFAULT FALSE,
       created_at DATETIME NOT NULL,
       updated_at DATETIME NOT NULL,
+      FULLTEXT(product_name),
       PRIMARY KEY(product_id)
     )`;
 
@@ -924,34 +924,61 @@ module.exports.createWarehouseProductTable = async(partnerMobile) => {
   }
 };
 
-// // Keep Warehouse Product Detail
-// module.exports.keepWarehouseProduct = async(
-//   partnerMobile, status
-// ) => {
-//   try {
-//     // Create Mysql Connection
-//     const connection = await constants.createMysqlConnection();
+// Keep Warehouse Product Detail
+module.exports.keepWarehouseProduct = async(
+  partnerMobile, barcode, productName, brandName, description, categoryId, subCategoryId,
+  subSubcategoryId, unitId, subUnitId, productSize, sellingPrice, productMargin,
+  productPrice, productQuantity, sgst, cgst, igst, hsn, sodexo, staple, status
+) => {
+  try {
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
 
-//     // Dynamic Table
-//     const ProductTable = `${partnerMobile}_warehouse_products`;
+    // Dynamic Table
+    const ProductTable = `${partnerMobile}_warehouse_products`;
 
-//     // Query
-//     const query = `INSERT INTO ${ProductTable} (survey_ques_id, survey_option_id, customer_information_id, role_id, status, created_at, updated_at) VALUES (?,?,?,?,?,?,?)`;
+    // Query
+    const query = `INSERT INTO 
+      ${ProductTable} (
+        product_barcode, 
+        product_name, 
+        brand_name, 
+        description,
+        global_category_id,
+        global_sub_category_id,
+        global_sub_sub_category_id, 
+        product_unit_id,
+        product_sub_unit_id,
+        product_size,
+        selling_price,
+        product_margin,
+        actual_price,
+        product_quantity,
+        sgst,
+        cgst,
+        igst,
+        hsn,
+        sodexo,
+        staple,
+        status, 
+        created_at, 
+        updated_at) 
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
-//     // Query Database
-//     const [rows, fields] = await connection.execute(query, [
-//       status,
-//       now,
-//       now
-//     ]);
+    // Query Database
+    const [rows, fields] = await connection.execute(query, [
+      partnerMobile, barcode, productName, brandName, description, categoryId, subCategoryId,
+      subSubcategoryId, unitId, subUnitId, productSize, sellingPrice, productMargin,
+      productPrice, productQuantity, sgst, cgst, igst, hsn, sodexo, staple, status, now, now
+    ]);
 
-//     connection.close();
+    connection.close();
 
-//     return rows;
-//   } catch (error) {
-//     return Promise.reject(error);
-//   }
-// };
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
 
 
 /**
