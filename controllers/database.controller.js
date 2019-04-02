@@ -64,7 +64,16 @@ module.exports.createConstantTable = async(merchantMobile, storeId) => {
     const MerchantConstant = `${merchantMobile}_${storeId}_constants`;
 
     // Query
-    const query = `CREATE TABLE IF NOT EXISTS ${MerchantConstant} (constant_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL, value VARCHAR(255) NOT NULL, comment VARCHAR(255) NULL, status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(constant_id))`;
+    const query = `CREATE TABLE IF NOT EXISTS ${MerchantConstant} (
+      constant_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+      name VARCHAR(255) NOT NULL,
+      value VARCHAR(255) NOT NULL,
+      comment VARCHAR(255) NULL,
+      status BOOL DEFAULT FALSE,
+      created_at DATETIME NOT NULL,
+      updated_at DATETIME NOT NULL,
+      PRIMARY KEY(constant_id)
+    )`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query);
@@ -271,7 +280,18 @@ module.exports.createFeedbackStoreTable = async(merchantMobile, storeId) => {
     const KeepFeedback = `${merchantMobile}_${storeId}_keep_partner_feedbacks`;
 
     // Query
-    const query = `CREATE TABLE IF NOT EXISTS ${KeepFeedback} (keep_feed_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, feed_ques_id INTEGER NOT NULL, feed_option_id INTEGER NOT NULL, customer_information_id INT(11) NOT NULL, FOREIGN KEY (customer_information_id) REFERENCES customer_information_data (customer_information_id), role_id INTEGER NOT NULL, status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(keep_feed_id))`;
+    const query = `CREATE TABLE IF NOT EXISTS ${KeepFeedback} (
+      keep_feed_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+      feed_ques_id INTEGER NOT NULL,
+      feed_option_id INTEGER NOT NULL,
+      customer_information_id INT(11) NOT NULL,
+      FOREIGN KEY(customer_information_id) REFERENCES customer_information_data(customer_information_id),
+      role_id INTEGER NOT NULL,
+      status BOOL DEFAULT FALSE,
+      created_at DATETIME NOT NULL,
+      updated_at DATETIME NOT NULL,
+      PRIMARY KEY(keep_feed_id)
+    )`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query);
@@ -294,7 +314,14 @@ module.exports.createFeedbackQuestionTable = async(merchantMobile, storeId) => {
     const FeedbackQuestion = `${merchantMobile}_${storeId}_feedback_questions`;
 
     // Query
-    const query = `CREATE TABLE IF NOT EXISTS ${FeedbackQuestion} (feed_ques_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, feed_question VARCHAR(255) NOT NULL, input_id INTEGER NOT NULL, status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(feed_ques_id))`;
+    const query = `CREATE TABLE IF NOT EXISTS ${FeedbackQuestion} (
+      feed_ques_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, 
+      feed_question VARCHAR(255) NOT NULL, input_id INTEGER NOT NULL, 
+      status BOOL DEFAULT FALSE, 
+      created_at DATETIME NOT NULL, 
+      updated_at DATETIME NOT NULL, 
+      PRIMARY KEY(feed_ques_id)
+      )`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query);
@@ -318,7 +345,16 @@ module.exports.createFeedbackOptionTable = async(merchantMobile, storeId) => {
     const FeedbackOption = `${merchantMobile}_${storeId}_feedback_options`;
 
     // Query
-    const query = `CREATE TABLE IF NOT EXISTS ${FeedbackOption} (feed_option_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, option_value VARCHAR(255) NOT NULL, feed_ques_id INT(11) UNSIGNED NOT NULL, FOREIGN KEY (feed_ques_id) REFERENCES ${FeedbackQuestion} (feed_ques_id), status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(feed_option_id))`;
+    const query = `CREATE TABLE IF NOT EXISTS ${FeedbackOption} (
+      feed_option_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, 
+      option_value VARCHAR(255) NOT NULL, 
+      feed_ques_id INT(11) UNSIGNED NOT NULL, 
+      FOREIGN KEY (feed_ques_id) REFERENCES ${FeedbackQuestion} (feed_ques_id), 
+      status BOOL DEFAULT FALSE, 
+      created_at DATETIME NOT NULL, 
+      updated_at DATETIME NOT NULL, 
+      PRIMARY KEY(feed_option_id)
+      )`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query);
@@ -456,7 +492,18 @@ module.exports.createSurveyStoreTable = async(merchantMobile, storeId) => {
     const KeepSurvey = `${merchantMobile}_${storeId}_keep_partner_surveys`;
 
     // Query
-    const query = `CREATE TABLE IF NOT EXISTS ${KeepSurvey} (keep_survey_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, survey_ques_id INTEGER NOT NULL, survey_option_id INTEGER NOT NULL, customer_information_id INT(11) NOT NULL, FOREIGN KEY (customer_information_id) REFERENCES customer_information_data (customer_information_id), role_id INTEGER NOT NULL, status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(keep_survey_id))`;
+    const query = `CREATE TABLE IF NOT EXISTS ${KeepSurvey} (
+      keep_survey_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, 
+      survey_ques_id INTEGER NOT NULL, 
+      survey_option_id INTEGER NOT NULL, 
+      customer_information_id INT(11) NOT NULL, 
+      FOREIGN KEY (customer_information_id) REFERENCES customer_information_data (customer_information_id), 
+      role_id INTEGER NOT NULL, 
+      status BOOL DEFAULT FALSE, 
+      created_at DATETIME NOT NULL, 
+      updated_at DATETIME NOT NULL, 
+      PRIMARY KEY(keep_survey_id)
+      )`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query);
@@ -479,7 +526,15 @@ module.exports.createSurveyQuestionTable = async(merchantMobile, storeId) => {
     const SurveyQuestion = `${merchantMobile}_${storeId}_survey_questions`;
 
     // Query
-    const query = `CREATE TABLE IF NOT EXISTS ${SurveyQuestion} (survey_ques_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, survey_question VARCHAR(255) NOT NULL, input_id INTEGER NOT NULL, status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(survey_ques_id))`;
+    const query = `CREATE TABLE IF NOT EXISTS ${SurveyQuestion} (
+      survey_ques_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, 
+      survey_question VARCHAR(255) NOT NULL, 
+      input_id INTEGER NOT NULL, 
+      status BOOL DEFAULT FALSE, 
+      created_at DATETIME NOT NULL, 
+      updated_at DATETIME NOT NULL, 
+      PRIMARY KEY(survey_ques_id)
+      )`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query);
@@ -503,7 +558,16 @@ module.exports.createSurveyOptionTable = async(merchantMobile, storeId) => {
     const SurveyQuestion = `${merchantMobile}_${storeId}_survey_questions`;
 
     // Query
-    const query = `CREATE TABLE IF NOT EXISTS ${SurveyOption} (survey_option_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, option_value VARCHAR(255) NOT NULL, survey_ques_id INT(11) UNSIGNED NOT NULL, FOREIGN KEY (survey_ques_id) REFERENCES ${SurveyQuestion} (survey_ques_id), status BOOL DEFAULT FALSE, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(survey_option_id))`;
+    const query = `CREATE TABLE IF NOT EXISTS ${SurveyOption} (
+      survey_option_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, 
+      option_value VARCHAR(255) NOT NULL, 
+      survey_ques_id INT(11) UNSIGNED NOT NULL, 
+      FOREIGN KEY (survey_ques_id) REFERENCES ${SurveyQuestion} (survey_ques_id), 
+      status BOOL DEFAULT FALSE, 
+      created_at DATETIME NOT NULL, 
+      updated_at DATETIME NOT NULL, 
+      PRIMARY KEY(survey_option_id)
+      )`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query);
@@ -789,10 +853,10 @@ module.exports.checkWarehouseProduct = async(partnerMobile) => {
     const connection = await constants.createMysqlConnection();
 
     // Dynamic Table
-    const PartnerTable = `${partnerMobile}_warehouse_products`;
+    const ProductTable = `${partnerMobile}_warehouse_products`;
 
     // Query
-    const query = `SHOW TABLES LIKE '${PartnerTable}'`;
+    const query = `SHOW TABLES LIKE '${ProductTable}'`;
 
     // Query Database
     const [rows, fields] = await connection.execute(query);
@@ -804,6 +868,90 @@ module.exports.checkWarehouseProduct = async(partnerMobile) => {
     return Promise.reject(error);
   }
 };
+
+// Create Warehouse Product Table
+module.exports.createWarehouseProductTable = async(partnerMobile) => {
+  try {
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
+
+    // Dynamic Table
+    const ProductTable = `${partnerMobile}_warehouse_products`;
+
+    // Query
+    const query = `CREATE TABLE IF NOT EXISTS ${ProductTable}(
+      product_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+      product_barcode BIGINT NOT NULL UNIQUE,
+      product_name VARCHAR(100) NOT NULL,
+      FULLTEXT(product_name),
+      brand_name VARCHAR(100) NULL,
+      description TEXT NULL,
+      global_category_id INT(11) NOT NULL,
+      FOREIGN KEY(global_category_id) REFERENCES global_categories(global_category_id),
+      global_sub_category_id INT(11) NOT NULL,
+      FOREIGN KEY(global_sub_category_id) REFERENCES global_sub_categories(global_sub_category_id),
+      global_sub_sub_category_id INT(11) NOT NULL,
+      FOREIGN KEY(global_sub_sub_category_id) REFERENCES global_sub_sub_categories(global_sub_sub_category_id),
+      product_unit_id INT(11) NOT NULL,
+      FOREIGN KEY(product_unit_id) REFERENCES product_units(product_unit_id),
+      product_sub_unit_id INT(11) NOT NULL,
+      FOREIGN KEY(product_sub_unit_id) REFERENCES product_sub_units(product_sub_unit_id),
+      product_size INTEGER NOT NULL,
+      selling_price FLOAT NOT NULL,
+      margin FLOAT NOT NULL,
+      actual_price FLOAT NOT NULL,
+      product_quantity FLOAT NOT NULL,
+      sgst FLOAT NOT NULL,
+      cgst FLOAT NOT NULL,
+      igst FLOAT NOT NULL,
+      hsn FLOAT NOT NULL,
+      sodexo INTEGER NOT NULL,
+      staple INTEGER NOT NULL,
+      status BOOL DEFAULT FALSE,
+      created_at DATETIME NOT NULL,
+      updated_at DATETIME NOT NULL,
+      PRIMARY KEY(product_id)
+    )`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// // Keep Warehouse Product Detail
+// module.exports.keepWarehouseProduct = async(
+//   partnerMobile, status
+// ) => {
+//   try {
+//     // Create Mysql Connection
+//     const connection = await constants.createMysqlConnection();
+
+//     // Dynamic Table
+//     const ProductTable = `${partnerMobile}_warehouse_products`;
+
+//     // Query
+//     const query = `INSERT INTO ${ProductTable} (survey_ques_id, survey_option_id, customer_information_id, role_id, status, created_at, updated_at) VALUES (?,?,?,?,?,?,?)`;
+
+//     // Query Database
+//     const [rows, fields] = await connection.execute(query, [
+//       status,
+//       now,
+//       now
+//     ]);
+
+//     connection.close();
+
+//     return rows;
+//   } catch (error) {
+//     return Promise.reject(error);
+//   }
+// };
 
 
 /**

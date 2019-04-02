@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 
 // Import Controller
 const shareController = require("./share.controller");
+const databaseController = require("./database.controller");
 
 // Import Model
 const warehouseStaticModel = require("../models/warehouse_static_version");
@@ -948,6 +949,7 @@ module.exports.logicGetMasterProduct = async(id) => {
 module.exports.logicKeepWarehouseProduct = async(id, products) => {
   try {
 
+    let firstTime = false;
 
     // Call User Partner Data
     const partnerRecord = await userPartnerData(id);
@@ -965,8 +967,11 @@ module.exports.logicKeepWarehouseProduct = async(id, products) => {
 
     // Zero Means Empty Record
     if (warehouseProduct.length === 0) {
+
+      firstTime = true;
+
       // Create Warehouse Product Table
-      await databaseController.createWarehouseProduct(partnerRecord[0].mobile);
+      await databaseController.createWarehouseProductTable(partnerRecord[0].mobile);
     }
 
     // Json Keep Warehouse Product
