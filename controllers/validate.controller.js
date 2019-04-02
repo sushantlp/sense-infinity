@@ -662,3 +662,184 @@ module.exports.warehouseSecrets = (secrets) => {
     };
   }
 };
+
+// Validate Warehouse Secrets
+module.exports.warehouseProductDetail = (products) => {
+  try {
+
+    for (let i = 0; i < products.length; i++) {
+
+      if (!products[i].hasOwnProperty('product_barcode') ||
+        !Number.isInteger(products[i].product_barcode))
+        return {
+          success: false,
+          msg: 'Missing product barcode'
+        };
+
+      if (!products[i].hasOwnProperty('product_name') ||
+        Number.isInteger(products[i].product_name))
+        return {
+          success: false,
+          msg: 'Missing product name'
+        };
+
+      if (!products[i].hasOwnProperty('brand_name')) return {
+        success: false,
+        msg: 'Missing brand name'
+      };
+
+      if (!products[i].hasOwnProperty('description')) return {
+        success: false,
+        msg: 'Missing description'
+      };
+
+      if (!products[i].hasOwnProperty('category_unique') ||
+        !Number.isInteger(products[i].category_unique))
+        return {
+          success: false,
+          msg: 'Missing category unique'
+        };
+
+      if (!products[i].hasOwnProperty('sub_category_unique') ||
+        !Number.isInteger(products[i].sub_category_unique))
+        return {
+          success: false,
+          msg: 'Missing sub category unique'
+        };
+
+      if (!products[i].hasOwnProperty('sub_sub_category_unique') ||
+        !Number.isInteger(products[i].sub_sub_category_unique))
+        return {
+          success: false,
+          msg: 'Missing sub sub category unique'
+        };
+
+      if (!products[i].hasOwnProperty('unit_unique') ||
+        !Number.isInteger(products[i].unit_unique))
+        return {
+          success: false,
+          msg: 'Missing unit unique'
+        };
+
+      if (!products[i].hasOwnProperty('unit_sub_unique') ||
+        !Number.isInteger(products[i].unit_sub_unique))
+        return {
+          success: false,
+          msg: 'Missing unit sub unique'
+        };
+
+      if (!products[i].hasOwnProperty('unit_unique') ||
+        !Number.isInteger(products[i].unit_unique))
+        return {
+          success: false,
+          msg: 'Missing unit unique'
+        };
+
+      if (!products[i].hasOwnProperty('size') ||
+        !Number.isInteger(products[i].size))
+        return {
+          success: false,
+          msg: 'Missing size'
+        };
+
+      if (!products[i].hasOwnProperty('selling_price') ||
+        !Number.isInteger(products[i].selling_price))
+        return {
+          success: false,
+          msg: 'Missing selling price'
+        };
+
+      if (!products[i].hasOwnProperty('margin') ||
+        !Number.isInteger(products[i].margin))
+        return {
+          success: false,
+          msg: 'Missing margin'
+        };
+
+      if (!products[i].hasOwnProperty('sgst') ||
+        !Number.isInteger(products[i].sgst))
+        return {
+          success: false,
+          msg: 'Missing sgst'
+        };
+
+      if (!products[i].hasOwnProperty('cgst') ||
+        !Number.isInteger(products[i].cgst))
+        return {
+          success: false,
+          msg: 'Missing cgst'
+        };
+
+      if (!products[i].hasOwnProperty('igst') ||
+        !Number.isInteger(products[i].igst))
+        return {
+          success: false,
+          msg: 'Missing igst'
+        };
+
+      if (!products[i].hasOwnProperty('sgst') ||
+        !Number.isInteger(products[i].sgst))
+        return {
+          success: false,
+          msg: 'Missing sgst'
+        };
+
+      if (!products[i].hasOwnProperty('sodexo') ||
+        !Number.isInteger(products[i].sodexo))
+        return {
+          success: false,
+          msg: 'Missing sodexo'
+        };
+
+      if (!products[i].hasOwnProperty('quantity') ||
+        !Number.isInteger(products[i].quantity))
+        return {
+          success: false,
+          msg: 'Missing quantity'
+        };
+
+      if (!products[i].hasOwnProperty('product_price') ||
+        !Number.isInteger(products[i].product_price))
+        return {
+          success: false,
+          msg: 'Missing product price'
+        };
+
+      if (!products[i].hasOwnProperty('staple') ||
+        !Number.isInteger(products[i].staple))
+        return {
+          success: false,
+          msg: 'Missing staple'
+        };
+
+      if (!products[i].hasOwnProperty('hsn') ||
+        !Number.isInteger(products[i].hsn))
+        return {
+          success: false,
+          msg: 'Missing hsn'
+        };
+
+      if (!products[i].hasOwnProperty('status') ||
+        !Number.isInteger(products[i].status))
+        return {
+          success: false,
+          msg: 'Missing status'
+        };
+    }
+
+    if (products.length !== 0) return {
+      success: true,
+      msg: 'Succesful'
+    };
+    else return {
+      success: false,
+      msg: 'Empty json'
+    };
+
+  } catch (error) {
+    return {
+      success: false,
+      msg: 'Wrong json'
+    };
+  }
+};

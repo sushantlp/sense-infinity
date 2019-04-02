@@ -782,6 +782,30 @@ module.exports.updateMerchantSurveyTable = async(
   }
 };
 
+// Check Warehouse Product Table Exist
+module.exports.checkWarehouseProduct = async(partnerMobile) => {
+  try {
+    // Create Mysql Connection
+    const connection = await constants.createMysqlConnection();
+
+    // Dynamic Table
+    const PartnerTable = `${partnerMobile}_warehouse_products`;
+
+    // Query
+    const query = `SHOW TABLES LIKE '${PartnerTable}'`;
+
+    // Query Database
+    const [rows, fields] = await connection.execute(query);
+
+    connection.close();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+
 /**
  * End Database Read and Write
  */

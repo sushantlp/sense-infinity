@@ -942,3 +942,43 @@ module.exports.logicGetMasterProduct = async(id) => {
     return Promise.reject(error);
   }
 }
+
+
+// Logic Keep Warehouse Product
+module.exports.logicKeepWarehouseProduct = async(id, products) => {
+  try {
+
+
+    // Call User Partner Data
+    const partnerRecord = await userPartnerData(id);
+
+    if (partnerRecord.length === 0) return {
+      success: false,
+      data: [],
+      msg: 'Unknown partner'
+    };
+
+    // Check Warehouse Product Table Exist
+    const warehouseProduct = await databaseController.showConstantTable(
+      partnerRecord[0].mobile
+    );
+
+    // Zero Means Empty Record
+    if (warehouseProduct.length === 0) {
+      // Create Warehouse Product Table
+      await databaseController.createWarehouseProduct(partnerRecord[0].mobile);
+    }
+
+    // Json Keep Warehouse Product
+    jsonKeepWarehouseProduct(products, partnerRecord)
+
+    return {
+      success: true,
+      data: [],
+      msg: 'Succesful'
+    };
+
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}

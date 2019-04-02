@@ -120,7 +120,6 @@ module.exports.requestLogicKeepComplain = async(
       msg: "Empty merchant record"
     };
 
-
     // Merchant Constant Table Exist
     const senseConstant = await databaseController.showConstantTable(
       mobile,

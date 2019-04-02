@@ -1288,7 +1288,7 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date()
       }, {
-        global_sub_sub_category_name: "BATTERY",
+        global_sub_sub_category_name: "MISCELLANEOUS",
         global_sub_category_id: 31,
         status: 1,
         created_at: new Date(),
@@ -1313,12 +1313,6 @@ module.exports = {
         updated_at: new Date()
       }, {
         global_sub_sub_category_name: "SEWING KIT",
-        global_sub_category_id: 31,
-        status: 1,
-        created_at: new Date(),
-        updated_at: new Date()
-      }, {
-        global_sub_sub_category_name: "MISCELLANEOUS",
         global_sub_category_id: 31,
         status: 1,
         created_at: new Date(),
