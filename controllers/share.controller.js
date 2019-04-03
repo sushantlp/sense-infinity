@@ -360,3 +360,41 @@ module.exports.reformSecretDetail = (
 
   return reform;
 };
+
+
+// Reform Secret Detail
+module.exports.reformWarehouseProduct = (
+  firstName,
+  lastName,
+  birthDate,
+  departmentName,
+  email
+) => {
+  // Variable
+  let reform = {
+    firstName: undefined,
+    lastName: undefined,
+    birthDate: undefined,
+    departmentName: undefined,
+    email: undefined,
+  };
+
+  // EMPTY || NULL || UNDEFINED
+  if (firstName !== '' && firstName !== null && typeof firstName !== undefined) reform.firstName = firstName.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
+
+  if (lastName !== '' && lastName !== null && typeof lastName !== undefined) reform.lastName = lastName.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
+
+  if (birthDate !== '' && birthDate !== null && typeof birthDate !== undefined) reform.birthDate = moment(new Date(birthDate)).format('YYYY-MM-DD');
+
+  if (departmentName !== '' && departmentName !== null && typeof departmentName !== undefined) reform.departmentName = departmentName.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
+
+  if (email !== '' && email !== null && typeof email !== undefined) reform.email = email;
+
+  return reform;
+};
