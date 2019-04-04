@@ -50,15 +50,18 @@ module.exports.keepStapleProductSize = async(
 ) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query =
       "INSERT INTO `staple_product_sizes` (`product_barcode`, `staple_product_id`, `product_unit_id`, `product_sub_unit_id`, `product_unit_size`, `product_selling_mrp`, `product_margin`, `product_mrp`, `change_status`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 
     // Query Database
-    const row = await connection.execute(query, [
+    const row = await connection.query(query, [
       barcode,
       productId,
       unitId,
@@ -73,7 +76,7 @@ module.exports.keepStapleProductSize = async(
       now
     ]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {
@@ -96,15 +99,18 @@ module.exports.updateStapleProductSize = async(
 ) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query =
       "UPDATE `staple_product_sizes` SET `product_barcode` = ?, `staple_product_id` = ?, `product_unit_id` = ?, `product_sub_unit_id` = ?, `product_unit_size` = ?, `product_selling_mrp` = ?, `product_margin` = ?, `product_mrp` = ?, `change_status` = ?, `updated_at` = ? WHERE `staple_product_size_id` = ?";
 
     // Query Database
-    const row = await connection.execute(query, [
+    const row = await connection.query(query, [
       barcode,
       productId,
       unitId,
@@ -118,7 +124,7 @@ module.exports.updateStapleProductSize = async(
       id
     ]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {

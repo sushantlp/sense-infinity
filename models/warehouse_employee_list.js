@@ -40,16 +40,19 @@ const now = moment()
 module.exports.readEmployeeByEmployeeId = async(select, employeeId, status) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM warehouse_employee_lists WHERE warehouse_employe_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [employeeId, status]);
+    const [rows, fields] = await connection.query(query, [employeeId, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -61,16 +64,19 @@ module.exports.readEmployeeByEmployeeId = async(select, employeeId, status) => {
 module.exports.readEmployeeById = async(select, Id, status) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM warehouse_employee_lists WHERE id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [Id, status]);
+    const [rows, fields] = await connection.query(query, [Id, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -93,8 +99,11 @@ module.exports.keepEmployeeData = async(
 ) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     if (firstName === undefined) firstName = connection.escape(firstName);
     if (lastName === undefined) lastName = connection.escape(lastName);
@@ -107,7 +116,7 @@ module.exports.keepEmployeeData = async(
       "INSERT INTO `warehouse_employee_lists` (`warehouse_employe_id`, `first_name`, `last_name`, `birth_date`, `mobile`, `email`, `dept_name`, `gender_id`, `store_id`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 
     // Query Database
-    const row = await connection.execute(query, [
+    const row = await connection.query(query, [
       employeId,
       firstName,
       lastName,
@@ -122,7 +131,7 @@ module.exports.keepEmployeeData = async(
       now
     ]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {
@@ -144,8 +153,11 @@ module.exports.updateEmployeeData = async(
 ) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     if (firstName === undefined) firstName = connection.escape(firstName);
     if (lastName === undefined) lastName = connection.escape(lastName);
@@ -158,7 +170,7 @@ module.exports.updateEmployeeData = async(
       "UPDATE `warehouse_employee_lists` SET `first_name` = ?, `last_name` = ?, `birth_date` = ?, `mobile` = ?, `email` = ?, `dept_name` = ?, `gender_id` = ?, `store_id` = ?, `updated_at` = ? WHERE `id` = ?";
 
     // Query Database
-    const row = await connection.execute(query, [
+    const row = await connection.query(query, [
       firstName,
       lastName,
       birthDate,
@@ -171,7 +183,7 @@ module.exports.updateEmployeeData = async(
       id
     ]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {

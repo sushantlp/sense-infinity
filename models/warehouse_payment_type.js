@@ -23,16 +23,20 @@ module.exports = (sequelize, DataTypes) => {
 // Read Warehouse Payment Type
 module.exports.readPaymentType = async(select, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM warehouse_payment_types WHERE status = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [status]);
+    const [rows, fields] = await connection.query(query, [status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {

@@ -8,14 +8,12 @@ const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var sms = sequelize.define(
-    'sms',
-    {
+    'sms', {
       mobile: DataTypes.STRING,
       otp: DataTypes.STRING,
       gateway_status: DataTypes.STRING,
       status: DataTypes.BOOLEAN
-    },
-    {}
+    }, {}
   );
   sms.associate = function(models) {
     // associations can be defined here
@@ -33,18 +31,22 @@ const now = moment()
  */
 
 // Keep Sms Record
-module.exports.keepSmsOtp = async (mobile, otp, status) => {
+module.exports.keepSmsOtp = async(mobile, otp, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = 'INSERT INTO `sms` (`mobile`, `otp`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?)';
 
     // Query Database
-    const row = await connection.execute(query, [mobile, otp, status, now, now]);
+    const row = await connection.query(query, [mobile, otp, status, now, now]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {
@@ -53,18 +55,22 @@ module.exports.keepSmsOtp = async (mobile, otp, status) => {
 };
 
 // Update Sms Record
-module.exports.updateSmsOtp = async (mobile, gateway, status) => {
+module.exports.updateSmsOtp = async(mobile, gateway, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = 'UPDATE `sms` SET `gateway_status` = ?, `status` = ?, `updated_at` = ? WHERE `mobile` = ?';
 
     // Query Database
-    const row = await connection.execute(query, [gateway, status, now, mobile]);
+    const row = await connection.query(query, [gateway, status, now, mobile]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {
@@ -73,18 +79,22 @@ module.exports.updateSmsOtp = async (mobile, gateway, status) => {
 };
 
 // Read Daily Sms Limit
-module.exports.dailySmsLimit = async (select, mobile) => {
+module.exports.dailySmsLimit = async(select, mobile) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM sms WHERE mobile = ? AND date(created_at)=curdate()`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [mobile]);
+    const [rows, fields] = await connection.query(query, [mobile]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -93,18 +103,22 @@ module.exports.dailySmsLimit = async (select, mobile) => {
 };
 
 // Read Sms Record
-module.exports.readSmsRecord = async (select, mobile, status) => {
+module.exports.readSmsRecord = async(select, mobile, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM sms WHERE mobile = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [mobile, status]);
+    const [rows, fields] = await connection.query(query, [mobile, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {

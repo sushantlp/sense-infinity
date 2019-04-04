@@ -33,16 +33,20 @@ const now = moment()
 // Read Tax Sync Record
 module.exports.readTaxSync = async(select, partnerId, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM tax_syncs WHERE partner_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [partnerId, status]);
+    const [rows, fields] = await connection.query(query, [partnerId, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -56,21 +60,24 @@ module.exports.updateStatusTaxSync = async(
 ) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query =
       "UPDATE `tax_syncs` SET `status` = ?, `updated_at` = ? WHERE `tax_sync_id` = ?";
 
     // Query Database
-    const row = await connection.execute(query, [
+    const row = await connection.query(query, [
       status,
       now,
       id
     ]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {
@@ -86,15 +93,18 @@ module.exports.keepTaxSync = async(
 ) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query =
       "INSERT INTO `tax_syncs` (`partner_id`, `attributes`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?)";
 
     // Query Database
-    const row = await connection.execute(query, [
+    const row = await connection.query(query, [
       partnerId,
       attribute,
       status,
@@ -102,7 +112,7 @@ module.exports.keepTaxSync = async(
       now
     ]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {
@@ -116,21 +126,20 @@ module.exports.updateTaxSync = async(
 ) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query =
       "UPDATE `tax_syncs` SET `attributes` = ?, `updated_at` = ? WHERE `tax_sync_id` = ?";
 
     // Query Database
-    const row = await connection.execute(query, [
-      attributes,
-      now,
-      id
-    ]);
+    const row = await connection.query(query, [attributes, now, id]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {

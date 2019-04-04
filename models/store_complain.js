@@ -34,16 +34,20 @@ const now = moment()
 // Read Store Complain Record
 module.exports.readStoreComplain = async(select, storeId, merchantId, customerId, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM store_complains WHERE store_id = ? AND customer_information_id = ? AND partner_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [storeId, customerId, merchantId, status]);
+    const [rows, fields] = await connection.query(query, [storeId, customerId, merchantId, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -54,15 +58,19 @@ module.exports.readStoreComplain = async(select, storeId, merchantId, customerId
 // Keep Merchant Store Complain
 module.exports.keepStoreComplain = async(customerId, merchantId, storeId, desc, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query =
       'INSERT INTO `store_complains` (`customer_information_id`,`partner_id`,`store_id`,`complain`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?)';
 
     // Query Database
-    const row = await connection.execute(query, [
+    const row = await connection.query(query, [
       customerId,
       merchantId,
       storeId,
@@ -72,7 +80,7 @@ module.exports.keepStoreComplain = async(customerId, merchantId, storeId, desc, 
       now
     ]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {
@@ -84,16 +92,20 @@ module.exports.keepStoreComplain = async(customerId, merchantId, storeId, desc, 
 // Update Merchant Store Complain
 module.exports.updateStoreComplain = async(complainId, description, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = 'UPDATE `store_complains` SET complain = ?, status = ?, updated_at = ? WHERE complain_id = ?';
 
     // Query Database
-    const row = await connection.execute(query, [connection.escape(description), status, now, complainId]);
+    const row = await connection.query(query, [connection.escape(description), status, now, complainId]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {

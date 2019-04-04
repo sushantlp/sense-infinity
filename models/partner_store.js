@@ -47,16 +47,20 @@ const now = moment()
 // Read Merchant Store Record
 module.exports.readStoreRecord = async(select, partnerId, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM partner_stores WHERE partner_id = ? AND status = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [partnerId, status]);
+    const [rows, fields] = await connection.query(query, [partnerId, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -68,16 +72,19 @@ module.exports.readStoreRecord = async(select, partnerId, status) => {
 module.exports.readStoreById = async(select, storeId, status) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM partner_stores WHERE store_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [storeId, status]);
+    const [rows, fields] = await connection.query(query, [storeId, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -89,16 +96,19 @@ module.exports.readStoreById = async(select, storeId, status) => {
 module.exports.readStoreByCode = async(select, code, status) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM partner_stores WHERE store_code = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [code, status]);
+    const [rows, fields] = await connection.query(query, [code, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -124,8 +134,11 @@ module.exports.keepStoreData = async(
 ) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     if (storeName === undefined) storeName = connection.escape(storeName);
     if (addressOne === undefined) addressOne = connection.escape(addressOne);
@@ -140,7 +153,7 @@ module.exports.keepStoreData = async(
       "INSERT INTO `partner_stores` (`store_code`,`partner_id`,`store_name`,`address_one`,`address_two`,`landmark`,`city_id`,`locality_id`,`store_mobile`,`store_email`,`refund_on_discount`,`refund_policy`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     // Query Database
-    const row = await connection.execute(query, [
+    const row = await connection.query(query, [
       storeCode,
       partnerId,
       storeName,
@@ -158,7 +171,7 @@ module.exports.keepStoreData = async(
       now
     ]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {
@@ -181,8 +194,12 @@ module.exports.updateStoreData = async(
   refundPolicy
 ) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     if (storeName === undefined) storeName = connection.escape(storeName);
     if (addressOne === undefined) addressOne = connection.escape(addressOne);
@@ -198,7 +215,7 @@ module.exports.updateStoreData = async(
       "UPDATE `partner_stores` SET `store_name` = ?, `address_one` = ?, `address_two` = ?, `landmark` = ?, `city_id` = ?, `locality_id` = ?, `store_mobile` = ?, `store_email` = ?, `refund_on_discount` = ?, `refund_policy` = ?, `updated_at` = ? WHERE `store_id` = ?";
 
     // Query Database
-    const row = await connection.execute(query, [
+    const row = await connection.query(query, [
       storeName,
       addressOne,
       addressTwo,
@@ -213,7 +230,7 @@ module.exports.updateStoreData = async(
       storeId
     ]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {

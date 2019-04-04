@@ -35,16 +35,20 @@ const now = moment()
 // Read Tax Table Record
 module.exports.readTax = async(select, taxId) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM tax_tables WHERE tax_id = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [taxId]);
+    const [rows, fields] = await connection.query(query, [taxId]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -55,16 +59,20 @@ module.exports.readTax = async(select, taxId) => {
 // Read Tax Table Record By Array
 module.exports.readTaxByArray = async(select, marks, ids) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM tax_tables WHERE tax_id IN (${marks})`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, ids);
+    const [rows, fields] = await connection.query(query, ids);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {

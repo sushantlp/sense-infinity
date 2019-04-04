@@ -35,16 +35,19 @@ const now = moment()
 module.exports.readWarehouseUserByUserId = async(select, userId, status) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM warehouse_user_lists WHERE warehouse_user_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [userId, status]);
+    const [rows, fields] = await connection.query(query, [userId, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -56,16 +59,19 @@ module.exports.readWarehouseUserByUserId = async(select, userId, status) => {
 module.exports.readWarehouseUserById = async(select, Id, status) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM warehouse_user_lists WHERE id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [Id, status]);
+    const [rows, fields] = await connection.query(query, [Id, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -83,15 +89,18 @@ module.exports.keepWarehouseUserData = async(
 ) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query =
       "INSERT INTO `warehouse_user_lists` (`warehouse_user_id`,`warehouse_role_id`,`partner_id`,`password`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?)";
 
     // Query Database
-    const row = await connection.execute(query, [
+    const row = await connection.query(query, [
       userId,
       roleId,
       partnerId,
@@ -101,7 +110,7 @@ module.exports.keepWarehouseUserData = async(
       now
     ]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {
@@ -116,21 +125,24 @@ module.exports.updateWarehouseUserPassword = async(
 ) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query =
       "UPDATE `warehouse_user_lists` SET `password` = ?, `updated_at` = ? WHERE `id` = ?";
 
     // Query Database
-    const row = await connection.execute(query, [
+    const row = await connection.query(query, [
       password,
       now,
       id
     ]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {

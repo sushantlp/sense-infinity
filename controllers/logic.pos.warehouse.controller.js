@@ -973,7 +973,7 @@ module.exports.logicKeepWarehouseProduct = async(id, products) => {
 
 
     // Json Keep Warehouse Product
-    jsonKeepWarehouseProduct(products, partnerRecord, firstTime)
+    jsonKeepWarehouseProduct(products, partnerRecord)
 
     return {
       success: true,
@@ -987,7 +987,7 @@ module.exports.logicKeepWarehouseProduct = async(id, products) => {
 };
 
 // Json Keep Warehouse Product
-const jsonKeepWarehouseProduct = async(products, partnerRecord, firstTime) => {
+const jsonKeepWarehouseProduct = async(products, partnerRecord) => {
   try {
 
     const promises = products.map(async(product, index) => {

@@ -890,7 +890,7 @@ module.exports.createWarehouseProductTable = async(partnerMobile) => {
     const query = `CREATE TABLE IF NOT EXISTS ${ProductTable}(
       product_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
       product_barcode BIGINT NOT NULL UNIQUE,
-      product_name VARCHAR(100) NOT NULL,
+      product_name VARCHAR(100) NULL,
       brand_name VARCHAR(100) NULL,
       description TEXT NULL,
       global_category_id INTEGER NOT NULL,

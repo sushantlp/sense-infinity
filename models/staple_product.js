@@ -41,16 +41,19 @@ const now = moment()
 module.exports.readProductAndSize = async(select, changeStatus) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM staple_products LEFT JOIN staple_product_sizes ON staple_products.staple_product_id = staple_product_sizes.staple_product_id WHERE staple_products.change_status = ? AND staple_product_sizes.change_status = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [changeStatus, changeStatus]);
+    const [rows, fields] = await connection.query(query, [changeStatus, changeStatus]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -74,15 +77,18 @@ module.exports.keepStapleProduct = async(
 ) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query =
       "INSERT INTO `staple_products` (`product_name`,`product_brand_name`,`product_description`,`global_category_id`,`global_sub_category_id`,`global_sub_sub_category_id`,`sgst`,`cgst`,`igst`,`change_status`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     // Query Database
-    const row = await connection.execute(query, [
+    const row = await connection.query(query, [
       productName,
       brandName,
       description,
@@ -98,7 +104,7 @@ module.exports.keepStapleProduct = async(
       now
     ]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {
@@ -122,15 +128,18 @@ module.exports.updateStapleProduct = async(
 ) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query =
       "UPDATE `staple_products` SET `product_name` = ?, `product_brand_name` = ?, `product_description` = ?, `global_category_id` = ?, `global_sub_category_id` = ?, `global_sub_sub_category_id` = ?, `sgst` = ?, `cgst` = ?, `igst` = ?, `change_status` = ?, `updated_at` = ? WHERE `staple_product_id` = ?";
 
     // Query Database
-    const row = await connection.execute(query, [
+    const row = await connection.query(query, [
       productName,
       brandName,
       description,
@@ -145,7 +154,7 @@ module.exports.updateStapleProduct = async(
       id
     ]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {
