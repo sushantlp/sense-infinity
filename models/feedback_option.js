@@ -8,13 +8,11 @@ const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var feedbackOption = sequelize.define(
-    'feedback_option',
-    {
+    'feedback_option', {
       option_value: DataTypes.STRING,
       feed_ques_id: DataTypes.INTEGER,
       status: DataTypes.BOOLEAN
-    },
-    {}
+    }, {}
   );
   feedbackOption.associate = function(models) {
     // associations can be defined here
@@ -32,18 +30,22 @@ const now = moment()
  */
 
 // Read Admin Feedback Option
-module.exports.readAdminFeedbackOption = async (select, quesId, status) => {
+module.exports.readAdminFeedbackOption = async(select, quesId, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM feedback_options WHERE feed_ques_id = ? AND status = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [quesId, status]);
+    const [rows, fields] = await connection.query(query, [quesId, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {

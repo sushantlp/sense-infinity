@@ -8,12 +8,10 @@ const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var ErrorLog = sequelize.define(
-    'error_log',
-    {
+    'error_log', {
       error: DataTypes.TEXT,
       value: DataTypes.TEXT
-    },
-    {
+    }, {
       classMethods: {
         associate: function(models) {
           // associations can be defined here
@@ -34,18 +32,22 @@ const now = moment()
  */
 
 // Keep Into Error Log
-module.exports.keepErrorLog = async (error, value) => {
+module.exports.keepErrorLog = async(error, value) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = 'INSERT INTO `error_logs` (`error`, `value`, `created_at`,`updated_at`) VALUES (?,?,?,?)';
 
     // Query Database
-    const row = await connection.execute(query, [error, value, now, now]);
+    const row = await connection.query(query, [error, value, now, now]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {

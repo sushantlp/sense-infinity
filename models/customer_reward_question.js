@@ -27,16 +27,19 @@ module.exports = (sequelize, DataTypes) => {
 module.exports.readRewardQuestionList = async(select, status) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM customer_reward_questions LEFT JOIN input_types ON customer_reward_questions.input_id = input_types.input_id WHERE customer_reward_questions.status = ? AND input_types.status = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [status, status]);
+    const [rows, fields] = await connection.query(query, [status, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -48,16 +51,19 @@ module.exports.readRewardQuestionList = async(select, status) => {
 module.exports.readRewardQuestion = async(select, questionId, status) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM customer_reward_questions WHERE reward_question_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [questionId, status]);
+    const [rows, fields] = await connection.query(query, [questionId, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {

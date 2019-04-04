@@ -398,3 +398,32 @@ module.exports.reformWarehouseProduct = (
 
   return reform;
 };
+
+// Reform Warehouse Product
+module.exports.reformWarehouseProduct = (
+  productName,
+  brandName,
+  description
+) => {
+  // Variable
+  let reform = {
+    productName: undefined,
+    brandName: undefined,
+    description: undefined
+  };
+
+  // EMPTY || NULL || UNDEFINED
+  if (productName !== '' && productName !== null && typeof productName !== undefined && isNaN(productName)) reform.productName = productName.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
+
+  if (brandName !== '' && brandName !== null && typeof brandName !== undefined && isNaN(brandName)) reform.brandName = brandName.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
+
+  if (description !== '' && description !== null && typeof description !== undefined && isNaN(description)) reform.description = description.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
+
+  return reform;
+};

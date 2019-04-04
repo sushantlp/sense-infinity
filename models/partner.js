@@ -40,6 +40,7 @@ const now = moment()
 // Read Partner Record
 module.exports.readPartnerByMobile = async(select, mobile, status) => {
   try {
+
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 

@@ -28,8 +28,6 @@ module.exports = (sequelize, DataTypes) => {
 // Read Api Key
 module.exports.readApiKey = async(select, prefix, key, status) => {
   try {
-    // Create Mysql Connection
-    //const connection = await constants.createMysqlConnection();
 
     // Get Pool Object
     const pool = constants.createMysqlConnection();

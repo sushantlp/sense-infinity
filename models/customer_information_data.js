@@ -46,16 +46,20 @@ const now = moment()
 // Read Customer Information Data By Customer Information Id
 module.exports.readCustomerDataId = async(select, id, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM customer_information_data WHERE customer_information_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [id, status]);
+    const [rows, fields] = await connection.query(query, [id, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -66,16 +70,20 @@ module.exports.readCustomerDataId = async(select, id, status) => {
 // Read Customer Information Data By Mobile
 module.exports.readCustomerDataMobile = async(select, mobile, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM customer_information_data WHERE mobile = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [mobile, status]);
+    const [rows, fields] = await connection.query(query, [mobile, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -86,20 +94,24 @@ module.exports.readCustomerDataMobile = async(select, mobile, status) => {
 // Read Customer Information Data by Mobile and Country Code
 module.exports.readDataMobileCode = async(select, mobile, code, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM customer_information_data WHERE mobile = ? AND country_code = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [
+    const [rows, fields] = await connection.query(query, [
       mobile,
       code,
       status
     ]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -127,8 +139,12 @@ module.exports.keepCustomerData = async(
   status
 ) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     if (firstName === undefined) firstName = connection.escape(firstName);
     if (lastName === undefined) lastName = connection.escape(lastName);
@@ -145,7 +161,7 @@ module.exports.keepCustomerData = async(
       "INSERT INTO `customer_information_data` (`first_name`,`last_name`,`email`,`mobile`,`country_code`,`dob`,`gender_id`,`city_id`,`locality_id`,`married`,`address_one`,`address_two`,`landmark`,`spouse_name`,`anniversary_date`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     // Query Database
-    const row = await connection.execute(query, [
+    const row = await connection.query(query, [
       firstName,
       lastName,
       email,
@@ -166,7 +182,7 @@ module.exports.keepCustomerData = async(
       now
     ]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {
@@ -192,8 +208,12 @@ module.exports.updateCustomerData = async(
   id
 ) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     if (firstName === undefined) firstName = connection.escape(firstName);
     if (lastName === undefined) lastName = connection.escape(lastName);
@@ -210,7 +230,7 @@ module.exports.updateCustomerData = async(
       "UPDATE `customer_information_data` SET `first_name` = ?, `last_name` = ?, `email` = ?, `dob` = ?, `gender_id` = ?, `city_id` = ?, `locality_id` = ?, `married` = ?, `address_one` = ?, `address_two` = ?, `landmark` = ?, `spouse_name` = ?, `anniversary_date` = ?, `updated_at` = ? WHERE `customer_information_id` = ?";
 
     // Query Database
-    const row = await connection.execute(query, [
+    const row = await connection.query(query, [
       firstName,
       lastName,
       email,
@@ -228,7 +248,7 @@ module.exports.updateCustomerData = async(
       id
     ]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {
@@ -244,21 +264,24 @@ module.exports.updateCustomerRewardPoint = async(
 ) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query =
       "UPDATE `customer_information_data` SET `reward_point` = ?, `updated_at` = ? WHERE `customer_information_id` = ?";
 
     // Query Database
-    const row = await connection.execute(query, [
+    const row = await connection.query(query, [
       point,
       now,
       id
     ]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {

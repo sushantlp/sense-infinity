@@ -68,9 +68,11 @@ module.exports.keepInformationTrack = async(
 ) => {
   try {
 
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Create Connection
+    const connection = await pool.getConnection();
 
     if (firstName === undefined) firstName = connection.escape(firstName);
     if (lastName === undefined) lastName = connection.escape(lastName);
@@ -87,7 +89,7 @@ module.exports.keepInformationTrack = async(
       'INSERT INTO `customer_information_tracks` (`first_name`,`last_name`,`email`,`mobile`,`country_code`,`dob`,`gender_id`,`city_id`,`locality_id`,`partner_id`,`store_id`,`married`,`address_one`,`address_two`,`landmark`,`spouse_name`,`anniversary_date`,`gateway`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
     // Query Database
-    const row = await connection.execute(query, [
+    const row = await connection.query(query, [
       firstName,
       lastName,
       email,
@@ -111,7 +113,7 @@ module.exports.keepInformationTrack = async(
       now
     ]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {

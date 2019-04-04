@@ -8,12 +8,10 @@ const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var gender = sequelize.define(
-    'gender',
-    {
+    'gender', {
       name: DataTypes.STRING,
       status: DataTypes.BOOLEAN
-    },
-    {}
+    }, {}
   );
   gender.associate = function(models) {
     // associations can be defined here
@@ -31,18 +29,22 @@ const now = moment()
  */
 
 // Keep Into Gender
-module.exports.keepGender = async (name, status) => {
+module.exports.keepGender = async(name, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = 'INSERT INTO `genders` (`name`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?)';
 
     // Query Database
-    const row = await connection.execute(query, [name, status, now, now]);
+    const row = await connection.query(query, [name, status, now, now]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {
@@ -51,18 +53,22 @@ module.exports.keepGender = async (name, status) => {
 };
 
 // Read Gender Record
-module.exports.readGenderRecord = async (select, status) => {
+module.exports.readGenderRecord = async(select, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM genders WHERE status=?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [status]);
+    const [rows, fields] = await connection.query(query, [status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {

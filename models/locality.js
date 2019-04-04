@@ -5,16 +5,14 @@ const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var locality = sequelize.define(
-    'locality',
-    {
+    'locality', {
       city_id: DataTypes.INTEGER,
       locality_name: DataTypes.STRING,
       pincode: DataTypes.INTEGER,
       longitude: DataTypes.DOUBLE,
       latitude: DataTypes.DOUBLE,
       status: DataTypes.BOOLEAN
-    },
-    {}
+    }, {}
   );
   locality.associate = function(models) {
     // associations can be defined here
@@ -27,18 +25,22 @@ module.exports = (sequelize, DataTypes) => {
  */
 
 // Read Locality Record
-module.exports.readLocalityRecord = async (select, status) => {
+module.exports.readLocalityRecord = async(select, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM localities WHERE status=?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [status]);
+    const [rows, fields] = await connection.query(query, [status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {

@@ -954,9 +954,6 @@ module.exports.logicGetMasterProduct = async(id) => {
 module.exports.logicKeepWarehouseProduct = async(id, products) => {
   try {
 
-    // Declared Variable
-    let firstTime = false;
-
     // Call User Partner Data
     const partnerRecord = await userPartnerData(id);
 
@@ -972,13 +969,8 @@ module.exports.logicKeepWarehouseProduct = async(id, products) => {
     );
 
     // Zero Means Empty Record
-    if (warehouseProduct.length === 0) {
+    if (warehouseProduct.length === 0) await databaseController.createWarehouseProductTable(partnerRecord[0].mobile);
 
-      firstTime = true;
-
-      // Create Warehouse Product Table
-      await databaseController.createWarehouseProductTable(partnerRecord[0].mobile);
-    }
 
     // Json Keep Warehouse Product
     jsonKeepWarehouseProduct(products, partnerRecord, firstTime)
@@ -997,7 +989,8 @@ module.exports.logicKeepWarehouseProduct = async(id, products) => {
 // Json Keep Warehouse Product
 const jsonKeepWarehouseProduct = async(products, partnerRecord, firstTime) => {
   try {
-    products.map(async(product, index) => {
+
+    const promises = products.map(async(product, index) => {
 
       // Read Warehouse Product By Barcode
       let productRecord = await databaseController.readWarehouseProduct("*", partnerRecord[0].mobile, product.product_barcode);
@@ -1006,10 +999,16 @@ const jsonKeepWarehouseProduct = async(products, partnerRecord, firstTime) => {
       productRecord = JSON.stringify(productRecord);
       productRecord = JSON.parse(productRecord);
 
-      if (productRecord.length === 0) databaseController.keepWarehouseProduct(partnerRecord[0].mobile, product.product_barcode, product.product_name, product.brand_name, product.description, product.category_unique, product.sub_category_unique, product.sub_sub_category_unique, product.unit_unique, product.unit_sub_unique, product.product_size, product.selling_price, product.product_margin, product.product_price, product.product_quantity, product.sgst, product.cgst, product.igst, product.hsn, product.sodexo, product.staple, product.status);
+      // Reform Warehouse Product
+      const reform = shareController.reformWarehouseProduct(product.product_name, product.brand_name, product.description);
 
-      else databaseController.updateWarehouseProduct(partnerRecord[0].mobile, product.product_name, product.brand_name, product.description, product.category_unique, product.sub_category_unique, product.sub_sub_category_unique, product.unit_unique, product.unit_sub_unique, product.product_size, product.selling_price, product.product_margin, product.product_price, product.product_quantity, product.sgst, product.cgst, product.igst, product.hsn, product.sodexo, product.staple, product.status, productRecord[0].product_id);
+      if (productRecord.length === 0) databaseController.keepWarehouseProduct(partnerRecord[0].mobile, product.product_barcode, reform.productName, reform.brandName, reform.description, product.category_unique, product.sub_category_unique, product.sub_sub_category_unique, product.unit_unique, product.unit_sub_unique, product.product_size, product.selling_price, product.product_margin, product.product_price, product.product_quantity, product.sgst, product.cgst, product.igst, product.hsn, product.sodexo, product.staple, product.status);
+
+      else databaseController.updateWarehouseProduct(partnerRecord[0].mobile, reform.productName, reform.brandName, reform.description, product.category_unique, product.sub_category_unique, product.sub_sub_category_unique, product.unit_unique, product.unit_sub_unique, product.product_size, product.selling_price, product.product_margin, product.product_price, product.product_quantity, product.sgst, product.cgst, product.igst, product.hsn, product.sodexo, product.staple, product.status, productRecord[0].product_id);
     });
+
+    await Promise.all(promises);
+
   } catch (error) {
     return Promise.reject(error);
   }

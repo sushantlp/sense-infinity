@@ -665,220 +665,216 @@ module.exports.warehouseSecrets = (secrets) => {
 
 // Validate Warehouse Secrets
 module.exports.warehouseProductDetail = (products) => {
-  try {
+    try {
 
-    for (let i = 0; i < products.length; i++) {
+      for (let i = 0; i < products.length; i++) {
 
-      if (!products[i].hasOwnProperty('product_barcode') ||
-        isNaN(products[i].product_barcode) ||
-        products[i].product_name === null ||
-        products[i].product_name === "")
-        return {
+        if (!products[i].hasOwnProperty('product_barcode') ||
+          isNaN(products[i].product_barcode) ||
+          products[i].product_name === null ||
+          products[i].product_name === "")
+          return {
+            success: false,
+            msg: 'Missing product barcode'
+          };
+
+        if (!products[i].hasOwnProperty('product_name') return {
+            success: false,
+            msg: 'Missing product name'
+          };
+
+          if (!products[i].hasOwnProperty('brand_name')) return {
+            success: false,
+            msg: 'Missing brand name'
+          };
+
+          if (!products[i].hasOwnProperty('description')) return {
+            success: false,
+            msg: 'Missing description'
+          };
+
+          if (!products[i].hasOwnProperty('category_unique') ||
+            isNaN(products[i].category_unique) ||
+            products[i].category_unique === "" ||
+            products[i].category_unique === null
+          )
+            return {
+              success: false,
+              msg: 'Missing category unique'
+            };
+
+          if (!products[i].hasOwnProperty('sub_category_unique') ||
+            isNaN(products[i].sub_category_unique) ||
+            products[i].sub_category_unique === "" ||
+            products[i].sub_category_unique === null
+          )
+            return {
+              success: false,
+              msg: 'Missing sub category unique'
+            };
+
+          if (!products[i].hasOwnProperty('sub_sub_category_unique') ||
+            isNaN(products[i].sub_sub_category_unique) ||
+            products[i].sub_sub_category_unique === "" ||
+            products[i].sub_sub_category_unique === null
+          )
+            return {
+              success: false,
+              msg: 'Missing sub sub category unique'
+            };
+
+          if (!products[i].hasOwnProperty('unit_unique') ||
+            isNaN(products[i].unit_unique) ||
+            products[i].unit_unique === "" ||
+            products[i].unit_unique === null
+          )
+            return {
+              success: false,
+              msg: 'Missing unit unique'
+            };
+
+          if (!products[i].hasOwnProperty('unit_sub_unique') ||
+            isNaN(products[i].unit_sub_unique) ||
+            products[i].unit_sub_unique === "" ||
+            products[i].unit_sub_unique === null
+          )
+            return {
+              success: false,
+              msg: 'Missing unit sub unique'
+            };
+
+          if (!products[i].hasOwnProperty('product_size') ||
+            isNaN(products[i].product_size) ||
+            products[i].product_size === "" ||
+            products[i].product_size === null
+          )
+            return {
+              success: false,
+              msg: 'Missing product size'
+            };
+
+          if (!products[i].hasOwnProperty('selling_price') ||
+            isNaN(products[i].selling_price) ||
+            products[i].selling_price === "" ||
+            products[i].selling_price === null
+          )
+            return {
+              success: false,
+              msg: 'Missing selling price'
+            };
+
+          if (!products[i].hasOwnProperty('product_margin') ||
+            isNaN(products[i].product_margin) ||
+            products[i].product_margin === "" ||
+            products[i].product_margin === null
+          )
+            return {
+              success: false,
+              msg: 'Missing product margin'
+            };
+
+          if (!products[i].hasOwnProperty('sgst') ||
+            isNaN(products[i].sgst) ||
+            products[i].sgst === "" ||
+            products[i].sgst === null
+          )
+            return {
+              success: false,
+              msg: 'Missing sgst'
+            };
+
+          if (!products[i].hasOwnProperty('cgst') ||
+            isNaN(products[i].cgst) ||
+            products[i].cgst === "" ||
+            products[i].cgst === null
+          )
+            return {
+              success: false,
+              msg: 'Missing cgst'
+            };
+
+          if (!products[i].hasOwnProperty('igst') ||
+            isNaN(products[i].igst) ||
+            products[i].igst === "" ||
+            products[i].igst === null
+          )
+            return {
+              success: false,
+              msg: 'Missing igst'
+            };
+
+          if (!products[i].hasOwnProperty('sodexo') ||
+            isNaN(products[i].sodexo) ||
+            products[i].sodexo === "" ||
+            products[i].sodexo === null
+          )
+            return {
+              success: false,
+              msg: 'Missing sodexo'
+            };
+
+          if (!products[i].hasOwnProperty('product_quantity') ||
+            isNaN(products[i].product_quantity) ||
+            products[i].product_quantity === "" ||
+            products[i].product_quantity === null
+          )
+            return {
+              success: false,
+              msg: 'Missing product quantity'
+            };
+
+          if (!products[i].hasOwnProperty('product_price') ||
+            isNaN(products[i].product_price) ||
+            products[i].product_price === "" ||
+            products[i].product_price === null
+          )
+            return {
+              success: false,
+              msg: 'Missing product price'
+            };
+
+          if (!products[i].hasOwnProperty('staple') ||
+            products[i].staple !== 0 &&
+            products[i].staple !== 1
+          )
+            return {
+              success: false,
+              msg: 'Missing staple'
+            };
+
+          if (!products[i].hasOwnProperty('hsn') ||
+            isNaN(products[i].hsn) ||
+            products[i].hsn === "" ||
+            products[i].hsn === null
+          )
+            return {
+              success: false,
+              msg: 'Missing hsn'
+            };
+
+          if (!products[i].hasOwnProperty('status') ||
+            products[i].status !== 0 &&
+            products[i].status !== 1
+          )
+            return {
+              success: false,
+              msg: 'Missing status'
+            };
+        }
+
+        if (products.length !== 0) return {
+          success: true,
+          msg: 'Succesful'
+        };
+        else return {
           success: false,
-          msg: 'Missing product barcode'
+          msg: 'Empty json'
         };
 
-      if (!products[i].hasOwnProperty('product_name') ||
-        !isNaN(products[i].product_name) ||
-        products[i].product_name === "" ||
-        products[i].product_name === null)
+      } catch (error) {
         return {
           success: false,
-          msg: 'Missing product name'
+          msg: 'Wrong json'
         };
-
-      if (!products[i].hasOwnProperty('brand_name')) return {
-        success: false,
-        msg: 'Missing brand name'
-      };
-
-      if (!products[i].hasOwnProperty('description')) return {
-        success: false,
-        msg: 'Missing description'
-      };
-
-      if (!products[i].hasOwnProperty('category_unique') ||
-        isNaN(products[i].category_unique) ||
-        products[i].category_unique === "" ||
-        products[i].category_unique === null
-      )
-        return {
-          success: false,
-          msg: 'Missing category unique'
-        };
-
-      if (!products[i].hasOwnProperty('sub_category_unique') ||
-        isNaN(products[i].sub_category_unique) ||
-        products[i].sub_category_unique === "" ||
-        products[i].sub_category_unique === null
-      )
-        return {
-          success: false,
-          msg: 'Missing sub category unique'
-        };
-
-      if (!products[i].hasOwnProperty('sub_sub_category_unique') ||
-        isNaN(products[i].sub_sub_category_unique) ||
-        products[i].sub_sub_category_unique === "" ||
-        products[i].sub_sub_category_unique === null
-      )
-        return {
-          success: false,
-          msg: 'Missing sub sub category unique'
-        };
-
-      if (!products[i].hasOwnProperty('unit_unique') ||
-        isNaN(products[i].unit_unique) ||
-        products[i].unit_unique === "" ||
-        products[i].unit_unique === null
-      )
-        return {
-          success: false,
-          msg: 'Missing unit unique'
-        };
-
-      if (!products[i].hasOwnProperty('unit_sub_unique') ||
-        isNaN(products[i].unit_sub_unique) ||
-        products[i].unit_sub_unique === "" ||
-        products[i].unit_sub_unique === null
-      )
-        return {
-          success: false,
-          msg: 'Missing unit sub unique'
-        };
-
-      if (!products[i].hasOwnProperty('product_size') ||
-        isNaN(products[i].product_size) ||
-        products[i].product_size === "" ||
-        products[i].product_size === null
-      )
-        return {
-          success: false,
-          msg: 'Missing product size'
-        };
-
-      if (!products[i].hasOwnProperty('selling_price') ||
-        isNaN(products[i].selling_price) ||
-        products[i].selling_price === "" ||
-        products[i].selling_price === null
-      )
-        return {
-          success: false,
-          msg: 'Missing selling price'
-        };
-
-      if (!products[i].hasOwnProperty('product_margin') ||
-        isNaN(products[i].product_margin) ||
-        products[i].product_margin === "" ||
-        products[i].product_margin === null
-      )
-        return {
-          success: false,
-          msg: 'Missing product margin'
-        };
-
-      if (!products[i].hasOwnProperty('sgst') ||
-        isNaN(products[i].sgst) ||
-        products[i].sgst === "" ||
-        products[i].sgst === null
-      )
-        return {
-          success: false,
-          msg: 'Missing sgst'
-        };
-
-      if (!products[i].hasOwnProperty('cgst') ||
-        isNaN(products[i].cgst) ||
-        products[i].cgst === "" ||
-        products[i].cgst === null
-      )
-        return {
-          success: false,
-          msg: 'Missing cgst'
-        };
-
-      if (!products[i].hasOwnProperty('igst') ||
-        isNaN(products[i].igst) ||
-        products[i].igst === "" ||
-        products[i].igst === null
-      )
-        return {
-          success: false,
-          msg: 'Missing igst'
-        };
-
-      if (!products[i].hasOwnProperty('sodexo') ||
-        isNaN(products[i].sodexo) ||
-        products[i].sodexo === "" ||
-        products[i].sodexo === null
-      )
-        return {
-          success: false,
-          msg: 'Missing sodexo'
-        };
-
-      if (!products[i].hasOwnProperty('product_quantity') ||
-        isNaN(products[i].product_quantity) ||
-        products[i].product_quantity === "" ||
-        products[i].product_quantity === null
-      )
-        return {
-          success: false,
-          msg: 'Missing product quantity'
-        };
-
-      if (!products[i].hasOwnProperty('product_price') ||
-        isNaN(products[i].product_price) ||
-        products[i].product_price === "" ||
-        products[i].product_price === null
-      )
-        return {
-          success: false,
-          msg: 'Missing product price'
-        };
-
-      if (!products[i].hasOwnProperty('staple') ||
-        products[i].staple !== 0 &&
-        products[i].staple !== 1
-      )
-        return {
-          success: false,
-          msg: 'Missing staple'
-        };
-
-      if (!products[i].hasOwnProperty('hsn') ||
-        isNaN(products[i].hsn) ||
-        products[i].hsn === "" ||
-        products[i].hsn === null
-      )
-        return {
-          success: false,
-          msg: 'Missing hsn'
-        };
-
-      if (!products[i].hasOwnProperty('status') ||
-        products[i].status !== 0 &&
-        products[i].status !== 1
-      )
-        return {
-          success: false,
-          msg: 'Missing status'
-        };
-    }
-
-    if (products.length !== 0) return {
-      success: true,
-      msg: 'Succesful'
+      }
     };
-    else return {
-      success: false,
-      msg: 'Empty json'
-    };
-
-  } catch (error) {
-    return {
-      success: false,
-      msg: 'Wrong json'
-    };
-  }
-};

@@ -33,16 +33,20 @@ const now = moment()
 // Read Admin Feedback Question
 module.exports.readAdminFeedbackQuestion = async(select, mobile, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM feedback_questions LEFT JOIN input_types ON feedback_questions.input_id = input_types.input_id LEFT JOIN partners ON feedback_questions.category_id = partners.category_id WHERE feedback_questions.status = ? AND partners.mobile = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [status, mobile]);
+    const [rows, fields] = await connection.query(query, [status, mobile]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {

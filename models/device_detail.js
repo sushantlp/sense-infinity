@@ -8,12 +8,10 @@ const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var deviceDetail = sequelize.define(
-    'device_detail',
-    {
+    'device_detail', {
       firstName: DataTypes.STRING,
       lastName: DataTypes.STRING
-    },
-    {}
+    }, {}
   );
   deviceDetail.associate = function(models) {
     // associations can be defined here
@@ -31,7 +29,7 @@ const now = moment()
  */
 
 // Keep Device Detail
-module.exports.keepDeviceDetail = async (
+module.exports.keepDeviceDetail = async(
   mobile,
   storeId,
   longitude,
@@ -45,15 +43,19 @@ module.exports.keepDeviceDetail = async (
   senseVersionNumber
 ) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query =
       'INSERT INTO `device_details` (`mobile`,`store_id`,`longitude`,`latitude`,`brand`,`device`,`model`,`app_id`,`version_sdk`,`version_release`,`sense_version_number`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
     // Query Database
-    const row = await connection.execute(query, [
+    const row = await connection.query(query, [
       mobile,
       storeId,
       longitude,
@@ -69,7 +71,7 @@ module.exports.keepDeviceDetail = async (
       now
     ]);
 
-    connection.close();
+    connection.release();
 
     return row;
   } catch (error) {

@@ -36,16 +36,20 @@ const now = moment()
 // Read City Record
 module.exports.readCityRecord = async(select, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM cities WHERE status = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [status]);
+    const [rows, fields] = await connection.query(query, [status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -57,16 +61,20 @@ module.exports.readCityRecord = async(select, status) => {
 // Read City Record By City Id
 module.exports.readCityBYId = async(select, cityId, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM cities WHERE city_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [cityId, status]);
+    const [rows, fields] = await connection.query(query, [cityId, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {

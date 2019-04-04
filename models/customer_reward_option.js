@@ -25,16 +25,19 @@ module.exports = (sequelize, DataTypes) => {
 module.exports.readRewardOptionList = async(select, id, status) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM customer_reward_options WHERE reward_question_id = ? AND status = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [id, status]);
+    const [rows, fields] = await connection.query(query, [id, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
