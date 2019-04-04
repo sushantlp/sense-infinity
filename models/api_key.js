@@ -29,15 +29,21 @@ module.exports = (sequelize, DataTypes) => {
 module.exports.readApiKey = async(select, prefix, key, status) => {
   try {
     // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    //const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM api_keys WHERE key_prefix = ? AND api_key = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [prefix, key, status]);
+    const [rows, fields] = await pool.query(query, [prefix, key, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {

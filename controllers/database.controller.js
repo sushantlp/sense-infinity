@@ -849,8 +849,12 @@ module.exports.updateMerchantSurveyTable = async(
 // Check Warehouse Product Table Exist
 module.exports.checkWarehouseProduct = async(partnerMobile) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const ProductTable = `${partnerMobile}_warehouse_products`;
@@ -859,9 +863,9 @@ module.exports.checkWarehouseProduct = async(partnerMobile) => {
     const query = `SHOW TABLES LIKE '${ProductTable}'`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query);
+    const [rows, fields] = await connection.query(query);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -872,8 +876,12 @@ module.exports.checkWarehouseProduct = async(partnerMobile) => {
 // Create Warehouse Product Table
 module.exports.createWarehouseProductTable = async(partnerMobile) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const ProductTable = `${partnerMobile}_warehouse_products`;
@@ -898,7 +906,7 @@ module.exports.createWarehouseProductTable = async(partnerMobile) => {
       sgst FLOAT NOT NULL,
       cgst FLOAT NOT NULL,
       igst FLOAT NOT NULL,
-      hsn FLOAT NOT NULL,
+      hsn BIGINT NOT NULL,
       sodexo INTEGER NOT NULL,
       staple INTEGER NOT NULL,
       status BOOL DEFAULT FALSE,
@@ -909,9 +917,9 @@ module.exports.createWarehouseProductTable = async(partnerMobile) => {
     )`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query);
+    const [rows, fields] = await connection.query(query);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -926,8 +934,12 @@ module.exports.keepWarehouseProduct = async(
   productPrice, productQuantity, sgst, cgst, igst, hsn, sodexo, staple, status
 ) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const ProductTable = `${partnerMobile}_warehouse_products`;
@@ -962,13 +974,13 @@ module.exports.keepWarehouseProduct = async(
         (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [
+    const [rows, fields] = await connection.query(query, [
       barcode, productName, brandName, description, categoryId, subCategoryId,
       subSubcategoryId, unitId, subUnitId, productSize, sellingPrice, productMargin,
       productPrice, productQuantity, sgst, cgst, igst, hsn, sodexo, staple, status, now, now
     ]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -984,8 +996,11 @@ module.exports.updateWarehouseProduct = async(
 ) => {
   try {
 
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const ProductTable = `${partnerMobile}_warehouse_products`;
@@ -996,13 +1011,13 @@ module.exports.updateWarehouseProduct = async(
       product_size = ?, selling_price = ?, product_margin = ?, actual_price = ?, product_quantity = ?, sgst = ?, cgst = ?, igst = ?, hsn = ?, sodexo = ?, staple = ?, status = ?, updated_at = ? WHERE product_id = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [
+    const [rows, fields] = await connection.query(query, [
       productName, brandName, description, categoryId, subCategoryId, subSubcategoryId,
       unitId, subUnitId, productSize, sellingPrice, productMargin, productPrice,
       productQuantity, sgst, cgst, igst, hsn, sodexo, staple, status, now, id
     ]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -1015,8 +1030,12 @@ module.exports.readWarehouseProduct = async(
   select, partnerMobile, barcode
 ) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const ProductTable = `${partnerMobile}_warehouse_products`;
@@ -1025,9 +1044,10 @@ module.exports.readWarehouseProduct = async(
     const query = `SELECT ${select} FROM ${ProductTable} WHERE product_barcode = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [barcode]);
+    const [rows, fields] = await connection.query(query, [barcode]);
 
-    connection.close();
+    // connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {

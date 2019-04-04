@@ -20,16 +20,38 @@ module.exports.Mail = {
   MAIL_ENCRYPTION: process.env.MAIL_ENCRYPTION,
 };
 
+
+let pool;
 // Create Mysql Connection
 module.exports.createMysqlConnection = () => {
-  return mysql.createConnection({
+  if (pool) return pool;
+  pool = mysql.createPool({
+    connectionLimit: 100,
+    //   debug: process.env.DB_DEBUG,
     host: process.env.DB_HOST,
     user: process.env.DB_USERNAME,
     port: process.env.DB_PORT,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE
   });
+  return pool;
 };
 
+// 
+// module.exports = {
+//   getPool: function() {
+//     if (pool) return pool;
+//     pool = mysql.createPool({
+//       connectionLimit: 100,
+//       debug: process.env.DB_DEBUG,
+//       host: process.env.DB_HOST,
+//       user: process.env.DB_USERNAME,
+//       port: process.env.DB_PORT,
+//       password: process.env.DB_PASSWORD,
+//       database: process.env.DB_DATABASE
+//     });
+//     return pool;
+//   }
+// };
 
 module.exports.EMAIL_REG = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

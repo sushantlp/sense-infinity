@@ -32,16 +32,19 @@ module.exports = (sequelize, DataTypes) => {
 // Read User Table Record
 module.exports.readUserRecord = async(select, mobile, role, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM users WHERE mobile = ? AND role_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [mobile, role, status]);
+    const [rows, fields] = await connection.query(query, [mobile, role, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -53,16 +56,19 @@ module.exports.readUserRecord = async(select, mobile, role, status) => {
 // Read User Record By Id
 module.exports.readUserById = async(select, id, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM users WHERE user_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [id, status]);
+    const [rows, fields] = await connection.query(query, [id, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {

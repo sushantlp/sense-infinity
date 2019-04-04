@@ -8,27 +8,31 @@ const apiKeyModal = require("../models/api_key");
 
 // Validate Api Key 
 module.exports.apiKeyAuth = async(req, res, next) => {
+  try {
+    const header = req.headers["api-key"];
 
-  const header = req.headers["api-key"];
+    if (header !== undefined) {
 
-  if (header !== undefined) {
+      // Split
+      const strArray = header.split('.');
+      if (strArray.length !== 2) return res.status(401).send(shareController.createJsonObject([], 'Invalid secret key', null, 401, false, null));
 
-    // Split
-    const strArray = header.split('.');
-    if (strArray.length !== 2) return res.status(401).send(shareController.createJsonObject([], 'Invalid secret key', null, 401, false, null));
+      // Read Api Key
+      let keyData = await apiKeyModal.readApiKey('*', strArray[0], strArray[1], 1);
 
-    // Read Api Key
-    let keyData = await apiKeyModal.readApiKey('*', strArray[0], strArray[1], 1);
+      // Parse
+      keyData = JSON.stringify(keyData);
+      keyData = JSON.parse(keyData);
 
-    // Parse
-    keyData = JSON.stringify(keyData);
-    keyData = JSON.parse(keyData);
+      // Zero Means Empty Record
+      if (keyData.length === 0) return res.status(401).send(shareController.createJsonObject([], 'Wrong secret key', null, 401, false, null));
 
-    // Zero Means Empty Record
-    if (keyData.length === 0) return res.status(401).send(shareController.createJsonObject([], 'Wrong secret key', null, 401, false, null));
+      res.userKey = keyData[0].user_id;
 
-    res.userKey = keyData[0].user_id;
-
-    return next();
-  } else return res.status(401).send(shareController.createJsonObject([], 'Empty partner secret key', null, 401, false, null));
+      return next();
+    } else return res.status(401).send(shareController.createJsonObject([], 'Empty partner secret key', null, 401, false, null));
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send("Oops our bad!!!");
+  }
 };

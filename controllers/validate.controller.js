@@ -838,7 +838,7 @@ module.exports.warehouseProductDetail = (products) => {
         };
 
       if (!products[i].hasOwnProperty('staple') ||
-        products[i].staple !== 0 ||
+        products[i].staple !== 0 &&
         products[i].staple !== 1
       )
         return {
@@ -857,7 +857,7 @@ module.exports.warehouseProductDetail = (products) => {
         };
 
       if (!products[i].hasOwnProperty('status') ||
-        products[i].status !== 0 ||
+        products[i].status !== 0 &&
         products[i].status !== 1
       )
         return {

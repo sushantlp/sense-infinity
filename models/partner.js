@@ -40,16 +40,19 @@ const now = moment()
 // Read Partner Record
 module.exports.readPartnerByMobile = async(select, mobile, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Query
     const query = `SELECT ${select} FROM partners WHERE mobile = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [mobile, status]);
+    const [rows, fields] = await connection.query(query, [mobile, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {

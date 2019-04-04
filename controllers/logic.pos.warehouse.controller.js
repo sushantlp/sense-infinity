@@ -7,6 +7,9 @@ const bcrypt = require("bcrypt");
 const shareController = require("./share.controller");
 const databaseController = require("./database.controller");
 
+// Import Config
+const constants = require('../config/constants');
+
 // Import Model
 const warehouseStaticModel = require("../models/warehouse_static_version");
 const localityModel = require("../models/locality");
@@ -951,6 +954,7 @@ module.exports.logicGetMasterProduct = async(id) => {
 module.exports.logicKeepWarehouseProduct = async(id, products) => {
   try {
 
+    // Declared Variable
     let firstTime = false;
 
     // Call User Partner Data
@@ -963,7 +967,7 @@ module.exports.logicKeepWarehouseProduct = async(id, products) => {
     };
 
     // Check Warehouse Product Table Exist
-    const warehouseProduct = await databaseController.showConstantTable(
+    const warehouseProduct = await databaseController.checkWarehouseProduct(
       partnerRecord[0].mobile
     );
 
