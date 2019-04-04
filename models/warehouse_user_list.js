@@ -136,11 +136,7 @@ module.exports.updateWarehouseUserPassword = async(
       "UPDATE `warehouse_user_lists` SET `password` = ?, `updated_at` = ? WHERE `id` = ?";
 
     // Query Database
-    const row = await connection.query(query, [
-      password,
-      now,
-      id
-    ]);
+    const row = await connection.query(query, [password, now, id]);
 
     connection.release();
 

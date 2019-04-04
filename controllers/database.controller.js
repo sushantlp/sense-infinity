@@ -57,8 +57,12 @@ module.exports.sequelizeConnection = () => {
 // Create Merchant Constant Store Table
 module.exports.createConstantTable = async(merchantMobile, storeId) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const MerchantConstant = `${merchantMobile}_${storeId}_constants`;
@@ -76,9 +80,9 @@ module.exports.createConstantTable = async(merchantMobile, storeId) => {
     )`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query);
+    const [rows, fields] = await connection.query(query);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -89,8 +93,12 @@ module.exports.createConstantTable = async(merchantMobile, storeId) => {
 // Merchant Constant Table Exist
 module.exports.showConstantTable = async(merchantMobile, storeId) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const MerchantConstant = `${merchantMobile}_${storeId}_constants`;
@@ -99,9 +107,9 @@ module.exports.showConstantTable = async(merchantMobile, storeId) => {
     const query = `SHOW TABLES LIKE '${MerchantConstant}'`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query);
+    const [rows, fields] = await connection.query(query);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -112,8 +120,12 @@ module.exports.showConstantTable = async(merchantMobile, storeId) => {
 // Read Constant Record
 module.exports.readConstantRecord = async(select, merchantMobile, storeId, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const MerchantConstant = `${merchantMobile}_${storeId}_constants`;
@@ -122,9 +134,9 @@ module.exports.readConstantRecord = async(select, merchantMobile, storeId, statu
     const query = `SELECT ${select} FROM ${MerchantConstant} WHERE status = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [status]);
+    const [rows, fields] = await connection.query(query, [status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -135,8 +147,12 @@ module.exports.readConstantRecord = async(select, merchantMobile, storeId, statu
 // Read Constant Record By Name
 module.exports.readConstantRecordName = async(select, merchantMobile, storeId, name, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const MerchantConstant = `${merchantMobile}_${storeId}_constants`;
@@ -145,9 +161,9 @@ module.exports.readConstantRecordName = async(select, merchantMobile, storeId, n
     const query = `SELECT ${select} FROM ${MerchantConstant} WHERE name = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [name, status]);
+    const [rows, fields] = await connection.query(query, [name, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -158,8 +174,12 @@ module.exports.readConstantRecordName = async(select, merchantMobile, storeId, n
 // Keep Merchant Constant Table
 module.exports.keepMerchantConstantTable = async(merchantMobile, storeId, name, value, comment, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const MerchantConstant = `${merchantMobile}_${storeId}_constants`;
@@ -168,9 +188,9 @@ module.exports.keepMerchantConstantTable = async(merchantMobile, storeId, name, 
     const query = `INSERT INTO ${MerchantConstant} (name, value, comment, status, created_at, updated_at) VALUES (?,?,?,?,?,?)`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [name, value, comment, status, now, now]);
+    const [rows, fields] = await connection.query(query, [name, value, comment, status, now, now]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -181,8 +201,12 @@ module.exports.keepMerchantConstantTable = async(merchantMobile, storeId, name, 
 // Update Constant Record
 module.exports.updateMerchantConstantTable = async(merchantMobile, storeId, constantId, value, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const MerchantConstant = `${merchantMobile}_${storeId}_constants`;
@@ -191,9 +215,9 @@ module.exports.updateMerchantConstantTable = async(merchantMobile, storeId, cons
     const query = `UPDATE ${MerchantConstant} SET value = ?, status = ?, updated_at = ? WHERE constant_id = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [value, status, now, constantId]);
+    const [rows, fields] = await connection.query(query, [value, status, now, constantId]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -204,8 +228,12 @@ module.exports.updateMerchantConstantTable = async(merchantMobile, storeId, cons
 // Merchant Feedback Question Table Exist
 module.exports.showFeedbackQuestionTable = async(merchantMobile, storeId) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const FeedbackQuestion = `${merchantMobile}_${storeId}_feedback_questions`;
@@ -214,9 +242,9 @@ module.exports.showFeedbackQuestionTable = async(merchantMobile, storeId) => {
     const query = `SHOW TABLES LIKE '${FeedbackQuestion}'`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query);
+    const [rows, fields] = await connection.query(query);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -227,8 +255,12 @@ module.exports.showFeedbackQuestionTable = async(merchantMobile, storeId) => {
 // Merchant Feedback Option Table Exist
 module.exports.showFeedbackOptionTable = async(merchantMobile, storeId) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const FeedbackOption = `${merchantMobile}_${storeId}_feedback_options`;
@@ -237,9 +269,9 @@ module.exports.showFeedbackOptionTable = async(merchantMobile, storeId) => {
     const query = `SHOW TABLES LIKE '${FeedbackOption}'`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query);
+    const [rows, fields] = await connection.query(query);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -250,8 +282,12 @@ module.exports.showFeedbackOptionTable = async(merchantMobile, storeId) => {
 // Merchant Keep Feedback Table Exist
 module.exports.showKeepFeedbackTable = async(merchantMobile, storeId) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const KeepFeedback = `${merchantMobile}_${storeId}_keep_partner_feedbacks`;
@@ -260,9 +296,9 @@ module.exports.showKeepFeedbackTable = async(merchantMobile, storeId) => {
     const query = `SHOW TABLES LIKE '${KeepFeedback}'`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query);
+    const [rows, fields] = await connection.query(query);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -273,8 +309,12 @@ module.exports.showKeepFeedbackTable = async(merchantMobile, storeId) => {
 // Create Merchant Feedback Store Table
 module.exports.createFeedbackStoreTable = async(merchantMobile, storeId) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const KeepFeedback = `${merchantMobile}_${storeId}_keep_partner_feedbacks`;
@@ -294,9 +334,9 @@ module.exports.createFeedbackStoreTable = async(merchantMobile, storeId) => {
     )`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query);
+    const [rows, fields] = await connection.query(query);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -307,8 +347,12 @@ module.exports.createFeedbackStoreTable = async(merchantMobile, storeId) => {
 // Create Merchant Feedback Question Table
 module.exports.createFeedbackQuestionTable = async(merchantMobile, storeId) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const FeedbackQuestion = `${merchantMobile}_${storeId}_feedback_questions`;
@@ -324,9 +368,9 @@ module.exports.createFeedbackQuestionTable = async(merchantMobile, storeId) => {
       )`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query);
+    const [rows, fields] = await connection.query(query);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -337,8 +381,12 @@ module.exports.createFeedbackQuestionTable = async(merchantMobile, storeId) => {
 // Create Merchant Feedback Option Table
 module.exports.createFeedbackOptionTable = async(merchantMobile, storeId) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const FeedbackQuestion = `${merchantMobile}_${storeId}_feedback_questions`;
@@ -357,9 +405,9 @@ module.exports.createFeedbackOptionTable = async(merchantMobile, storeId) => {
       )`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query);
+    const [rows, fields] = await connection.query(query);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -370,8 +418,12 @@ module.exports.createFeedbackOptionTable = async(merchantMobile, storeId) => {
 // Read Merchant Feedback Question Record
 module.exports.readFeedbackQuestion = async(merchantMobile, storeId, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const FeedbackQuestion = `${merchantMobile}_${storeId}_feedback_questions`;
@@ -380,9 +432,9 @@ module.exports.readFeedbackQuestion = async(merchantMobile, storeId, status) => 
     const query = `SELECT ${FeedbackQuestion}.feed_ques_id, ${FeedbackQuestion}.feed_question, ${FeedbackQuestion}.input_id, input_types.input_name FROM ${FeedbackQuestion} LEFT JOIN input_types ON ${FeedbackQuestion}.input_id = input_types.input_id WHERE ${FeedbackQuestion}.status = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [status]);
+    const [rows, fields] = await connection.query(query, [status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -393,8 +445,12 @@ module.exports.readFeedbackQuestion = async(merchantMobile, storeId, status) => 
 // Read Merchant Feedback Option Record
 module.exports.readFeedbackOption = async(merchantMobile, storeId, quesId, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const FeedbackOption = `${merchantMobile}_${storeId}_feedback_options`;
@@ -403,9 +459,9 @@ module.exports.readFeedbackOption = async(merchantMobile, storeId, quesId, statu
     const query = `SELECT * FROM ${FeedbackOption} WHERE feed_ques_id = ? AND status = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [quesId, status]);
+    const [rows, fields] = await connection.query(query, [quesId, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -416,8 +472,12 @@ module.exports.readFeedbackOption = async(merchantMobile, storeId, quesId, statu
 // Survey Question Table Exist
 module.exports.showSurveyQuestionTable = async(merchantMobile, storeId) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const SurveyQuestion = `${merchantMobile}_${storeId}_survey_questions`;
@@ -426,9 +486,9 @@ module.exports.showSurveyQuestionTable = async(merchantMobile, storeId) => {
     const query = `SHOW TABLES LIKE '${SurveyQuestion}'`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query);
+    const [rows, fields] = await connection.query(query);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -439,8 +499,12 @@ module.exports.showSurveyQuestionTable = async(merchantMobile, storeId) => {
 // Survey Option Table Exist
 module.exports.showSurveyOptionTable = async(merchantMobile, storeId) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const SurveyOption = `${merchantMobile}_${storeId}_survey_options`;
@@ -449,9 +513,9 @@ module.exports.showSurveyOptionTable = async(merchantMobile, storeId) => {
     const query = `SHOW TABLES LIKE '${SurveyOption}'`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query);
+    const [rows, fields] = await connection.query(query);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -462,8 +526,12 @@ module.exports.showSurveyOptionTable = async(merchantMobile, storeId) => {
 // Keep Merchant Survey Table Exist
 module.exports.showKeepSurveyTable = async(merchantMobile, storeId) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const KeepSurvey = `${merchantMobile}_${storeId}_keep_partner_surveys`;
@@ -472,9 +540,9 @@ module.exports.showKeepSurveyTable = async(merchantMobile, storeId) => {
     const query = `SHOW TABLES LIKE '${KeepSurvey}'`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query);
+    const [rows, fields] = await connection.query(query);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -485,8 +553,12 @@ module.exports.showKeepSurveyTable = async(merchantMobile, storeId) => {
 // Create Merchant Survey Store Table
 module.exports.createSurveyStoreTable = async(merchantMobile, storeId) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const KeepSurvey = `${merchantMobile}_${storeId}_keep_partner_surveys`;
@@ -506,9 +578,9 @@ module.exports.createSurveyStoreTable = async(merchantMobile, storeId) => {
       )`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query);
+    const [rows, fields] = await connection.query(query);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -519,8 +591,12 @@ module.exports.createSurveyStoreTable = async(merchantMobile, storeId) => {
 // Create Merchant Survey Question Table
 module.exports.createSurveyQuestionTable = async(merchantMobile, storeId) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const SurveyQuestion = `${merchantMobile}_${storeId}_survey_questions`;
@@ -537,9 +613,9 @@ module.exports.createSurveyQuestionTable = async(merchantMobile, storeId) => {
       )`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query);
+    const [rows, fields] = await connection.query(query);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -550,8 +626,12 @@ module.exports.createSurveyQuestionTable = async(merchantMobile, storeId) => {
 // Create Merchant Survey Option Table
 module.exports.createSurveyOptionTable = async(merchantMobile, storeId) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const SurveyOption = `${merchantMobile}_${storeId}_survey_options`;
@@ -570,9 +650,9 @@ module.exports.createSurveyOptionTable = async(merchantMobile, storeId) => {
       )`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query);
+    const [rows, fields] = await connection.query(query);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -583,8 +663,12 @@ module.exports.createSurveyOptionTable = async(merchantMobile, storeId) => {
 // Read Merchant Survey Question Record
 module.exports.readSurveyQuestion = async(merchantMobile, storeId, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const SurveyQuestion = `${merchantMobile}_${storeId}_survey_questions`;
@@ -593,9 +677,9 @@ module.exports.readSurveyQuestion = async(merchantMobile, storeId, status) => {
     const query = `SELECT ${SurveyQuestion}.survey_ques_id, ${SurveyQuestion}.survey_question, ${SurveyQuestion}.input_id, input_types.input_name FROM ${SurveyQuestion} LEFT JOIN input_types ON ${SurveyQuestion}.input_id = input_types.input_id WHERE ${SurveyQuestion}.status = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [status]);
+    const [rows, fields] = await connection.query(query, [status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -606,8 +690,12 @@ module.exports.readSurveyQuestion = async(merchantMobile, storeId, status) => {
 // Read Merchant Survey Option Record
 module.exports.readSurveyOption = async(select, merchantMobile, storeId, quesId, status) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const SurveyOption = `${merchantMobile}_${storeId}_survey_options`;
@@ -616,9 +704,9 @@ module.exports.readSurveyOption = async(select, merchantMobile, storeId, quesId,
     const query = `SELECT ${select} FROM ${SurveyOption} WHERE survey_ques_id = ? AND status = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [quesId, status]);
+    const [rows, fields] = await connection.query(query, [quesId, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -637,8 +725,12 @@ module.exports.readLimitMerchantSurvey = async(
   status
 ) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const KeepSurvey = `${merchantMobile}_${storeId}_keep_partner_surveys`;
@@ -647,9 +739,9 @@ module.exports.readLimitMerchantSurvey = async(
     const query = `SELECT ${select} FROM ${KeepSurvey} WHERE customer_information_id = ? AND survey_ques_id = ? AND role_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [customerId, questionId, roleId, status]);
+    const [rows, fields] = await connection.query(query, [customerId, questionId, roleId, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -668,8 +760,12 @@ module.exports.readLimitMerchantFeedback = async(
   status
 ) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const KeepFeedback = `${merchantMobile}_${storeId}_keep_partner_feedbacks`;
@@ -678,9 +774,9 @@ module.exports.readLimitMerchantFeedback = async(
     const query = `SELECT ${select} FROM ${KeepFeedback} WHERE customer_information_id = ? AND feed_ques_id = ? AND role_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [customerId, questionId, roleId, status]);
+    const [rows, fields] = await connection.query(query, [customerId, questionId, roleId, status]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -699,8 +795,12 @@ module.exports.keepMerchantFeedbackTable = async(
   status
 ) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const KeepFeedback = `${merchantMobile}_${storeId}_keep_partner_feedbacks`;
@@ -709,7 +809,7 @@ module.exports.keepMerchantFeedbackTable = async(
     const query = `INSERT INTO ${KeepFeedback} (feed_ques_id, feed_option_id, customer_information_id, role_id, status, created_at, updated_at) VALUES (?,?,?,?,?,?,?)`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [
+    const [rows, fields] = await connection.query(query, [
       questionId,
       optionId,
       customerId,
@@ -719,7 +819,7 @@ module.exports.keepMerchantFeedbackTable = async(
       now
     ]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -738,8 +838,12 @@ module.exports.keepMerchantSurveyTable = async(
   status
 ) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const KeepSurvey = `${merchantMobile}_${storeId}_keep_partner_surveys`;
@@ -748,7 +852,7 @@ module.exports.keepMerchantSurveyTable = async(
     const query = `INSERT INTO ${KeepSurvey} (survey_ques_id, survey_option_id, customer_information_id, role_id, status, created_at, updated_at) VALUES (?,?,?,?,?,?,?)`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [
+    const [rows, fields] = await connection.query(query, [
       questionId,
       optionId,
       customerId,
@@ -758,7 +862,7 @@ module.exports.keepMerchantSurveyTable = async(
       now
     ]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -778,8 +882,12 @@ module.exports.updateMerchantFeedbackTable = async(
   status
 ) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const KeepFeedback = `${merchantMobile}_${storeId}_keep_partner_feedbacks`;
@@ -788,7 +896,7 @@ module.exports.updateMerchantFeedbackTable = async(
     const query = `UPDATE ${KeepFeedback} SET feed_ques_id = ?, feed_option_id = ?, customer_information_id = ?, role_id = ?, status = ?, updated_at = ? WHERE keep_feed_id = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [
+    const [rows, fields] = await connection.query(query, [
       questionId,
       optionId,
       customerId,
@@ -798,7 +906,7 @@ module.exports.updateMerchantFeedbackTable = async(
       keepFeedId
     ]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -818,8 +926,12 @@ module.exports.updateMerchantSurveyTable = async(
   status
 ) => {
   try {
-    // Create Mysql Connection
-    const connection = await constants.createMysqlConnection();
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
 
     // Dynamic Table
     const KeepSurvey = `${merchantMobile}_${storeId}_keep_partner_surveys`;
@@ -828,7 +940,7 @@ module.exports.updateMerchantSurveyTable = async(
     const query = `UPDATE ${KeepSurvey} SET survey_ques_id = ?, survey_option_id = ?, customer_information_id = ?, role_id = ?, status = ?, updated_at = ? WHERE keep_survey_id = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.execute(query, [
+    const [rows, fields] = await connection.query(query, [
       questionId,
       optionId,
       customerId,
@@ -838,7 +950,7 @@ module.exports.updateMerchantSurveyTable = async(
       keepSurveyId
     ]);
 
-    connection.close();
+    connection.release();
 
     return rows;
   } catch (error) {
@@ -1046,7 +1158,7 @@ module.exports.readWarehouseProduct = async(
     // Query Database
     const [rows, fields] = await connection.query(query, [barcode]);
 
-    // connection.close();
+    // connection.release();
     connection.release();
 
     return rows;
