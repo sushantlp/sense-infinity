@@ -39,6 +39,7 @@ const taxModel = require("../models/tax_table");
 const taxSyncModel = require("../models/tax_sync");
 const stapleSyncModel = require("../models/staple_product_sync");
 const partnerSyncModel = require("../models/partner_product_sync");
+const storeSyncModel = require("../models/store_product_sync");
 const userEmployeeConnectModel = require("../models/warehouse_user_employee_connect");
 
 
@@ -220,6 +221,10 @@ module.exports.logicWarehouseStaticData = async(version, id) => {
 
         if (parseFloat(staticVersion.warehouse_static_version) !== parseFloat(version.global_category_version)) {
 
+          const object = {};
+          object.global_category_unique = 0;
+          object.category_name = 'NA';
+
           // Read Global Category
           let globalCategory = await globalCategoryModel.readGlobalCategory(
             "global_category_id AS global_category_unique, global_category_name AS category_name",
@@ -231,6 +236,7 @@ module.exports.logicWarehouseStaticData = async(version, id) => {
           globalCategory = JSON.parse(globalCategory);
 
           // Object Push
+          globalCategory.push(object);
           dataObj.global_category = globalCategory;
           versionObj.global_category_version = parseFloat(staticVersion.warehouse_static_version);
 
@@ -244,6 +250,11 @@ module.exports.logicWarehouseStaticData = async(version, id) => {
 
         if (parseFloat(staticVersion.warehouse_static_version) !== parseFloat(version.global_sub_category_version)) {
 
+          const object = {};
+          object.global_sub_category_unique = 0;
+          object.sub_category_name = 'NA';
+          object.global_category_unique = 0;
+
           // Read Global Category
           let globalSubCategory = await globalSubCategoryModel.readSubGlobalCategory(
             "global_sub_category_id AS global_sub_category_unique, global_sub_category_name AS sub_category_name, global_category_id AS global_category_unique",
@@ -255,6 +266,7 @@ module.exports.logicWarehouseStaticData = async(version, id) => {
           globalSubCategory = JSON.parse(globalSubCategory);
 
           // Object Push
+          globalSubCategory.push(object);
           dataObj.global_sub_category = globalSubCategory;
           versionObj.global_sub_category_version = parseFloat(staticVersion.warehouse_static_version);
         } else {
@@ -267,6 +279,11 @@ module.exports.logicWarehouseStaticData = async(version, id) => {
 
         if (parseFloat(staticVersion.warehouse_static_version) !== parseFloat(version.global_sub_sub_category_version)) {
 
+          const object = {};
+          object.global_sub_sub_category_unique = 0;
+          object.sub_sub_category_name = 'NA';
+          object.global_sub_category_unique = 0;
+
           // Read Global Category
           let globalSubSubCategory = await globalSubSubCategoryModel.readSubSubGlobalCategory(
             "global_sub_sub_category_id AS global_sub_sub_category_unique, global_sub_sub_category_name AS sub_sub_category_name, global_sub_category_id AS global_sub_category_unique",
@@ -278,6 +295,7 @@ module.exports.logicWarehouseStaticData = async(version, id) => {
           globalSubSubCategory = JSON.parse(globalSubSubCategory);
 
           // Object Push
+          globalSubSubCategory.push(object);
           dataObj.global_sub_sub_category = globalSubSubCategory;
           versionObj.global_sub_sub_category_version = parseFloat(staticVersion.warehouse_static_version);
 
@@ -414,6 +432,10 @@ module.exports.logicWarehouseStaticData = async(version, id) => {
       } else if (staticVersion.warehouse_static_name === 'Product Unit Version') {
 
         if (parseFloat(staticVersion.warehouse_static_version) !== parseFloat(version.product_unit_version)) {
+          const object = {};
+          object.unit_unique = 0;
+          object.unit_name = 'NA';
+          object.unit_value = 'NA';
 
           // Read Product Unit List
           let productUnit = await productUnitModel.readProductUnit(
@@ -421,9 +443,12 @@ module.exports.logicWarehouseStaticData = async(version, id) => {
             1
           )
 
+
           // Parse
           productUnit = JSON.stringify(productUnit);
           productUnit = JSON.parse(productUnit);
+
+          productUnit.push(object);
 
           // Object Push
           dataObj.product_unit_list = productUnit;
@@ -440,6 +465,12 @@ module.exports.logicWarehouseStaticData = async(version, id) => {
 
         if (parseFloat(staticVersion.warehouse_static_version) !== parseFloat(version.product_sub_unit_version)) {
 
+          const object = {};
+          object.sub_unit_unique = 0;
+          object.unit_unique = 0;
+          object.sub_unit_name = 'NA';
+          object.sub_unit_value = 'NA';
+
           // Read Product Sub Unit List
           let productSubUnit = await productSubUnitModel.readProductSubUnit(
             "product_sub_unit_id AS sub_unit_unique, product_unit_id AS unit_unique, product_sub_unit_name AS sub_unit_name, product_sub_unit_value AS sub_unit_value",
@@ -449,6 +480,8 @@ module.exports.logicWarehouseStaticData = async(version, id) => {
           // Parse
           productSubUnit = JSON.stringify(productSubUnit);
           productSubUnit = JSON.parse(productSubUnit);
+
+          productSubUnit.push(object);
 
           // Object Push
           dataObj.product_sub_unit_list = productSubUnit;
@@ -1055,8 +1088,7 @@ const jsonKeepWarehouseProduct = async(products, partnerRecord) => {
       }
     });
 
-    // await Promise.all(promises);
-
+    return;
   } catch (error) {
     return Promise.reject(error);
   }
@@ -1066,19 +1098,19 @@ const jsonKeepWarehouseProduct = async(products, partnerRecord) => {
 const logicSyncBundleInStore = async(partnerId, id) => {
   try {
 
-    // Parallel Store and Sense Constant
-    const parallel = await Promise.all([
-      partnerStoreModel.readStoreRecord("store_id", partnerId, 1),
-
-    ]);
+    let storeRecord = await partnerStoreModel.readStoreRecord("store_id", partnerId, 1);
 
     // Parse
     storeRecord = JSON.stringify(storeRecord);
     storeRecord = JSON.parse(storeRecord);
-
     if (storeRecord.length === 0) return;
 
-    products.map(async(product, index) => {});
+    storeRecord.map(async(store, index) => {
+      const record = await storeSyncModel.readProductSync("id", store.store_id, id, 1);
+      if (record.length !== 0) storeSyncModel.keepProductSync(store.store_id, id, 1);
+    });
+
+    return;
   } catch (error) {
     return Promise.reject(error);
   }
