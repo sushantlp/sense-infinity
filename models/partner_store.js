@@ -44,7 +44,7 @@ const now = moment()
  * Start Database Read and Write
  */
 
-// Read Merchant Store Record
+// Read Partner Store Record
 module.exports.readStoreRecord = async(select, partnerId, status) => {
   try {
 

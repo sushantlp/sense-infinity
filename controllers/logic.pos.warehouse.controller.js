@@ -38,6 +38,7 @@ const systemPasswordModel = require("../models/system_administrator_password");
 const taxModel = require("../models/tax_table");
 const taxSyncModel = require("../models/tax_sync");
 const stapleSyncModel = require("../models/staple_product_sync");
+const partnerSyncModel = require("../models/partner_product_sync");
 const userEmployeeConnectModel = require("../models/warehouse_user_employee_connect");
 
 
@@ -990,6 +991,29 @@ module.exports.logicKeepWarehouseProduct = async(id, products) => {
 const jsonKeepWarehouseProduct = async(products, partnerRecord) => {
   try {
 
+    let count = 0;
+    let syncArray = [];
+    let max = 4;
+    let packageStatus = 'INSERT';
+
+    // Read Partner Product Sync Record
+    let syncModel = await partnerSyncModel.readProductSync("*", partnerRecord[0].partner_id, 'DESC');
+
+    // Parse
+    syncModel = JSON.stringify(syncModel);
+    syncModel = JSON.parse(syncModel);
+
+    if (syncModel.length > 0) {
+      if (syncModel[0].attributes.length < max) {
+        count = syncModel[0].attributes.length;
+        syncArray = syncModel[0].attributes;
+        packageStatus = 'UPDATE';
+      }
+    } else {
+      count = 0;
+      packageStatus = 'INSERT';
+    }
+
     const promises = products.map(async(product, index) => {
 
       // Read Warehouse Product By Barcode
@@ -1002,14 +1026,60 @@ const jsonKeepWarehouseProduct = async(products, partnerRecord) => {
       // Reform Warehouse Product
       const reform = shareController.reformWarehouseProduct(product.product_name, product.brand_name, product.description);
 
-      if (productRecord.length === 0) databaseController.keepWarehouseProduct(partnerRecord[0].mobile, product.product_barcode, reform.productName, reform.brandName, reform.description, product.category_unique, product.sub_category_unique, product.sub_sub_category_unique, product.unit_unique, product.unit_sub_unique, product.product_size, product.selling_price, product.product_margin, product.product_price, product.product_quantity, product.sgst, product.cgst, product.igst, product.hsn, product.sodexo, product.staple, product.status);
+      if (productRecord.length === 0) {
+        const lastId = await databaseController.keepWarehouseProduct(partnerRecord[0].mobile, product.product_barcode, reform.productName, reform.brandName, reform.description, product.category_unique, product.sub_category_unique, product.sub_sub_category_unique, product.unit_unique, product.unit_sub_unique, product.product_size, product.selling_price, product.product_margin, product.product_price, product.product_quantity, product.sgst, product.cgst, product.igst, product.hsn, product.sodexo, product.staple, product.status);
+        syncArray.push(lastId.insertId);
+        count = count + 1;
+      } else {
+        databaseController.updateWarehouseProduct(partnerRecord[0].mobile, reform.productName, reform.brandName, reform.description, product.category_unique, product.sub_category_unique, product.sub_sub_category_unique, product.unit_unique, product.unit_sub_unique, product.product_size, product.selling_price, product.product_margin, product.product_price, product.product_quantity, product.sgst, product.cgst, product.igst, product.hsn, product.sodexo, product.staple, product.status, productRecord[0].product_id);
+        syncArray.push(productRecord[0].product_id);
+        count = count + 1;
+      }
 
-      else databaseController.updateWarehouseProduct(partnerRecord[0].mobile, reform.productName, reform.brandName, reform.description, product.category_unique, product.sub_category_unique, product.sub_sub_category_unique, product.unit_unique, product.unit_sub_unique, product.product_size, product.selling_price, product.product_margin, product.product_price, product.product_quantity, product.sgst, product.cgst, product.igst, product.hsn, product.sodexo, product.staple, product.status, productRecord[0].product_id);
+      if (packageStatus === 'UPDATE') {
+        if (count === max) {
+          count = 0;
+          packageStatus = 'INSERT';
+          partnerSyncModel.updateAttributesSync(JSON.stringify(syncArray), syncModel[0].sync_id);
+          logicSyncBundleInStore(partnerRecord[0].partner_id, syncModel[0].sync_id);
+          syncArray = [];
+        }
+      } else {
+        if (count === max) {
+          count = 0;
+          packageStatus = 'INSERT';
+          const lastId = await partnerSyncModel.keepProductSync(partnerRecord[0].partner_id, JSON.stringify(syncArray));
+          logicSyncBundleInStore(partnerRecord[0].partner_id, lastId.insertId);
+          syncArray = [];
+        }
+      }
     });
 
-    await Promise.all(promises);
+    // await Promise.all(promises);
 
   } catch (error) {
     return Promise.reject(error);
   }
 };
+
+// Logic Warehouse Product Attribute Link With Store
+const logicSyncBundleInStore = async(partnerId, id) => {
+  try {
+
+    // Parallel Store and Sense Constant
+    const parallel = await Promise.all([
+      partnerStoreModel.readStoreRecord("store_id", partnerId, 1),
+
+    ]);
+
+    // Parse
+    storeRecord = JSON.stringify(storeRecord);
+    storeRecord = JSON.parse(storeRecord);
+
+    if (storeRecord.length === 0) return;
+
+    products.map(async(product, index) => {});
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}

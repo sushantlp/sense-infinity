@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('partner_store_product_syncs', {
+    return queryInterface.createTable('partner_product_syncs', {
       sync_id: {
         allowNull: false,
         autoIncrement: true,
@@ -16,21 +16,9 @@ module.exports = {
           key: 'partner_id'
         }
       },
-      store_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'partner_stores',
-          key: 'store_id'
-        }
-      },
       attributes: {
         type: Sequelize.JSON,
         allowNull: false
-      },
-      status: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0
       },
       createdAt: {
         field: "created_at",
@@ -45,6 +33,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('partner_store_product_syncs');
+    return queryInterface.dropTable('partner_product_syncs');
   }
 };
