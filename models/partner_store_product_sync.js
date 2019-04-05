@@ -7,15 +7,16 @@ const moment = require("moment-timezone");
 const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
-  var stapleProductSync = sequelize.define('staple_product_sync', {
+  var partnerStoreProductSync = sequelize.define('partner_store_product_sync', {
     partner_id: DataTypes.INTEGER,
+    store_id: DataTypes.INTEGER,
     attributes: DataTypes.JSON,
     status: DataTypes.BOOLEAN
   }, {});
-  stapleProductSync.associate = function(models) {
+  partnerStoreProductSync.associate = function(models) {
     // associations can be defined here
   };
-  return stapleProductSync;
+  return partnerStoreProductSync;
 };
 
 
@@ -29,8 +30,8 @@ const now = moment()
  * Start Database Read and Write
  */
 
-// Read Staple Product Sync Record
-module.exports.readStapleProductSync = async(select, partnerId, status) => {
+// Read Partner Store Product Sync Record
+module.exports.readStoreProductSync = async(select, partnerId, storeId status) => {
   try {
 
     // Get Pool Object
@@ -40,10 +41,10 @@ module.exports.readStapleProductSync = async(select, partnerId, status) => {
     const connection = await pool.getConnection();
 
     // Query
-    const query = `SELECT ${select} FROM staple_product_syncs WHERE partner_id = ? AND status = ? LIMIT 1`;
+    const query = `SELECT ${select} FROM partner_store_product_syncs WHERE partner_id = ? AND store_id = ? AND status = ? ORDER BY sync_id DESC LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [partnerId, status]);
+    const [rows, fields] = await connection.query(query, [partnerId, storeId, status]);
 
     connection.release();
 
@@ -53,8 +54,8 @@ module.exports.readStapleProductSync = async(select, partnerId, status) => {
   }
 };
 
-// Update Status Staple Product Sync Record
-module.exports.updateStatusProductSync = async(
+// Update Status Partner Store Product Sync Record
+module.exports.updateStatustSync = async(
   status, id
 ) => {
   try {
@@ -67,7 +68,7 @@ module.exports.updateStatusProductSync = async(
 
     // Query
     const query =
-      "UPDATE `staple_product_syncs` SET `status` = ?, `updated_at` = ? WHERE `staple_product_sync_id` = ?";
+      "UPDATE `partner_store_product_syncs` SET `status` = ?, `updated_at` = ? WHERE `sync_id` = ?";
 
     // Query Database
     const row = await connection.query(query, [
@@ -84,9 +85,10 @@ module.exports.updateStatusProductSync = async(
   }
 };
 
-// Keep Staple Product Sync Record
-module.exports.keepStapleProductSync = async(
+// Keep Partner Store Product Sync Record
+module.exports.keepStoreProductSync = async(
   partnerId,
+  storeId,
   attribute,
   status,
 ) => {
@@ -100,11 +102,12 @@ module.exports.keepStapleProductSync = async(
 
     // Query
     const query =
-      "INSERT INTO `staple_product_syncs` (`partner_id`, `attributes`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?)";
+      "INSERT INTO `partner_store_product_syncs` (`partner_id`, `store_id`, `attributes`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?)";
 
     // Query Database
     const row = await connection.query(query, [
       partnerId,
+      storeId,
       attribute,
       status,
       now,
@@ -119,8 +122,8 @@ module.exports.keepStapleProductSync = async(
   }
 };
 
-// Update Staple Product Sync Record
-module.exports.updateStapleProductSync = async(
+// Update Attributes Partner Store Product Sync Record
+module.exports.updateAttributesSync = async(
   attribute, id
 ) => {
   try {
@@ -133,7 +136,7 @@ module.exports.updateStapleProductSync = async(
 
     // Query
     const query =
-      "UPDATE `staple_product_syncs` SET `attributes` = ?, `updated_at` = ? WHERE `staple_product_sync_id` = ?";
+      "UPDATE `partner_store_product_syncs` SET `attributes` = ?, `updated_at` = ? WHERE `sync_id` = ?";
 
     // Query Database
     const row = await connection.query(query, [

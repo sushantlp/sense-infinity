@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('staple_product_syncs', {
+    return queryInterface.createTable('partner_store_product_syncs', {
       sync_id: {
         allowNull: false,
         autoIncrement: true,
@@ -14,6 +14,14 @@ module.exports = {
         references: {
           model: 'partners',
           key: 'partner_id'
+        }
+      },
+      store_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'partner_stores',
+          key: 'store_id'
         }
       },
       attributes: {
@@ -37,6 +45,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('staple_product_syncs');
+    return queryInterface.dropTable('partner_store_product_syncs');
   }
 };
