@@ -59,7 +59,6 @@ module.exports.keepProductSync = async(
   storeId, syncId, status
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -72,7 +71,7 @@ module.exports.keepProductSync = async(
 
     // Query Database
     const row = await connection.query(query, [
-      storeId, syncId, status,
+      syncId, storeId, status,
       now,
       now
     ]);

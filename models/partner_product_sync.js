@@ -81,7 +81,6 @@ module.exports.keepProductSync = async(
 
     return row;
   } catch (error) {
-    console.log("HEllo")
     return Promise.reject(error);
   }
 };
@@ -113,7 +112,6 @@ module.exports.updateAttributesSync = async(
 
     return row;
   } catch (error) {
-    console.log("HEllo=1")
     return Promise.reject(error);
   }
 };

@@ -858,7 +858,7 @@ const jsonKeepSecretData = async(secrets, partner) => {
         // Parse
         employeeRecord = JSON.stringify(employeeRecord);
         employeeRecord = JSON.parse(employeeRecord);
-
+        console.log(reform.birthDate)
         if (employeeRecord.length === 0) {
           const recentId = await employeeListModel.keepEmployeeData(secret.employe_unique,
             reform.firstName,
@@ -1005,7 +1005,6 @@ module.exports.logicKeepWarehouseProduct = async(id, products) => {
     // Zero Means Empty Record
     if (warehouseProduct.length === 0) await databaseController.createWarehouseProductTable(partnerRecord[0].mobile);
 
-
     // Json Keep Warehouse Product
     jsonKeepWarehouseProduct(products, partnerRecord)
 
@@ -1047,7 +1046,7 @@ const jsonKeepWarehouseProduct = async(products, partnerRecord) => {
       packageStatus = 'INSERT';
     }
 
-    const promises = products.map(async(product, index) => {
+    products.map(async(product, index) => {
 
       // Read Warehouse Product By Barcode
       let productRecord = await databaseController.readWarehouseProduct("*", partnerRecord[0].mobile, product.product_barcode);
@@ -1061,7 +1060,8 @@ const jsonKeepWarehouseProduct = async(products, partnerRecord) => {
 
       if (productRecord.length === 0) {
         const lastId = await databaseController.keepWarehouseProduct(partnerRecord[0].mobile, product.product_barcode, reform.productName, reform.brandName, reform.description, product.category_unique, product.sub_category_unique, product.sub_sub_category_unique, product.unit_unique, product.unit_sub_unique, product.product_size, product.selling_price, product.product_margin, product.product_price, product.product_quantity, product.sgst, product.cgst, product.igst, product.hsn, product.sodexo, product.staple, product.status);
-        syncArray.push(lastId.insertId);
+        if (Array.isArray(lastId)) syncArray.push(lastId[0].insertId);
+        else syncArray.push(lastId.insertId);
         count = count + 1;
       } else {
         databaseController.updateWarehouseProduct(partnerRecord[0].mobile, reform.productName, reform.brandName, reform.description, product.category_unique, product.sub_category_unique, product.sub_sub_category_unique, product.unit_unique, product.unit_sub_unique, product.product_size, product.selling_price, product.product_margin, product.product_price, product.product_quantity, product.sgst, product.cgst, product.igst, product.hsn, product.sodexo, product.staple, product.status, productRecord[0].product_id);
@@ -1080,10 +1080,12 @@ const jsonKeepWarehouseProduct = async(products, partnerRecord) => {
       } else {
         if (count === max) {
           count = 0;
-          packageStatus = 'INSERT';
-          const lastId = await partnerSyncModel.keepProductSync(partnerRecord[0].partner_id, JSON.stringify(syncArray));
-          logicSyncBundleInStore(partnerRecord[0].partner_id, lastId.insertId);
+          const copyArray = syncArray;
           syncArray = [];
+          packageStatus = 'INSERT';
+          const lastId = await partnerSyncModel.keepProductSync(partnerRecord[0].partner_id, JSON.stringify(copyArray));
+          if (Array.isArray(lastId)) logicSyncBundleInStore(partnerRecord[0].partner_id, lastId[0].insertId);
+          else logicSyncBundleInStore(partnerRecord[0].partner_id, lastId.insertId);
         }
       }
     });
@@ -1097,7 +1099,6 @@ const jsonKeepWarehouseProduct = async(products, partnerRecord) => {
 // Logic Warehouse Product Attribute Link With Store
 const logicSyncBundleInStore = async(partnerId, id) => {
   try {
-
     let storeRecord = await partnerStoreModel.readStoreRecord("store_id", partnerId, 1);
 
     // Parse
@@ -1107,7 +1108,7 @@ const logicSyncBundleInStore = async(partnerId, id) => {
 
     storeRecord.map(async(store, index) => {
       const record = await storeSyncModel.readProductSync("id", store.store_id, id, 1);
-      if (record.length !== 0) storeSyncModel.keepProductSync(store.store_id, id, 1);
+      if (record.length === 0) storeSyncModel.keepProductSync(store.store_id, id, 1);
     });
 
     return;
