@@ -5,7 +5,8 @@ module.exports = {
     queryInterface.changeColumn(
       'partner_stores',
       'store_code', {
-        type: Sequelize.STRING,
+      type: Sequelize.BIGINT,
+        unique: true,
         allowNull: false,
       }
     )

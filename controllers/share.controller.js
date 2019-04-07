@@ -8,6 +8,8 @@ const nodeMailer = require('nodemailer');
 
 // Import Model
 const smsModel = require('../models/sms');
+const userModel = require("../models/user");
+const partnerModel = require("../models/partner");
 
 // Import Config
 const {
@@ -435,3 +437,26 @@ module.exports.reformWarehouseProduct = (
 
   return reform;
 };
+
+// Call User Partner Data
+module.exports.userPartnerData = async(id) => {
+  try {
+    // Read User Record By Id
+    let userRecord = await userModel.readUserById("*", id, 1);
+
+    // Parse
+    userRecord = JSON.stringify(userRecord);
+    userRecord = JSON.parse(userRecord);
+
+    // Read Partner Record
+    let partnerRecord = await partnerModel.readPartnerByMobile("*", userRecord[0].mobile, 1);
+
+    // Parse
+    partnerRecord = JSON.stringify(partnerRecord);
+    partnerRecord = JSON.parse(partnerRecord);
+
+    return partnerRecord;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}

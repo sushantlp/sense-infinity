@@ -1,5 +1,5 @@
 /**
- * Club Card Routes
+ * Pos Warehouse Routes
  */
 
 // Import Package
@@ -9,7 +9,6 @@ const {
 
 // Controllers (route handlers).
 const PosWarehouseApiController = require('../../controllers/request.pos.warehouse.controller');
-
 
 // Api Key Auth
 const {
@@ -32,7 +31,7 @@ routes.post('/information', apiKeyAuth, PosWarehouseApiController.requestKeepWar
 routes.post('/stores', apiKeyAuth, PosWarehouseApiController.requestKeepStoreDetail);
 
 // Get Staple Master Product
-routes.get('/products', apiKeyAuth, PosWarehouseApiController.requestGetMasterProduct);
+//routes.get('/products', apiKeyAuth, PosWarehouseApiController.requestGetMasterProduct);
 
 // Keep Warehouse Products Detail
 routes.post('/products', apiKeyAuth, PosWarehouseApiController.requestKeepWarehouseProduct);

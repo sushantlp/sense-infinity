@@ -1,8 +1,5 @@
 "use strict";
 
-// Import Package
-const bcrypt = require("bcrypt");
-
 // Import Controller
 const shareController = require("./share.controller");
 const databaseController = require("./database.controller");
@@ -14,8 +11,6 @@ const constants = require('../config/constants');
 const warehouseStaticModel = require("../models/warehouse_static_version");
 const localityModel = require("../models/locality");
 const cityModel = require("../models/city");
-const userModel = require("../models/user");
-const partnerModel = require("../models/partner");
 const partnerStoreModel = require("../models/partner_store");
 const genderModel = require("../models/gender");
 const roleModel = require("../models/warehouse_role_list");
@@ -52,7 +47,7 @@ module.exports.logicWarehouseStaticData = async(version, id) => {
     let versionObj = {};
 
     // Call User Partner Data
-    const partnerRecord = await userPartnerData(id);
+    const partnerRecord = await shareController.userPartnerData(id);
 
     if (partnerRecord.length === 0) return {
       success: false,
@@ -443,7 +438,6 @@ module.exports.logicWarehouseStaticData = async(version, id) => {
             1
           )
 
-
           // Parse
           productUnit = JSON.stringify(productUnit);
           productUnit = JSON.parse(productUnit);
@@ -586,35 +580,12 @@ const taxSyncData = async(values) => {
   }
 }
 
-// Call User Partner Data
-const userPartnerData = async(id) => {
-  try {
-    // Read User Record By Id
-    let userRecord = await userModel.readUserById("*", id, 1);
-
-    // Parse
-    userRecord = JSON.stringify(userRecord);
-    userRecord = JSON.parse(userRecord);
-
-    // Read Partner Record
-    let partnerRecord = await partnerModel.readPartnerByMobile("*", userRecord[0].mobile, 1);
-
-    // Parse
-    partnerRecord = JSON.stringify(partnerRecord);
-    partnerRecord = JSON.parse(partnerRecord);
-
-    return partnerRecord;
-  } catch (error) {
-    return Promise.reject(error);
-  }
-}
-
 // Logic Keep Warehouse Stores
 module.exports.logicKeepStoreDetail = async(stores, id) => {
   try {
 
     // Call User Partner Data
-    const partnerRecord = await userPartnerData(id);
+    const partnerRecord = await shareController.userPartnerData(id);
 
     if (partnerRecord.length === 0) return {
       success: false,
@@ -701,7 +672,7 @@ module.exports.logicKeepWarehouseDetail = async(warehouses, id) => {
   try {
 
     // Call User Partner Data
-    const partnerRecord = await userPartnerData(id);
+    const partnerRecord = await shareController.userPartnerData(id);
 
     if (partnerRecord.length === 0) return {
       success: false,
@@ -788,7 +759,7 @@ module.exports.logicKeepSecretData = async(secrets, id) => {
   try {
 
     // Call User Partner Data
-    const partnerRecord = await userPartnerData(id);
+    const partnerRecord = await shareController.userPartnerData(id);
 
     if (partnerRecord.length === 0) return {
       success: false,
@@ -858,7 +829,7 @@ const jsonKeepSecretData = async(secrets, partner) => {
         // Parse
         employeeRecord = JSON.stringify(employeeRecord);
         employeeRecord = JSON.parse(employeeRecord);
-        console.log(reform.birthDate)
+
         if (employeeRecord.length === 0) {
           const recentId = await employeeListModel.keepEmployeeData(secret.employe_unique,
             reform.firstName,
@@ -961,7 +932,7 @@ module.exports.logicGetMasterProduct = async(id) => {
   try {
 
     // Call User Partner Data
-    const partnerRecord = await userPartnerData(id);
+    const partnerRecord = await shareController.userPartnerData(id);
 
     if (partnerRecord.length === 0) return {
       success: false,
@@ -989,7 +960,7 @@ module.exports.logicKeepWarehouseProduct = async(id, products) => {
   try {
 
     // Call User Partner Data
-    const partnerRecord = await userPartnerData(id);
+    const partnerRecord = await shareController.userPartnerData(id);
 
     if (partnerRecord.length === 0) return {
       success: false,
