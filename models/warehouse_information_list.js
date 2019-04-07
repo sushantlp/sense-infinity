@@ -65,6 +65,29 @@ module.exports.readWarehouseDataByCode = async(select, code, status) => {
   }
 };
 
+// Read Warehouse Data By Partner Id
+module.exports.readWarehouseByPartner = async(select, partnerId, status) => {
+  try {
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM warehouse_information_lists WHERE partner_id = ? AND status = ? LIMIT 1`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [partnerId, status]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
 
 // Keep Customer Information Data
 module.exports.keepWarehouseData = async(

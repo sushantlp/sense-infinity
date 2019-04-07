@@ -23,8 +23,13 @@ const routes = new Router();
 // Get Store Static Data
 routes.post('/static', apiKeyAuth, PosWarehouseApiController.requestGetWarehouseStaticData);
 
-// Get Stores Record
+// Get All Stores Record
 routes.get('/stores', apiKeyAuth, PosStoreApiController.requestWarehouseStoreList);
 
+// Get All Stores Record
+routes.get('/stores/:storeCode([0-9]+)', apiKeyAuth, PosStoreApiController.requestStoreRecord);
+
+// Get Warehouse Information Record
+routes.get('/warehouse', apiKeyAuth, PosStoreApiController.requestWarehouseRecord);
 
 module.exports = routes;
