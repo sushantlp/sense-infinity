@@ -77,6 +77,40 @@ module.exports.readUserEmployeeConnectStatus = async(select, userId, employeId, 
   }
 };
 
+// Join Warehouse User And Employee By partnerId storeId
+module.exports.readRecordByJoin = async(select, partnerId, storeId, status) => {
+  try {
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select}
+      FROM
+    warehouse_user_employee_connects
+    INNER JOIN warehouse_user_lists ON warehouse_user_employee_connects.warehouse_user_id = warehouse_user_lists.id
+    INNER JOIN warehouse_employee_lists ON warehouse_user_employee_connects.warehouse_employe_id = warehouse_employee_lists.id
+    WHERE
+          warehouse_user_employee_connects.status = ?
+    AND warehouse_user_lists.status = ?
+      AND warehouse_employee_lists.status = ?
+      AND warehouse_user_lists.partner_id = ?
+      AND warehouse_employee_lists.store_id = ? `;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [status, status, status, partnerId, storeId]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 // Keep Warehouse User And Employee Connect
 module.exports.keepUserEmployeeConnect = async(
   userId,

@@ -32,4 +32,7 @@ routes.get('/stores/:storeCode([0-9]+)', apiKeyAuth, PosStoreApiController.reque
 // Get Warehouse Information Record
 routes.get('/warehouse', apiKeyAuth, PosStoreApiController.requestWarehouseRecord);
 
+// Get Stores Employee Record
+routes.get('/employees/:storeCode([0-9]+)', apiKeyAuth, PosStoreApiController.requestEmployeeRecord);
+
 module.exports = routes;

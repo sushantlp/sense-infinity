@@ -94,3 +94,34 @@ module.exports.requestWarehouseRecord = (req, res) => {
       });
   } else return res.status(400).send("Not a good api call");
 };
+
+// Request Employees Record
+module.exports.requestEmployeeRecord = (req, res) => {
+  if (
+    res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.params.hasOwnProperty('storeCode')
+  ) {
+
+    // Logic Employees Record Controller
+    return posStoreController
+      .logicEmployeeRecord(res.userKey, req.params.storeCode)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/api/v1/pos/employees/${req.params.storeCode}`,
+              200,
+              response.success, {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
