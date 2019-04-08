@@ -189,3 +189,35 @@ const billerJoinJson = (records, storeId) => {
     return Promise.reject(error);
   }
 }
+
+// Logic Store Product Record
+module.exports.logicStoreProduct = async(id, code) => {
+  try {
+
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0) return {
+      success: false,
+      data: [],
+      msg: 'Unknown partner'
+    };
+
+    // Read Partner Store Record By Store Code
+    let storeRecord = await partnerStoreModel.readStoreByCode("store_id",
+      code, 1);
+
+    // Parse
+    storeRecord = JSON.stringify(storeRecord);
+    storeRecord = JSON.parse(storeRecord);
+
+    if (storeRecord.length === 0) return {
+      success: false,
+      data: [],
+      msg: 'Unknown store'
+    };
+
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
