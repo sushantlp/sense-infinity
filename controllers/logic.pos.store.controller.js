@@ -127,13 +127,63 @@ module.exports.logicEmployeeRecord = async(id, code) => {
       msg: 'Unknown store'
     };
 
-    const connectRecord = await userEmployeeConnectModel.readRecordByJoin('warehouse_user_employee_connects.user_employee_id, warehouse_user_lists.id, warehouse_employee_lists.id', partnerRecord[0].partner_id, storeRecord[0].store_id, 1)
-    console.log(connectRecord)
+    // Join Warehouse Biller Data
+    let connectRecord = await userEmployeeConnectModel.readBillerByJoin('warehouse_user_lists.warehouse_user_id, warehouse_user_lists.warehouse_role_id, warehouse_user_lists.password, warehouse_employee_lists.warehouse_employe_id, warehouse_employee_lists.first_name, warehouse_employee_lists.last_name, warehouse_employee_lists.birth_date, warehouse_employee_lists.mobile, warehouse_employee_lists.email, warehouse_employee_lists.dept_name, warehouse_employee_lists.gender_id', partnerRecord[0].partner_id, storeRecord[0].store_id, 1);
+
+    // Parse
+    connectRecord = JSON.stringify(connectRecord);
+    connectRecord = JSON.parse(connectRecord);
+
     if (connectRecord.length === 0) return {
       success: true,
-      data: connectRecord,
+      data: [],
       msg: 'Succesful'
     };
+    else return {
+      success: true,
+      data: billerJoinJson(connectRecord),
+      msg: 'Succesful'
+    };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
+
+const billerJoinJson = (records) => {
+  try {
+    // Variable
+    let arr = [];
+    records.map(async(record, index) => {
+      let obj = {};
+      obj.user_id = record.warehouse_user_id;
+      obj.role_id = record.warehouse_role_id;
+      obj.password = record.password;
+      obj.employe_id = record.warehouse_employe_id;
+      obj.gender_id = record.gender_id;
+
+      if (record.first_name === 'NULL') obj.first_name = null;
+      else obj.first_name = record.first_name;
+
+      if (record.last_name === 'NULL') obj.last_name = null;
+      else obj.last_name = record.last_name;
+
+      if (record.birth_date === 'NULL') obj.birth_date = null;
+      else obj.birth_date = record.birth_date;
+
+      if (record.mobile === 'NULL') obj.mobile = null;
+      else obj.mobile = record.mobile;
+
+      if (record.email === 'NULL') obj.email = null;
+      else obj.email = record.email;
+
+      if (record.dept_name === 'NULL') obj.dept_name = null;
+      else obj.dept_name = record.dept_name;
+
+      // Push Array
+      arr.push(obj);
+    });
+
+    return arr;
   } catch (error) {
     return Promise.reject(error);
   }
