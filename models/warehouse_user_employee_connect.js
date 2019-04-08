@@ -90,16 +90,17 @@ module.exports.readBillerByJoin = async(select, partnerId, storeId, status) => {
     // Query
     const query = `SELECT ${select} FROM warehouse_user_lists
     LEFT JOIN warehouse_user_employee_connects ON warehouse_user_lists.id = warehouse_user_employee_connects.warehouse_user_id
-    LEFT JOIN warehouse_employee_lists ON warehouse_user_employee_connects.warehouse_employe_id = warehouse_employee_lists.id
+    RIGHT JOIN warehouse_employee_lists ON warehouse_user_employee_connects.warehouse_employe_id = warehouse_employee_lists.id
     WHERE
         warehouse_user_employee_connects.status = ?
     AND warehouse_user_lists.status = ?
     AND warehouse_employee_lists.status = ?
-    OR  warehouse_user_lists.partner_id = ?
-    OR  warehouse_employee_lists.store_id = ?`;
+    AND warehouse_user_lists.warehouse_role_id <> 1 
+    OR warehouse_employee_lists.store_id = ?
+    OR warehouse_user_lists.partner_id = ? `;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [status, status, status, partnerId, storeId]);
+    const [rows, fields] = await connection.query(query, [status, status, status, storeId, partnerId]);
 
     connection.release();
 
