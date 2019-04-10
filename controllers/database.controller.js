@@ -1014,13 +1014,14 @@ module.exports.createWarehouseProductTable = async(partnerMobile) => {
       selling_price FLOAT NOT NULL,
       product_margin FLOAT NOT NULL,
       actual_price FLOAT NOT NULL,
-      product_quantity FLOAT NOT NULL,
+      product_quantity INTEGER NOT NULL,
       sgst FLOAT NOT NULL,
       cgst FLOAT NOT NULL,
       igst FLOAT NOT NULL,
       hsn BIGINT NOT NULL,
       sodexo INTEGER NOT NULL,
       staple INTEGER NOT NULL,
+      change_status BOOL DEFAULT FALSE,
       status BOOL DEFAULT FALSE,
       created_at DATETIME NOT NULL,
       updated_at DATETIME NOT NULL,
@@ -1167,6 +1168,204 @@ module.exports.readWarehouseProduct = async(
   }
 };
 
+
+// Create Store Product Table
+module.exports.createStoreProductTable = async(partnerMobile, storeId) => {
+  try {
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Dynamic Table
+    const ProductTable = `${partnerMobile}_${storeId}_store_products`;
+
+    // Query
+    const query = `CREATE TABLE IF NOT EXISTS ${ProductTable}(
+      product_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+      product_barcode BIGINT NOT NULL UNIQUE,
+      product_quantity INTEGER NOT NULL,
+      change_status BOOL DEFAULT FALSE,
+      status BOOL DEFAULT FALSE,
+      created_at DATETIME NOT NULL,
+      updated_at DATETIME NOT NULL,
+      PRIMARY KEY(product_id)
+    )`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Read Store Product By Barcode
+module.exports.readStoreProduct = async(
+  select, partnerMobile, storeId, barcode
+) => {
+  try {
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Dynamic Table
+    const ProductTable = `${partnerMobile}_${storeId}_store_products`;
+
+    // Query
+    const query = `SELECT ${select} FROM ${ProductTable} WHERE product_barcode = ? LIMIT 1`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [barcode]);
+
+    // connection.release();
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Keep Store Product Detail
+module.exports.keepStoreProduct = async(
+  partnerMobile, storeId, barcode, productQuantity, status
+) => {
+  try {
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Dynamic Table
+    const ProductTable = `${partnerMobile}_${storeId}_store_products`;
+
+    // Query
+    const query = `INSERT INTO 
+        ${ProductTable} (
+        product_barcode, 
+        product_quantity,
+        status, 
+        created_at, 
+        updated_at) 
+        VALUES 
+        (?,?,?,?,?)`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [
+      barcode, productQuantity, status, now, now
+    ]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Update Store Product Quanity
+module.exports.updateStoreProductQuanity = async(
+  partnerMobile, storeId, productQuantity, changeStatus, status, id
+) => {
+  try {
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Dynamic Table
+    const ProductTable = `${partnerMobile}_${storeId}_store_products`;
+
+    // Query
+    const query = `UPDATE ${ProductTable} SET product_quantity = ?, change_status = ?, status = ?, updated_at = ? WHERE product_id = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [
+      productQuantity, changeStatus, status, now, id
+    ]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Update Store Product 
+module.exports.updateStoreProduct = async(
+  partnerMobile, storeId, status, id
+) => {
+  try {
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Dynamic Table
+    const ProductTable = `${partnerMobile}_${storeId}_store_products`;
+
+    // Query
+    const query = `UPDATE ${ProductTable} SET status = ?, updated_at = ? WHERE product_id = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [
+      status, now, id
+    ]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Update Store Product Change Status
+module.exports.storeProductChangeStatus = async(
+  partnerMobile, storeId, changeStatus, id
+) => {
+  try {
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Dynamic Table
+    const ProductTable = `${partnerMobile}_${storeId}_store_products`;
+
+    // Query
+    const query = `UPDATE ${ProductTable} SET change_status = ?, updated_at = ? WHERE product_id = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [
+      changeStatus, now, id
+    ]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
 
 /**
  * End Database Read and Write

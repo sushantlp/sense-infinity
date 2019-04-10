@@ -968,16 +968,20 @@ module.exports.logicKeepWarehouseProduct = async(id, products) => {
       msg: 'Unknown partner'
     };
 
-    // Check Warehouse Product Table Exist
-    const warehouseProduct = await databaseController.checkWarehouseProduct(
-      partnerRecord[0].mobile
-    );
+    let storeRecord = await partnerStoreModel.readStoreRecord("store_id", partnerRecord[0].partner_id, 1);
 
-    // Zero Means Empty Record
-    if (warehouseProduct.length === 0) await databaseController.createWarehouseProductTable(partnerRecord[0].mobile);
+    // Parse
+    storeRecord = JSON.stringify(storeRecord);
+    storeRecord = JSON.parse(storeRecord);
+
+    if (storeRecord.length === 0) return {
+      success: false,
+      data: [],
+      msg: 'Empty warehouse stores'
+    };
 
     // Json Keep Warehouse Product
-    jsonKeepWarehouseProduct(products, partnerRecord)
+    jsonKeepWarehouseProduct(products, partnerRecord, storeRecord)
 
     return {
       success: true,
@@ -991,13 +995,19 @@ module.exports.logicKeepWarehouseProduct = async(id, products) => {
 };
 
 // Json Keep Warehouse Product
-const jsonKeepWarehouseProduct = async(products, partnerRecord) => {
+const jsonKeepWarehouseProduct = async(products, partnerRecord, storeRecord) => {
   try {
 
     let count = 0;
     let syncArray = [];
     let max = 4;
     let packageStatus = 'INSERT';
+
+    // Check or Create Warehouse and Store Product Tables
+    await Promise.all([
+      databaseController.createWarehouseProductTable(partnerRecord[0].mobile),
+      checkStoreProductTable(partnerRecord[0].mobile, storeRecord)
+    ]);
 
     // Read Partner Product Sync Record
     let syncModel = await partnerSyncModel.readProductSync("*", partnerRecord[0].partner_id, 'DESC');
@@ -1017,7 +1027,9 @@ const jsonKeepWarehouseProduct = async(products, partnerRecord) => {
       packageStatus = 'INSERT';
     }
 
-    products.map(async(product, index) => {
+    return products.map(async(product, index) => {
+
+      logicStoreProduct(partnerRecord[0].mobile, storeRecord, product.product_barcode, product.product_quantity, product.status);
 
       // Read Warehouse Product By Barcode
       let productRecord = await databaseController.readWarehouseProduct("*", partnerRecord[0].mobile, product.product_barcode);
@@ -1030,13 +1042,12 @@ const jsonKeepWarehouseProduct = async(products, partnerRecord) => {
       const reform = shareController.reformWarehouseProduct(product.product_name, product.brand_name, product.description);
 
       if (productRecord.length === 0) {
-        const lastId = await databaseController.keepWarehouseProduct(partnerRecord[0].mobile, product.product_barcode, reform.productName, reform.brandName, reform.description, product.category_unique, product.sub_category_unique, product.sub_sub_category_unique, product.unit_unique, product.unit_sub_unique, product.product_size, product.selling_price, product.product_margin, product.product_price, product.product_quantity, product.sgst, product.cgst, product.igst, product.hsn, product.sodexo, product.staple, product.status);
-        if (Array.isArray(lastId)) syncArray.push(lastId[0].insertId);
-        else syncArray.push(lastId.insertId);
+        databaseController.keepWarehouseProduct(partnerRecord[0].mobile, product.product_barcode, reform.productName, reform.brandName, reform.description, product.category_unique, product.sub_category_unique, product.sub_sub_category_unique, product.unit_unique, product.unit_sub_unique, product.product_size, product.selling_price, product.product_margin, product.product_price, product.product_quantity, product.sgst, product.cgst, product.igst, product.hsn, product.sodexo, product.staple, product.status);
+        syncArray.push(product.product_barcode);
         count = count + 1;
       } else {
         databaseController.updateWarehouseProduct(partnerRecord[0].mobile, reform.productName, reform.brandName, reform.description, product.category_unique, product.sub_category_unique, product.sub_sub_category_unique, product.unit_unique, product.unit_sub_unique, product.product_size, product.selling_price, product.product_margin, product.product_price, product.product_quantity, product.sgst, product.cgst, product.igst, product.hsn, product.sodexo, product.staple, product.status, productRecord[0].product_id);
-        syncArray.push(productRecord[0].product_id);
+        syncArray.push(product.product_barcode);
         count = count + 1;
       }
 
@@ -1045,7 +1056,7 @@ const jsonKeepWarehouseProduct = async(products, partnerRecord) => {
           count = 0;
           packageStatus = 'INSERT';
           partnerSyncModel.updateAttributesSync(JSON.stringify(syncArray), syncModel[0].sync_id);
-          logicSyncBundleInStore(partnerRecord[0].partner_id, syncModel[0].sync_id);
+          logicSyncBundleInStore(storeRecord, syncModel[0].sync_id);
           syncArray = [];
         }
       } else {
@@ -1055,34 +1066,57 @@ const jsonKeepWarehouseProduct = async(products, partnerRecord) => {
           syncArray = [];
           packageStatus = 'INSERT';
           const lastId = await partnerSyncModel.keepProductSync(partnerRecord[0].partner_id, JSON.stringify(copyArray));
-          if (Array.isArray(lastId)) logicSyncBundleInStore(partnerRecord[0].partner_id, lastId[0].insertId);
-          else logicSyncBundleInStore(partnerRecord[0].partner_id, lastId.insertId);
+          if (Array.isArray(lastId)) logicSyncBundleInStore(storeRecord, lastId[0].insertId);
+          else logicSyncBundleInStore(storeRecord, lastId.insertId);
         }
       }
     });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
 
-    return;
+const logicStoreProduct = async(partnerMobile, storeRecord, barcode, quantity, status) => {
+  try {
+
+    return storeRecord.map(async(store, index) => {
+      await databaseController.createStoreProductTable(partnerMobile, store.store_id);
+      let productRecord = await databaseController.readStoreProduct("product_id", partnerMobile, store.store_id, barcode);
+
+      // Parse
+      productRecord = JSON.stringify(productRecord);
+      productRecord = JSON.parse(productRecord);
+
+      if (productRecord.length === 0) databaseController.keepStoreProduct(partnerMobile, store.store_id, barcode, quantity, status);
+      else databaseController.updateStoreProduct(partnerMobile, store.store_id, status, productRecord[0].product_id);
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Check or Create Store Product Table
+const checkStoreProductTable = async(partnerMobile, storeRecord) => {
+  try {
+
+    const promises = storeRecord.map(async(store, index) => {
+      await databaseController.createStoreProductTable(partnerMobile, store.store_id);
+    });
+
+    await Promise.all(promises);
   } catch (error) {
     return Promise.reject(error);
   }
 };
 
 // Logic Warehouse Product Attribute Link With Store
-const logicSyncBundleInStore = async(partnerId, id) => {
+const logicSyncBundleInStore = async(storeRecord, id) => {
   try {
-    let storeRecord = await partnerStoreModel.readStoreRecord("store_id", partnerId, 1);
 
-    // Parse
-    storeRecord = JSON.stringify(storeRecord);
-    storeRecord = JSON.parse(storeRecord);
-    if (storeRecord.length === 0) return;
-
-    storeRecord.map(async(store, index) => {
+    return storeRecord.map(async(store, index) => {
       const record = await storeSyncModel.readProductSync("id", store.store_id, id, 1);
       if (record.length === 0) storeSyncModel.keepProductSync(store.store_id, id, 1);
     });
-
-    return;
   } catch (error) {
     return Promise.reject(error);
   }
