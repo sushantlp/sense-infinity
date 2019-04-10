@@ -9,7 +9,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       warehouse_user_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
         allowNull: false,
         unique: 'actions_unique'
       },

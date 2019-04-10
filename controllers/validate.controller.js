@@ -563,7 +563,7 @@ module.exports.warehouseSecrets = (secrets) => {
           msg: 'Missing employe unique'
         };
 
-      if (secrets[i].warehouse_user_unique > 0 && secrets[i].employe_unique > 0) {
+      if (parseInt(secrets[i].warehouse_user_unique, 10) > 0 && parseInt(secrets[i].employe_unique, 10) > 0) {
 
         if (secrets[i].password === null ||
           secrets[i].password === undefined ||
@@ -573,17 +573,17 @@ module.exports.warehouseSecrets = (secrets) => {
             msg: 'Password should not be empty or null'
           };
 
-        if (secrets[i].role_unique === 0) return {
+        if (parseInt(secrets[i].role_unique, 10) === 0) return {
           success: false,
           msg: 'Role should not be empty or null'
         };
 
-        if (secrets[i].branch_unique === 0) return {
+        if (parseInt(secrets[i].branch_unique, 10) === 0) return {
           success: false,
           msg: 'Branch should not be zero'
         };
 
-      } else if (secrets[i].warehouse_user_unique > 0) {
+      } else if (parseInt(secrets[i].warehouse_user_unique, 10) > 0) {
         if (secrets[i].password === null ||
           secrets[i].password === undefined ||
           secrets[i].password === "")
@@ -592,13 +592,13 @@ module.exports.warehouseSecrets = (secrets) => {
             msg: 'Password should not be empty or null'
           };
 
-        if (secrets[i].role_unique === 0) return {
+        if (parseInt(secrets[i].role_unique, 10) === 0) return {
           success: false,
           msg: 'Role should not be empty or null'
         };
-      } else if (secrets[i].employe_unique > 0) {
+      } else if (parseInt(secrets[i].employe_unique, 10) > 0) {
 
-        if (secrets[i].branch_unique === 0) return {
+        if (parseInt(secrets[i].branch_unique, 10) === 0) return {
           success: false,
           msg: 'Branch should not be zero'
         };

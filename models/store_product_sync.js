@@ -29,6 +29,29 @@ const now = moment()
  * Start Database Read and Write
  */
 
+// Read Store Product Sync Record By Store Id
+module.exports.readProductSyncById = async(select, storeId, status) => {
+  try {
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM store_product_syncs WHERE store_id = ? AND status = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [storeId, status]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
 
 // Read Store Product Sync Record
 module.exports.readProductSync = async(select, storeId, syncId, status) => {

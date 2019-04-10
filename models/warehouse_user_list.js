@@ -8,7 +8,7 @@ const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var warehouseUserList = sequelize.define('warehouse_user_list', {
-    warehouse_user_id: DataTypes.INTEGER,
+    warehouse_user_id: DataTypes.BIGINT,
     warehouse_role_id: DataTypes.INTEGER,
     partner_id: DataTypes.INTEGER,
     password: DataTypes.STRING,
@@ -32,7 +32,7 @@ const now = moment()
 
 
 // Read Warehouse User By User Id
-module.exports.readWarehouseUserByUserId = async(select, userId, status) => {
+module.exports.readWarehouseUserByUserId = async(select, userId, partnerId, status) => {
   try {
 
     // Get Pool Object
@@ -42,10 +42,10 @@ module.exports.readWarehouseUserByUserId = async(select, userId, status) => {
     const connection = await pool.getConnection();
 
     // Query
-    const query = `SELECT ${select} FROM warehouse_user_lists WHERE warehouse_user_id = ? AND status = ? LIMIT 1`;
+    const query = `SELECT ${select} FROM warehouse_user_lists WHERE warehouse_user_id = ? AND partner_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [userId, status]);
+    const [rows, fields] = await connection.query(query, [userId, partnerId, status]);
 
     connection.release();
 

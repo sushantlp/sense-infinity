@@ -7,6 +7,7 @@ const shareController = require("./share.controller");
 const partnerStoreModel = require("../models/partner_store");
 const warehouseInformationModel = require("../models/warehouse_information_list");
 const userEmployeeConnectModel = require("../models/warehouse_user_employee_connect");
+const storeProductSyncModel = require("../models/store_product_sync");
 
 // Logic Warehouse Store List
 module.exports.logicWarehouseStoreList = async(id) => {
@@ -128,7 +129,7 @@ module.exports.logicEmployeeRecord = async(id, code) => {
     };
 
     // Join Warehouse Biller Data
-    let connectRecord = await userEmployeeConnectModel.readBillerByJoin('warehouse_user_lists.warehouse_user_id, warehouse_user_lists.warehouse_role_id, warehouse_user_lists.password, warehouse_employee_lists.warehouse_employe_id, warehouse_employee_lists.store_id, warehouse_employee_lists.first_name, warehouse_employee_lists.last_name, warehouse_employee_lists.birth_date, warehouse_employee_lists.mobile, warehouse_employee_lists.email, warehouse_employee_lists.dept_name, warehouse_employee_lists.gender_id', partnerRecord[0].partner_id, storeRecord[0].store_id, 1);
+    let connectRecord = await userEmployeeConnectModel.readBillerByJoin('warehouse_user_lists.warehouse_user_id, warehouse_user_lists.warehouse_role_id, warehouse_user_lists.password, warehouse_employee_lists.warehouse_employe_id, warehouse_employee_lists.store_id, warehouse_employee_lists.first_name, warehouse_employee_lists.last_name, warehouse_employee_lists.birth_date, warehouse_employee_lists.mobile, warehouse_employee_lists.email, warehouse_employee_lists.dept_name, warehouse_employee_lists.gender_id, warehouse_employee_lists.status AS employee_status, warehouse_user_lists.status AS user_status', partnerRecord[0].partner_id, storeRecord[0].store_id, 1);
 
     // Parse
     connectRecord = JSON.stringify(connectRecord);
@@ -161,6 +162,8 @@ const billerJoinJson = (records, storeId) => {
       obj.password = record.password;
       obj.employe_id = record.warehouse_employe_id;
       obj.gender_id = record.gender_id;
+      obj.user_status = record.user_status;
+      obj.employee_status = record.employee_status;
 
       if (record.first_name === 'NULL') obj.first_name = null;
       else obj.first_name = record.first_name;
@@ -216,6 +219,36 @@ module.exports.logicStoreProduct = async(id, code) => {
       data: [],
       msg: 'Unknown store'
     };
+
+    // Read Store Product Sync Record By Store Id
+    let syncRecord = await storeProductSyncModel.readProductSyncById("id, sync_id", storeRecord[0].store_id, 1);
+
+    // Parse
+    syncRecord = JSON.stringify(syncRecord);
+    syncRecord = JSON.parse(syncRecord);
+
+    // Record Length
+    const syncLength = syncRecord.length;
+
+    if (syncLength === 0) return {
+      success: true,
+      data: {
+        products: [],
+        api_call: 'NO',
+        return_id: 0
+      },
+      msg: 'Succesful'
+    };
+
+    const products = await getStoreProduct(syncRecord[0]);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
+
+const getStoreProduct = async(syncs) => {
+  try {
+
 
   } catch (error) {
     return Promise.reject(error);
