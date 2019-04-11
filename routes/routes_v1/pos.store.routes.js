@@ -38,4 +38,7 @@ routes.get('/employees/:storeCode([0-9]+)', apiKeyAuth, PosStoreApiController.re
 // Get Stores Products Record
 routes.get('/products/:storeCode([0-9]+)', apiKeyAuth, PosStoreApiController.requestStoreProduct);
 
+// Get Stores Products Record
+routes.put('/products/:id([0-9]+)', apiKeyAuth, PosStoreApiController.requestStoreProductSync);
+
 module.exports = routes;

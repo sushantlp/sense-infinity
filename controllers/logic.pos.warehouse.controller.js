@@ -628,6 +628,7 @@ const iterateKeepStoreDetail = async(stores, partner) => {
       storeCode = JSON.parse(storeCode);
 
       if (storeCode.length === 0) {
+
         // Keep Partner Stores Data
         partnerStoreModel.keepStoreData(
           store.store_code,
@@ -799,13 +800,13 @@ const jsonKeepSecretData = async(secrets, partner) => {
       if (secret.warehouse_user_unique > 0 && secret.employe_unique > 0) {
 
         // Read Warehouse User By User Id
-        let UserRecord = await warehouseUserModel.readWarehouseUserByUserId("*", secret.warehouse_user_unique, partner[0].partner_id, 1);
+        let userRecord = await warehouseUserModel.readWarehouseUserByUserId("*", secret.warehouse_user_unique, partner[0].partner_id, 1);
 
         // Parse
-        UserRecord = JSON.stringify(UserRecord);
-        UserRecord = JSON.parse(UserRecord);
+        userRecord = JSON.stringify(userRecord);
+        userRecord = JSON.parse(userRecord);
 
-        if (UserRecord.length === 0) {
+        if (userRecord.length === 0) {
           const recentId = await warehouseUserModel.keepWarehouseUserData(secret.warehouse_user_unique,
             parseInt(secret.role_unique, 10),
             partner[0].partner_id,
@@ -817,11 +818,18 @@ const jsonKeepSecretData = async(secrets, partner) => {
 
 
         } else {
-          warehouseUserModel.updateWarehouseUserPassword(secret.password, UserRecord[0].id);
+          warehouseUserModel.updateWarehouseUserPassword(secret.password, userRecord[0].id);
 
           // Intialize User Id
-          user = UserRecord[0].id
+          user = userRecord[0].id
         }
+
+        // Read Partner Store Record By Store Code
+        let storeRecord = await partnerStoreModel.readStoreByCode("store_id", parseInt(secret.branch_unique, 10), 1);
+
+        // Parse
+        storeRecord = JSON.stringify(storeRecord);
+        storeRecord = JSON.parse(storeRecord);
 
         // Read Warehouse Employee By Employee Id
         let employeeRecord = await employeeListModel.readEmployeeByEmployeeId("*", secret.employe_unique, parseInt(secret.branch_unique, 10), 1);
@@ -839,7 +847,7 @@ const jsonKeepSecretData = async(secrets, partner) => {
             reform.email,
             reform.departmentName,
             parseInt(secret.gender_id, 10),
-            parseInt(secret.branch_unique, 10),
+            storeRecord[0].store_id,
             1);
 
           // Intialize Recent Employee Id
@@ -853,7 +861,7 @@ const jsonKeepSecretData = async(secrets, partner) => {
             reform.email,
             reform.departmentName,
             parseInt(secret.gender_id, 10),
-            parseInt(secret.branch_unique, 10),
+            storeRecord[0].store_id,
             employeeRecord[0].id);
 
           // Intialize Recent Employee Id
@@ -875,7 +883,7 @@ const jsonKeepSecretData = async(secrets, partner) => {
       } else if (secret.warehouse_user_unique > 0) {
 
         // Read Warehouse User By User Id
-        let UserRecord = await warehouseUserModel.readWarehouseUserByUserId("*", secret.warehouse_user_unique, 1);
+        let UserRecord = await warehouseUserModel.readWarehouseUserByUserId("*", secret.warehouse_user_unique, partner[0].partner_id, 1);
 
         // Parse
         UserRecord = JSON.stringify(UserRecord);
@@ -898,6 +906,13 @@ const jsonKeepSecretData = async(secrets, partner) => {
         employeeRecord = JSON.stringify(employeeRecord);
         employeeRecord = JSON.parse(employeeRecord);
 
+        // Read Partner Store Record By Store Code
+        let storeRecord = await partnerStoreModel.readStoreByCode("store_id", parseInt(secret.branch_unique, 10), 1);
+
+        // Parse
+        storeRecord = JSON.stringify(storeRecord);
+        storeRecord = JSON.parse(storeRecord);
+
         if (employeeRecord.length === 0) employeeListModel.keepEmployeeData(parseInt(secret.employe_unique, 10),
           reform.firstName,
           reform.lastName,
@@ -906,7 +921,7 @@ const jsonKeepSecretData = async(secrets, partner) => {
           reform.email,
           reform.departmentName,
           parseInt(secret.gender_id, 10),
-          parseInt(secret.branch_unique, 10),
+          storeRecord[0].store_id,
           1);
         else employeeListModel.updateEmployeeData(reform.firstName,
           reform.lastName,
@@ -915,7 +930,7 @@ const jsonKeepSecretData = async(secrets, partner) => {
           reform.email,
           reform.departmentName,
           parseInt(secret.gender_id, 10),
-          parseInt(secret.branch_unique, 10),
+          storeRecord[0].store_id,
           employeeRecord[0].id);
 
       } else console.log("Else secret")
@@ -1000,7 +1015,7 @@ const jsonKeepWarehouseProduct = async(products, partnerRecord, storeRecord) => 
 
     let count = 0;
     let syncArray = [];
-    let max = 4;
+    let max = 3000;
     let packageStatus = 'INSERT';
 
     // Check or Create Warehouse and Store Product Tables

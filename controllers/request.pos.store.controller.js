@@ -156,3 +156,34 @@ module.exports.requestStoreProduct = (req, res) => {
       });
   } else return res.status(400).send("Not a good api call");
 };
+
+// Request Store Product Record
+module.exports.requestStoreProductSync = (req, res) => {
+  if (
+    res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.params.hasOwnProperty('id')
+  ) {
+
+    // Logic Employees Record Controller
+    return posStoreController
+      .logicStoreProductSync(req.params.id)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/api/v1/pos/products/${req.params.id}`,
+              200,
+              response.success, {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};

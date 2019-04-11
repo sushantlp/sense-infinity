@@ -292,7 +292,7 @@ const getWarehouseProduct = async(sync, mobile) => {
     const quesmarks = new Array(attribute.length).fill('?').join(',');
 
     // Read Warehouse Product Record By Array
-    const productRecord = await databaseController.readWarehouseProductArray(`product_barcode AS barcode, IFNULL(product_name,'') as product_name, IFNULL(brand_name,'') as brand_name, IFNULL(description,'') as description, global_category_id AS category_id, global_sub_category_id AS sub_category_id, global_sub_sub_category_id AS sub_sub_category_id, product_unit_id AS unit_id, product_sub_unit_id AS sub_unit_id, product_size, selling_price, product_margin, actual_price, product_quantity, sgst, cgst, igst, hsn, sodexo, status`, mobile, quesmarks, attribute);
+    const productRecord = await databaseController.readWarehouseProductArray(`product_barcode AS barcode, IFNULL(product_name,'') as product_name, IFNULL(brand_name,'') as brand_name, IFNULL(description,'') as description, global_category_id AS category_id, global_sub_category_id AS sub_category_id, global_sub_sub_category_id AS sub_sub_category_id, product_unit_id AS unit_id, product_sub_unit_id AS sub_unit_id, product_size, selling_price, product_margin, actual_price, sgst, cgst, igst, hsn, sodexo, status`, mobile, quesmarks, attribute);
 
     if (productRecord === 0) return {
       success: false,
@@ -304,6 +304,24 @@ const getWarehouseProduct = async(sync, mobile) => {
       data: productRecord,
       msg: 'Succesful'
     };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
+
+// Logic Store Product Sync
+module.exports.logicStoreProductSync = async(id) => {
+  try {
+
+    // Update Status Store Product Sync Record
+    storeProductSyncModel.updateStatusSync(0, id);
+
+    return {
+      success: true,
+      data: [],
+      msg: 'Succesful'
+    };
+
   } catch (error) {
     return Promise.reject(error);
   }

@@ -15,7 +15,6 @@ module.exports = {
         'partner_stores',
         'store_mobile', {
           type: Sequelize.BIGINT,
-          unique: true,
           allowNull: false,
         }
       )
@@ -35,7 +34,6 @@ module.exports = {
         'partner_stores',
         'store_mobile', {
           type: Sequelize.STRING,
-          unique: true,
           allowNull: false,
         }
       )
