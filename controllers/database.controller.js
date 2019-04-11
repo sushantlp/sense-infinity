@@ -1168,6 +1168,32 @@ module.exports.readWarehouseProduct = async(
   }
 };
 
+// Read Warehouse Product Record By Array
+module.exports.readWarehouseProductArray = async(select, partnerMobile, questionMarks, barcodeArray) => {
+  try {
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Dynamic Table
+    const ProductTable = `${partnerMobile}_warehouse_products`;
+
+    // Query
+    const query = `SELECT ${select} FROM ${ProductTable} WHERE product_barcode IN (${questionMarks})`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, barcodeArray);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
 
 // Create Store Product Table
 module.exports.createStoreProductTable = async(partnerMobile, storeId) => {

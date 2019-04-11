@@ -2,12 +2,14 @@
 
 // Import Controller
 const shareController = require("./share.controller");
+const databaseController = require("./database.controller");
 
 // Import Model
 const partnerStoreModel = require("../models/partner_store");
 const warehouseInformationModel = require("../models/warehouse_information_list");
 const userEmployeeConnectModel = require("../models/warehouse_user_employee_connect");
 const storeProductSyncModel = require("../models/store_product_sync");
+const partnerProductSyncModel = require("../models/partner_product_sync");
 
 // Logic Warehouse Store List
 module.exports.logicWarehouseStoreList = async(id) => {
@@ -240,16 +242,68 @@ module.exports.logicStoreProduct = async(id, code) => {
       msg: 'Succesful'
     };
 
-    const products = await getStoreProduct(syncRecord[0]);
+    // Logic Warehouse Product
+    const products = await getWarehouseProduct(syncRecord[0], partnerRecord[0].mobile);
+
+    if (products.success) return {
+      success: true,
+      data: {
+        products: products.data,
+        api_call: syncLength > 1 ? "YES" : "NO",
+        return_id: syncRecord[0].id
+      },
+      msg: products.msg
+    };
+    else return {
+      success: false,
+      data: {
+        products: [],
+        api_call: 'NO',
+        return_id: 0
+      },
+      msg: products.msg
+    };
   } catch (error) {
     return Promise.reject(error);
   }
 }
 
-const getStoreProduct = async(syncs) => {
+// Logic Warehouse Product
+const getWarehouseProduct = async(sync, mobile) => {
   try {
 
+    // Read Stores Product By Sync Id Record
+    let barcodeArray = await partnerProductSyncModel.readProductBySyncId("attributes", sync.sync_id);
 
+    // Parse
+    barcodeArray = JSON.stringify(barcodeArray);
+    barcodeArray = JSON.parse(barcodeArray);
+
+    if (barcodeArray === 0) return {
+      success: false,
+      data: [],
+      msg: 'Empty barcode sync'
+    };
+    let attribute = [];
+    if (Array.isArray(barcodeArray)) attribute = barcodeArray[0].attributes;
+    else attribute = barcodeArray.attributes;
+
+    // then, create a dynamic list of comma-separated question marks
+    const quesmarks = new Array(attribute.length).fill('?').join(',');
+
+    // Read Warehouse Product Record By Array
+    const productRecord = await databaseController.readWarehouseProductArray("*", mobile, quesmarks, attribute);
+
+    if (productRecord === 0) return {
+      success: false,
+      data: [],
+      msg: 'Empty warehouse product'
+    };
+    else return {
+      success: true,
+      data: productRecord,
+      msg: 'Succesful'
+    };
   } catch (error) {
     return Promise.reject(error);
   }

@@ -52,6 +52,30 @@ module.exports.readProductSync = async(select, partnerId, sorting) => {
   }
 };
 
+// Read Stores Product By Sync Id Record
+module.exports.readProductBySyncId = async(select, syncId) => {
+  try {
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM partner_product_syncs WHERE sync_id = ? LIMIT 1`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [syncId]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 // Keep Partner Product Sync Record
 module.exports.keepProductSync = async(
   partnerId,
