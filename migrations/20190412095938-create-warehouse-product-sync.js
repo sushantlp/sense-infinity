@@ -1,12 +1,20 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('staple_product_syncs', {
-      sync_id: {
+    return queryInterface.createTable('warehouse_product_syncs', {
+      id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
+      },
+      sync_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'staple_product_syncs',
+          key: 'sync_id'
+        }
       },
       partner_id: {
         type: Sequelize.INTEGER,
@@ -16,9 +24,9 @@ module.exports = {
           key: 'partner_id'
         }
       },
-      attributes: {
-        type: Sequelize.JSON,
-        allowNull: false
+      status: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: 0
       },
       createdAt: {
         field: "created_at",
@@ -33,6 +41,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('staple_product_syncs');
+    return queryInterface.dropTable('warehouse_product_syncs');
   }
 };

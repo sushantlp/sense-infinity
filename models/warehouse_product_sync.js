@@ -7,13 +7,15 @@ const moment = require("moment-timezone");
 const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
-  var stapleProductSync = sequelize.define('staple_product_sync', {
-    attributes: DataTypes.JSON
+  var warehouseProductSync = sequelize.define('warehouse_product_sync', {
+    sync_id: DataTypes.INTEGER,
+    partner_id: DataTypes.INTEGER,
+    status: DataTypes.BOOLEAN
   }, {});
-  stapleProductSync.associate = function(models) {
+  warehouseProductSync.associate = function(models) {
     // associations can be defined here
   };
-  return stapleProductSync;
+  return warehouseProductSync;
 };
 
 
@@ -28,8 +30,8 @@ const now = moment()
  */
 
 
-// Read Staple Product Sync Record
-module.exports.readProductSync = async(select, sorting) => {
+// Read Partner Product Sync Record
+module.exports.readProductSync = async(select, partnerId, sorting) => {
   try {
 
     // Get Pool Object
@@ -39,10 +41,10 @@ module.exports.readProductSync = async(select, sorting) => {
     const connection = await pool.getConnection();
 
     // Query
-    const query = `SELECT ${select} FROM staple_product_syncs ORDER BY sync_id ${sorting} LIMIT 1`;
+    const query = `SELECT ${select} FROM warehouse_product_syncs WHERE partner_id = ? ORDER BY sync_id ${sorting} LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, []);
+    const [rows, fields] = await connection.query(query, [partnerId]);
 
     connection.release();
 
@@ -52,7 +54,7 @@ module.exports.readProductSync = async(select, sorting) => {
   }
 };
 
-// Read Staple Product By Sync Id Record
+// Read Warehouse Product By Sync Id Record
 module.exports.readProductBySyncId = async(select, syncId) => {
   try {
 
@@ -63,7 +65,7 @@ module.exports.readProductBySyncId = async(select, syncId) => {
     const connection = await pool.getConnection();
 
     // Query
-    const query = `SELECT ${select} FROM staple_product_syncs WHERE sync_id = ? LIMIT 1`;
+    const query = `SELECT ${select} FROM warehouse_product_syncs WHERE sync_id = ? LIMIT 1`;
 
     // Query Database
     const [rows, fields] = await connection.query(query, [syncId]);
@@ -76,8 +78,11 @@ module.exports.readProductBySyncId = async(select, syncId) => {
   }
 };
 
-// Keep Partner Product Sync Record
-module.exports.keepProductSync = async(attribute) => {
+// Keep Warehouse Product Sync Record
+module.exports.keepProductSync = async(
+  partnerId,
+  attribute
+) => {
   try {
 
     // Get Pool Object
@@ -88,10 +93,11 @@ module.exports.keepProductSync = async(attribute) => {
 
     // Query
     const query =
-      "INSERT INTO `staple_product_syncs` (`attributes`, `created_at`, `updated_at`) VALUES (?,?,?)";
+      "INSERT INTO `warehouse_product_syncs` (`partner_id`, `attributes`, `created_at`, `updated_at`) VALUES (?,?,?,?)";
 
     // Query Database
     const row = await connection.query(query, [
+      partnerId,
       attribute,
       now,
       now
@@ -105,7 +111,7 @@ module.exports.keepProductSync = async(attribute) => {
   }
 };
 
-// Update Attributes Partner Product Sync Record
+// Update Attributes Warehouse_Product Sync Record
 module.exports.updateAttributesSync = async(
   attributes, id
 ) => {
@@ -119,7 +125,7 @@ module.exports.updateAttributesSync = async(
 
     // Query
     const query =
-      "UPDATE `staple_product_syncs` SET `attributes` = ?, `updated_at` = ? WHERE `sync_id` = ?";
+      "UPDATE `warehouse_product_syncs` SET `attributes` = ?, `updated_at` = ? WHERE `sync_id` = ?";
 
     // Query Database
     const row = await connection.query(query, [
@@ -135,6 +141,7 @@ module.exports.updateAttributesSync = async(
     return Promise.reject(error);
   }
 };
+
 
 /**
  * End Database Read and Write

@@ -938,34 +938,6 @@ const jsonKeepSecretData = async(secrets, partner) => {
   }
 };
 
-// Logic Get Staple Master Product
-module.exports.logicGetMasterProduct = async(id) => {
-  try {
-
-    // Call User Partner Data
-    const partnerRecord = await shareController.userPartnerData(id);
-
-    if (partnerRecord.length === 0) return {
-      success: false,
-      data: [],
-      msg: 'Unknown partner'
-    };
-
-    // Json Keep Secret Data
-    jsonKeepSecretData(secrets, partnerRecord)
-
-    return {
-      success: true,
-      data: [],
-      msg: 'Succesful'
-    };
-
-  } catch (error) {
-    return Promise.reject(error);
-  }
-}
-
-
 // Logic Keep Warehouse Product
 module.exports.logicKeepWarehouseProduct = async(id, products) => {
   try {

@@ -166,35 +166,6 @@ module.exports.requestKeepWarehouseDetail = (req, res) => {
   } else return res.status(400).send("Not a good api call");
 };
 
-// Request Get Staple Master Product
-module.exports.requestGetMasterProduct = (req, res) => {
-  if (res.userKey !== undefined &&
-    res.userKey !== ""
-  ) {
-
-    // Logic Get Staple Master Product
-    return posWarehoseController
-      .logicGetMasterProduct(res.userKey)
-      .then(response => {
-        return res
-          .status(200)
-          .send(
-            shareController.createJsonObject(
-              response.data,
-              response.msg,
-              "/api/v1/warehouses/products",
-              200,
-              response.success, {}
-            )
-          );
-      })
-      .catch(error => {
-        console.log(error);
-        return res.status(500).send("Oops our bad!!!");
-      });
-  } else return res.status(400).send("Not a good api call");
-};
-
 // Request Keep Warehouse Products Detail
 module.exports.requestKeepWarehouseProduct = (req, res) => {
   if (res.userKey !== undefined &&
@@ -221,6 +192,44 @@ module.exports.requestKeepWarehouseProduct = (req, res) => {
               response.data,
               response.msg,
               "/api/v1/warehouses/products",
+              200,
+              response.success, {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
+
+// Request Keep Staple Master Product
+module.exports.requestKeepStapleProduct = (req, res) => {
+  if (res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.body.products !== undefined &&
+    req.body.products !== ""
+  ) {
+
+    // Validate Staple Product Detail Parameter
+    const validate = validateController.stapleProductDetail(
+      req.body.products
+    );
+
+    if (!validate.success) return res.status(400).send(validate.msg);
+
+    // Logic Keep Staple Master Product
+    return posWarehoseController
+      .logicKeepStapleProduct(res.userKey, req.body.products)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              "/api/v1/warehouses/staple",
               200,
               response.success, {}
             )

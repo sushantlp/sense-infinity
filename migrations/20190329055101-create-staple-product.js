@@ -12,11 +12,16 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true
       },
-      product_brand_name: {
+      product_barcode: {
+        type: Sequelize.BIGINT,
+        unique: true,
+        allowNull: false
+      },
+      brand_name: {
         type: Sequelize.STRING,
         allowNull: true
       },
-      product_description: {
+      description: {
         type: Sequelize.STRING,
         allowNull: true
       },
@@ -32,6 +37,30 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false
       },
+      product_unit_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      product_sub_unit_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      product_size: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+      },
+      selling_price: {
+        type: Sequelize.FLOAT,
+        defaultValue: 0
+      },
+      product_margin: {
+        type: Sequelize.FLOAT,
+        defaultValue: 0
+      },
+      actual_price: {
+        type: Sequelize.FLOAT,
+        defaultValue: 0
+      },
       sgst: {
         type: Sequelize.FLOAT,
         defaultValue: 0
@@ -41,6 +70,10 @@ module.exports = {
         defaultValue: 0
       },
       igst: {
+        type: Sequelize.FLOAT,
+        defaultValue: 0
+      },
+      hsn: {
         type: Sequelize.FLOAT,
         defaultValue: 0
       },

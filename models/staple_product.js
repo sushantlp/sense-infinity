@@ -9,14 +9,22 @@ const constants = require('../config/constants');
 module.exports = (sequelize, DataTypes) => {
   var stapleProduct = sequelize.define('staple_product', {
     product_name: DataTypes.STRING,
-    product_brand_name: DataTypes.STRING,
-    product_description: DataTypes.STRING,
+    product_barcode: DataTypes.BIGINT,
+    brand_name: DataTypes.STRING,
+    description: DataTypes.STRING,
     global_category_id: DataTypes.INTEGER,
     global_sub_category_id: DataTypes.INTEGER,
     global_sub_sub_category_id: DataTypes.INTEGER,
+    product_unit_id: DataTypes.INTEGER,
+    product_sub_unit_id: DataTypes.INTEGER,
+    product_size: DataTypes.INTEGER,
+    selling_price: DataTypes.FLOAT,
+    product_margin: DataTypes.FLOAT,
+    actual_price: DataTypes.FLOAT,
     sgst: DataTypes.FLOAT,
     cgst: DataTypes.FLOAT,
     igst: DataTypes.FLOAT,
+    hsn: DataTypes.FLOAT,
     status: DataTypes.BOOLEAN
   }, {});
   stapleProduct.associate = function(models) {
@@ -37,8 +45,8 @@ const now = moment()
  */
 
 
-// Read Staple Product And Size
-module.exports.readProductAndSize = async(select, changeStatus) => {
+// Read Staple Product By Barcode
+module.exports.readProductByBarcode = async(select, barcode) => {
   try {
 
     // Get Pool Object
@@ -48,10 +56,10 @@ module.exports.readProductAndSize = async(select, changeStatus) => {
     const connection = await pool.getConnection();
 
     // Query
-    const query = `SELECT ${select} FROM staple_products LEFT JOIN staple_product_sizes ON staple_products.staple_product_id = staple_product_sizes.staple_product_id WHERE staple_products.change_status = ? AND staple_product_sizes.change_status = ?`;
+    const query = `SELECT ${select} FROM staple_products WHERE product_barcode = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [changeStatus, changeStatus]);
+    const [rows, fields] = await connection.query(query, [barcode]);
 
     connection.release();
 
@@ -64,15 +72,22 @@ module.exports.readProductAndSize = async(select, changeStatus) => {
 // Keep Staple Product
 module.exports.keepStapleProduct = async(
   productName,
+  productBarcode,
   brandName,
   description,
   categoryId,
   subCategoryId,
   subSubCategoryId,
+  unitId,
+  subUnitId,
+  productSize,
+  sellingPrice,
+  productMargin,
+  actualPrice,
   sgst,
   cgst,
   igst,
-  changeStatus,
+  hsn,
   status,
 ) => {
   try {
@@ -85,20 +100,27 @@ module.exports.keepStapleProduct = async(
 
     // Query
     const query =
-      "INSERT INTO `staple_products` (`product_name`,`product_brand_name`,`product_description`,`global_category_id`,`global_sub_category_id`,`global_sub_sub_category_id`,`sgst`,`cgst`,`igst`,`change_status`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO `staple_products` (`product_name`,`product_barcode`,`brand_name`,`description`,`global_category_id`,`global_sub_category_id`,`global_sub_sub_category_id`,`product_unit_id`,`product_sub_unit_id`,`product_size`,`selling_price`,`product_margin`,`actual_price`,`sgst`,`cgst`,`igst`,`hsn`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     // Query Database
     const row = await connection.query(query, [
       productName,
+      productBarcode,
       brandName,
       description,
       categoryId,
       subCategoryId,
       subSubCategoryId,
+      unitId,
+      subUnitId,
+      productSize,
+      sellingPrice,
+      productMargin,
+      actualPrice,
       sgst,
       cgst,
       igst,
-      changeStatus,
+      hsn,
       status,
       now,
       now
@@ -115,15 +137,23 @@ module.exports.keepStapleProduct = async(
 // Update Staple Product
 module.exports.updateStapleProduct = async(
   productName,
+  productBarcode,
   brandName,
   description,
   categoryId,
   subCategoryId,
   subSubCategoryId,
+  unitId,
+  subUnitId,
+  productSize,
+  sellingPrice,
+  productMargin,
+  actualPrice,
   sgst,
   cgst,
   igst,
-  changeStatus,
+  hsn,
+  status,
   id
 ) => {
   try {
@@ -136,21 +166,28 @@ module.exports.updateStapleProduct = async(
 
     // Query
     const query =
-      "UPDATE `staple_products` SET `product_name` = ?, `product_brand_name` = ?, `product_description` = ?, `global_category_id` = ?, `global_sub_category_id` = ?, `global_sub_sub_category_id` = ?, `sgst` = ?, `cgst` = ?, `igst` = ?, `change_status` = ?, `updated_at` = ? WHERE `staple_product_id` = ?";
+      "UPDATE `staple_products` SET `product_name` = ?, `product_barcode` = ?, `brand_name` = ?, `description` = ?, `global_category_id` = ?, `global_sub_category_id` = ?, `global_sub_sub_category_id` = ?, `product_unit_id` = ?, `product_sub_unit_id` = ?, `product_size` = ?, `selling_price` = ?, `product_margin` = ?, `actual_price` = ?, `sgst` = ?, `cgst` = ?, `igst` = ?, `hsn` = ?, status` = ?, `updated_at` = ? WHERE `staple_product_id` = ?";
 
     // Query Database
     const row = await connection.query(query, [
       productName,
+      productBarcode,
       brandName,
       description,
       categoryId,
       subCategoryId,
       subSubCategoryId,
+      unitId,
+      subUnitId,
+      productSize,
+      sellingPrice,
+      productMargin,
+      actualPrice,
       sgst,
       cgst,
       igst,
-      changeStatus,
-      now,
+      hsn,
+      status,
       id
     ]);
 

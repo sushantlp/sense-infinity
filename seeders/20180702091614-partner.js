@@ -13,6 +13,16 @@ module.exports = {
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
+      }, {
+        first_name: "Ajay",
+        last_name: "Pandey",
+        business_name: "Walmart",
+        email: "ajaypandey8@gmail.com",
+        mobile: "9845111980",
+        category_id: 1000,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
       }], {}
     );
   },
