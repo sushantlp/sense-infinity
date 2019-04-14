@@ -191,7 +191,8 @@ module.exports.updateStoreData = async(
   storeMobile,
   storeEmail,
   refundDiscount,
-  refundPolicy
+  refundPolicy,
+  status
 ) => {
   try {
 
@@ -212,7 +213,7 @@ module.exports.updateStoreData = async(
 
     // Query
     const query =
-      "UPDATE `partner_stores` SET `store_name` = ?, `address_one` = ?, `address_two` = ?, `landmark` = ?, `city_id` = ?, `locality_id` = ?, `store_mobile` = ?, `store_email` = ?, `refund_on_discount` = ?, `refund_policy` = ?, `updated_at` = ? WHERE `store_id` = ?";
+      "UPDATE `partner_stores` SET `store_name` = ?, `address_one` = ?, `address_two` = ?, `landmark` = ?, `city_id` = ?, `locality_id` = ?, `store_mobile` = ?, `store_email` = ?, `refund_on_discount` = ?, `refund_policy` = ?, `status` = ?, `updated_at` = ? WHERE `store_id` = ?";
 
     // Query Database
     const row = await connection.query(query, [
@@ -226,6 +227,7 @@ module.exports.updateStoreData = async(
       storeEmail,
       refundDiscount,
       refundPolicy,
+      status,
       now,
       storeId
     ]);

@@ -643,7 +643,7 @@ const iterateKeepStoreDetail = async(stores, partner) => {
           reform.storeEmail,
           reform.refundDiscount,
           reform.refundPolicy,
-          1
+          store.status
         );
       } else {
 
@@ -658,7 +658,7 @@ const iterateKeepStoreDetail = async(stores, partner) => {
           store.store_mobile,
           reform.storeEmail,
           reform.refundDiscount,
-          reform.refundPolicy);
+          reform.refundPolicy, store.status);
       }
 
     });
@@ -808,74 +808,75 @@ const jsonKeepSecretData = async(secrets, partner) => {
         parallel = JSON.stringify(parallel);
         parallel = JSON.parse(parallel);
 
-        if (parallel[0].length === 0) {
-          const recentId = await warehouseUserModel.keepWarehouseUserData(secret.warehouse_user_unique,
-            parseInt(secret.role_unique, 10),
-            partner[0].partner_id,
-            secret.password,
-            1);
+        if (parallel[1].length !== 0) {
+          if (parallel[0].length === 0) {
+            const recentId = await warehouseUserModel.keepWarehouseUserData(secret.warehouse_user_unique,
+              parseInt(secret.role_unique, 10),
+              partner[0].partner_id,
+              secret.password,
+              secret.user_status);
 
-          // Intialize Recent User Id
-          user = recentId[0].insertId
+            // Intialize Recent User Id
+            user = recentId[0].insertId
 
-        } else {
+          } else {
 
-          // Intialize User Id
-          user = parallel[0][0].id
+            // Intialize User Id
+            user = parallel[0][0].id
 
-          warehouseUserModel.updateWarehouseUserPassword(secret.password, user);
+            warehouseUserModel.updateWarehouseUserPassword(secret.password, secret.user_status, user);
+          }
+
+          // Read Warehouse Employee By Employee Id
+          let employeeRecord = await employeeListModel.readEmployeeByEmployeeId("id", parseInt(secret.employe_unique, 10), parallel[1][0].store_id, 1);
+
+          // Parse
+          employeeRecord = JSON.stringify(employeeRecord);
+          employeeRecord = JSON.parse(employeeRecord);
+
+          if (employeeRecord.length === 0) {
+            const recentId = await employeeListModel.keepEmployeeData(parseInt(secret.employe_unique, 10),
+              reform.firstName,
+              reform.lastName,
+              reform.birthDate,
+              secret.mobile,
+              reform.email,
+              reform.departmentName,
+              parseInt(secret.gender_id, 10),
+              parallel[1][0].store_id,
+              secret.employee_status);
+
+            // Intialize Recent Employee Id
+            employee = recentId[0].insertId
+
+          } else {
+
+            // Intialize Recent Employee Id
+            employee = employeeRecord[0].id
+
+            employeeListModel.updateEmployeeData(reform.firstName,
+              reform.lastName,
+              reform.birthDate,
+              secret.mobile,
+              reform.email,
+              reform.departmentName,
+              parseInt(secret.gender_id, 10),
+              parallel[1][0].store_id,
+              secret.employee_status, employee);
+          }
+
+          // Read Warehouse User And Employee Connect
+          let connectRecord = await userEmployeeConnectModel.readUserEmployeeConnect("user_employee_id", user, employee);
+
+          // Parse
+          connectRecord = JSON.stringify(connectRecord);
+          connectRecord = JSON.parse(connectRecord);
+
+          if (connectRecord.length === 0) userEmployeeConnectModel.keepUserEmployeeConnect(user, employee, 1);
+          else
+          if (connectRecord[0].status === 0)
+            userEmployeeConnectModel.updateUserEmployeeConnect(1, connectRecord[0].user_employee_id);
         }
-
-        // Read Warehouse Employee By Employee Id
-        let employeeRecord = await employeeListModel.readEmployeeByEmployeeId("id", parseInt(secret.employe_unique, 10), parallel[1][0].store_id, 1);
-
-        // Parse
-        employeeRecord = JSON.stringify(employeeRecord);
-        employeeRecord = JSON.parse(employeeRecord);
-
-        if (employeeRecord.length === 0) {
-          const recentId = await employeeListModel.keepEmployeeData(parseInt(secret.employe_unique, 10),
-            reform.firstName,
-            reform.lastName,
-            reform.birthDate,
-            secret.mobile,
-            reform.email,
-            reform.departmentName,
-            parseInt(secret.gender_id, 10),
-            parallel[1][0].store_id,
-            1);
-
-          // Intialize Recent Employee Id
-          employee = recentId[0].insertId
-
-        } else {
-
-          // Intialize Recent Employee Id
-          employee = employeeRecord[0].id
-
-          employeeListModel.updateEmployeeData(reform.firstName,
-            reform.lastName,
-            reform.birthDate,
-            secret.mobile,
-            reform.email,
-            reform.departmentName,
-            parseInt(secret.gender_id, 10),
-            parallel[1][0].store_id,
-            employee);
-        }
-
-        // Read Warehouse User And Employee Connect
-        let connectRecord = await userEmployeeConnectModel.readUserEmployeeConnect("user_employee_id", user, employee);
-
-        // Parse
-        connectRecord = JSON.stringify(connectRecord);
-        connectRecord = JSON.parse(connectRecord);
-
-        if (connectRecord.length === 0) userEmployeeConnectModel.keepUserEmployeeConnect(user, employee, 1);
-        else
-        if (connectRecord[0].status === 0)
-          userEmployeeConnectModel.updateUserEmployeeConnect(1, connectRecord[0].user_employee_id);
-
       } else if (parseInt(secret.warehouse_user_unique, 10) > 0) {
 
         // Read Warehouse User By User Id
@@ -889,8 +890,8 @@ const jsonKeepSecretData = async(secrets, partner) => {
           parseInt(secret.role_unique, 10),
           partner[0].partner_id,
           secret.password,
-          1);
-        else warehouseUserModel.updateWarehouseUserPassword(secret.password, userRecord[0].id);
+          secret.user_status);
+        else warehouseUserModel.updateWarehouseUserPassword(secret.password, secret.user_status, userRecord[0].id);
 
 
       } else if (parseInt(secret.employe_unique, 10) > 0 && parseInt(secret.branch_unique, 10) > 0) {
@@ -902,33 +903,36 @@ const jsonKeepSecretData = async(secrets, partner) => {
         storeRecord = JSON.stringify(storeRecord);
         storeRecord = JSON.parse(storeRecord);
 
-        // Read Warehouse Employee By Employee Id
-        let employeeRecord = await employeeListModel.readEmployeeByEmployeeId("id", secret.employe_unique, storeRecord[0].store_id, 1);
+        if (storeRecord.length !== 0) {
 
-        // Parse
-        employeeRecord = JSON.stringify(employeeRecord);
-        employeeRecord = JSON.parse(employeeRecord);
+          // Read Warehouse Employee By Employee Id
+          let employeeRecord = await employeeListModel.readEmployeeByEmployeeId("id", secret.employe_unique, storeRecord[0].store_id, 1);
 
-        if (employeeRecord.length === 0) employeeListModel.keepEmployeeData(parseInt(secret.employe_unique, 10),
-          reform.firstName,
-          reform.lastName,
-          reform.birthDate,
-          secret.mobile,
-          reform.email,
-          reform.departmentName,
-          parseInt(secret.gender_id, 10),
-          storeRecord[0].store_id,
-          1);
-        else employeeListModel.updateEmployeeData(reform.firstName,
-          reform.lastName,
-          reform.birthDate,
-          secret.mobile,
-          reform.email,
-          reform.departmentName,
-          parseInt(secret.gender_id, 10),
-          storeRecord[0].store_id,
-          employeeRecord[0].id);
+          // Parse
+          employeeRecord = JSON.stringify(employeeRecord);
+          employeeRecord = JSON.parse(employeeRecord);
 
+          if (employeeRecord.length === 0) employeeListModel.keepEmployeeData(parseInt(secret.employe_unique, 10),
+            reform.firstName,
+            reform.lastName,
+            reform.birthDate,
+            secret.mobile,
+            reform.email,
+            reform.departmentName,
+            parseInt(secret.gender_id, 10),
+            storeRecord[0].store_id,
+            secret.employee_status);
+          else employeeListModel.updateEmployeeData(reform.firstName,
+            reform.lastName,
+            reform.birthDate,
+            secret.mobile,
+            reform.email,
+            reform.departmentName,
+            parseInt(secret.gender_id, 10),
+            storeRecord[0].store_id,
+            secret.employee_status,
+            employeeRecord[0].id);
+        }
       } else console.log("Else secret")
     });
 
@@ -983,7 +987,7 @@ const jsonKeepWarehouseProduct = async(products, partnerRecord, storeRecord) => 
 
     let count = 0;
     let syncArray = [];
-    let max = 3000;
+    let max = products.length;
     let packageStatus = 'INSERT';
 
     // Check or Create Warehouse and Store Product Tables
@@ -1099,6 +1103,46 @@ const logicSyncBundleInStore = async(storeRecord, id) => {
     return storeRecord.map(async(store, index) => {
       const record = await storeSyncModel.readProductSync("id", store.store_id, id, 1);
       if (record.length === 0) storeSyncModel.keepProductSync(store.store_id, id, 1);
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
+
+// Logic Keep Staple Master Product
+module.exports.logicKeepStapleProduct = async(id, products) => {
+  try {
+
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0) return {
+      success: false,
+      data: [],
+      msg: 'Unknown partner'
+    };
+
+    // Json Keep Staple Product
+    jsonKeepStapleProduct(products, partnerRecord)
+
+    return {
+      success: true,
+      data: [],
+      msg: 'Succesful'
+    };
+
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Json Keep Staple Product
+const jsonKeepStapleProduct = async(products, partners) => {
+  try {
+
+    return products.map(async(product, index) => {
+
+
     });
   } catch (error) {
     return Promise.reject(error);

@@ -149,7 +149,7 @@ module.exports.updateEmployeeData = async(
   deptName,
   genderId,
   storeId,
-  id
+  status, id
 ) => {
   try {
 
@@ -167,7 +167,7 @@ module.exports.updateEmployeeData = async(
 
     // Query
     const query =
-      "UPDATE `warehouse_employee_lists` SET `first_name` = ?, `last_name` = ?, `birth_date` = ?, `mobile` = ?, `email` = ?, `dept_name` = ?, `gender_id` = ?, `store_id` = ?, `updated_at` = ? WHERE `id` = ?";
+      "UPDATE `warehouse_employee_lists` SET `first_name` = ?, `last_name` = ?, `birth_date` = ?, `mobile` = ?, `email` = ?, `dept_name` = ?, `gender_id` = ?, `store_id` = ?, `status` = ?, `updated_at` = ? WHERE `id` = ?";
 
     // Query Database
     const row = await connection.query(query, [
@@ -179,6 +179,7 @@ module.exports.updateEmployeeData = async(
       deptName,
       genderId,
       storeId,
+      status,
       now,
       id
     ]);

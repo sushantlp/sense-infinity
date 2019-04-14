@@ -221,7 +221,7 @@ module.exports.requestKeepStapleProduct = (req, res) => {
 
     // Logic Keep Staple Master Product
     return posWarehoseController
-      .logicKeepStapleProduct(res.userKey, req.body.products)
+    .logicKeepStapleProduct(res.userKey, req.body.products)
       .then(response => {
         return res
           .status(200)

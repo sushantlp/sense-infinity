@@ -644,6 +644,24 @@ module.exports.warehouseSecrets = (secrets) => {
         success: false,
         msg: 'Missing department name'
       };
+
+      if (!secrets[i].hasOwnProperty('employee_status') ||
+        secrets[i].employee_status !== 0 &&
+        secrets[i].employee_status !== 1
+      )
+        return {
+          success: false,
+          msg: 'Missing employee status'
+        };
+
+      if (!secrets[i].hasOwnProperty('user_status') ||
+        secrets[i].user_status !== 0 &&
+        secrets[i].user_status !== 1
+      )
+        return {
+          success: false,
+          msg: 'Missing user status'
+        };
     }
 
     if (secrets.length !== 0) return {
@@ -879,8 +897,8 @@ module.exports.warehouseProductDetail = (products) => {
   }
 };
 
-// Validate Warehouse Secrets
-module.exports.warehouseProductDetail = (products) => {
+// Validate Staple Product Detail Parameter
+module.exports.stapleProductDetail = (products) => {
   try {
 
     for (let i = 0; i < products.length; i++) {
@@ -934,104 +952,69 @@ module.exports.warehouseProductDetail = (products) => {
       };
 
       if (!products[i].hasOwnProperty('product_size') ||
-        isNaN(products[i].product_size) ||
-        products[i].product_size === "" ||
-        products[i].product_size === null
-      )
-        return {
-          success: false,
-          msg: 'Missing product size'
-        };
+        isNaN(products[i].product_size)) return {
+        success: false,
+        msg: 'Missing product size'
+      };
 
       if (!products[i].hasOwnProperty('selling_price') ||
-        isNaN(products[i].selling_price) ||
-        products[i].selling_price === "" ||
-        products[i].selling_price === null
-      )
-        return {
-          success: false,
-          msg: 'Missing selling price'
-        };
+        isNaN(products[i].selling_price)) return {
+        success: false,
+        msg: 'Missing selling price'
+      };
 
       if (!products[i].hasOwnProperty('product_margin') ||
-        isNaN(products[i].product_margin) ||
-        products[i].product_margin === "" ||
-        products[i].product_margin === null
-      )
-        return {
-          success: false,
-          msg: 'Missing product margin'
-        };
-
+        isNaN(products[i].product_margin)) return {
+        success: false,
+        msg: 'Missing product margin'
+      };
 
       if (!products[i].hasOwnProperty('product_price') ||
-        isNaN(products[i].product_price) ||
-        products[i].product_price === "" ||
-        products[i].product_price === null
-      )
-        return {
-          success: false,
-          msg: 'Missing product price'
-        };
+        isNaN(products[i].product_price)) return {
+        success: false,
+        msg: 'Missing product price'
+      };
 
       if (!products[i].hasOwnProperty('sgst') ||
-        isNaN(products[i].sgst) ||
-        products[i].sgst === "" ||
-        products[i].sgst === null
-      )
-        return {
-          success: false,
-          msg: 'Missing sgst'
-        };
+        isNaN(products[i].sgst)) return {
+        success: false,
+        msg: 'Missing sgst'
+      };
 
       if (!products[i].hasOwnProperty('cgst') ||
-        isNaN(products[i].cgst) ||
-        products[i].cgst === "" ||
-        products[i].cgst === null
-      )
-        return {
-          success: false,
-          msg: 'Missing cgst'
-        };
+        isNaN(products[i].cgst)) return {
+        success: false,
+        msg: 'Missing cgst'
+      };
 
       if (!products[i].hasOwnProperty('igst') ||
-        isNaN(products[i].igst) ||
-        products[i].igst === "" ||
-        products[i].igst === null
-      )
-        return {
-          success: false,
-          msg: 'Missing igst'
-        };
+        isNaN(products[i].igst)) return {
+        success: false,
+        msg: 'Missing igst'
+      };
 
       if (!products[i].hasOwnProperty('hsn') ||
-        isNaN(products[i].hsn) ||
-        products[i].hsn === "" ||
-        products[i].hsn === null
-      )
-        return {
-          success: false,
-          msg: 'Missing hsn'
-        };
+        isNaN(products[i].hsn)) return {
+        success: false,
+        msg: 'Missing hsn'
+      };
 
       if (!products[i].hasOwnProperty('status') ||
-        products[i].status !== 0 &&
-        products[i].status !== 1
-      )
-        return {
-          success: false,
-          msg: 'Missing status'
-        };
+        products[i].status !== 0 && products[i].status !== 1
+      ) return {
+        success: false,
+        msg: 'Missing status'
+      };
     }
 
-    // if (products.length !== 0) return {
-    //   success: true,
-    //   msg: 'Succesful'
-    // };
-    // else return {
-    //   success: false,
-    //   msg: 'Empty json'
-    // };
+    if (products.length !== 0) return {
+      success: true,
+      msg: 'Succesful'
+    };
+    else return {
+      success: false,
+      msg: 'Empty json'
+    };
 
   } catch (error) {
     return {

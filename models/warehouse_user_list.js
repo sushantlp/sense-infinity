@@ -121,6 +121,7 @@ module.exports.keepWarehouseUserData = async(
 // Update Warehouse User Password
 module.exports.updateWarehouseUserPassword = async(
   password,
+  status,
   id
 ) => {
   try {
@@ -133,10 +134,10 @@ module.exports.updateWarehouseUserPassword = async(
 
     // Query
     const query =
-      "UPDATE `warehouse_user_lists` SET `password` = ?, `updated_at` = ? WHERE `id` = ?";
+      "UPDATE `warehouse_user_lists` SET `password` = ?, `status` = ?, `updated_at` = ? WHERE `id` = ?";
 
     // Query Database
-    const row = await connection.query(query, [password, now, id]);
+    const row = await connection.query(query, [password, status, now, id]);
 
     connection.release();
 
