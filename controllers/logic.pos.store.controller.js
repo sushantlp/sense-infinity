@@ -8,6 +8,7 @@ const databaseController = require("./database.controller");
 const partnerStoreModel = require("../models/partner_store");
 const warehouseInformationModel = require("../models/warehouse_information_list");
 const userEmployeeConnectModel = require("../models/warehouse_user_employee_connect");
+const warehouseUserModel = require("../models/warehouse_user_list");
 const storeProductSyncModel = require("../models/store_product_sync");
 const partnerProductSyncModel = require("../models/partner_product_sync");
 
@@ -130,21 +131,26 @@ module.exports.logicEmployeeRecord = async(id, code) => {
       msg: 'Unknown store'
     };
 
-    // Join Warehouse Biller Data
-    let connectRecord = await userEmployeeConnectModel.readBillerByJoin('warehouse_user_lists.warehouse_user_id, warehouse_user_lists.warehouse_role_id, warehouse_user_lists.password, warehouse_employee_lists.warehouse_employe_id, warehouse_employee_lists.store_id, warehouse_employee_lists.first_name, warehouse_employee_lists.last_name, warehouse_employee_lists.birth_date, warehouse_employee_lists.mobile, warehouse_employee_lists.email, warehouse_employee_lists.dept_name, warehouse_employee_lists.gender_id, warehouse_employee_lists.status AS employee_status, warehouse_user_lists.status AS user_status', partnerRecord[0].partner_id, storeRecord[0].store_id, 1);
+    let parallel = await Promise.all([
+      warehouseUserModel.readBillerByJoin('warehouse_user_lists.warehouse_user_id, warehouse_user_lists.warehouse_role_id, warehouse_user_lists.password, warehouse_employee_lists.warehouse_employe_id, warehouse_employee_lists.store_id, warehouse_employee_lists.first_name, warehouse_employee_lists.last_name, warehouse_employee_lists.birth_date, warehouse_employee_lists.mobile, warehouse_employee_lists.email, warehouse_employee_lists.dept_name, warehouse_employee_lists.gender_id, warehouse_employee_lists.status AS employee_status, warehouse_user_lists.status AS user_status', partnerRecord[0].partner_id, storeRecord[0].store_id, 1),
+      warehouseUserModel.readWarehouseUserRoleId("warehouse_user_id,warehouse_role_id,password,status", 2, 1)
+    ]);
+
+    // // Join Warehouse Biller Data
+    // let connectRecord = await warehouseUserModel.readBillerByJoin('warehouse_user_lists.warehouse_user_id, warehouse_user_lists.warehouse_role_id, warehouse_user_lists.password, warehouse_employee_lists.warehouse_employe_id, warehouse_employee_lists.store_id, warehouse_employee_lists.first_name, warehouse_employee_lists.last_name, warehouse_employee_lists.birth_date, warehouse_employee_lists.mobile, warehouse_employee_lists.email, warehouse_employee_lists.dept_name, warehouse_employee_lists.gender_id, warehouse_employee_lists.status AS employee_status, warehouse_user_lists.status AS user_status', partnerRecord[0].partner_id, storeRecord[0].store_id, 1);
 
     // Parse
-    connectRecord = JSON.stringify(connectRecord);
-    connectRecord = JSON.parse(connectRecord);
+    parallel = JSON.stringify(parallel);
+    parallel = JSON.parse(parallel);
 
-    if (connectRecord.length === 0) return {
+    if (parallel.length === 0) return {
       success: true,
       data: [],
       msg: 'Succesful'
     };
     else return {
       success: true,
-      data: billerJoinJson(connectRecord, storeRecord[0].store_id),
+      data: billerJoinJson(parallel, storeRecord[0].store_id),
       msg: 'Succesful'
     };
   } catch (error) {
@@ -156,37 +162,58 @@ const billerJoinJson = (records, storeId) => {
   try {
     // Variable
     let arr = [];
+
+    // Array Merge
+    records = records[0].concat(records[1]);
+
     records.map(async(record, index) => {
       let obj = {};
 
       obj.user_id = record.warehouse_user_id;
       obj.role_id = record.warehouse_role_id;
       obj.password = record.password;
-      obj.employe_id = record.warehouse_employe_id;
-      obj.gender_id = record.gender_id;
-      obj.user_status = record.user_status;
-      obj.employee_status = record.employee_status;
 
-      if (record.first_name === 'NULL') obj.first_name = null;
-      else obj.first_name = record.first_name;
+      if (obj.role_id === 2) {
+        obj.employe_id = 0;
+        obj.gender_id = 0;
+        obj.user_status = record.status;
+        obj.employee_status = 0;
+        obj.first_name = null;
+        obj.last_name = null;
+        obj.birth_date = null;
+        obj.mobile = null;
+        obj.email = null;
+        obj.dept_name = null;
 
-      if (record.last_name === 'NULL') obj.last_name = null;
-      else obj.last_name = record.last_name;
+        // Array Push
+        arr.push(obj);
+      } else {
+        obj.employe_id = record.warehouse_employe_id;
+        obj.gender_id = record.gender_id;
+        obj.user_status = record.user_status;
+        obj.employee_status = record.employee_status;
 
-      if (record.birth_date === 'NULL') obj.birth_date = null;
-      else obj.birth_date = record.birth_date;
+        if (record.first_name === 'NULL') obj.first_name = null;
+        else obj.first_name = record.first_name;
 
-      if (record.mobile === 'NULL') obj.mobile = null;
-      else obj.mobile = record.mobile;
+        if (record.last_name === 'NULL') obj.last_name = null;
+        else obj.last_name = record.last_name;
 
-      if (record.email === 'NULL') obj.email = null;
-      else obj.email = record.email;
+        if (record.birth_date === 'NULL') obj.birth_date = null;
+        else obj.birth_date = record.birth_date;
 
-      if (record.dept_name === 'NULL') obj.dept_name = null;
-      else obj.dept_name = record.dept_name;
+        if (record.mobile === 'NULL') obj.mobile = null;
+        else obj.mobile = record.mobile;
 
-      // Push Array
-      if (record.store_id === storeId) arr.push(obj);
+        if (record.email === 'NULL') obj.email = null;
+        else obj.email = record.email;
+
+        if (record.dept_name === 'NULL') obj.dept_name = null;
+        else obj.dept_name = record.dept_name;
+
+        // Push Array
+        if (record.store_id === storeId) arr.push(obj);
+      }
     });
 
     return arr;
