@@ -93,7 +93,7 @@ module.exports.readStoreById = async(select, storeId, status) => {
 };
 
 // Read Partner Store Record By Store Code
-module.exports.readStoreByCode = async(select, code, status) => {
+module.exports.readStoreByCode = async(select, code, partnerId, status) => {
   try {
 
     // Get Pool Object
@@ -103,10 +103,10 @@ module.exports.readStoreByCode = async(select, code, status) => {
     const connection = await pool.getConnection();
 
     // Query
-    const query = `SELECT ${select} FROM partner_stores WHERE store_code = ? AND status = ? LIMIT 1`;
+    const query = `SELECT ${select} FROM partner_stores WHERE store_code = ? AND partner_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [code, status]);
+    const [rows, fields] = await connection.query(query, [code, partnerId, status]);
 
     connection.release();
 

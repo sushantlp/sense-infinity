@@ -1010,7 +1010,7 @@ module.exports.createWarehouseProductTable = async(partnerMobile) => {
       global_sub_sub_category_id INTEGER NOT NULL,
       product_unit_id INTEGER NOT NULL,
       product_sub_unit_id INTEGER NOT NULL,
-      product_size INTEGER NOT NULL,
+      product_size FLOAT NOT NULL,
       selling_price FLOAT NOT NULL,
       product_margin FLOAT NOT NULL,
       actual_price FLOAT NOT NULL,

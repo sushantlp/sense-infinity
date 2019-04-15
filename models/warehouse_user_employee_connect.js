@@ -77,7 +77,6 @@ module.exports.readUserEmployeeConnectStatus = async(select, userId, employeId, 
   }
 };
 
-
 // Keep Warehouse User And Employee Connect
 module.exports.keepUserEmployeeConnect = async(
   userId,

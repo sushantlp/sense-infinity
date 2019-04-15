@@ -44,9 +44,18 @@ module.exports.logicWarehouseStoreList = async(id) => {
 module.exports.logicStoreList = async(id, code) => {
   try {
 
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0) return {
+      success: false,
+      data: [],
+      msg: 'Unknown partner'
+    };
+
     // Read Partner Store Record By Store Code
     let storeRecord = await partnerStoreModel.readStoreByCode("store_code AS branch_code, store_name AS branch_name, address_one, address_two, landmark, city_id AS city_unique, locality_id AS locality_unique, store_mobile AS mobile, store_email AS email, refund_on_discount, refund_policy",
-      code, 1);
+      code, partnerRecord[0].partner_id, 1);
 
     // Parse
     storeRecord = JSON.stringify(storeRecord);
@@ -119,7 +128,7 @@ module.exports.logicEmployeeRecord = async(id, code) => {
 
     // Read Partner Store Record By Store Code
     let storeRecord = await partnerStoreModel.readStoreByCode("store_id",
-      code, 1);
+      code, partnerRecord[0].partner_id, 1);
 
     // Parse
     storeRecord = JSON.stringify(storeRecord);
@@ -237,7 +246,7 @@ module.exports.logicStoreProduct = async(id, code) => {
 
     // Read Partner Store Record By Store Code
     let storeRecord = await partnerStoreModel.readStoreByCode("store_id",
-      code, 1);
+      code, partnerRecord[0].partner_id, 1);
 
     // Parse
     storeRecord = JSON.stringify(storeRecord);

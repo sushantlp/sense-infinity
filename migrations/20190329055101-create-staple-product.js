@@ -46,7 +46,7 @@ module.exports = {
         allowNull: false
       },
       product_size: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
         defaultValue: 0
       },
       selling_price: {

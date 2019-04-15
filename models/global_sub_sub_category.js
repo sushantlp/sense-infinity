@@ -45,6 +45,30 @@ module.exports.readSubSubGlobalCategory = async(select, status) => {
   }
 };
 
+// Read Sub Sub Global Category By Name
+module.exports.readSubSubGlobalCategoryName = async(select, name, status) => {
+  try {
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM global_sub_sub_categories WHERE global_sub_sub_category_name = ? AND status = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [name, status]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 
 /**
  * End Database Read and Write

@@ -7,7 +7,6 @@ module.exports = {
         'partner_stores',
         'store_code', {
           type: Sequelize.BIGINT,
-          unique: true,
           allowNull: false,
         }
       ),
@@ -27,6 +26,7 @@ module.exports = {
         'partner_stores',
         'store_code', {
           type: Sequelize.INTEGER,
+          unique: true,
           allowNull: false,
         }
       ),

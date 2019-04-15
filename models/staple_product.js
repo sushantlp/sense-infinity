@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     global_sub_sub_category_id: DataTypes.INTEGER,
     product_unit_id: DataTypes.INTEGER,
     product_sub_unit_id: DataTypes.INTEGER,
-    product_size: DataTypes.INTEGER,
+    product_size: DataTypes.FLOAT,
     selling_price: DataTypes.FLOAT,
     product_margin: DataTypes.FLOAT,
     actual_price: DataTypes.FLOAT,

@@ -45,6 +45,30 @@ module.exports.readProductUnit = async(select, status) => {
   }
 };
 
+// Read Product Unit List
+module.exports.readProductUnitName = async(select, name, status) => {
+  try {
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM product_units WHERE product_unit_name = ? AND status = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [name, status]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 
 /**
  * End Database Read and Write

@@ -621,7 +621,7 @@ const iterateKeepStoreDetail = async(stores, partner) => {
         store.refund_policy);
 
       // Read Partner Store Record By Store Code
-      let storeCode = await partnerStoreModel.readStoreByCode("*", store.store_code, 1);
+      let storeCode = await partnerStoreModel.readStoreByCode("*", store.store_code, partner[0].partner_id, 1);
 
       // Parse
       storeCode = JSON.stringify(storeCode);
@@ -801,7 +801,7 @@ const jsonKeepSecretData = async(secrets, partner) => {
 
         let parallel = await Promise.all([
           warehouseUserModel.readWarehouseUserByUserId("id", secret.warehouse_user_unique, partner[0].partner_id, 1),
-          partnerStoreModel.readStoreByCode("store_id", parseInt(secret.branch_unique, 10), 1),
+          partnerStoreModel.readStoreByCode("store_id", parseInt(secret.branch_unique, 10), partner[0].partner_id, 1),
         ]);
 
         // Parse
@@ -897,7 +897,7 @@ const jsonKeepSecretData = async(secrets, partner) => {
       } else if (parseInt(secret.employe_unique, 10) > 0 && parseInt(secret.branch_unique, 10) > 0) {
 
         // Read Partner Store Record By Store Code
-        let storeRecord = await partnerStoreModel.readStoreByCode("store_id", parseInt(secret.branch_unique, 10), 1);
+        let storeRecord = await partnerStoreModel.readStoreByCode("store_id", parseInt(secret.branch_unique, 10), partner[0].partner_id, 1);
 
         // Parse
         storeRecord = JSON.stringify(storeRecord);
@@ -1142,8 +1142,14 @@ const jsonKeepStapleProduct = async(products, partners) => {
 
     return products.map(async(product, index) => {
 
-
+      let parallel = await Promise.all([
+        globalCategoryModel.readGlobalCategoryName("global_category_id", product.category_name, 1),
+        globalSubCategoryModel.readSubGlobalCategoryName("global_sub_category_id", product.sub_category_name, 1),
+        globalSubSubCategoryModel.readSubSubGlobalCategoryName("global_sub_sub_category_id", product.sub_sub_category_name, 1)
+      ]);
     });
+
+
   } catch (error) {
     return Promise.reject(error);
   }
