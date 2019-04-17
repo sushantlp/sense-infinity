@@ -710,7 +710,7 @@ const objectKeepWarehouseDetail = async(warehouses, partner) => {
       warehouses.email);
 
     // Read Warehouse Data By Code
-    let warehouseRecord = await warehouseInformationModel.readWarehouseDataByCode("*", warehouses.warehouse_unique, 1);
+    let warehouseRecord = await warehouseInformationModel.readWarehouseDataByCode("*", warehouses.warehouse_unique, partner[0].partner_id, 1);
 
     // Parse
     warehouseRecord = JSON.stringify(warehouseRecord);

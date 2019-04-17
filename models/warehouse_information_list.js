@@ -42,7 +42,7 @@ const now = moment()
 
 
 // Read Warehouse Data By Code
-module.exports.readWarehouseDataByCode = async(select, code, status) => {
+module.exports.readWarehouseDataByCode = async(select, code, partnerId, status) => {
   try {
 
     // Get Pool Object
@@ -52,10 +52,10 @@ module.exports.readWarehouseDataByCode = async(select, code, status) => {
     const connection = await pool.getConnection();
 
     // Query
-    const query = `SELECT ${select} FROM warehouse_information_lists WHERE warehouse_information_id = ? AND status = ? LIMIT 1`;
+    const query = `SELECT ${select} FROM warehouse_information_lists WHERE warehouse_information_id = ? AND partner_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [code, status]);
+    const [rows, fields] = await connection.query(query, [code, partnerId, status]);
 
     connection.release();
 
