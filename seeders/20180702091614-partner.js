@@ -23,6 +23,16 @@ module.exports = {
         status: 1,
         created_at: new Date(),
         updated_at: new Date()
+      }, {
+        first_name: "Amit",
+        last_name: "Patel",
+        business_name: "D-Mart",
+        email: "amitvek007@gmail.com",
+        mobile: "9033408739",
+        category_id: 1000,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date()
       }], {}
     );
   },

@@ -568,7 +568,7 @@ const taxSyncData = async(values) => {
     const marks = new Array(arr.length).fill('?').join(',');
 
     //  Read Tax Table Record By Array
-    let tax = await taxModel.readTaxByArray("tax_id AS tax_unique, hsn, sgst, cgst, igst, status", marks, arr);
+    let tax = await taxModel.readTaxByArray("tax_id AS tax_unique, hsn, sgst, cgst, igst, description, status", marks, arr);
 
     // Parse
     tax = JSON.stringify(tax);
@@ -643,6 +643,7 @@ const iterateKeepStoreDetail = async(stores, partner) => {
           reform.storeEmail,
           reform.refundDiscount,
           reform.refundPolicy,
+          store.invoice_format,
           store.status
         );
       } else {
@@ -658,7 +659,7 @@ const iterateKeepStoreDetail = async(stores, partner) => {
           store.store_mobile,
           reform.storeEmail,
           reform.refundDiscount,
-          reform.refundPolicy, store.status);
+          reform.refundPolicy, store.invoice_format, store.status);
       }
 
     });

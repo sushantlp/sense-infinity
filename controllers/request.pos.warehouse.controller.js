@@ -100,7 +100,7 @@ module.exports.requestKeepStoreDetail = (req, res) => {
     const validate = validateController.warehouseStores(
       req.body.stores
     );
-
+    console.log(validate.msg)
     if (!validate.success) return res.status(400).send(validate.msg);
 
     // Logic Keep Warehouse Stores
@@ -221,7 +221,7 @@ module.exports.requestKeepStapleProduct = (req, res) => {
 
     // Logic Keep Staple Master Product
     return posWarehoseController
-    .logicKeepStapleProduct(res.userKey, req.body.products)
+      .logicKeepStapleProduct(res.userKey, req.body.products)
       .then(response => {
         return res
           .status(200)

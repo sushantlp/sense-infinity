@@ -26,7 +26,7 @@ module.exports.logicWarehouseStoreList = async(id) => {
     };
 
     // Read Partner Store Record
-    const storeRecord = await partnerStoreModel.readStoreRecord("store_code AS branch_code, store_name AS branch_name, address_one, address_two, landmark, city_id AS city_unique, locality_id AS locality_unique, store_mobile AS mobile, store_email AS email, refund_on_discount, refund_policy",
+    const storeRecord = await partnerStoreModel.readStoreRecord("store_code AS branch_code, store_name AS branch_name, address_one, address_two, landmark, city_id AS city_unique, locality_id AS locality_unique, store_mobile AS mobile, store_email AS email, refund_on_discount, refund_policy, invoice_format",
       partnerRecord[0].partner_id, 1);
 
     return {
@@ -54,7 +54,7 @@ module.exports.logicStoreList = async(id, code) => {
     };
 
     // Read Partner Store Record By Store Code
-    let storeRecord = await partnerStoreModel.readStoreByCode("store_code AS branch_code, store_name AS branch_name, address_one, address_two, landmark, city_id AS city_unique, locality_id AS locality_unique, store_mobile AS mobile, store_email AS email, refund_on_discount, refund_policy",
+    let storeRecord = await partnerStoreModel.readStoreByCode("store_code AS branch_code, store_name AS branch_name, address_one, address_two, landmark, city_id AS city_unique, locality_id AS locality_unique, store_mobile AS mobile, store_email AS email, refund_on_discount, refund_policy, invoice_format",
       code, partnerRecord[0].partner_id, 1);
 
     // Parse

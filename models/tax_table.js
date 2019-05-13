@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     sgst: DataTypes.FLOAT,
     cgst: DataTypes.FLOAT,
     igst: DataTypes.FLOAT,
+    description: DataTypes.STRING,
     status: DataTypes.BOOLEAN
   }, {});
   taxTable.associate = function(models) {

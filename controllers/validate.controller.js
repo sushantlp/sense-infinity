@@ -427,7 +427,15 @@ module.exports.warehouseStores = (stores) => {
         success: false,
         msg: 'Missing refund policy parameter'
       };
+
+      if (!stores[i].hasOwnProperty('invoice_format') || !Number.isInteger(stores[i].invoice_format)) return {
+        success: false,
+        msg: 'Missing invoice format parameter'
+      };
+
     }
+
+
 
     if (stores.length !== 0) return {
       success: true,

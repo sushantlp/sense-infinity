@@ -130,6 +130,7 @@ module.exports.keepStoreData = async(
   storeEmail,
   refundDiscount,
   refundPolicy,
+  invoiceFormat,
   status
 ) => {
   try {
@@ -150,7 +151,7 @@ module.exports.keepStoreData = async(
 
     // Query
     const query =
-      "INSERT INTO `partner_stores` (`store_code`,`partner_id`,`store_name`,`address_one`,`address_two`,`landmark`,`city_id`,`locality_id`,`store_mobile`,`store_email`,`refund_on_discount`,`refund_policy`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO `partner_stores` (`store_code`,`partner_id`,`store_name`,`address_one`,`address_two`,`landmark`,`city_id`,`locality_id`,`store_mobile`,`store_email`,`refund_on_discount`,`refund_policy`,`invoice_format`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     // Query Database
     const row = await connection.query(query, [
@@ -166,6 +167,7 @@ module.exports.keepStoreData = async(
       storeEmail,
       refundDiscount,
       refundPolicy,
+      invoiceFormat,
       status,
       now,
       now
@@ -192,6 +194,7 @@ module.exports.updateStoreData = async(
   storeEmail,
   refundDiscount,
   refundPolicy,
+  invoiceFormat,
   status
 ) => {
   try {
@@ -213,7 +216,7 @@ module.exports.updateStoreData = async(
 
     // Query
     const query =
-      "UPDATE `partner_stores` SET `store_name` = ?, `address_one` = ?, `address_two` = ?, `landmark` = ?, `city_id` = ?, `locality_id` = ?, `store_mobile` = ?, `store_email` = ?, `refund_on_discount` = ?, `refund_policy` = ?, `status` = ?, `updated_at` = ? WHERE `store_id` = ?";
+      "UPDATE `partner_stores` SET `store_name` = ?, `address_one` = ?, `address_two` = ?, `landmark` = ?, `city_id` = ?, `locality_id` = ?, `store_mobile` = ?, `store_email` = ?, `refund_on_discount` = ?, `refund_policy` = ?, `invoice_format` = ?,`status` = ?, `updated_at` = ? WHERE `store_id` = ?";
 
     // Query Database
     const row = await connection.query(query, [
@@ -227,6 +230,7 @@ module.exports.updateStoreData = async(
       storeEmail,
       refundDiscount,
       refundPolicy,
+      invoiceFormat,
       status,
       now,
       storeId

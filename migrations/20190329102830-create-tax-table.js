@@ -24,6 +24,10 @@ module.exports = {
         type: Sequelize.FLOAT,
         defaultValue: 0
       },
+      description: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
       status: {
         type: Sequelize.BOOLEAN,
         defaultValue: 0
