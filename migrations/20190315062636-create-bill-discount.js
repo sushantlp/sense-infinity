@@ -2,11 +2,16 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('bill_discounts', {
-      bill_discount_id: {
+      id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
+      },
+      bill_discount_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        unique: 'actions_unique'
       },
       store_id: {
         type: Sequelize.INTEGER,
@@ -25,19 +30,19 @@ module.exports = {
         }
       },
       start_date: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
         allowNull: false
       },
       end_date: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
         allowNull: false
       },
       start_time: {
-        type: Sequelize.TIME,
+        type: Sequelize.STRING,
         allowNull: false
       },
       end_time: {
-        type: Sequelize.TIME,
+        type: Sequelize.STRING,
         allowNull: false
       },
       min_discount_amount: {
@@ -53,6 +58,10 @@ module.exports = {
         defaultValue: 0
       },
       status: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: 0
+      },
+      track_status: {
         type: Sequelize.BOOLEAN,
         defaultValue: 0
       },

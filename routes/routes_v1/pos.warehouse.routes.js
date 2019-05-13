@@ -39,4 +39,7 @@ routes.post('/staple', apiKeyAuth, PosWarehouseApiController.requestKeepStaplePr
 // Keep Warehouse Products Detail
 routes.post('/products', apiKeyAuth, PosWarehouseApiController.requestKeepWarehouseProduct);
 
+// Keep Warehouse Discounts 
+routes.post('/discounts', apiKeyAuth, PosWarehouseApiController.requestKeepDiscount);
+
 module.exports = routes;

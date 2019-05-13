@@ -5,6 +5,7 @@ const constants = require('../config/constants');
 
 module.exports = (sequelize, DataTypes) => {
   var billDiscount = sequelize.define('bill_discount', {
+    bill_discount_id: DataTypes.INTEGER,
     store_id: DataTypes.INTEGER,
     discount_base_id: DataTypes.INTEGER,
     start_date: DataTypes.DATE,

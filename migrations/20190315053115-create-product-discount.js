@@ -21,24 +21,32 @@ module.exports = {
           key: 'discount_base_id'
         }
       },
+      partner_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'partners',
+          key: 'partner_id'
+        }
+      },
       product_discount_name: {
         type: Sequelize.STRING,
         allowNull: false
       },
       start_date: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
         allowNull: false
       },
       end_date: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
         allowNull: false
       },
       start_time: {
-        type: Sequelize.TIME,
+        type: Sequelize.STRING,
         allowNull: false
       },
       end_time: {
-        type: Sequelize.TIME,
+        type: Sequelize.STRING,
         allowNull: false
       },
       status: {
