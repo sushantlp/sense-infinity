@@ -45,7 +45,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      min_discount_amount: {
+      min_amount: {
         type: Sequelize.FLOAT,
         defaultValue: 0
       },
