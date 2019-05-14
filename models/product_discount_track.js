@@ -35,6 +35,33 @@ const now = moment()
 module.exports.readProductDiscountTrack = async (
   select,
   storeId,
+  discountId
+) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM product_discount_tracks WHERE store_id = ? AND product_discount_id = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [storeId, discountId]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Read Product Discount Track By Status
+module.exports.readDiscountTrackByStatus = async (
+  select,
+  storeId,
   trackStatus
 ) => {
   try {
@@ -62,13 +89,12 @@ module.exports.readProductDiscountTrack = async (
 };
 
 // Keep Product Discount Track
-module.exports.keepProductDiscountTrack = async(
+module.exports.keepProductDiscountTrack = async (
   storeId,
   discountId,
   trackStatus
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -83,7 +109,7 @@ module.exports.keepProductDiscountTrack = async(
     const row = await connection.query(query, [
       storeId,
       discountId,
-      trackStatuss
+      trackStatus,
       now,
       now
     ]);
@@ -97,12 +123,8 @@ module.exports.keepProductDiscountTrack = async(
 };
 
 // Update Product Discount Track
-module.exports.updateProductDiscountTrack = async(
-  trackStatus,
-  id
-) => {
+module.exports.updateProductDiscountTrack = async (trackStatus, id) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -114,11 +136,7 @@ module.exports.updateProductDiscountTrack = async(
       "UPDATE `product_discount_tracks` SET `track_status` = ?, `updated_at` = ? WHERE `product_discount_id` = ?";
 
     // Query Database
-    const row = await connection.query(query, [
-      trackStatus,
-      now,
-      id
-    ]);
+    const row = await connection.query(query, [trackStatus, now, id]);
 
     connection.release();
 
@@ -127,7 +145,6 @@ module.exports.updateProductDiscountTrack = async(
     return Promise.reject(error);
   }
 };
-
 
 /**
  * End Database Read and Write
