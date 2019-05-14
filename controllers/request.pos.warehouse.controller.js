@@ -13,7 +13,6 @@ module.exports.requestGetWarehouseStaticData = (req, res) => {
     res.userKey !== undefined &&
     res.userKey !== ""
   ) {
-
     // Validate Warehouse Static Version
     const validate = validateController.warehouseStaticVersion(
       req.body.version
@@ -33,7 +32,8 @@ module.exports.requestGetWarehouseStaticData = (req, res) => {
               response.msg,
               "/api/v1/warehouses/static",
               200,
-              response.success, response.version
+              response.success,
+              response.version
             )
           );
       })
@@ -42,9 +42,7 @@ module.exports.requestGetWarehouseStaticData = (req, res) => {
         return res.status(500).send("Oops our bad!!!");
       });
   } else return res.status(400).send("Not a good api call");
-
 };
-
 
 // Request Keep Warehouse User Employee Data
 module.exports.requestKeepSecretData = (req, res) => {
@@ -54,11 +52,8 @@ module.exports.requestKeepSecretData = (req, res) => {
     res.userKey !== undefined &&
     res.userKey !== ""
   ) {
-
     // Validate Warehouse Secrets
-    const validate = validateController.warehouseSecrets(
-      req.body.secrets
-    );
+    const validate = validateController.warehouseSecrets(req.body.secrets);
 
     if (!validate.success) return res.status(400).send(validate.msg);
 
@@ -74,7 +69,8 @@ module.exports.requestKeepSecretData = (req, res) => {
               response.msg,
               "/api/v1/warehouses/secrets",
               200,
-              response.success, {}
+              response.success,
+              {}
             )
           );
       })
@@ -83,9 +79,7 @@ module.exports.requestKeepSecretData = (req, res) => {
         return res.status(500).send("Oops our bad!!!");
       });
   } else return res.status(400).send("Not a good api call");
-
 };
-
 
 // Request Keep Warehouse Stores Detail
 module.exports.requestKeepStoreDetail = (req, res) => {
@@ -95,12 +89,9 @@ module.exports.requestKeepStoreDetail = (req, res) => {
     res.userKey !== undefined &&
     res.userKey !== ""
   ) {
-
     // Validate Warehouse Stores Parameter
-    const validate = validateController.warehouseStores(
-      req.body.stores
-    );
-    console.log(validate.msg)
+    const validate = validateController.warehouseStores(req.body.stores);
+    console.log(validate.msg);
     if (!validate.success) return res.status(400).send(validate.msg);
 
     // Logic Keep Warehouse Stores
@@ -115,7 +106,8 @@ module.exports.requestKeepStoreDetail = (req, res) => {
               response.msg,
               "/api/v1/warehouses/stores",
               200,
-              response.success, {}
+              response.success,
+              {}
             )
           );
       })
@@ -126,7 +118,6 @@ module.exports.requestKeepStoreDetail = (req, res) => {
   } else return res.status(400).send("Not a good api call");
 };
 
-
 // Request Keep Warehouse Detail
 module.exports.requestKeepWarehouseDetail = (req, res) => {
   if (
@@ -135,11 +126,8 @@ module.exports.requestKeepWarehouseDetail = (req, res) => {
     res.userKey !== undefined &&
     res.userKey !== ""
   ) {
-
     // Validate Warehouse Detail Parameter
-    const validate = validateController.warehouseDetail(
-      req.body.warehouses
-    );
+    const validate = validateController.warehouseDetail(req.body.warehouses);
 
     if (!validate.success) return res.status(400).send(validate.msg);
 
@@ -155,7 +143,8 @@ module.exports.requestKeepWarehouseDetail = (req, res) => {
               response.msg,
               "/api/v1/warehouses/information",
               200,
-              response.success, {}
+              response.success,
+              {}
             )
           );
       })
@@ -168,12 +157,12 @@ module.exports.requestKeepWarehouseDetail = (req, res) => {
 
 // Request Keep Warehouse Products Detail
 module.exports.requestKeepWarehouseProduct = (req, res) => {
-  if (res.userKey !== undefined &&
+  if (
+    res.userKey !== undefined &&
     res.userKey !== "" &&
     req.body.products !== undefined &&
     req.body.products !== ""
   ) {
-
     // Validate Warehouse Product Detail Parameter
     const validate = validateController.warehouseProductDetail(
       req.body.products
@@ -193,7 +182,8 @@ module.exports.requestKeepWarehouseProduct = (req, res) => {
               response.msg,
               "/api/v1/warehouses/products",
               200,
-              response.success, {}
+              response.success,
+              {}
             )
           );
       })
@@ -206,16 +196,14 @@ module.exports.requestKeepWarehouseProduct = (req, res) => {
 
 // Request Keep Staple Master Product
 module.exports.requestKeepStapleProduct = (req, res) => {
-  if (res.userKey !== undefined &&
+  if (
+    res.userKey !== undefined &&
     res.userKey !== "" &&
     req.body.products !== undefined &&
     req.body.products !== ""
   ) {
-
     // Validate Staple Product Detail Parameter
-    const validate = validateController.stapleProductDetail(
-      req.body.products
-    );
+    const validate = validateController.stapleProductDetail(req.body.products);
 
     if (!validate.success) return res.status(400).send(validate.msg);
 
@@ -231,7 +219,8 @@ module.exports.requestKeepStapleProduct = (req, res) => {
               response.msg,
               "/api/v1/warehouses/staple",
               200,
-              response.success, {}
+              response.success,
+              {}
             )
           );
       })
@@ -242,21 +231,21 @@ module.exports.requestKeepStapleProduct = (req, res) => {
   } else return res.status(400).send("Not a good api call");
 };
 
-
 // Request Keep Warehouse Discount
 module.exports.requestKeepDiscount = (req, res) => {
-  if (res.userKey !== undefined &&
+  if (
+    res.userKey !== undefined &&
     res.userKey !== "" &&
     req.body.bill_discounts !== undefined &&
     req.body.bill_discounts !== "" &&
     req.body.product_discounts !== undefined &&
     req.body.product_discounts !== ""
   ) {
-
-    // Validate Staple Product Detail Parameter
-    // const validate = validateController.stapleProductDetail(
-    //   req.body.products
-    // );
+    // Validate Warehouse Bill And Product Discount
+    const validate = validateController.warehouseDiscount(
+      req.body.bill_discounts,
+      req.body.product_discounts
+    );
 
     // if (!validate.success) return res.status(400).send(validate.msg);
 
