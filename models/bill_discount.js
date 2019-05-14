@@ -33,8 +33,12 @@ const now = moment()
   .tz("Asia/Kolkata")
   .format("YYYY-MM-DD HH-m-ss");
 
+/**
+ * Start Database Read and Write
+ */
 
-  // Read Bill Discount Specific Store 
+
+// Read Bill Discount Specific Store 
 module.exports.readBillDiscount = async(select, storeId, trackStatus) => {
   try {
 
@@ -159,3 +163,8 @@ module.exports.updateBillDiscount = async(
     return Promise.reject(error);
   }
 };
+
+
+/**
+ * End Database Read and Write
+ */
