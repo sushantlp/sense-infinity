@@ -34,6 +34,30 @@ const now = moment()
   .format("YYYY-MM-DD HH-m-ss");
 
 
+  // Read Bill Discount Specific Store 
+module.exports.readBillDiscount = async(select, storeId, trackStatus) => {
+  try {
+
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM bill_discounts WHERE store_id = ? AND track_status = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [storeId, trackStatus]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 // Keep Warehouse Bill Discount
 module.exports.keepBillDiscount = async(
   billDiscountId,
