@@ -14,10 +14,11 @@ module.exports = (sequelize, DataTypes) => {
       product_discount_id: DataTypes.INTEGER,
       discount_base_id: DataTypes.INTEGER,
       product_discount_name: DataTypes.STRING,
-      start_date: DataTypes.DATE,
-      end_date: DataTypes.DATE,
-      start_time: DataTypes.TIME,
-      end_time: DataTypes.TIME,
+      name: DataTypes.STRING,
+      start_date: DataTypes.STRING,
+      end_date: DataTypes.STRING,
+      start_time: DataTypes.STRING,
+      end_time: DataTypes.STRING,
       status: DataTypes.BOOLEAN
     },
     {}
@@ -69,6 +70,7 @@ module.exports.keepProductDiscount = async (
   discountId,
   baseId,
   discountName,
+  name,
   startDate,
   endDate,
   startTime,
@@ -84,7 +86,7 @@ module.exports.keepProductDiscount = async (
 
     // Query
     const query =
-      "INSERT INTO `product_discounts` (`partner_id`, `product_discount_id`, `discount_base_id`, `product_discount_name`, `start_date`, `end_date`, `start_time`, `end_time`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO `product_discounts` (`partner_id`, `product_discount_id`, `discount_base_id`, `name`, `start_date`, `end_date`, `start_time`, `end_time`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 
     // Query Database
     const row = await connection.query(query, [

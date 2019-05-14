@@ -1,32 +1,36 @@
-'use strict';
+"use strict";
 
 // Import Package
 const moment = require("moment-timezone");
 
 // Import Config
-const constants = require('../config/constants');
+const constants = require("../config/constants");
 
 module.exports = (sequelize, DataTypes) => {
-  var billDiscount = sequelize.define('bill_discount', {
-    bill_discount_id: DataTypes.INTEGER,
-    store_id: DataTypes.INTEGER,
-    discount_base_id: DataTypes.INTEGER,
-    start_date: DataTypes.DATE,
-    end_date: DataTypes.DATE,
-    start_time: DataTypes.TIME,
-    end_time: DataTypes.TIME,
-    min_amount: DataTypes.FLOAT,
-    max_discount_amount: DataTypes.FLOAT,
-    bill_offer_value: DataTypes.FLOAT,
-    status: DataTypes.BOOLEAN,
-    track_status: DataTypes.BOOLEAN
-  }, {});
+  var billDiscount = sequelize.define(
+    "bill_discount",
+    {
+      bill_discount_id: DataTypes.INTEGER,
+      store_id: DataTypes.INTEGER,
+      discount_base_id: DataTypes.INTEGER,
+      name: DataTypes.STRING,
+      start_date: DataTypes.STRING,
+      end_date: DataTypes.STRING,
+      start_time: DataTypes.STRING,
+      end_time: DataTypes.STRING,
+      min_amount: DataTypes.FLOAT,
+      max_discount_amount: DataTypes.FLOAT,
+      bill_offer_value: DataTypes.FLOAT,
+      status: DataTypes.BOOLEAN,
+      track_status: DataTypes.BOOLEAN
+    },
+    {}
+  );
   billDiscount.associate = function(models) {
     // associations can be defined here
   };
   return billDiscount;
 };
-
 
 // Current Date and Time
 const now = moment()
@@ -37,11 +41,9 @@ const now = moment()
  * Start Database Read and Write
  */
 
-
-// Read Bill Discount Specific Store 
-module.exports.readBillDiscount = async(select, storeId, trackStatus) => {
+// Read Bill Discount Specific Store
+module.exports.readBillDiscount = async (select, storeId, trackStatus) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -52,7 +54,33 @@ module.exports.readBillDiscount = async(select, storeId, trackStatus) => {
     const query = `SELECT ${select} FROM bill_discounts WHERE store_id = ? AND track_status = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [storeId, trackStatus]);
+    const [rows, fields] = await connection.query(query, [
+      storeId,
+      trackStatus
+    ]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Read Bill Discount Specific By [bill_discount_Id,store_id]
+module.exports.readBillDiscountById = async (select, discountId, storeId) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM bill_discounts WHERE bill_discount_id = ? AND store_id = ? LIMIT 1`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [discountId, storeId]);
 
     connection.release();
 
@@ -63,10 +91,11 @@ module.exports.readBillDiscount = async(select, storeId, trackStatus) => {
 };
 
 // Keep Warehouse Bill Discount
-module.exports.keepBillDiscount = async(
+module.exports.keepBillDiscount = async (
   billDiscountId,
   storeId,
   discountBaseId,
+  name,
   startDate,
   endDate,
   startTime,
@@ -78,7 +107,6 @@ module.exports.keepBillDiscount = async(
   trackStatus
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -87,13 +115,14 @@ module.exports.keepBillDiscount = async(
 
     // Query
     const query =
-      "INSERT INTO `bill_discounts` (`bill_discount_id`, `store_id`, `discount_base_id`, `start_date`, `end_date`, `start_time`, `end_time`, `min_amount`, `max_discount_amount`, `bill_offer_value`, `status`, `track_status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO `bill_discounts` (`bill_discount_id`, `store_id`, `discount_base_id`, `name`, `start_date`, `end_date`, `start_time`, `end_time`, `min_amount`, `max_discount_amount`, `bill_offer_value`, `status`, `track_status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     // Query Database
     const row = await connection.query(query, [
       billDiscountId,
       storeId,
       discountBaseId,
+      name,
       startDate,
       endDate,
       startTime,
@@ -102,7 +131,7 @@ module.exports.keepBillDiscount = async(
       maxDiscountAmount,
       billOfferValue,
       status,
-      trackStatus
+      trackStatus,
       now,
       now
     ]);
@@ -115,22 +144,9 @@ module.exports.keepBillDiscount = async(
   }
 };
 
-
 // Update Warehouse Bill Discount
-module.exports.updateBillDiscount = async(
-  startDate,
-  endDate,
-  startTime,
-  endTime,
-  minAmount,
-  maxDiscountAmount,
-  billOfferValue,
-  status,
-  trackStatus,
-  id
-) => {
+module.exports.updateBillDiscount = async (status, trackStatus, id) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -139,22 +155,10 @@ module.exports.updateBillDiscount = async(
 
     // Query
     const query =
-      "UPDATE `bill_discounts` SET `start_date` = ?, `end_date` = ?, `start_time` = ?, `end_time` = ?, `min_amount` = ?, `max_discount_amount` = ?, `bill_offer_value` = ?, `status` = ?, `track_status` = ?, `updated_at` = ? WHERE `bill_discount_id` = ?";
+      "UPDATE `bill_discounts` SET `status` = ?, `track_status` = ?, `updated_at` = ? WHERE `id` = ?";
 
     // Query Database
-    const row = await connection.query(query, [
-      startDate,
-      endDate,
-      startTime,
-      endTime,
-      minAmount,
-      maxDiscountAmount,
-      billOfferValue,
-      status,
-      trackStatus,
-      now,
-      id
-    ]);
+    const row = await connection.query(query, [status, trackStatus, now, id]);
 
     connection.release();
 
@@ -163,7 +167,6 @@ module.exports.updateBillDiscount = async(
     return Promise.reject(error);
   }
 };
-
 
 /**
  * End Database Read and Write

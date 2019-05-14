@@ -1,29 +1,28 @@
-'use strict';
+"use strict";
 
 // Import Package
-const jwt = require('jsonwebtoken');
-const jwtRefresh = require('jsonwebtoken-refresh');
-const moment = require('moment');
-const nodeMailer = require('nodemailer');
+const jwt = require("jsonwebtoken");
+const jwtRefresh = require("jsonwebtoken-refresh");
+const moment = require("moment");
+const nodeMailer = require("nodemailer");
 
 // Import Model
-const smsModel = require('../models/sms');
+const smsModel = require("../models/sms");
 const userModel = require("../models/user");
 const partnerModel = require("../models/partner");
 
 // Import Config
-const {
-  Mail
-} = require("../config/constants");
-
+const { Mail } = require("../config/constants");
 
 // Generate Random Number
 module.exports.generateRandomNumber = (length = 10) => {
-  let characters = '123456789';
-  let randomString = '';
+  let characters = "123456789";
+  let randomString = "";
 
   for (let i = 0; i < length; i++) {
-    randomString += characters.charAt(Math.floor(Math.random() * characters.length));
+    randomString += characters.charAt(
+      Math.floor(Math.random() * characters.length)
+    );
   }
 
   return randomString;
@@ -31,10 +30,12 @@ module.exports.generateRandomNumber = (length = 10) => {
 
 // Generate JWT Token
 module.exports.generateToken = payload => {
-  return jwt.sign({
+  return jwt.sign(
+    {
       data: payload
     },
-    process.env.JWT_SECRET, {
+    process.env.JWT_SECRET,
+    {
       expiresIn: 1500
     }
   ); // Expiry time in second
@@ -49,7 +50,14 @@ module.exports.refreshToken = token => {
 };
 
 // Create Json Object
-module.exports.createJsonObject = (data, msg, location, code, bool, metadata) => {
+module.exports.createJsonObject = (
+  data,
+  msg,
+  location,
+  code,
+  bool,
+  metadata
+) => {
   return JSON.stringify({
     results: data,
     message: msg,
@@ -62,16 +70,14 @@ module.exports.createJsonObject = (data, msg, location, code, bool, metadata) =>
 
 // Validate Password
 module.exports.passwordAlgorthim = (mobile, password) => {
-
-
   // Split String Into Array
-  const mobileSplit = mobile.split('');
+  const mobileSplit = mobile.split("");
 
   // Array Length
   const length = mobileSplit.length;
 
   // Variable Declaration
-  let pair1 = '';
+  let pair1 = "";
   let pair2 = 0;
 
   // Loop
@@ -90,41 +96,42 @@ module.exports.passwordAlgorthim = (mobile, password) => {
   pair1 = pair1.concat(pair2);
 
   // Validate Password
-  if (pair1 == password) return {
-    success: true,
-    msg: 'Succesful'
-  };
-  else return {
-    success: false,
-    msg: 'Wrong password'
-  };
-
+  if (pair1 == password)
+    return {
+      success: true,
+      msg: "Succesful"
+    };
+  else
+    return {
+      success: false,
+      msg: "Wrong password"
+    };
 };
 
 // Validate Otp
-module.exports.validateOtp = async(mobile, otp) => {
+module.exports.validateOtp = async (mobile, otp) => {
   try {
-
     // Read Sms Record
-    const record = await smsModel.readSmsRecord('*', mobile, 1);
+    const record = await smsModel.readSmsRecord("*", mobile, 1);
 
     // Check Result Length
     if (record.length > 0) {
       // Validate OTP
-      if (parseInt(record[0].otp, 10) === parseInt(otp, 10)) return {
-        success: true,
-        msg: 'Succesful'
-      };
-      else return {
+      if (parseInt(record[0].otp, 10) === parseInt(otp, 10))
+        return {
+          success: true,
+          msg: "Succesful"
+        };
+      else
+        return {
+          success: false,
+          msg: "Wrong otp"
+        };
+    } else
+      return {
         success: false,
-        msg: 'Wrong otp'
+        msg: "Empty record"
       };
-
-    } else return {
-      success: false,
-      msg: 'Empty record'
-    };
-
   } catch (error) {
     return Promise.reject(error);
   }
@@ -146,10 +153,10 @@ module.exports.reformCustomerDetail = (
   // Variable
   let reform = {
     anniversary: undefined,
-    first_name: 'fake',
-    last_name: 'fake',
+    first_name: "fake",
+    last_name: "fake",
     spouse_name: undefined,
-    dob: moment(new Date('1949-08-15')).format('YYYY-MM-DD'),
+    dob: moment(new Date("1949-08-15")).format("YYYY-MM-DD"),
     address_one: undefined,
     address_two: undefined,
     landmark: undefined,
@@ -157,39 +164,66 @@ module.exports.reformCustomerDetail = (
   };
 
   // EMPTY || NULL || UNDEFINED
-  if (firstName !== '' && firstName !== null && typeof firstName !== undefined) reform.first_name = firstName.replace(/\b[a-z]/g, function(f) {
-    return f.toUpperCase();
-  });
+  if (firstName !== "" && firstName !== null && typeof firstName !== undefined)
+    reform.first_name = firstName.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
 
-  if (lastName !== '' && lastName !== null && typeof lastName !== undefined) reform.last_name = lastName.replace(/\b[a-z]/g, function(f) {
-    return f.toUpperCase();
-  });
+  if (lastName !== "" && lastName !== null && typeof lastName !== undefined)
+    reform.last_name = lastName.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
 
-  if (dob !== '' && dob !== null && typeof dob !== undefined) reform.dob = moment(new Date(dob)).format('YYYY-MM-DD');
+  if (dob !== "" && dob !== null && typeof dob !== undefined)
+    reform.dob = moment(new Date(dob)).format("YYYY-MM-DD");
 
   if (flag) {
-    if (spouseName !== '' && spouseName !== null && typeof spouseName !== undefined) reform.spouse_name = spouseName.replace(/\b[a-z]/g, function(f) {
-      return f.toUpperCase();
-    });
+    if (
+      spouseName !== "" &&
+      spouseName !== null &&
+      typeof spouseName !== undefined
+    )
+      reform.spouse_name = spouseName.replace(/\b[a-z]/g, function(f) {
+        return f.toUpperCase();
+      });
 
-    if (anniversary !== '' && anniversary !== null && typeof anniversary !== undefined) {
-      reform.anniversary = moment(new Date(anniversary)).format('YYYY-MM-DD');
-      if (isNaN(Date.parse(reform.anniversary))) reform.anniversary = moment(new Date('1949-08-15')).format('YYYY-MM-DD');
+    if (
+      anniversary !== "" &&
+      anniversary !== null &&
+      typeof anniversary !== undefined
+    ) {
+      reform.anniversary = moment(new Date(anniversary)).format("YYYY-MM-DD");
+      if (isNaN(Date.parse(reform.anniversary)))
+        reform.anniversary = moment(new Date("1949-08-15")).format(
+          "YYYY-MM-DD"
+        );
     }
 
-    if (married !== '' && married !== null && typeof married !== undefined) reform.married = married;
+    if (married !== "" && married !== null && typeof married !== undefined)
+      reform.married = married;
 
-    if (addressOne !== '' && addressOne !== null && typeof addressOne !== undefined) reform.address_one = addressOne.replace(/\b[a-z]/g, function(f) {
-      return f.toUpperCase();
-    });
+    if (
+      addressOne !== "" &&
+      addressOne !== null &&
+      typeof addressOne !== undefined
+    )
+      reform.address_one = addressOne.replace(/\b[a-z]/g, function(f) {
+        return f.toUpperCase();
+      });
 
-    if (addressTwo !== '' && addressTwo !== null && typeof addressTwo !== undefined) reform.address_two = addressTwo.replace(/\b[a-z]/g, function(f) {
-      return f.toUpperCase();
-    });
+    if (
+      addressTwo !== "" &&
+      addressTwo !== null &&
+      typeof addressTwo !== undefined
+    )
+      reform.address_two = addressTwo.replace(/\b[a-z]/g, function(f) {
+        return f.toUpperCase();
+      });
 
-    if (landmark !== '' && landmark !== null && typeof landmark !== undefined) reform.landmark = landmark.replace(/\b[a-z]/g, function(f) {
-      return f.toUpperCase();
-    });
+    if (landmark !== "" && landmark !== null && typeof landmark !== undefined)
+      reform.landmark = landmark.replace(/\b[a-z]/g, function(f) {
+        return f.toUpperCase();
+      });
   }
 
   return reform;
@@ -226,7 +260,6 @@ module.exports.sendMail = (receiver, sender, subject, text, packages) => {
   });
 };
 
-
 // Reform Stores Detail
 module.exports.reformStoresDetail = (
   storeName,
@@ -245,31 +278,58 @@ module.exports.reformStoresDetail = (
     landmark: undefined,
     storeEmail: undefined,
     refundDiscount: 0,
-    refundPolicy: undefined,
+    refundPolicy: undefined
   };
 
   // EMPTY || NULL || UNDEFINED
-  if (storeName !== '' && storeName !== null && typeof storeName !== undefined) reform.storeName = storeName.replace(/\b[a-z]/g, function(f) {
-    return f.toUpperCase();
-  });
+  if (storeName !== "" && storeName !== null && typeof storeName !== undefined)
+    reform.storeName = storeName.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
 
-  if (addressOne !== '' && addressOne !== null && typeof addressOne !== undefined) reform.addressOne = addressOne.replace(/\b[a-z]/g, function(f) {
-    return f.toUpperCase();
-  });
+  if (
+    addressOne !== "" &&
+    addressOne !== null &&
+    typeof addressOne !== undefined
+  )
+    reform.addressOne = addressOne.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
 
-  if (addressTwo !== '' && addressTwo !== null && typeof addressTwo !== undefined) reform.addressTwo = addressTwo.replace(/\b[a-z]/g, function(f) {
-    return f.toUpperCase();
-  });
+  if (
+    addressTwo !== "" &&
+    addressTwo !== null &&
+    typeof addressTwo !== undefined
+  )
+    reform.addressTwo = addressTwo.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
 
-  if (landmark !== '' && landmark !== null && typeof landmark !== undefined) reform.landmark = landmark.replace(/\b[a-z]/g, function(f) {
-    return f.toUpperCase();
-  });
+  if (landmark !== "" && landmark !== null && typeof landmark !== undefined)
+    reform.landmark = landmark.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
 
-  if (storeEmail !== '' && storeEmail !== null && typeof storeEmail !== undefined) reform.storeEmail = storeEmail;
+  if (
+    storeEmail !== "" &&
+    storeEmail !== null &&
+    typeof storeEmail !== undefined
+  )
+    reform.storeEmail = storeEmail;
 
-  if (refundDiscount !== '' && refundDiscount !== null && typeof refundDiscount !== undefined) reform.refundDiscount = refundDiscount;
+  if (
+    refundDiscount !== "" &&
+    refundDiscount !== null &&
+    typeof refundDiscount !== undefined
+  )
+    reform.refundDiscount = refundDiscount;
 
-  if (refundPolicy !== '' && refundPolicy !== null && typeof refundPolicy !== undefined) reform.refundPolicy = refundPolicy;
+  if (
+    refundPolicy !== "" &&
+    refundPolicy !== null &&
+    typeof refundPolicy !== undefined
+  )
+    reform.refundPolicy = refundPolicy;
 
   return reform;
 };
@@ -294,37 +354,54 @@ module.exports.reformWarehouseDetail = (
     gstin: undefined,
     cin: undefined,
     pan: 0,
-    email: undefined,
+    email: undefined
   };
 
   // EMPTY || NULL || UNDEFINED
-  if (businessName !== '' && businessName !== null && typeof businessName !== undefined) reform.businessName = businessName.replace(/\b[a-z]/g, function(f) {
-    return f.toUpperCase();
-  });
+  if (
+    businessName !== "" &&
+    businessName !== null &&
+    typeof businessName !== undefined
+  )
+    reform.businessName = businessName.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
 
-  if (addressOne !== '' && addressOne !== null && typeof addressOne !== undefined) reform.addressOne = addressOne.replace(/\b[a-z]/g, function(f) {
-    return f.toUpperCase();
-  });
+  if (
+    addressOne !== "" &&
+    addressOne !== null &&
+    typeof addressOne !== undefined
+  )
+    reform.addressOne = addressOne.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
 
-  if (addressTwo !== '' && addressTwo !== null && typeof addressTwo !== undefined) reform.addressTwo = addressTwo.replace(/\b[a-z]/g, function(f) {
-    return f.toUpperCase();
-  });
+  if (
+    addressTwo !== "" &&
+    addressTwo !== null &&
+    typeof addressTwo !== undefined
+  )
+    reform.addressTwo = addressTwo.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
 
-  if (landmark !== '' && landmark !== null && typeof landmark !== undefined) reform.landmark = landmark.replace(/\b[a-z]/g, function(f) {
-    return f.toUpperCase();
-  });
+  if (landmark !== "" && landmark !== null && typeof landmark !== undefined)
+    reform.landmark = landmark.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
 
-  if (gstin !== '' && gstin !== null && typeof gstin !== undefined) reform.gstin = gstin;
+  if (gstin !== "" && gstin !== null && typeof gstin !== undefined)
+    reform.gstin = gstin;
 
-  if (email !== '' && email !== null && typeof email !== undefined) reform.email = email;
+  if (email !== "" && email !== null && typeof email !== undefined)
+    reform.email = email;
 
-  if (cin !== '' && cin !== null && typeof cin !== undefined) reform.cin = cin;
+  if (cin !== "" && cin !== null && typeof cin !== undefined) reform.cin = cin;
 
-  if (pan !== '' && pan !== null && typeof pan !== undefined) reform.pan = pan;
+  if (pan !== "" && pan !== null && typeof pan !== undefined) reform.pan = pan;
 
   return reform;
 };
-
 
 // Reform Secret Detail
 module.exports.reformSecretDetail = (
@@ -340,66 +417,83 @@ module.exports.reformSecretDetail = (
     lastName: undefined,
     birthDate: undefined,
     departmentName: undefined,
-    email: undefined,
+    email: undefined
   };
 
   // EMPTY || NULL || UNDEFINED
-  if (firstName !== '' && firstName !== null && typeof firstName !== undefined) reform.firstName = firstName.replace(/\b[a-z]/g, function(f) {
-    return f.toUpperCase();
-  });
+  if (firstName !== "" && firstName !== null && typeof firstName !== undefined)
+    reform.firstName = firstName.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
 
-  if (lastName !== '' && lastName !== null && typeof lastName !== undefined) reform.lastName = lastName.replace(/\b[a-z]/g, function(f) {
-    return f.toUpperCase();
-  });
+  if (lastName !== "" && lastName !== null && typeof lastName !== undefined)
+    reform.lastName = lastName.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
 
-  if (birthDate !== '' && birthDate !== null && typeof birthDate !== undefined) reform.birthDate = moment(new Date(birthDate)).format('YYYY-MM-DD');
+  if (birthDate !== "" && birthDate !== null && typeof birthDate !== undefined)
+    reform.birthDate = moment(new Date(birthDate)).format("YYYY-MM-DD");
 
-  if (departmentName !== '' && departmentName !== null && typeof departmentName !== undefined) reform.departmentName = departmentName.replace(/\b[a-z]/g, function(f) {
-    return f.toUpperCase();
-  });
+  if (
+    departmentName !== "" &&
+    departmentName !== null &&
+    typeof departmentName !== undefined
+  )
+    reform.departmentName = departmentName.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
 
-  if (email !== '' && email !== null && typeof email !== undefined) reform.email = email;
+  if (email !== "" && email !== null && typeof email !== undefined)
+    reform.email = email;
 
   return reform;
 };
-
 
 // Reform Secret Detail
-module.exports.reformWarehouseProduct = (
-  firstName,
-  lastName,
-  birthDate,
-  departmentName,
-  email
-) => {
-  // Variable
-  let reform = {
-    firstName: undefined,
-    lastName: undefined,
-    birthDate: undefined,
-    departmentName: undefined,
-    email: undefined,
-  };
+// module.exports.reformWarehouseProduct = (
+//   firstName,
+//   lastName,
+//   birthDate,
+//   departmentName,
+//   email
+// ) => {
+//   // Variable
+//   let reform = {
+//     firstName: undefined,
+//     lastName: undefined,
+//     birthDate: undefined,
+//     departmentName: undefined,
+//     email: undefined
+//   };
 
-  // EMPTY || NULL || UNDEFINED
-  if (firstName !== '' && firstName !== null && typeof firstName !== undefined) reform.firstName = firstName.replace(/\b[a-z]/g, function(f) {
-    return f.toUpperCase();
-  });
+//   // EMPTY || NULL || UNDEFINED
+//   if (firstName !== "" && firstName !== null && typeof firstName !== undefined)
+//     reform.firstName = firstName.replace(/\b[a-z]/g, function(f) {
+//       return f.toUpperCase();
+//     });
 
-  if (lastName !== '' && lastName !== null && typeof lastName !== undefined) reform.lastName = lastName.replace(/\b[a-z]/g, function(f) {
-    return f.toUpperCase();
-  });
+//   if (lastName !== "" && lastName !== null && typeof lastName !== undefined)
+//     reform.lastName = lastName.replace(/\b[a-z]/g, function(f) {
+//       return f.toUpperCase();
+//     });
 
-  if (birthDate !== '' && birthDate !== null && typeof birthDate !== undefined) reform.birthDate = moment(new Date(birthDate)).format('YYYY-MM-DD');
+//   if (birthDate !== "" && birthDate !== null && typeof birthDate !== undefined)
+//     reform.birthDate = moment(new Date(birthDate)).format("YYYY-MM-DD");
 
-  if (departmentName !== '' && departmentName !== null && typeof departmentName !== undefined) reform.departmentName = departmentName.replace(/\b[a-z]/g, function(f) {
-    return f.toUpperCase();
-  });
+//   if (
+//     departmentName !== "" &&
+//     departmentName !== null &&
+//     typeof departmentName !== undefined
+//   )
+//     reform.departmentName = departmentName.replace(/\b[a-z]/g, function(f) {
+//       return f.toUpperCase();
+//     });
 
-  if (email !== '' && email !== null && typeof email !== undefined) reform.email = email;
+//   if (email !== "" && email !== null && typeof email !== undefined)
+//     reform.email = email;
 
-  return reform;
-};
+//   return reform;
+// };
 
 // Reform Warehouse Product
 module.exports.reformWarehouseProduct = (
@@ -416,20 +510,32 @@ module.exports.reformWarehouseProduct = (
 
   // EMPTY || NULL || UNDEFINED
   if (!isNaN(productName)) reform.productName = productName;
-  else if (productName !== '' && productName !== null && typeof productName !== undefined)
+  else if (
+    productName !== "" &&
+    productName !== null &&
+    typeof productName !== undefined
+  )
     reform.productName = productName.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
 
   if (!isNaN(brandName)) reform.brandName = brandName;
-  else if (brandName !== '' && brandName !== null && typeof brandName !== undefined)
+  else if (
+    brandName !== "" &&
+    brandName !== null &&
+    typeof brandName !== undefined
+  )
     reform.brandName = brandName.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
 
   if (!isNaN(description)) {
     reform.description = description;
-  } else if (description !== '' && description !== null && typeof description !== undefined) {
+  } else if (
+    description !== "" &&
+    description !== null &&
+    typeof description !== undefined
+  ) {
     reform.description = description.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
@@ -438,8 +544,36 @@ module.exports.reformWarehouseProduct = (
   return reform;
 };
 
+// Reform Discount Data
+module.exports.reformDiscountData = (
+  name,
+  startDate,
+  endDate,
+  startTime,
+  endTime
+) => {
+  // Variable
+  let reform = {
+    name: undefined,
+    startDate: undefined,
+    endDate: undefined,
+    startTime: undefined,
+    endTime: undefined
+  };
+
+  reform.name = name.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
+  reform.startDate = moment(new Date(startDate)).format("YYYY-MM-DD");
+  reform.endDate = moment(new Date(endDate)).format("YYYY-MM-DD");
+  // reform.startTime = moment(new Date(startTime)).format('YYYY-MM-DD');
+  // reform.endTime = moment(new Date(endTime)).format('YYYY-MM-DD');
+
+  return reform;
+};
+
 // Call User Partner Data
-module.exports.userPartnerData = async(id) => {
+module.exports.userPartnerData = async id => {
   try {
     // Read User Record By Id
     let userRecord = await userModel.readUserById("*", id, 1);
@@ -449,7 +583,11 @@ module.exports.userPartnerData = async(id) => {
     userRecord = JSON.parse(userRecord);
 
     // Read Partner Record
-    let partnerRecord = await partnerModel.readPartnerByMobile("*", userRecord[0].mobile, 1);
+    let partnerRecord = await partnerModel.readPartnerByMobile(
+      "*",
+      userRecord[0].mobile,
+      1
+    );
 
     // Parse
     partnerRecord = JSON.stringify(partnerRecord);
@@ -459,4 +597,4 @@ module.exports.userPartnerData = async(id) => {
   } catch (error) {
     return Promise.reject(error);
   }
-}
+};

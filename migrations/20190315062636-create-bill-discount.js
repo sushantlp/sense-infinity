@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('bill_discounts', {
+    return queryInterface.createTable("bill_discounts", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,23 +11,27 @@ module.exports = {
       bill_discount_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        unique: 'actions_unique'
+        unique: "actions_unique"
       },
       store_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'partner_stores',
-          key: 'store_id'
+          model: "partner_stores",
+          key: "store_id"
         }
       },
       discount_base_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'discount_bases',
-          key: 'discount_base_id'
+          model: "discount_bases",
+          key: "discount_base_id"
         }
+      },
+      name: {
+        type: Sequelize.STRING,
+        allowNull: false
       },
       start_date: {
         type: Sequelize.STRING,
@@ -78,6 +82,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('bill_discounts');
+    return queryInterface.dropTable("bill_discounts");
   }
 };

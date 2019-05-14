@@ -247,27 +247,28 @@ module.exports.requestKeepDiscount = (req, res) => {
       req.body.product_discounts
     );
 
-    // if (!validate.success) return res.status(400).send(validate.msg);
+    if (!validate.success) return res.status(400).send(validate.msg);
 
-    // // Logic Keep Staple Master Product
-    // return posWarehoseController
-    //   .logicKeepStapleProduct(res.userKey, req.body.products)
-    //   .then(response => {
-    //     return res
-    //       .status(200)
-    //       .send(
-    //         shareController.createJsonObject(
-    //           response.data,
-    //           response.msg,
-    //           "/api/v1/warehouses/staple",
-    //           200,
-    //           response.success, {}
-    //         )
-    //       );
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //     return res.status(500).send("Oops our bad!!!");
-    //   });
+    // Logic Keep Warehouse Discount
+    return posWarehoseController
+      .logicKeepDiscount(req.body.bill_discounts, req.body.product_discounts)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              "/api/v1/warehouses/discounts",
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
   } else return res.status(400).send("Not a good api call");
 };

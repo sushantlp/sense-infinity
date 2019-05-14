@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('product_discounts', {
+    return queryInterface.createTable("product_discounts", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,25 +11,25 @@ module.exports = {
       product_discount_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        unique: 'actions_unique'
+        unique: "actions_unique"
       },
       discount_base_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'discount_bases',
-          key: 'discount_base_id'
+          model: "discount_bases",
+          key: "discount_base_id"
         }
       },
       partner_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'partners',
-          key: 'partner_id'
+          model: "partners",
+          key: "partner_id"
         }
       },
-      product_discount_name: {
+      name: {
         type: Sequelize.STRING,
         allowNull: false
       },
@@ -66,6 +66,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('product_discounts');
+    return queryInterface.dropTable("product_discounts");
   }
 };
