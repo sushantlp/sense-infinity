@@ -109,6 +109,30 @@ module.exports.keepProductDiscount = async (
   }
 };
 
+// Update Product Discount
+module.exports.updateProductDiscount = async (status, id) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query =
+      "UPDATE `product_discounts` SET `status` = ?, `updated_at` = ? WHERE `id` = ?";
+
+    // Query Database
+    const row = await connection.query(query, [status, now, id]);
+
+    connection.release();
+
+    return row;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 /**
  * End Database Read and Write
  */
