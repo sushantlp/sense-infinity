@@ -38,6 +38,9 @@ const storeSyncModel = require("../models/store_product_sync");
 const userEmployeeConnectModel = require("../models/warehouse_user_employee_connect");
 const billModel = require("../models/bill_discount");
 const productDiscountModel = require("../models/product_discount");
+const discountTrackModel = require("../models/product_discount_track");
+const freeDiscountModel = require("../models/free_product_offer");
+const valueDiscountModel = require("../models/value_product_offer");
 
 // Logic Get Warehouse Static Data
 module.exports.logicWarehouseStaticData = async (version, id) => {
@@ -1560,13 +1563,69 @@ const productJsonLogic = async (id, productJson) => {
           product.status
         );
 
-        freeProductJson(lastKey[0].insertId, product.free_products);
-        valueProductJson(lastKey[0].insertId, product.value_products);
+        freeProductJson(lastKey[0].insertId, product.free_products, true);
+        valueProductJson(lastKey[0].insertId, product.value_products, true);
+        productDiscountTrack(lastKey[0].insertId, storeRecord, true);
       } else {
-        billModel.updateBillDiscount(bill.status, 1, billRecord[0].id);
+        productDiscountModel.updateProductDiscount(
+          product.status,
+          1,
+          productDiscountRecord[0].id
+        );
+
+        freeDiscountModel.updateFreeOffer(
+          product.status,
+          productDiscountRecord[0].id
+        );
+
+        valueDiscountModel.updateValueOffer(
+          product.status,
+          productDiscountRecord[0].id
+        );
+
+        productDiscountTrack(lastKey[0].insertId, storeRecord, false);
       }
     });
   } catch (error) {
     return Promise.reject(error);
   }
+};
+
+// Logic Free Product Json
+const freeProductJson = (lastKey, freeJson, bool) => {
+  return freeJson.map(async (free, index) => {
+    freeDiscountModel.keepFreeOffer(
+      free.id,
+      lastKey,
+      free.buy_product,
+      free.buy_quantiy,
+      free.free_product,
+      free.free_quantity,
+      free.status
+    );
+  });
+};
+
+// Logic Value Product Json
+const valueProductJson = (lastKey, valueJson, bool) => {
+  return valueJson.map(async (value, index) => {
+    valueDiscountModel.keepValueOffer(
+      value.id,
+      lastKey,
+      value.barcode,
+      value.minimum_quantiy,
+      value.offer_value,
+      value.status
+    );
+  });
+};
+
+// Logic Product Discount Track Json
+const productDiscountTrack = (lastKey, storeJson, bool) => {
+  return storeJson.map(async (store, index) => {
+    if (bool)
+      discountTrackModel.keepProductDiscountTrack(store.store_id, lastKey, 1);
+    else
+      discountTrackModel.updateProductDiscountTrack(1, lastKey, store.store_id);
+  });
 };

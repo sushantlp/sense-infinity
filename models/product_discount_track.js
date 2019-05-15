@@ -123,7 +123,11 @@ module.exports.keepProductDiscountTrack = async (
 };
 
 // Update Product Discount Track
-module.exports.updateProductDiscountTrack = async (trackStatus, id) => {
+module.exports.updateProductDiscountTrack = async (
+  trackStatus,
+  id,
+  storeId
+) => {
   try {
     // Get Pool Object
     const pool = constants.createMysqlConnection();
@@ -133,10 +137,10 @@ module.exports.updateProductDiscountTrack = async (trackStatus, id) => {
 
     // Query
     const query =
-      "UPDATE `product_discount_tracks` SET `track_status` = ?, `updated_at` = ? WHERE `product_discount_id` = ?";
+      "UPDATE `product_discount_tracks` SET `track_status` = ?, `updated_at` = ? WHERE `product_discount_id` = ? AND `store_id` = ?";
 
     // Query Database
-    const row = await connection.query(query, [trackStatus, now, id]);
+    const row = await connection.query(query, [trackStatus, now, id, storeId]);
 
     connection.release();
 
