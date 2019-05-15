@@ -70,7 +70,6 @@ module.exports.keepProductDiscount = async (
   discountId,
   baseId,
   discountName,
-  name,
   startDate,
   endDate,
   startTime,

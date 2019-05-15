@@ -251,7 +251,11 @@ module.exports.requestKeepDiscount = (req, res) => {
 
     // Logic Keep Warehouse Discount
     return posWarehoseController
-      .logicKeepDiscount(req.body.bill_discounts, req.body.product_discounts)
+      .logicKeepDiscount(
+        res.userKey,
+        req.body.bill_discounts,
+        req.body.product_discounts
+      )
       .then(response => {
         return res
           .status(200)

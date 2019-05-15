@@ -37,6 +37,7 @@ const partnerSyncModel = require("../models/partner_product_sync");
 const storeSyncModel = require("../models/store_product_sync");
 const userEmployeeConnectModel = require("../models/warehouse_user_employee_connect");
 const billModel = require("../models/bill_discount");
+const productDiscountModel = require("../models/product_discount");
 
 // Logic Get Warehouse Static Data
 module.exports.logicWarehouseStaticData = async (version, id) => {
@@ -1432,13 +1433,13 @@ const jsonKeepStapleProduct = async (products, partners) => {
 };
 
 // Logic Keep Warehouse Discount
-module.exports.logicKeepDiscount = async (billJson, productJson) => {
+module.exports.logicKeepDiscount = async (id, billJson, productJson) => {
   try {
     // Bill Json Logic
     billJsonLogic(billJson);
 
     // Product Json Logic
-    productJsonLogic(productJson);
+    productJsonLogic(id, productJson);
 
     return {
       success: true,
@@ -1497,8 +1498,35 @@ const billJsonLogic = async billJson => {
 };
 
 // Product Json Logic
-const productJsonLogic = async productJson => {
+const productJsonLogic = async (id, productJson) => {
   try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner"
+      };
+
+    let storeRecord = await partnerStoreModel.readStoreRecord(
+      "store_id",
+      partnerRecord[0].partner_id,
+      1
+    );
+
+    // Parse
+    storeRecord = JSON.stringify(storeRecord);
+    storeRecord = JSON.parse(storeRecord);
+
+    if (storeRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Empty warehouse stores"
+      };
+
     return productJson.map(async (product, index) => {
       //  Reform Discount Data
       const reform = shareController.reformDiscountData(
@@ -1509,33 +1537,34 @@ const productJsonLogic = async productJson => {
         product.end_time
       );
 
-      let billRecord = await billModel.readBillDiscountById(
+      let productDiscountRecord = await productDiscountModel.readProductDiscount(
         "id",
-        bill.id,
-        bill.branch_id
+        product.id,
+        partnerRecord[0].partner_id
       );
 
       // Parse
-      billRecord = JSON.stringify(billRecord);
-      billRecord = JSON.parse(billRecord);
+      productDiscountRecord = JSON.stringify(productDiscountRecord);
+      productDiscountRecord = JSON.parse(productDiscountRecord);
 
-      if (billRecord.length === 0)
-        billModel.keepBillDiscount(
-          bill.id,
-          bill.branch_id,
-          bill.base_id,
+      if (productDiscountRecord.length === 0) {
+        const lastKey = await productDiscountModel.keepProductDiscount(
+          partnerRecord[0].partner_id,
+          product.id,
+          product.base_id,
           reform.name,
           reform.startDate,
           reform.endDate,
-          bill.start_time,
-          bill.end_time,
-          bill.minimum_amount,
-          bill.maximum_amount,
-          bill.offer_value,
-          bill.status,
-          1
+          product.start_time,
+          product.end_time,
+          product.status
         );
-      else billModel.updateBillDiscount(bill.status, 1, billRecord[0].id);
+
+        freeProductJson(lastKey[0].insertId, product.free_products);
+        valueProductJson(lastKey[0].insertId, product.value_products);
+      } else {
+        billModel.updateBillDiscount(bill.status, 1, billRecord[0].id);
+      }
     });
   } catch (error) {
     return Promise.reject(error);
