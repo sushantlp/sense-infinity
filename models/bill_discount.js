@@ -41,7 +41,7 @@ const now = moment()
  * Start Database Read and Write
  */
 
-// Read Bill Discount Specific Store
+// Read Bill Discount Specific Store [store_id,track_status]
 module.exports.readBillDiscount = async (select, storeId, trackStatus) => {
   try {
     // Get Pool Object
@@ -159,6 +159,30 @@ module.exports.updateBillDiscount = async (status, trackStatus, id) => {
 
     // Query Database
     const row = await connection.query(query, [status, trackStatus, now, id]);
+
+    connection.release();
+
+    return row;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Update Bill Discount Track Status By [store_id]
+module.exports.updateBillTrack = async (trackStatus, storeId) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query =
+      "UPDATE `bill_discounts` SET `track_status` = ?, `updated_at` = ? WHERE `store_id` = ?";
+
+    // Query Database
+    const row = await connection.query(query, [trackStatus, now, storeId]);
 
     connection.release();
 

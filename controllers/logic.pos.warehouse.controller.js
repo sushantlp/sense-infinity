@@ -36,7 +36,7 @@ const stapleSyncModel = require("../models/staple_product_sync");
 const partnerSyncModel = require("../models/partner_product_sync");
 const storeSyncModel = require("../models/store_product_sync");
 const userEmployeeConnectModel = require("../models/warehouse_user_employee_connect");
-const billModel = require("../models/bill_discount");
+const billDiscountModel = require("../models/bill_discount");
 const productDiscountModel = require("../models/product_discount");
 const discountTrackModel = require("../models/product_discount_track");
 const freeDiscountModel = require("../models/free_product_offer");
@@ -1495,7 +1495,7 @@ const billJsonLogic = async (partnerRecord, billJson) => {
           msg: "Empty warehouse stores"
         };
 
-      let billRecord = await billModel.readBillDiscountById(
+      let billRecord = await billDiscountModel.readBillDiscountById(
         "id",
         bill.id,
         storeRecord[0].store_id
@@ -1506,7 +1506,7 @@ const billJsonLogic = async (partnerRecord, billJson) => {
       billRecord = JSON.parse(billRecord);
 
       if (billRecord.length === 0)
-        billModel.keepBillDiscount(
+        billDiscountModel.keepBillDiscount(
           bill.id,
           storeRecord[0].store_id,
           bill.base_id,
@@ -1521,7 +1521,8 @@ const billJsonLogic = async (partnerRecord, billJson) => {
           bill.status,
           1
         );
-      else billModel.updateBillDiscount(bill.status, 1, billRecord[0].id);
+      else
+        billDiscountModel.updateBillDiscount(bill.status, 1, billRecord[0].id);
     });
   } catch (error) {
     return Promise.reject(error);

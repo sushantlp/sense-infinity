@@ -67,7 +67,7 @@ routes.put(
 routes.get(
   "/discounts/:storeCode([0-9]+)",
   apiKeyAuth,
-  PosStoreApiController.requestStoreProduct
+  PosStoreApiController.requestStoreDiscount
 );
 
 module.exports = routes;
