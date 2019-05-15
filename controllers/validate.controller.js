@@ -1338,8 +1338,6 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
           msg: "Product json value products and free products json empty"
         };
 
-      console.log(productJson[i].value_products.length);
-      console.log(productJson[i].free_products.length);
       if (
         productJson[i].value_products.length > 0 &&
         productJson[i].free_products.length > 0

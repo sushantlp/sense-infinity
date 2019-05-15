@@ -1438,11 +1438,21 @@ const jsonKeepStapleProduct = async (products, partners) => {
 // Logic Keep Warehouse Discount
 module.exports.logicKeepDiscount = async (id, billJson, productJson) => {
   try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner"
+      };
+
     // Bill Json Logic
-    billJsonLogic(billJson);
+    billJsonLogic(partnerRecord, billJson);
 
     // Product Json Logic
-    productJsonLogic(id, productJson);
+    productJsonLogic(partnerRecord, productJson);
 
     return {
       success: true,
@@ -1455,7 +1465,7 @@ module.exports.logicKeepDiscount = async (id, billJson, productJson) => {
 };
 
 // Bill Json Logic
-const billJsonLogic = async billJson => {
+const billJsonLogic = async (partnerRecord, billJson) => {
   try {
     return billJson.map(async (bill, index) => {
       //  Reform Discount Data
@@ -1467,10 +1477,28 @@ const billJsonLogic = async billJson => {
         bill.end_time
       );
 
+      let storeRecord = await partnerStoreModel.readStoreByCode(
+        "store_id",
+        bill.branch_id,
+        partnerRecord[0].partner_id,
+        1
+      );
+
+      // Parse
+      storeRecord = JSON.stringify(storeRecord);
+      storeRecord = JSON.parse(storeRecord);
+
+      if (storeRecord.length === 0)
+        return {
+          success: false,
+          data: [],
+          msg: "Empty warehouse stores"
+        };
+
       let billRecord = await billModel.readBillDiscountById(
         "id",
         bill.id,
-        bill.branch_id
+        storeRecord[0].store_id
       );
 
       // Parse
@@ -1480,7 +1508,7 @@ const billJsonLogic = async billJson => {
       if (billRecord.length === 0)
         billModel.keepBillDiscount(
           bill.id,
-          bill.branch_id,
+          storeRecord[0].store_id,
           bill.base_id,
           reform.name,
           reform.startDate,
@@ -1501,18 +1529,8 @@ const billJsonLogic = async billJson => {
 };
 
 // Product Json Logic
-const productJsonLogic = async (id, productJson) => {
+const productJsonLogic = async (partnerRecord, productJson) => {
   try {
-    // Call User Partner Data
-    const partnerRecord = await shareController.userPartnerData(id);
-
-    if (partnerRecord.length === 0)
-      return {
-        success: false,
-        data: [],
-        msg: "Unknown partner"
-      };
-
     let storeRecord = await partnerStoreModel.readStoreRecord(
       "store_id",
       partnerRecord[0].partner_id,
@@ -1583,7 +1601,7 @@ const productJsonLogic = async (id, productJson) => {
           productDiscountRecord[0].id
         );
 
-        productDiscountTrack(lastKey[0].insertId, storeRecord, false);
+        productDiscountTrack(productDiscountRecord[0].id, storeRecord, false);
       }
     });
   } catch (error) {

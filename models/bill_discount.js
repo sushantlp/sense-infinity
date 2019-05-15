@@ -115,7 +115,7 @@ module.exports.keepBillDiscount = async (
 
     // Query
     const query =
-      "INSERT INTO `bill_discounts` (`bill_discount_id`, `store_id`, `discount_base_id`, `name`, `start_date`, `end_date`, `start_time`, `end_time`, `min_amount`, `max_discount_amount`, `bill_offer_value`, `status`, `track_status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO `bill_discounts` (`bill_discount_id`, `store_id`, `discount_base_id`, `name`, `start_date`, `end_date`, `start_time`, `end_time`, `min_amount`, `max_discount_amount`, `bill_offer_value`, `status`, `track_status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     // Query Database
     const row = await connection.query(query, [
