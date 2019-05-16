@@ -473,9 +473,16 @@ const readDiscount = async (partnerRecord, storeRecord) => {
       )
     ]);
 
+    // Change Track Status
     billDiscountModel.updateBillTrack(0, storeRecord[0].store_id);
 
     let id = parallel[1].map(discount => {
+      // Change Track Status
+      discountTrackModel.updateProductDiscountTrack(
+        0,
+        discount.product_discount_id,
+        storeRecord[0].store_id
+      );
       return discount.product_discount_id;
     });
 
@@ -499,7 +506,11 @@ const readDiscount = async (partnerRecord, storeRecord) => {
           bill_discounts: [],
           product_discounts: []
         },
-        msg: "Successful"
+        msg: "Successful",
+        count: {
+          bill_discount_count: 0,
+          product_discount_count: 0
+        }
       };
     } else if (discountRecord.length !== 0 && parallel[0].length !== 0) {
       const json = await createDiscountJson(discountRecord);
@@ -509,7 +520,11 @@ const readDiscount = async (partnerRecord, storeRecord) => {
           bill_discounts: parallel[0],
           product_discounts: json
         },
-        msg: "Successful"
+        msg: "Successful",
+        count: {
+          bill_discount_count: parallel[0].length,
+          product_discount_count: json.length
+        }
       };
     } else if (parallel[0].length !== 0) {
       return {
@@ -518,7 +533,11 @@ const readDiscount = async (partnerRecord, storeRecord) => {
           bill_discounts: parallel[0],
           product_discounts: []
         },
-        msg: "Successful"
+        msg: "Successful",
+        count: {
+          bill_discount_count: parallel[0].length,
+          product_discount_count: 0
+        }
       };
     } else if (discountRecord.length !== 0) {
       const json = await createDiscountJson(discountRecord);
@@ -528,7 +547,11 @@ const readDiscount = async (partnerRecord, storeRecord) => {
           bill_discounts: [],
           product_discounts: json
         },
-        msg: "Successful"
+        msg: "Successful",
+        count: {
+          bill_discount_count: 0,
+          product_discount_count: json.length
+        }
       };
     }
   } catch (error) {
@@ -538,30 +561,45 @@ const readDiscount = async (partnerRecord, storeRecord) => {
 
 // Create Discount Json
 const createDiscountJson = async json => {
-  let bunch = json.map(async (discount, index) => {
-    let obj = {};
-    obj.key_id = discount.id;
-    obj.discount_base_key = discount.discount_base_id;
-    obj.discount_name = discount.name;
-    obj.start_date = discount.start_date;
-    obj.end_date = discount.end_date;
-    obj.start_time = discount.start_time;
-    obj.end_time = discount.end_time;
-    obj.status = discount.status;
+  let bunch = json
+    .filter(
+      discount =>
+        discount.discount_base_id === 5 ||
+        discount.discount_base_id === 3 ||
+        discount.discount_base_id === 4
+    )
+    .map(async (discount, index) => {
+      let obj = {};
+      obj.key_id = discount.id;
+      obj.discount_base_key = discount.discount_base_id;
+      obj.discount_name = discount.name;
+      obj.start_date = discount.start_date;
+      obj.end_date = discount.end_date;
+      obj.start_time = discount.start_time;
+      obj.end_time = discount.end_time;
+      obj.status = discount.status;
 
-    if (discount.discount_base_id === 5)
-      obj.free_products = await freeDiscountModel.readFreeOffer(
-        "id AS key_id, buy_product_barcode AS buy_barcode, buy_product_quantity AS buy_quantity, free_product_barcode AS free_barcode, free_product_quantity AS free_quantity, status",
-        discount.id
-      );
-    else
-      obj.value_products = await valueDiscountModel.readValueOffer(
-        "id AS key_id, product_barcode AS barcode, buy_product_quantity AS buy_quantity, offer_value AS value, status",
-        discount.id
-      );
+      if (discount.discount_base_id === 5) {
+        obj.free_products = await freeDiscountModel.readFreeOffer(
+          "id AS key_id, buy_product_barcode AS buy_barcode, buy_product_quantity AS buy_quantity, free_product_barcode AS free_barcode, free_product_quantity AS free_quantity, status",
+          discount.id
+        );
 
-    return obj;
-  });
+        obj.value_products = [];
+      } else if (
+        discount.discount_base_id === 3 ||
+        discount.discount_base_id === 4
+      ) {
+        obj.value_products = await valueDiscountModel.readValueOffer(
+          "id AS key_id, product_barcode AS barcode, buy_product_quantity AS buy_quantity, offer_value AS value, status",
+          discount.id
+        );
+
+        obj.free_products = [];
+      }
+
+      return obj;
+    });
 
   return await Promise.all(bunch);
 };

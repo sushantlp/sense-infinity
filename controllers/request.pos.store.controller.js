@@ -203,7 +203,7 @@ module.exports.requestStoreDiscount = (req, res) => {
               `/api/v1/pos/discounts/${req.params.storeCode}`,
               200,
               response.success,
-              {}
+              response.count
             )
           );
       })
