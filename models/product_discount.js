@@ -38,7 +38,7 @@ const now = moment()
  * Start Database Read and Write
  */
 
-// Read Product Discount
+// Read Product Discount By [product_discount_id, partner_id]
 module.exports.readProductDiscount = async (select, discountId, partnerId) => {
   try {
     // Get Pool Object

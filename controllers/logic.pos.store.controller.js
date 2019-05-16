@@ -12,7 +12,10 @@ const warehouseUserModel = require("../models/warehouse_user_list");
 const storeProductSyncModel = require("../models/store_product_sync");
 const partnerProductSyncModel = require("../models/partner_product_sync");
 const billDiscountModel = require("../models/bill_discount");
+const productDiscountModel = require("../models/product_discount");
 const discountTrackModel = require("../models/product_discount_track");
+const freeDiscountModel = require("../models/free_product_offer");
+const valueDiscountModel = require("../models/value_product_offer");
 
 // Logic Warehouse Store List
 module.exports.logicWarehouseStoreList = async id => {
@@ -448,18 +451,18 @@ module.exports.logicStoreDiscount = async (id, code) => {
         msg: "Unknown store"
       };
 
-    await logicGetDiscount(partnerRecord, storeRecord);
+    return await readDiscount(partnerRecord, storeRecord);
   } catch (error) {
     return Promise.reject(error);
   }
 };
 
-// Logic Get Store Discount
-module.exports.logicGetDiscount = async (partnerRecord, storeRecord) => {
+// Read Store Discount
+const readDiscount = async (partnerRecord, storeRecord) => {
   try {
     const parallel = await Promise.all([
       billDiscountModel.readBillDiscount(
-        "id AS key, discount_base_id AS discount_base_key, name AS discount_name, start_date, end_date, start_time, end_time, min_amount AS minimum_amount, max_discount_amount AS Maximum_amount, bill_offer_value AS value, status",
+        "id AS key_id, discount_base_id AS discount_base_key, name AS discount_name, start_date, end_date, start_time, end_time, min_amount AS minimum_amount, max_discount_amount AS Maximum_amount, bill_offer_value AS value, status",
         storeRecord[0].store_id,
         1
       ),
@@ -471,7 +474,50 @@ module.exports.logicGetDiscount = async (partnerRecord, storeRecord) => {
     ]);
 
     billDiscountModel.updateBillTrack(0, storeRecord[0].store_id);
+
+    let arr = [];
+    const promises = parallel[1].map(async (discount, index) => {
+      let obj = {};
+      let discountData = await productDiscountModel.readProductDiscount(
+        "id AS key_id, discount_base_id AS discount_base_key, name AS discount_name, start_date, end_date, start_time, end_time, status",
+        discount.product_discount_id,
+        partnerRecord[0].partner_id
+      );
+
+      // Parse
+      discountData = JSON.stringify(discountData);
+      discountData = JSON.parse(discountData);
+
+      const parallel = await Promise.all([
+        freeProductJson(discountData),
+        valueProductJson(discountData)
+      ]);
+
+      console.log(parallel);
+    });
   } catch (error) {
     return Promise.reject(error);
   }
+};
+
+const freeProductJson = async json => {
+  const free = json.map(async (discount, index) => {
+    return await freeDiscountModel.readFreeOffer(
+      "id AS key_id, buy_product_barcode AS buy_barcode, buy_product_quantity AS buy_quantity, free_product_barcode AS free_barcode, free_product_quantity AS free_quantity, status",
+      discount.key_id
+    );
+  });
+
+  return await Promise.all(free);
+};
+
+const valueProductJson = async json => {
+  const value = json.map(async (discount, index) => {
+    return await valueDiscountModel.readValueOffer(
+      "id AS key_id, product_barcode AS barcode, buy_product_quantity AS buy_quantity, offer_value AS value, status",
+      discount.key_id
+    );
+  });
+
+  return await Promise.all(value);
 };

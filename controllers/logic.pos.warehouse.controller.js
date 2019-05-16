@@ -1612,7 +1612,7 @@ const productJsonLogic = async (partnerRecord, productJson) => {
 
 // Logic Free Product Json
 const freeProductJson = (lastKey, freeJson, bool) => {
-  return freeJson.map(async (free, index) => {
+  return freeJson.map((free, index) => {
     freeDiscountModel.keepFreeOffer(
       free.id,
       lastKey,
@@ -1627,7 +1627,7 @@ const freeProductJson = (lastKey, freeJson, bool) => {
 
 // Logic Value Product Json
 const valueProductJson = (lastKey, valueJson, bool) => {
-  return valueJson.map(async (value, index) => {
+  return valueJson.map((value, index) => {
     valueDiscountModel.keepValueOffer(
       value.id,
       lastKey,
@@ -1641,7 +1641,7 @@ const valueProductJson = (lastKey, valueJson, bool) => {
 
 // Logic Product Discount Track Json
 const productDiscountTrack = (lastKey, storeJson, bool) => {
-  return storeJson.map(async (store, index) => {
+  return storeJson.map((store, index) => {
     if (bool)
       discountTrackModel.keepProductDiscountTrack(store.store_id, lastKey, 1);
     else
