@@ -81,7 +81,7 @@ module.exports.readProductDiscountArray = async (
     const query = `SELECT ${select} FROM product_discounts WHERE id IN (${questionMarks})`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [idArray]);
+    const [rows, fields] = await connection.query(query, idArray);
 
     connection.release();
 

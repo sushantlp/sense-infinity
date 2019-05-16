@@ -482,59 +482,86 @@ const readDiscount = async (partnerRecord, storeRecord) => {
     // then, create a dynamic list of comma-separated question marks
     const marks = new Array(id.length).fill("?").join(",");
 
-    let discountData = await productDiscountModel.readProductDiscountArray(
+    let discountRecord = await productDiscountModel.readProductDiscountArray(
       "id, discount_base_id, name, start_date, end_date, start_time, end_time, status",
       marks,
       id
     );
 
     // Parse
-    discountData = JSON.stringify(discountData);
-    discountData = JSON.parse(discountData);
+    discountRecord = JSON.stringify(discountRecord);
+    discountRecord = JSON.parse(discountRecord);
 
-    // let arr = [];
-    // const promises = parallel[1].map(async (discount, index) => {
-    //   let obj = {};
-    //   let discountData = await productDiscountModel.readProductDiscount(
-    //     "id AS key_id, discount_base_id AS discount_base_key, name AS discount_name, start_date, end_date, start_time, end_time, status",
-    //     discount.product_discount_id,
-    //     partnerRecord[0].partner_id
-    //   );
-
-    //   // Parse
-    //   discountData = JSON.stringify(discountData);
-    //   discountData = JSON.parse(discountData);
-
-    //   const parallel = await Promise.all([
-    //     freeProductJson(discountData),
-    //     valueProductJson(discountData)
-    //   ]);
-
-    //   console.log(parallel);
-    // });
+    if (discountRecord.length === 0 && parallel[0].length === 0) {
+      return {
+        success: true,
+        data: {
+          bill_discounts: [],
+          product_discounts: []
+        },
+        msg: "Successful"
+      };
+    } else if (discountRecord.length !== 0 && parallel[0].length !== 0) {
+      const json = await createDiscountJson(discountRecord);
+      return {
+        success: true,
+        data: {
+          bill_discounts: parallel[0],
+          product_discounts: json
+        },
+        msg: "Successful"
+      };
+    } else if (parallel[0].length !== 0) {
+      return {
+        success: true,
+        data: {
+          bill_discounts: parallel[0],
+          product_discounts: []
+        },
+        msg: "Successful"
+      };
+    } else if (discountRecord.length !== 0) {
+      const json = await createDiscountJson(discountRecord);
+      return {
+        success: true,
+        data: {
+          bill_discounts: [],
+          product_discounts: json
+        },
+        msg: "Successful"
+      };
+    }
   } catch (error) {
     return Promise.reject(error);
   }
 };
 
-const freeProductJson = async json => {
-  const free = json.map(async (discount, index) => {
-    return await freeDiscountModel.readFreeOffer(
-      "id AS key_id, buy_product_barcode AS buy_barcode, buy_product_quantity AS buy_quantity, free_product_barcode AS free_barcode, free_product_quantity AS free_quantity, status",
-      discount.key_id
-    );
+// Create Discount Json
+const createDiscountJson = async json => {
+  let bunch = json.map(async (discount, index) => {
+    let obj = {};
+    obj.key_id = discount.id;
+    obj.discount_base_key = discount.discount_base_id;
+    obj.discount_name = discount.name;
+    obj.start_date = discount.start_date;
+    obj.end_date = discount.end_date;
+    obj.start_time = discount.start_time;
+    obj.end_time = discount.end_time;
+    obj.status = discount.status;
+
+    if (discount.discount_base_id === 5)
+      obj.free_products = await freeDiscountModel.readFreeOffer(
+        "id AS key_id, buy_product_barcode AS buy_barcode, buy_product_quantity AS buy_quantity, free_product_barcode AS free_barcode, free_product_quantity AS free_quantity, status",
+        discount.id
+      );
+    else
+      obj.value_products = await valueDiscountModel.readValueOffer(
+        "id AS key_id, product_barcode AS barcode, buy_product_quantity AS buy_quantity, offer_value AS value, status",
+        discount.id
+      );
+
+    return obj;
   });
 
-  return await Promise.all(free);
-};
-
-const valueProductJson = async json => {
-  const value = json.map(async (discount, index) => {
-    return await valueDiscountModel.readValueOffer(
-      "id AS key_id, product_barcode AS barcode, buy_product_quantity AS buy_quantity, offer_value AS value, status",
-      discount.key_id
-    );
-  });
-
-  return await Promise.all(value);
+  return await Promise.all(bunch);
 };
