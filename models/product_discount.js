@@ -64,6 +64,33 @@ module.exports.readProductDiscount = async (select, discountId, partnerId) => {
   }
 };
 
+// Read Product Discount By Array [id]
+module.exports.readProductDiscountArray = async (
+  select,
+  questionMarks,
+  idArray
+) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM product_discounts WHERE id IN (${questionMarks})`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [idArray]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 // Keep Product Discount
 module.exports.keepProductDiscount = async (
   partnerId,

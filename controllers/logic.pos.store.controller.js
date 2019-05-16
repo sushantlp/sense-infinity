@@ -475,26 +475,43 @@ const readDiscount = async (partnerRecord, storeRecord) => {
 
     billDiscountModel.updateBillTrack(0, storeRecord[0].store_id);
 
-    let arr = [];
-    const promises = parallel[1].map(async (discount, index) => {
-      let obj = {};
-      let discountData = await productDiscountModel.readProductDiscount(
-        "id AS key_id, discount_base_id AS discount_base_key, name AS discount_name, start_date, end_date, start_time, end_time, status",
-        discount.product_discount_id,
-        partnerRecord[0].partner_id
-      );
-
-      // Parse
-      discountData = JSON.stringify(discountData);
-      discountData = JSON.parse(discountData);
-
-      const parallel = await Promise.all([
-        freeProductJson(discountData),
-        valueProductJson(discountData)
-      ]);
-
-      console.log(parallel);
+    let id = parallel[1].map(discount => {
+      return discount.product_discount_id;
     });
+
+    // then, create a dynamic list of comma-separated question marks
+    const marks = new Array(id.length).fill("?").join(",");
+
+    let discountData = await productDiscountModel.readProductDiscountArray(
+      "id, discount_base_id, name, start_date, end_date, start_time, end_time, status",
+      marks,
+      id
+    );
+
+    // Parse
+    discountData = JSON.stringify(discountData);
+    discountData = JSON.parse(discountData);
+
+    // let arr = [];
+    // const promises = parallel[1].map(async (discount, index) => {
+    //   let obj = {};
+    //   let discountData = await productDiscountModel.readProductDiscount(
+    //     "id AS key_id, discount_base_id AS discount_base_key, name AS discount_name, start_date, end_date, start_time, end_time, status",
+    //     discount.product_discount_id,
+    //     partnerRecord[0].partner_id
+    //   );
+
+    //   // Parse
+    //   discountData = JSON.stringify(discountData);
+    //   discountData = JSON.parse(discountData);
+
+    //   const parallel = await Promise.all([
+    //     freeProductJson(discountData),
+    //     valueProductJson(discountData)
+    //   ]);
+
+    //   console.log(parallel);
+    // });
   } catch (error) {
     return Promise.reject(error);
   }
