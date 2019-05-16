@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('invoices', {
+    return queryInterface.createTable("invoices", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,30 +11,26 @@ module.exports = {
       invoice_no: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        unique: 'actions_unique'
+        unique: "actions_unique"
       },
       store_counter_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'store_counters',
-          key: 'id'
-        }
+        allowNull: false
       },
       warehouse_user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'warehouse_user_lists',
-          key: 'id'
+          model: "warehouse_user_lists",
+          key: "id"
         }
       },
       store_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'partner_stores',
-          key: 'store_id'
+          model: "partner_stores",
+          key: "store_id"
         }
       },
       customer_name: {
@@ -42,7 +38,7 @@ module.exports = {
         allowNull: true
       },
       customer_mobile: {
-        type: Sequelize.STRING,
+        type: Sequelize.BIGINT,
         allowNull: false
       },
       membership_code: {
@@ -65,24 +61,28 @@ module.exports = {
         type: Sequelize.FLOAT,
         defaultValue: 0
       },
+      invoice_sodexo_amount: {
+        type: Sequelize.FLOAT,
+        defaultValue: 0
+      },
       invoice_total_amount: {
         type: Sequelize.FLOAT,
         defaultValue: 0
       },
       gstin_name: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       gstin_number: {
         type: Sequelize.STRING,
         allowNull: true
       },
-      return_status: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0
-      },
       round_off_amount: {
         type: Sequelize.FLOAT,
+        defaultValue: 0
+      },
+      return_status: {
+        type: Sequelize.BOOLEAN,
         defaultValue: 0
       },
       status: {
@@ -102,6 +102,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('invoices');
+    return queryInterface.dropTable("invoices");
   }
 };

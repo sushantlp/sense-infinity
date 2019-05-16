@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('invoice_products', {
-      invoice_product_id: {
+    return queryInterface.createTable("invoice_products", {
+      id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
@@ -12,8 +12,8 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'invoices',
-          key: 'id'
+          model: "invoices",
+          key: "id"
         }
       },
       product_name: {
@@ -29,7 +29,7 @@ module.exports = {
         allowNull: false
       },
       product_quantity: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.INTEGER,
         defaultValue: 0
       },
       product_sgst: {
@@ -81,6 +81,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('invoice_products');
+    return queryInterface.dropTable("invoice_products");
   }
 };

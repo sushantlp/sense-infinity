@@ -462,7 +462,7 @@ const readDiscount = async (partnerRecord, storeRecord) => {
   try {
     const parallel = await Promise.all([
       billDiscountModel.readBillDiscount(
-        "id AS key_id, discount_base_id AS discount_base_key, name AS discount_name, start_date, end_date, start_time, end_time, min_amount AS minimum_amount, max_discount_amount AS Maximum_amount, bill_offer_value AS value, status",
+        "id AS key_id, discount_base_id AS discount_base_key, store_id AS branch_id, name AS discount_name, start_date, end_date, start_time, end_time, min_amount AS minimum_amount, max_discount_amount AS Maximum_amount, bill_offer_value AS value, status",
         storeRecord[0].store_id,
         1
       ),

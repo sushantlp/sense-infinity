@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('invoice_payments', {
-      invoice_payment_id: {
+    return queryInterface.createTable("invoice_payments", {
+      id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
@@ -12,8 +12,8 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'invoices',
-          key: 'id'
+          model: "invoices",
+          key: "id"
         }
       },
       payment_amount: {
@@ -28,20 +28,12 @@ module.exports = {
         type: Sequelize.BIGINT,
         allowNull: true
       },
-      store_counter_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'store_counters',
-          key: 'id'
-        }
-      },
       warehouse_payment_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'warehouse_payment_types',
-          key: 'warehouse_payment_id'
+          model: "warehouse_payment_types",
+          key: "warehouse_payment_id"
         }
       },
       status: {
@@ -61,6 +53,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('invoice_payments');
+    return queryInterface.dropTable("invoice_payments");
   }
 };

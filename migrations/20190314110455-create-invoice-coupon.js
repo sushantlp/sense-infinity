@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('invoice_coupons', {
-      invoice_coupon_id: {
+    return queryInterface.createTable("invoice_coupons", {
+      id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
@@ -12,8 +12,8 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'invoices',
-          key: 'id'
+          model: "invoices",
+          key: "id"
         }
       },
       coupon_code: {
@@ -22,7 +22,7 @@ module.exports = {
       },
       applicable_on: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       discount: {
         type: Sequelize.FLOAT,
@@ -49,6 +49,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('invoice_coupons');
+    return queryInterface.dropTable("invoice_coupons");
   }
 };

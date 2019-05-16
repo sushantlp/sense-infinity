@@ -1,28 +1,12 @@
 "use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("manual_discounts", {
+    return queryInterface.createTable("return_invoices", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
-      },
-      store_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "partner_stores",
-          key: "store_id"
-        }
-      },
-      warehouse_user_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "warehouse_user_lists",
-          key: "id"
-        }
       },
       invoice_no: {
         type: Sequelize.INTEGER,
@@ -32,9 +16,29 @@ module.exports = {
           key: "id"
         }
       },
-      discount_amount: {
-        type: Sequelize.FLOAT,
-        defaultValue: 0
+      new_invoice_no: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      warehouse_user_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "warehouse_user_lists",
+          key: "id"
+        }
+      },
+      store_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "partner_stores",
+          key: "store_id"
+        }
+      },
+      reason: {
+        type: Sequelize.TEXT,
+        allowNull: true
       },
       status: {
         type: Sequelize.BOOLEAN,
@@ -53,6 +57,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("manual_discounts");
+    return queryInterface.dropTable("return_invoices");
   }
 };
