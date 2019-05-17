@@ -54,27 +54,27 @@ module.exports = {
         allowNull: true
       },
       total_amount: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       invoice_cashback: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       invoice_total_saving: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       invoice_loyalty_used: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       invoice_sodexo_amount: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       invoice_total_amount: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       gstin_name: {
@@ -86,7 +86,7 @@ module.exports = {
         allowNull: true
       },
       round_off_amount: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       return_status: {

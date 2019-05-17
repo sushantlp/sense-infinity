@@ -18,9 +18,9 @@ module.exports = (sequelize, DataTypes) => {
       end_date: DataTypes.STRING,
       start_time: DataTypes.STRING,
       end_time: DataTypes.STRING,
-      min_amount: DataTypes.FLOAT,
-      max_discount_amount: DataTypes.FLOAT,
-      bill_offer_value: DataTypes.FLOAT,
+      min_amount: DataTypes.DECIMAL,
+      max_discount_amount: DataTypes.DECIMAL,
+      bill_offer_value: DataTypes.DECIMAL,
       status: DataTypes.BOOLEAN,
       track_status: DataTypes.BOOLEAN
     },

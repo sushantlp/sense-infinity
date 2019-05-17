@@ -30,7 +30,7 @@ module.exports = {
         defaultValue: 0
       },
       offer_value: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       status: {

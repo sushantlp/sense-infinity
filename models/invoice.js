@@ -18,15 +18,15 @@ module.exports = (sequelize, DataTypes) => {
       customer_name: DataTypes.STRING,
       customer_mobile: DataTypes.BIGINT,
       membership_code: DataTypes.BIGINT,
-      total_amount: DataTypes.FLOAT,
-      invoice_cashback: DataTypes.FLOAT,
-      invoice_total_saving: DataTypes.FLOAT,
-      invoice_loyalty_used: DataTypes.FLOAT,
-      invoice_total_amount: DataTypes.FLOAT,
-      invoice_sodexo_amount: DataTypes.FLOAT,
+      total_amount: DataTypes.DECIMAL,
+      invoice_cashback: DataTypes.DECIMAL,
+      invoice_total_saving: DataTypes.DECIMAL,
+      invoice_loyalty_used: DataTypes.DECIMAL,
+      invoice_total_amount: DataTypes.DECIMAL,
+      invoice_sodexo_amount: DataTypes.DECIMAL,
       gstin_name: DataTypes.STRING,
       gstin_number: DataTypes.STRING,
-      round_off_amount: DataTypes.FLOAT,
+      round_off_amount: DataTypes.DECIMAL,
       return_status: DataTypes.BOOLEAN,
       status: DataTypes.BOOLEAN
     },
@@ -72,7 +72,7 @@ module.exports.keepInvoice = async (
 
     // Query
     const query =
-      "INSERT INTO `invoices` (`invoice_no`, `store_counter_id`, `warehouse_user_id`, `name`, `start_date`, `end_date`, `start_time`, `end_time`, `min_amount`, `max_discount_amount`, `bill_offer_value`, `status`, `track_status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO `invoices` (`invoice_no`, `store_counter_id`, `warehouse_user_id`, `store_id`, `partner_id`, `customer_name`, `customer_mobile`, `membership_code`, `total_amount`, `invoice_cashback`, `invoice_total_saving`, `invoice_loyalty_used`, `invoice_total_amount`, `invoice_sodexo_amount`, `gstin_name`, `gstin_number`, `round_off_amount`, `track_status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     // Query Database
     const row = await connection.query(query, [

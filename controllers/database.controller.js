@@ -2,49 +2,54 @@
  * Database Connection
  */
 
-'use strict';
+"use strict";
 
 // Import Package
-const Sequelize = require('sequelize');
-const moment = require('moment-timezone');
+const Sequelize = require("sequelize");
+const moment = require("moment-timezone");
 
 // Import Config
-const constants = require('../config/constants');
+const constants = require("../config/constants");
 
 // Current Date and Time
 const now = moment()
-  .tz('Asia/Kolkata')
-  .format('YYYY-MM-DD HH-m-ss');
+  .tz("Asia/Kolkata")
+  .format("YYYY-MM-DD HH-m-ss");
 
 // Sequelize Connection
 module.exports.sequelizeConnection = () => {
-  const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
-    host: process.env.DB_HOST,
-    dialect: process.env.DB_DRIVER,
-    operatorsAliases: false,
-    pool: {
-      max: 90,
-      min: 0,
-      acquire: 30000,
-      idle: 10000
-    },
-    dialectOptions: {
-      charset: 'utf8mb4'
-    },
-    define: {
-      underscored: false,
-      freezeTableName: false,
-      timestamps: true
+  const sequelize = new Sequelize(
+    process.env.DB_DATABASE,
+    process.env.DB_USERNAME,
+    process.env.DB_PASSWORD,
+    {
+      host: process.env.DB_HOST,
+      dialect: process.env.DB_DRIVER,
+      operatorsAliases: false,
+      pool: {
+        max: 90,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+      },
+      dialectOptions: {
+        charset: "utf8mb4"
+      },
+      define: {
+        underscored: false,
+        freezeTableName: false,
+        timestamps: true
+      }
     }
-  });
+  );
 
   sequelize
     .authenticate()
     .then(() => {
-      console.log('Connection has been established successfully.');
+      console.log("Connection has been established successfully.");
     })
     .catch(err => {
-      console.error('Unable to connect to the database:', err);
+      console.error("Unable to connect to the database:", err);
     });
 
   return sequelize;
@@ -55,9 +60,8 @@ module.exports.sequelizeConnection = () => {
  */
 
 // Create Merchant Constant Store Table
-module.exports.createConstantTable = async(merchantMobile, storeId) => {
+module.exports.createConstantTable = async (merchantMobile, storeId) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -91,9 +95,8 @@ module.exports.createConstantTable = async(merchantMobile, storeId) => {
 };
 
 // Merchant Constant Table Exist
-module.exports.showConstantTable = async(merchantMobile, storeId) => {
+module.exports.showConstantTable = async (merchantMobile, storeId) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -118,9 +121,13 @@ module.exports.showConstantTable = async(merchantMobile, storeId) => {
 };
 
 // Read Constant Record
-module.exports.readConstantRecord = async(select, merchantMobile, storeId, status) => {
+module.exports.readConstantRecord = async (
+  select,
+  merchantMobile,
+  storeId,
+  status
+) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -145,9 +152,14 @@ module.exports.readConstantRecord = async(select, merchantMobile, storeId, statu
 };
 
 // Read Constant Record By Name
-module.exports.readConstantRecordName = async(select, merchantMobile, storeId, name, status) => {
+module.exports.readConstantRecordName = async (
+  select,
+  merchantMobile,
+  storeId,
+  name,
+  status
+) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -172,9 +184,15 @@ module.exports.readConstantRecordName = async(select, merchantMobile, storeId, n
 };
 
 // Keep Merchant Constant Table
-module.exports.keepMerchantConstantTable = async(merchantMobile, storeId, name, value, comment, status) => {
+module.exports.keepMerchantConstantTable = async (
+  merchantMobile,
+  storeId,
+  name,
+  value,
+  comment,
+  status
+) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -188,7 +206,14 @@ module.exports.keepMerchantConstantTable = async(merchantMobile, storeId, name, 
     const query = `INSERT INTO ${MerchantConstant} (name, value, comment, status, created_at, updated_at) VALUES (?,?,?,?,?,?)`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [name, value, comment, status, now, now]);
+    const [rows, fields] = await connection.query(query, [
+      name,
+      value,
+      comment,
+      status,
+      now,
+      now
+    ]);
 
     connection.release();
 
@@ -199,9 +224,14 @@ module.exports.keepMerchantConstantTable = async(merchantMobile, storeId, name, 
 };
 
 // Update Constant Record
-module.exports.updateMerchantConstantTable = async(merchantMobile, storeId, constantId, value, status) => {
+module.exports.updateMerchantConstantTable = async (
+  merchantMobile,
+  storeId,
+  constantId,
+  value,
+  status
+) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -215,7 +245,12 @@ module.exports.updateMerchantConstantTable = async(merchantMobile, storeId, cons
     const query = `UPDATE ${MerchantConstant} SET value = ?, status = ?, updated_at = ? WHERE constant_id = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [value, status, now, constantId]);
+    const [rows, fields] = await connection.query(query, [
+      value,
+      status,
+      now,
+      constantId
+    ]);
 
     connection.release();
 
@@ -226,9 +261,8 @@ module.exports.updateMerchantConstantTable = async(merchantMobile, storeId, cons
 };
 
 // Merchant Feedback Question Table Exist
-module.exports.showFeedbackQuestionTable = async(merchantMobile, storeId) => {
+module.exports.showFeedbackQuestionTable = async (merchantMobile, storeId) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -253,9 +287,8 @@ module.exports.showFeedbackQuestionTable = async(merchantMobile, storeId) => {
 };
 
 // Merchant Feedback Option Table Exist
-module.exports.showFeedbackOptionTable = async(merchantMobile, storeId) => {
+module.exports.showFeedbackOptionTable = async (merchantMobile, storeId) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -280,9 +313,8 @@ module.exports.showFeedbackOptionTable = async(merchantMobile, storeId) => {
 };
 
 // Merchant Keep Feedback Table Exist
-module.exports.showKeepFeedbackTable = async(merchantMobile, storeId) => {
+module.exports.showKeepFeedbackTable = async (merchantMobile, storeId) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -307,9 +339,8 @@ module.exports.showKeepFeedbackTable = async(merchantMobile, storeId) => {
 };
 
 // Create Merchant Feedback Store Table
-module.exports.createFeedbackStoreTable = async(merchantMobile, storeId) => {
+module.exports.createFeedbackStoreTable = async (merchantMobile, storeId) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -345,9 +376,11 @@ module.exports.createFeedbackStoreTable = async(merchantMobile, storeId) => {
 };
 
 // Create Merchant Feedback Question Table
-module.exports.createFeedbackQuestionTable = async(merchantMobile, storeId) => {
+module.exports.createFeedbackQuestionTable = async (
+  merchantMobile,
+  storeId
+) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -379,9 +412,8 @@ module.exports.createFeedbackQuestionTable = async(merchantMobile, storeId) => {
 };
 
 // Create Merchant Feedback Option Table
-module.exports.createFeedbackOptionTable = async(merchantMobile, storeId) => {
+module.exports.createFeedbackOptionTable = async (merchantMobile, storeId) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -416,9 +448,12 @@ module.exports.createFeedbackOptionTable = async(merchantMobile, storeId) => {
 };
 
 // Read Merchant Feedback Question Record
-module.exports.readFeedbackQuestion = async(merchantMobile, storeId, status) => {
+module.exports.readFeedbackQuestion = async (
+  merchantMobile,
+  storeId,
+  status
+) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -443,9 +478,13 @@ module.exports.readFeedbackQuestion = async(merchantMobile, storeId, status) => 
 };
 
 // Read Merchant Feedback Option Record
-module.exports.readFeedbackOption = async(merchantMobile, storeId, quesId, status) => {
+module.exports.readFeedbackOption = async (
+  merchantMobile,
+  storeId,
+  quesId,
+  status
+) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -470,9 +509,8 @@ module.exports.readFeedbackOption = async(merchantMobile, storeId, quesId, statu
 };
 
 // Survey Question Table Exist
-module.exports.showSurveyQuestionTable = async(merchantMobile, storeId) => {
+module.exports.showSurveyQuestionTable = async (merchantMobile, storeId) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -497,9 +535,8 @@ module.exports.showSurveyQuestionTable = async(merchantMobile, storeId) => {
 };
 
 // Survey Option Table Exist
-module.exports.showSurveyOptionTable = async(merchantMobile, storeId) => {
+module.exports.showSurveyOptionTable = async (merchantMobile, storeId) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -524,9 +561,8 @@ module.exports.showSurveyOptionTable = async(merchantMobile, storeId) => {
 };
 
 // Keep Merchant Survey Table Exist
-module.exports.showKeepSurveyTable = async(merchantMobile, storeId) => {
+module.exports.showKeepSurveyTable = async (merchantMobile, storeId) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -551,9 +587,8 @@ module.exports.showKeepSurveyTable = async(merchantMobile, storeId) => {
 };
 
 // Create Merchant Survey Store Table
-module.exports.createSurveyStoreTable = async(merchantMobile, storeId) => {
+module.exports.createSurveyStoreTable = async (merchantMobile, storeId) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -589,9 +624,8 @@ module.exports.createSurveyStoreTable = async(merchantMobile, storeId) => {
 };
 
 // Create Merchant Survey Question Table
-module.exports.createSurveyQuestionTable = async(merchantMobile, storeId) => {
+module.exports.createSurveyQuestionTable = async (merchantMobile, storeId) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -624,9 +658,8 @@ module.exports.createSurveyQuestionTable = async(merchantMobile, storeId) => {
 };
 
 // Create Merchant Survey Option Table
-module.exports.createSurveyOptionTable = async(merchantMobile, storeId) => {
+module.exports.createSurveyOptionTable = async (merchantMobile, storeId) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -661,9 +694,8 @@ module.exports.createSurveyOptionTable = async(merchantMobile, storeId) => {
 };
 
 // Read Merchant Survey Question Record
-module.exports.readSurveyQuestion = async(merchantMobile, storeId, status) => {
+module.exports.readSurveyQuestion = async (merchantMobile, storeId, status) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -688,9 +720,14 @@ module.exports.readSurveyQuestion = async(merchantMobile, storeId, status) => {
 };
 
 // Read Merchant Survey Option Record
-module.exports.readSurveyOption = async(select, merchantMobile, storeId, quesId, status) => {
+module.exports.readSurveyOption = async (
+  select,
+  merchantMobile,
+  storeId,
+  quesId,
+  status
+) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -715,7 +752,7 @@ module.exports.readSurveyOption = async(select, merchantMobile, storeId, quesId,
 };
 
 // Read One Record Merchant Store Survey
-module.exports.readLimitMerchantSurvey = async(
+module.exports.readLimitMerchantSurvey = async (
   select,
   merchantMobile,
   storeId,
@@ -725,7 +762,6 @@ module.exports.readLimitMerchantSurvey = async(
   status
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -739,7 +775,12 @@ module.exports.readLimitMerchantSurvey = async(
     const query = `SELECT ${select} FROM ${KeepSurvey} WHERE customer_information_id = ? AND survey_ques_id = ? AND role_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [customerId, questionId, roleId, status]);
+    const [rows, fields] = await connection.query(query, [
+      customerId,
+      questionId,
+      roleId,
+      status
+    ]);
 
     connection.release();
 
@@ -750,7 +791,7 @@ module.exports.readLimitMerchantSurvey = async(
 };
 
 // Read One Record Merchant Store Feedback
-module.exports.readLimitMerchantFeedback = async(
+module.exports.readLimitMerchantFeedback = async (
   select,
   merchantMobile,
   storeId,
@@ -760,7 +801,6 @@ module.exports.readLimitMerchantFeedback = async(
   status
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -774,7 +814,12 @@ module.exports.readLimitMerchantFeedback = async(
     const query = `SELECT ${select} FROM ${KeepFeedback} WHERE customer_information_id = ? AND feed_ques_id = ? AND role_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [customerId, questionId, roleId, status]);
+    const [rows, fields] = await connection.query(query, [
+      customerId,
+      questionId,
+      roleId,
+      status
+    ]);
 
     connection.release();
 
@@ -785,7 +830,7 @@ module.exports.readLimitMerchantFeedback = async(
 };
 
 // Keep Merchant Store Feedback Table
-module.exports.keepMerchantFeedbackTable = async(
+module.exports.keepMerchantFeedbackTable = async (
   merchantMobile,
   storeId,
   questionId,
@@ -795,7 +840,6 @@ module.exports.keepMerchantFeedbackTable = async(
   status
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -828,7 +872,7 @@ module.exports.keepMerchantFeedbackTable = async(
 };
 
 // Keep Merchant Store Survey Table
-module.exports.keepMerchantSurveyTable = async(
+module.exports.keepMerchantSurveyTable = async (
   merchantMobile,
   storeId,
   questionId,
@@ -838,7 +882,6 @@ module.exports.keepMerchantSurveyTable = async(
   status
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -871,7 +914,7 @@ module.exports.keepMerchantSurveyTable = async(
 };
 
 // Update Merchant Store Feedback Table
-module.exports.updateMerchantFeedbackTable = async(
+module.exports.updateMerchantFeedbackTable = async (
   merchantMobile,
   storeId,
   keepFeedId,
@@ -882,7 +925,6 @@ module.exports.updateMerchantFeedbackTable = async(
   status
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -915,7 +957,7 @@ module.exports.updateMerchantFeedbackTable = async(
 };
 
 // Update Merchant Store Survey Table
-module.exports.updateMerchantSurveyTable = async(
+module.exports.updateMerchantSurveyTable = async (
   merchantMobile,
   storeId,
   keepSurveyId,
@@ -926,7 +968,6 @@ module.exports.updateMerchantSurveyTable = async(
   status
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -959,9 +1000,8 @@ module.exports.updateMerchantSurveyTable = async(
 };
 
 // Check Warehouse Product Table Exist
-module.exports.checkWarehouseProduct = async(partnerMobile) => {
+module.exports.checkWarehouseProduct = async partnerMobile => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -986,9 +1026,8 @@ module.exports.checkWarehouseProduct = async(partnerMobile) => {
 };
 
 // Create Warehouse Product Table
-module.exports.createWarehouseProductTable = async(partnerMobile) => {
+module.exports.createWarehouseProductTable = async partnerMobile => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -1011,9 +1050,9 @@ module.exports.createWarehouseProductTable = async(partnerMobile) => {
       product_unit_id INTEGER NOT NULL,
       product_sub_unit_id INTEGER NOT NULL,
       product_size FLOAT NOT NULL,
-      selling_price FLOAT NOT NULL,
-      product_margin FLOAT NOT NULL,
-      actual_price FLOAT NOT NULL,
+      selling_price DECIMAL NOT NULL,
+      product_margin DECIMAL NOT NULL,
+      actual_price DECIMAL NOT NULL,
       product_quantity INTEGER NOT NULL,
       sgst FLOAT NOT NULL,
       cgst FLOAT NOT NULL,
@@ -1041,13 +1080,31 @@ module.exports.createWarehouseProductTable = async(partnerMobile) => {
 };
 
 // Keep Warehouse Product Detail
-module.exports.keepWarehouseProduct = async(
-  partnerMobile, barcode, productName, brandName, description, categoryId, subCategoryId,
-  subSubcategoryId, unitId, subUnitId, productSize, sellingPrice, productMargin,
-  productPrice, productQuantity, sgst, cgst, igst, hsn, sodexo, staple, status
+module.exports.keepWarehouseProduct = async (
+  partnerMobile,
+  barcode,
+  productName,
+  brandName,
+  description,
+  categoryId,
+  subCategoryId,
+  subSubcategoryId,
+  unitId,
+  subUnitId,
+  productSize,
+  sellingPrice,
+  productMargin,
+  productPrice,
+  productQuantity,
+  sgst,
+  cgst,
+  igst,
+  hsn,
+  sodexo,
+  staple,
+  status
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -1088,9 +1145,29 @@ module.exports.keepWarehouseProduct = async(
 
     // Query Database
     const [rows, fields] = await connection.query(query, [
-      barcode, productName, brandName, description, categoryId, subCategoryId,
-      subSubcategoryId, unitId, subUnitId, productSize, sellingPrice, productMargin,
-      productPrice, productQuantity, sgst, cgst, igst, hsn, sodexo, staple, status, now, now
+      barcode,
+      productName,
+      brandName,
+      description,
+      categoryId,
+      subCategoryId,
+      subSubcategoryId,
+      unitId,
+      subUnitId,
+      productSize,
+      sellingPrice,
+      productMargin,
+      productPrice,
+      productQuantity,
+      sgst,
+      cgst,
+      igst,
+      hsn,
+      sodexo,
+      staple,
+      status,
+      now,
+      now
     ]);
 
     connection.release();
@@ -1102,13 +1179,31 @@ module.exports.keepWarehouseProduct = async(
 };
 
 // Update Warehouse Product Detail
-module.exports.updateWarehouseProduct = async(
-  partnerMobile, productName, brandName, description, categoryId, subCategoryId,
-  subSubcategoryId, unitId, subUnitId, productSize, sellingPrice, productMargin,
-  productPrice, productQuantity, sgst, cgst, igst, hsn, sodexo, staple, status, id
+module.exports.updateWarehouseProduct = async (
+  partnerMobile,
+  productName,
+  brandName,
+  description,
+  categoryId,
+  subCategoryId,
+  subSubcategoryId,
+  unitId,
+  subUnitId,
+  productSize,
+  sellingPrice,
+  productMargin,
+  productPrice,
+  productQuantity,
+  sgst,
+  cgst,
+  igst,
+  hsn,
+  sodexo,
+  staple,
+  status,
+  id
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -1125,9 +1220,28 @@ module.exports.updateWarehouseProduct = async(
 
     // Query Database
     const [rows, fields] = await connection.query(query, [
-      productName, brandName, description, categoryId, subCategoryId, subSubcategoryId,
-      unitId, subUnitId, productSize, sellingPrice, productMargin, productPrice,
-      productQuantity, sgst, cgst, igst, hsn, sodexo, staple, status, now, id
+      productName,
+      brandName,
+      description,
+      categoryId,
+      subCategoryId,
+      subSubcategoryId,
+      unitId,
+      subUnitId,
+      productSize,
+      sellingPrice,
+      productMargin,
+      productPrice,
+      productQuantity,
+      sgst,
+      cgst,
+      igst,
+      hsn,
+      sodexo,
+      staple,
+      status,
+      now,
+      id
     ]);
 
     connection.release();
@@ -1139,11 +1253,12 @@ module.exports.updateWarehouseProduct = async(
 };
 
 // Read Warehouse Product By Barcode
-module.exports.readWarehouseProduct = async(
-  select, partnerMobile, barcode
+module.exports.readWarehouseProduct = async (
+  select,
+  partnerMobile,
+  barcode
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -1169,9 +1284,13 @@ module.exports.readWarehouseProduct = async(
 };
 
 // Read Warehouse Product Record By Array
-module.exports.readWarehouseProductArray = async(select, partnerMobile, questionMarks, barcodeArray) => {
+module.exports.readWarehouseProductArray = async (
+  select,
+  partnerMobile,
+  questionMarks,
+  barcodeArray
+) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -1196,9 +1315,8 @@ module.exports.readWarehouseProductArray = async(select, partnerMobile, question
 };
 
 // Create Store Product Table
-module.exports.createStoreProductTable = async(partnerMobile, storeId) => {
+module.exports.createStoreProductTable = async (partnerMobile, storeId) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -1232,11 +1350,13 @@ module.exports.createStoreProductTable = async(partnerMobile, storeId) => {
 };
 
 // Read Store Product By Barcode
-module.exports.readStoreProduct = async(
-  select, partnerMobile, storeId, barcode
+module.exports.readStoreProduct = async (
+  select,
+  partnerMobile,
+  storeId,
+  barcode
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -1262,11 +1382,14 @@ module.exports.readStoreProduct = async(
 };
 
 // Keep Store Product Detail
-module.exports.keepStoreProduct = async(
-  partnerMobile, storeId, barcode, productQuantity, status
+module.exports.keepStoreProduct = async (
+  partnerMobile,
+  storeId,
+  barcode,
+  productQuantity,
+  status
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -1289,7 +1412,11 @@ module.exports.keepStoreProduct = async(
 
     // Query Database
     const [rows, fields] = await connection.query(query, [
-      barcode, productQuantity, status, now, now
+      barcode,
+      productQuantity,
+      status,
+      now,
+      now
     ]);
 
     connection.release();
@@ -1301,11 +1428,15 @@ module.exports.keepStoreProduct = async(
 };
 
 // Update Store Product Quanity
-module.exports.updateStoreProductQuanity = async(
-  partnerMobile, storeId, productQuantity, changeStatus, status, id
+module.exports.updateStoreProductQuanity = async (
+  partnerMobile,
+  storeId,
+  productQuantity,
+  changeStatus,
+  status,
+  id
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -1320,7 +1451,11 @@ module.exports.updateStoreProductQuanity = async(
 
     // Query Database
     const [rows, fields] = await connection.query(query, [
-      productQuantity, changeStatus, status, now, id
+      productQuantity,
+      changeStatus,
+      status,
+      now,
+      id
     ]);
 
     connection.release();
@@ -1331,12 +1466,14 @@ module.exports.updateStoreProductQuanity = async(
   }
 };
 
-// Update Store Product 
-module.exports.updateStoreProduct = async(
-  partnerMobile, storeId, status, id
+// Update Store Product
+module.exports.updateStoreProduct = async (
+  partnerMobile,
+  storeId,
+  status,
+  id
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -1350,9 +1487,7 @@ module.exports.updateStoreProduct = async(
     const query = `UPDATE ${ProductTable} SET status = ?, updated_at = ? WHERE product_id = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [
-      status, now, id
-    ]);
+    const [rows, fields] = await connection.query(query, [status, now, id]);
 
     connection.release();
 
@@ -1363,11 +1498,13 @@ module.exports.updateStoreProduct = async(
 };
 
 // Update Store Product Change Status
-module.exports.storeProductChangeStatus = async(
-  partnerMobile, storeId, changeStatus, id
+module.exports.storeProductChangeStatus = async (
+  partnerMobile,
+  storeId,
+  changeStatus,
+  id
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -1382,7 +1519,9 @@ module.exports.storeProductChangeStatus = async(
 
     // Query Database
     const [rows, fields] = await connection.query(query, [
-      changeStatus, now, id
+      changeStatus,
+      now,
+      id
     ]);
 
     connection.release();

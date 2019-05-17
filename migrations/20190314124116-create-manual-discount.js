@@ -33,7 +33,7 @@ module.exports = {
         }
       },
       discount_amount: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       status: {

@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       product_discount_id: DataTypes.INTEGER,
       product_barcode: DataTypes.BIGINT,
       buy_product_quantity: DataTypes.INTEGER,
-      offer_value: DataTypes.FLOAT,
+      offer_value: DataTypes.DECIMAL,
       status: DataTypes.BOOLEAN
     },
     {}

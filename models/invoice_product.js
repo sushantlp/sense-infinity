@@ -15,10 +15,10 @@ module.exports = (sequelize, DataTypes) => {
       product_sgst: DataTypes.FLOAT,
       product_cgst: DataTypes.FLOAT,
       product_igst: DataTypes.FLOAT,
-      product_price: DataTypes.FLOAT,
+      product_price: DataTypes.DECIMAL,
       product_discount: DataTypes.FLOAT,
-      product_discount_price: DataTypes.FLOAT,
-      product_sub_total: DataTypes.FLOAT,
+      product_discount_price: DataTypes.DECIMAL,
+      product_sub_total: DataTypes.DECIMAL,
       return_status: DataTypes.BOOLEAN,
       status: DataTypes.BOOLEAN
     },

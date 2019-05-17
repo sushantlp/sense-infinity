@@ -45,7 +45,7 @@ module.exports = {
         defaultValue: 0
       },
       product_price: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       product_discount: {
@@ -53,11 +53,11 @@ module.exports = {
         defaultValue: 0
       },
       product_discount_price: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       product_sub_total: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         allowNull: false
       },
       return_status: {

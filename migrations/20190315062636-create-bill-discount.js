@@ -50,15 +50,15 @@ module.exports = {
         allowNull: false
       },
       min_amount: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       max_discount_amount: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       bill_offer_value: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       status: {

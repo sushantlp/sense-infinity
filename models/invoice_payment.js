@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       invoice_no: DataTypes.INTEGER,
       warehouse_payment_id: DataTypes.INTEGER,
-      payment_amount: DataTypes.FLOAT,
+      payment_amount: DataTypes.DECIMAL,
       transaction_id: DataTypes.STRING,
       card_no: DataTypes.BIGINT,
       status: DataTypes.BOOLEAN

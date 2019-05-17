@@ -17,7 +17,7 @@ module.exports = {
         }
       },
       payment_amount: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       transaction_id: {

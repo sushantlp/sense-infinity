@@ -25,11 +25,11 @@ module.exports = {
         allowNull: true
       },
       discount: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       cashback: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       status: {
