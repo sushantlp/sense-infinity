@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       invoice_no: DataTypes.INTEGER,
       new_invoice_no: DataTypes.INTEGER,
       warehouse_user_id: DataTypes.INTEGER,
+      partner_id: DataTypes.INTEGER,
       store_id: DataTypes.INTEGER,
       reason: DataTypes.TEXT,
       status: DataTypes.BOOLEAN
