@@ -47,19 +47,83 @@ const now = moment()
  * Start Database Read and Write
  */
 
+// Read Invoice By [partner_id, store_id, invoice_no]
+module.exports.readInvoice = async (select, partnerId, storeId, invoiceNo) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM invoices WHERE partner_id = ? AND store_id = ? AND invoice_no = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [
+      partnerId,
+      storeId,
+      invoiceNo
+    ]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Read Invoice For Warehouse [partner_id, track_status]
+module.exports.readInvoiceByPartner = async (
+  select,
+  partnerId,
+  trackStatus
+) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM invoices WHERE partner_id = ? AND track_status = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [
+      partnerId,
+      trackStatus
+    ]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 // Keep Stores Invoice
 module.exports.keepInvoice = async (
-  billDiscountId,
+  invoiceNo,
+  counterId,
+  userId,
   storeId,
-  discountBaseId,
-  name,
-  startDate,
-  endDate,
-  startTime,
-  endTime,
-  minAmount,
-  maxDiscountAmount,
-  billOfferValue,
+  partnerId,
+  customerName,
+  customerMobile,
+  membershipCode,
+  totalAmount,
+  invoiceCashback,
+  invoiceTotalSaving,
+  invoiceLoyaltyUsed,
+  invoiceTotalAmount,
+  invoiceSodexoAmount,
+  gstinName,
+  gstinNumber,
+  roundOffAmount,
+  returnStatus,
   status,
   trackStatus
 ) => {
@@ -72,25 +136,93 @@ module.exports.keepInvoice = async (
 
     // Query
     const query =
-      "INSERT INTO `invoices` (`invoice_no`, `store_counter_id`, `warehouse_user_id`, `store_id`, `partner_id`, `customer_name`, `customer_mobile`, `membership_code`, `total_amount`, `invoice_cashback`, `invoice_total_saving`, `invoice_loyalty_used`, `invoice_total_amount`, `invoice_sodexo_amount`, `gstin_name`, `gstin_number`, `round_off_amount`, `track_status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO `invoices` (`invoice_no`, `store_counter_id`, `warehouse_user_id`, `store_id`, `partner_id`, `customer_name`, `customer_mobile`, `membership_code`, `total_amount`, `invoice_cashback`, `invoice_total_saving`, `invoice_loyalty_used`, `invoice_total_amount`, `invoice_sodexo_amount`, `gstin_name`, `gstin_number`, `round_off_amount`, `return_status`, `status`, track_status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     // Query Database
     const row = await connection.query(query, [
-      billDiscountId,
+      invoiceNo,
+      counterId,
+      userId,
       storeId,
-      discountBaseId,
-      name,
-      startDate,
-      endDate,
-      startTime,
-      endTime,
-      minAmount,
-      maxDiscountAmount,
-      billOfferValue,
+      partnerId,
+      customerName,
+      customerMobile,
+      membershipCode,
+      totalAmount,
+      invoiceCashback,
+      invoiceTotalSaving,
+      invoiceLoyaltyUsed,
+      invoiceTotalAmount,
+      invoiceSodexoAmount,
+      gstinName,
+      gstinNumber,
+      roundOffAmount,
+      returnStatus,
       status,
       trackStatus,
       now,
       now
+    ]);
+
+    connection.release();
+
+    return row;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Update Invoice By [id]
+module.exports.updateInvoice = async (
+  counterId,
+  customerName,
+  customerMobile,
+  membershipCode,
+  totalAmount,
+  invoiceCashback,
+  invoiceTotalSaving,
+  invoiceLoyaltyUsed,
+  invoiceTotalAmount,
+  invoiceSodexoAmount,
+  gstinName,
+  gstinNumber,
+  roundOffAmount,
+  returnStatus,
+  status,
+  trackStatus,
+  id
+) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query =
+      "UPDATE `bill_discounts` SET `store_counter_id` = ?, `customer_name` = ?, `customer_mobile` = ?, `membership_code` = ?, `total_amount` = ?, `invoice_cashback` = ?, `invoice_total_saving` = ?, `invoice_loyalty_used` = ?, `invoice_total_amount` = ?, `invoice_sodexo_amount` = ?, `gstin_name` = ?, `gstin_number` = ?, `round_off_amount` = ?, `return_status` = ?,  `status` = ?, `track_status` = ?, `updated_at` = ? WHERE `id` = ?";
+
+    // Query Database
+    const row = await connection.query(query, [
+      counterId,
+      customerName,
+      customerMobile,
+      membershipCode,
+      totalAmount,
+      invoiceCashback,
+      invoiceTotalSaving,
+      invoiceLoyaltyUsed,
+      invoiceTotalAmount,
+      invoiceSodexoAmount,
+      gstinName,
+      gstinNumber,
+      roundOffAmount,
+      returnStatus,
+      status,
+      trackStatus,
+      now,
+      id
     ]);
 
     connection.release();
