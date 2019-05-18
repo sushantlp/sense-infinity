@@ -213,3 +213,47 @@ module.exports.requestStoreDiscount = (req, res) => {
       });
   } else return res.status(400).send("Not a good api call");
 };
+
+// Request Store Invoice Record
+module.exports.requestStoreInvoice = (req, res) => {
+  if (
+    res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.body.invoices !== undefined &&
+    req.body.invoices !== "" &&
+    req.body.return_invoice !== undefined &&
+    req.body.return_invoice !== ""
+  ) {
+    // Validate Warehouse Bill And Product Discount
+    const validate = validateController.storeInvoice(
+      req.body.invoices,
+      req.body.return_invoice
+    );
+
+    // Logic Store Invoice Record
+    return posStoreController
+      .logicStoreInvoice(
+        res.userKey,
+        req.body.invoices,
+        req.body.return_invoice
+      )
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              "/api/v1/pos/invoices",
+              200,
+              response.success,
+              response.count
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};

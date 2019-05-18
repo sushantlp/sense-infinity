@@ -9,7 +9,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       invoice_no: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
         allowNull: false,
         unique: "actions_unique"
       },

@@ -603,3 +603,20 @@ const createDiscountJson = async json => {
 
   return await Promise.all(bunch);
 };
+
+// Logic Store Invoice Record
+module.exports.logicStoreInvoice = async (id, invoices, returnInvoices) => {
+  try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner"
+      };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
