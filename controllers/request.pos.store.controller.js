@@ -224,7 +224,7 @@ module.exports.requestStoreInvoice = (req, res) => {
     req.body.return_invoice !== undefined &&
     req.body.return_invoice !== ""
   ) {
-    // Validate Warehouse Bill And Product Discount
+    // Validate Invoice And Return Invoice Parameter
     const validate = validateController.storeInvoice(
       req.body.invoices,
       req.body.return_invoice

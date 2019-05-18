@@ -1531,3 +1531,57 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
     };
   }
 };
+
+// Validate Invoice And Return Invoice Parameter
+module.exports.storeInvoice = (invoiceJson, returnInvoiceJson) => {
+  try {
+    if (invoiceJson.length === 0 && returnInvoiceJson.length === 0)
+      return {
+        success: false,
+        msg: "Empty json"
+      };
+
+    // Validate Return Invoice Parameter
+    for (let i = 0; i < returnInvoiceJson.length; i++) {
+      if (
+        !returnInvoiceJson[i].hasOwnProperty("user_key") ||
+        isNaN(returnInvoiceJson[i].user_key)
+      )
+        return {
+          success: false,
+          msg: "Missing return invoice json user key"
+        };
+
+      if (
+        !returnInvoiceJson[i].hasOwnProperty("branch_key") ||
+        isNaN(returnInvoiceJson[i].branch_key)
+      )
+        return {
+          success: false,
+          msg: "Missing return invoice json branch key"
+        };
+
+      if (
+        !returnInvoiceJson[i].hasOwnProperty("status") ||
+        (returnInvoiceJson.status !== 0 && returnInvoiceJson.status !== 1)
+      )
+        return {
+          success: false,
+          msg: "Missing return invoice json status"
+        };
+    }
+
+    // Validate Invoice Parameter
+    for (let i = 0; i < invoiceJson.length; i++) {}
+
+    return {
+      success: true,
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return {
+      success: false,
+      msg: "Wrong json"
+    };
+  }
+};

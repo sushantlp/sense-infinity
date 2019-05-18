@@ -71,10 +71,6 @@ routes.get(
 );
 
 // Post Stores Invoice
-routes.post(
-  "/invoices",
-  apiKeyAuth,
-  PosStoreApiController.requestStoreDiscount
-);
+routes.post("/invoices", apiKeyAuth, PosStoreApiController.requestStoreInvoice);
 
 module.exports = routes;
