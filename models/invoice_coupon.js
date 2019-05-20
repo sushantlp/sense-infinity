@@ -47,7 +47,10 @@ module.exports.readCouponByCode = async (select, invoiceNo, couponCode) => {
     const query = `SELECT ${select} FROM invoice_coupons WHERE invoice_no = ? AND coupon_code = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [invoiceNo, couponCode]);
+    const [rows, fields] = await connection.query(query, [
+      invoiceNo,
+      couponCode
+    ]);
 
     connection.release();
 
@@ -57,7 +60,7 @@ module.exports.readCouponByCode = async (select, invoiceNo, couponCode) => {
   }
 };
 
- // Read Invoice Coupon By [id]
+// Read Invoice Coupon By [id]
 module.exports.readInvoiceCoupon = async (select, id) => {
   try {
     // Get Pool Object
@@ -96,7 +99,8 @@ module.exports.keepInvoiceCoupon = async (
     // Create Connection
     const connection = await pool.getConnection();
 
-    if (applicableOn === undefined) applicableOn = connection.escape(applicableOn);
+    if (applicableOn === undefined)
+      applicableOn = connection.escape(applicableOn);
 
     // Query
     const query =
@@ -128,7 +132,7 @@ module.exports.updateInvoiceCoupon = async (
   applicableOn,
   discount,
   cashback,
-  status
+  status,
   id
 ) => {
   try {
@@ -138,8 +142,9 @@ module.exports.updateInvoiceCoupon = async (
     // Create Connection
     const connection = await pool.getConnection();
 
-    if (applicableOn === undefined) applicableOn = connection.escape(applicableOn);
-    
+    if (applicableOn === undefined)
+      applicableOn = connection.escape(applicableOn);
+
     // Query
     const query =
       "UPDATE `invoice_coupons` SET `coupon_code` = ?, `applicable_on` = ?, `discount` = ?, `cashback` = ?, `status` = ?, `updated_at` = ? WHERE `id` = ?";

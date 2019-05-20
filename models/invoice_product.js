@@ -42,8 +42,8 @@ const now = moment()
  * Start Database Read and Write
  */
 
-// Read Invoice Product By [id, product_barcode]
-module.exports.readInvoiceProduct = async (select, id, barcode) => {
+// Read Invoice Product By [invoice_no, product_barcode]
+module.exports.readInvoiceProduct = async (select, invoiceNo, barcode) => {
   try {
     // Get Pool Object
     const pool = constants.createMysqlConnection();
@@ -52,10 +52,10 @@ module.exports.readInvoiceProduct = async (select, id, barcode) => {
     const connection = await pool.getConnection();
 
     // Query
-    const query = `SELECT ${select} FROM invoice_products WHERE id = ? AND product_barcode = ? LIMIT 1`;
+    const query = `SELECT ${select} FROM invoice_products WHERE invoice_no = ? AND product_barcode = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [id, barcode]);
+    const [rows, fields] = await connection.query(query, [invoiceNo, barcode]);
 
     connection.release();
 
@@ -112,6 +112,9 @@ module.exports.keepInvoiceProduct = async (
     // Create Connection
     const connection = await pool.getConnection();
 
+    if (productName === undefined) productName = connection.escape(productName);
+    if (productUnit === undefined) productUnit = connection.escape(productUnit);
+
     // Query
     const query =
       "INSERT INTO `invoice_products` (`invoice_no`, `product_name`, `product_barcode`, `product_unit`, `product_quantity`, `product_sgst`, `product_cgst`, `product_igst`, `product_price`, `product_discount`, `product_discount_price`, `product_sub_total`, `return_status`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -145,22 +148,7 @@ module.exports.keepInvoiceProduct = async (
 };
 
 // Update Invoice Product By [id]
-module.exports.updateInvoiceProduct = async (
-  productName,
-  productBarcode,
-  productUnit,
-  productQuantity,
-  productSgst,
-  productCgst,
-  productIgst,
-  productPrice,
-  productDiscount,
-  productDiscountPrice,
-  productSubTotal,
-  returnStatus,
-  status,
-  id
-) => {
+module.exports.updateInvoiceProduct = async (returnStatus, status, id) => {
   try {
     // Get Pool Object
     const pool = constants.createMysqlConnection();
@@ -170,26 +158,10 @@ module.exports.updateInvoiceProduct = async (
 
     // Query
     const query =
-      "UPDATE `invoice_products` SET `product_name` = ?, `product_barcode` = ?, `product_unit` = ?, `product_quantity` = ?, `product_sgst` = ?, `product_cgst` = ?, `product_igst` = ?, `product_price` = ?, `product_discount` = ?, `product_discount_price` = ?, `product_sub_total` = ?, `return_status` = ?, `status` = ?, `updated_at` = ? WHERE `id` = ?";
+      "UPDATE `invoice_products` SET `return_status` = ?, `status` = ?, `updated_at` = ? WHERE `id` = ?";
 
     // Query Database
-    const row = await connection.query(query, [
-      productName,
-      productBarcode,
-      productUnit,
-      productQuantity,
-      productSgst,
-      productCgst,
-      productIgst,
-      productPrice,
-      productDiscount,
-      productDiscountPrice,
-      productSubTotal,
-      returnStatus,
-      status,
-      now,
-      id
-    ]);
+    const row = await connection.query(query, [returnStatus, status, now, id]);
 
     connection.release();
 

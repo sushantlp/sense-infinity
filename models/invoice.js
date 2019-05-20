@@ -179,19 +179,6 @@ module.exports.keepInvoice = async (
 
 // Update Invoice By [id]
 module.exports.updateInvoice = async (
-  counterId,
-  customerName,
-  customerMobile,
-  membershipCode,
-  totalAmount,
-  invoiceCashback,
-  invoiceTotalSaving,
-  invoiceLoyaltyUsed,
-  invoiceTotalAmount,
-  invoiceSodexoAmount,
-  gstinName,
-  gstinNumber,
-  roundOffAmount,
   returnStatus,
   status,
   trackStatus,
@@ -204,30 +191,12 @@ module.exports.updateInvoice = async (
     // Create Connection
     const connection = await pool.getConnection();
 
-    if (customerName === undefined)
-      customerName = connection.escape(customerName);
-    if (gstinName === undefined) gstinName = connection.escape(gstinName);
-    if (gstinNumber === undefined) gstinNumber = connection.escape(gstinNumber);
-
     // Query
     const query =
-      "UPDATE `bill_discounts` SET `store_counter_id` = ?, `customer_name` = ?, `customer_mobile` = ?, `membership_code` = ?, `total_amount` = ?, `invoice_cashback` = ?, `invoice_total_saving` = ?, `invoice_loyalty_used` = ?, `invoice_total_amount` = ?, `invoice_sodexo_amount` = ?, `gstin_name` = ?, `gstin_number` = ?, `round_off_amount` = ?, `return_status` = ?,  `status` = ?, `track_status` = ?, `updated_at` = ? WHERE `id` = ?";
+      "UPDATE `bill_discounts` SET `return_status` = ?, `status` = ?, `track_status` = ?, `updated_at` = ? WHERE `id` = ?";
 
     // Query Database
     const row = await connection.query(query, [
-      counterId,
-      customerName,
-      customerMobile,
-      membershipCode,
-      totalAmount,
-      invoiceCashback,
-      invoiceTotalSaving,
-      invoiceLoyaltyUsed,
-      invoiceTotalAmount,
-      invoiceSodexoAmount,
-      gstinName,
-      gstinNumber,
-      roundOffAmount,
       returnStatus,
       status,
       trackStatus,

@@ -39,6 +39,7 @@ const now = moment()
 module.exports.readReturnInvoice = async (
   select,
   invoiceNo,
+  newInvoiceNo,
   partnerId,
   storeId
 ) => {
@@ -50,11 +51,12 @@ module.exports.readReturnInvoice = async (
     const connection = await pool.getConnection();
 
     // Query
-    const query = `SELECT ${select} FROM return_invoices WHERE invoice_no = ? AND partner_id = ? AND store_id = ? `;
+    const query = `SELECT ${select} FROM return_invoices WHERE invoice_no = ? AND new_invoice_no = ? AND partner_id = ? AND store_id = ? `;
 
     // Query Database
     const [rows, fields] = await connection.query(query, [
       invoiceNo,
+      newInvoiceNo,
       partnerId,
       storeId
     ]);
@@ -83,6 +85,8 @@ module.exports.keepReturnInvoice = async (
 
     // Create Connection
     const connection = await pool.getConnection();
+
+    if (reason === undefined) reason = connection.escape(reason);
 
     // Query
     const query =

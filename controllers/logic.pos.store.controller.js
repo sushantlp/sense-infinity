@@ -18,6 +18,10 @@ const freeDiscountModel = require("../models/free_product_offer");
 const valueDiscountModel = require("../models/value_product_offer");
 const invoiceModel = require("../models/invoice");
 const invoiceCouponModel = require("../models/invoice_coupon");
+const invoicePaymentModel = require("../models/invoice_payment");
+const invoiceProductModel = require("../models/invoice_product");
+const manualDiscountModel = require("../models/manual_discount");
+const returnInvoiceModel = require("../models/return_invoice");
 
 // Logic Warehouse Store List
 module.exports.logicWarehouseStoreList = async id => {
@@ -679,7 +683,7 @@ const logicInvoice = async (partnerRecord, storeRecord, invoices) => {
           : invoice.gstin_number;
 
       let invoiceRecord = await invoiceModel.readInvoice(
-        "*",
+        "id",
         partnerRecord[0].partner_id,
         storeRecord[0].store_id,
         invoice.invoice_number
@@ -719,19 +723,6 @@ const logicInvoice = async (partnerRecord, storeRecord, invoices) => {
         invoiceId = invoiceRecord[0].id;
 
         invoiceModel.updateInvoice(
-          invoice.counter_key,
-          customerName,
-          invoice.customer_mobile,
-          invoice.membership_code,
-          invoice.total_amount,
-          invoice.cashback,
-          invoice.total_saving,
-          invoice.loyalty_used,
-          invoice.invoice_total_amount,
-          invoice.sodexo_amount,
-          gstinName,
-          gstinNumber,
-          invoice.round_off_amount,
           invoice.return_status,
           invoice.status,
           1,
@@ -742,7 +733,12 @@ const logicInvoice = async (partnerRecord, storeRecord, invoices) => {
       logicInvoiceCoupon(invoice.invoice_coupon, invoiceId);
       logicInvoicePayment(invoice.invoice_payment, invoiceId);
       logicInvoiceProduct(invoice.invoice_product, invoiceId);
-      logicManualDiscount(invoice.manual_discount, invoiceId);
+      logicManualDiscount(
+        invoice.manual_discount,
+        invoiceId,
+        invoice.user_key,
+        storeRecord[0].store_id
+      );
     });
   } catch (error) {
     return Promise.reject(error);
@@ -756,34 +752,15 @@ const logicInvoiceCoupon = async (invoiceCoupon, invoiceId) => {
         coupon.applicable === null || coupon.applicable === ""
           ? undefined
           : coupon.applicable;
-      let couponRecord = await invoiceCouponModel.readCouponByCode(
-        "*",
+
+      invoiceCouponModel.keepInvoiceCoupon(
         invoiceId,
-        coupon.barcode
+        coupon.barcode,
+        applicable,
+        coupon.discount,
+        coupon.cashback,
+        coupon.status
       );
-
-      // Parse
-      couponRecord = JSON.stringify(couponRecord);
-      couponRecord = JSON.parse(couponRecord);
-
-      if (couponRecord.length === 0)
-        invoiceCouponModel.keepInvoiceCoupon(
-          invoiceId,
-          coupon.barcode,
-          applicable,
-          coupon.discount,
-          coupon.cashback,
-          coupon.status
-        );
-      else
-        invoiceCouponModel.updateInvoiceCoupon(
-          coupon.barcode,
-          applicable,
-          coupon.discount,
-          coupon.cashback,
-          coupon.status,
-          couponRecord[0].id
-        );
     });
   } catch (error) {
     return Promise.reject(error);
@@ -801,34 +778,14 @@ const logicInvoicePayment = async (invoicePayment, invoiceId) => {
       const card =
         payment.card === null || payment.card === "" ? undefined : payment.card;
 
-      let couponRecord = await invoiceCouponModel.readCouponByCode(
-        "*",
+      invoiceCouponModel.keepInvoiceCoupon(
         invoiceId,
-        coupon.barcode
+        payment.type,
+        payment.amount,
+        transaction,
+        card,
+        payment.status
       );
-
-      // Parse
-      couponRecord = JSON.stringify(couponRecord);
-      couponRecord = JSON.parse(couponRecord);
-
-      if (couponRecord.length === 0)
-        invoiceCouponModel.keepInvoiceCoupon(
-          invoiceId,
-          coupon.barcode,
-          applicable,
-          coupon.discount,
-          coupon.cashback,
-          coupon.status
-        );
-      else
-        invoiceCouponModel.updateInvoiceCoupon(
-          coupon.barcode,
-          applicable,
-          coupon.discount,
-          coupon.cashback,
-          coupon.status,
-          couponRecord[0].id
-        );
     });
   } catch (error) {
     return Promise.reject(error);
@@ -837,13 +794,72 @@ const logicInvoicePayment = async (invoicePayment, invoiceId) => {
 
 const logicInvoiceProduct = async (invoiceProduct, invoiceId) => {
   try {
+    return invoiceProduct.map(async (product, index) => {
+      const productName =
+        product.name === "" || product.name === null
+          ? undefined
+          : product.name.replace(/\b[a-z]/g, function(f) {
+              return f.toUpperCase();
+            });
+
+      const productUnit =
+        product.unit === "" || product.unit === null ? undefined : product.unit;
+
+      let productRecord = await invoiceProductModel.readInvoiceProduct(
+        "id",
+        invoiceId,
+        product.barcode
+      );
+
+      // Parse
+      productRecord = JSON.stringify(productRecord);
+      productRecord = JSON.parse(productRecord);
+
+      if (productRecord.length === 0)
+        invoiceProductModel.keepInvoiceProduct(
+          invoiceId,
+          productName,
+          product.barcode,
+          productUnit,
+          product.quantity,
+          product.sgst,
+          product.cgst,
+          product.igst,
+          product.price,
+          product.discount,
+          product.discount_price,
+          product.sub_total,
+          product.return_status,
+          product.status
+        );
+      else
+        invoiceProductModel.updateInvoiceProduct(
+          product.return_status,
+          product.status,
+          productRecord[0].id
+        );
+    });
   } catch (error) {
     return Promise.reject(error);
   }
 };
 
-const logicManualDiscount = async (manualDiscount, invoiceId) => {
+const logicManualDiscount = async (
+  manualDiscount,
+  invoiceId,
+  userId,
+  storeId
+) => {
   try {
+    return manualDiscount.map(async (discount, index) => {
+      manualDiscountModel.keepManualDiscount(
+        storeId,
+        userId,
+        invoiceId,
+        discount.amount,
+        discount.status
+      );
+    });
   } catch (error) {
     return Promise.reject(error);
   }
@@ -856,7 +872,38 @@ const logicReturnInvoice = async (
   returnInvoices
 ) => {
   try {
-    return returnInvoices.map(async (invoice, index) => {});
+    return returnInvoices.map(async (invoice, index) => {
+      const reason =
+        invoice.reason === "" || invoice.reason === null
+          ? undefined
+          : invoice.reason.replace(/\b[a-z]/g, function(f) {
+              return f.toUpperCase();
+            });
+
+      let returnRecord = await returnInvoiceModel.readReturnInvoice(
+        "id",
+        invoice.invoice_number,
+        invoice.new_invoice_number,
+        partnerRecord[0].partner_id,
+        storeRecord[0].store_id
+      );
+
+      // Parse
+      returnRecord = JSON.stringify(returnRecord);
+      returnRecord = JSON.parse(returnRecord);
+
+      if (returnRecord.length === 0)
+        returnInvoiceModel.keepReturnInvoice(
+          invoice.invoice_number,
+          invoice.new_invoice_number,
+          invoice.user_key,
+          partnerRecord[0].partner_id,
+          storeRecord[0].store_id,
+          reason,
+          invoice.status
+        );
+      else console.log("Logic keep return invoice duplicate record");
+    });
   } catch (error) {
     return Promise.reject(error);
   }

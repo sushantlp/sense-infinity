@@ -117,6 +117,10 @@ module.exports.updateInvoicePayment = async (
     // Create Connection
     const connection = await pool.getConnection();
 
+    if (transactionId === undefined)
+      transactionId = connection.escape(transactionId);
+    if (cardNo === undefined) cardNo = connection.escape(cardNo);
+
     // Query
     const query =
       "UPDATE `invoice_payments` SET `warehouse_payment_id` = ?, `payment_amount` = ?, `transaction_id` = ?, `card_no` = ?, `status` = ?, `updated_at` = ? WHERE `id` = ?";
