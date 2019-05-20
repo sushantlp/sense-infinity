@@ -2027,3 +2027,117 @@ const validateInvoiceProduct = json => {
     };
   }
 };
+
+// Validate Invoice Payment
+const validateInvoicePayment = json => {
+  try {
+    for (let i = 0; i < json.length; i++) {
+      if (
+        !json[i].hasOwnProperty("status") ||
+        (json[i].status !== 0 && json[i].status !== 1)
+      )
+        return {
+          success: false,
+          msg: "Missing invoice payment json status parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("type") ||
+        isNaN(json[i].type) ||
+        json[i].type === null ||
+        json[i].type === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice payment json type parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("amount") ||
+        isNaN(json[i].amount) ||
+        json[i].amount === null ||
+        json[i].amount === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice payment json amount parameter"
+        };
+
+      if (!json[i].hasOwnProperty("transaction"))
+        return {
+          success: false,
+          msg: "Missing invoice payment json transaction parameter"
+        };
+
+      if (!json[i].hasOwnProperty("card"))
+        return {
+          success: false,
+          msg: "Missing invoice payment json card parameter"
+        };
+    }
+
+    return {
+      success: true,
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return {
+      success: false,
+      msg: "Wrong validate manual discount json"
+    };
+  }
+};
+
+// Validate Invoice Coupon
+const validateInvoiceCoupon = json => {
+  try {
+    for (let i = 0; i < json.length; i++) {
+      if (
+        !json[i].hasOwnProperty("status") ||
+        (json[i].status !== 0 && json[i].status !== 1)
+      )
+        return {
+          success: false,
+          msg: "Missing invoice coupon json status parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("cashback") ||
+        isNaN(json[i].cashback) ||
+        json[i].cashback === null ||
+        json[i].cashback === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice coupon json cashback parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("discount") ||
+        isNaN(json[i].discount) ||
+        json[i].discount === null ||
+        json[i].discount === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice coupon json discount parameter"
+        };
+
+      if (!json[i].hasOwnProperty("applicable"))
+        return {
+          success: false,
+          msg: "Missing invoice coupon json applicable parameter"
+        };
+    }
+
+    return {
+      success: true,
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return {
+      success: false,
+      msg: "Wrong validate manual discount json"
+    };
+  }
+};
