@@ -1222,7 +1222,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
       if (!billJson[i].hasOwnProperty("id") || isNaN(billJson[i].id))
         return {
           success: false,
-          msg: "Missing bill json id"
+          msg: "Missing bill json id parameter"
         };
 
       if (
@@ -1231,13 +1231,13 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
       )
         return {
           success: false,
-          msg: "Missing bill json branch id"
+          msg: "Missing bill json branch id parameter"
         };
 
       if (!billJson[i].hasOwnProperty("base_id") || isNaN(billJson[i].base_id))
         return {
           success: false,
-          msg: "Missing bill json base id"
+          msg: "Missing bill json base id parameter"
         };
 
       if (
@@ -1247,7 +1247,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
       )
         return {
           success: false,
-          msg: "Missing bill json name"
+          msg: "Missing bill json name parameter"
         };
 
       if (
@@ -1257,7 +1257,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
       )
         return {
           success: false,
-          msg: "Missing bill json start date"
+          msg: "Missing bill json start date parameter"
         };
 
       if (
@@ -1267,7 +1267,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
       )
         return {
           success: false,
-          msg: "Missing bill json end date"
+          msg: "Missing bill json end date parameter"
         };
 
       if (
@@ -1277,7 +1277,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
       )
         return {
           success: false,
-          msg: "Missing bill json start time"
+          msg: "Missing bill json start time parameter"
         };
 
       if (
@@ -1287,7 +1287,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
       )
         return {
           success: false,
-          msg: "Missing bill json end time"
+          msg: "Missing bill json end time parameter"
         };
 
       if (
@@ -1296,7 +1296,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
       )
         return {
           success: false,
-          msg: "Missing bill json minimum amount"
+          msg: "Missing bill json minimum amount parameter"
         };
 
       if (
@@ -1305,7 +1305,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
       )
         return {
           success: false,
-          msg: "Missing bill json maximum amount"
+          msg: "Missing bill json maximum amount parameter"
         };
 
       if (
@@ -1314,7 +1314,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
       )
         return {
           success: false,
-          msg: "Missing bill json offer value"
+          msg: "Missing bill json offer value parameter"
         };
 
       if (
@@ -1323,7 +1323,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
       )
         return {
           success: false,
-          msg: "Missing status"
+          msg: "Missing bill json status parameter"
         };
     }
 
@@ -1335,7 +1335,8 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
       )
         return {
           success: false,
-          msg: "Product json value products and free products json empty"
+          msg:
+            "Product json value products and free products json empty parameter"
         };
 
       if (
@@ -1344,13 +1345,14 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
       )
         return {
           success: false,
-          msg: "Product json value products and free products only one full"
+          msg:
+            "Product json value products and free products only one full parameter"
         };
 
       if (!productJson[i].hasOwnProperty("id") || isNaN(productJson[i].id))
         return {
           success: false,
-          msg: "Missing product json id"
+          msg: "Missing product json id parameter"
         };
 
       if (
@@ -1359,7 +1361,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
       )
         return {
           success: false,
-          msg: "Missing product json base id"
+          msg: "Missing product json base id parameter"
         };
 
       if (
@@ -1369,7 +1371,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
       )
         return {
           success: false,
-          msg: "Missing product json name"
+          msg: "Missing product json name parameter"
         };
 
       if (
@@ -1379,7 +1381,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
       )
         return {
           success: false,
-          msg: "Missing product json start date"
+          msg: "Missing product json start date parameter"
         };
 
       if (
@@ -1389,7 +1391,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
       )
         return {
           success: false,
-          msg: "Missing product json end date"
+          msg: "Missing product json end date parameter"
         };
 
       if (
@@ -1399,7 +1401,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
       )
         return {
           success: false,
-          msg: "Missing product json start time"
+          msg: "Missing product json start time parameter"
         };
 
       if (
@@ -1409,7 +1411,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
       )
         return {
           success: false,
-          msg: "Missing product json end time"
+          msg: "Missing product json end time parameter"
         };
 
       // Value Product Json
@@ -1420,7 +1422,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
         )
           return {
             success: false,
-            msg: "Missing product json value product json id"
+            msg: "Missing product json value product json id parameter"
           };
 
         if (
@@ -1429,7 +1431,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
         )
           return {
             success: false,
-            msg: "Missing product json value product json barcode"
+            msg: "Missing product json value product json barcode parameter"
           };
 
         if (
@@ -1438,7 +1440,8 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
         )
           return {
             success: false,
-            msg: "Missing product json value product json minimum quantiy"
+            msg:
+              "Missing product json value product json minimum quantiy parameter"
           };
 
         if (
@@ -1447,7 +1450,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
         )
           return {
             success: false,
-            msg: "Missing product json value product json offer value"
+            msg: "Missing product json value product json offer value parameter"
           };
 
         if (
@@ -1457,7 +1460,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
         )
           return {
             success: false,
-            msg: "Missing product json value product json status"
+            msg: "Missing product json value product json status parameter"
           };
       }
 
@@ -1469,7 +1472,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
         )
           return {
             success: false,
-            msg: "Missing product json free product json id"
+            msg: "Missing product json free product json id parameter"
           };
 
         if (
@@ -1478,7 +1481,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
         )
           return {
             success: false,
-            msg: "Missing product json free product json buy product"
+            msg: "Missing product json free product json buy product parameter"
           };
 
         if (
@@ -1487,7 +1490,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
         )
           return {
             success: false,
-            msg: "Missing product json free product json buy quantiy"
+            msg: "Missing product json free product json buy quantiy parameter"
           };
 
         if (
@@ -1496,7 +1499,7 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
         )
           return {
             success: false,
-            msg: "Missing product json free product json free product"
+            msg: "Missing product json free product json free product parameter"
           };
 
         if (
@@ -1505,24 +1508,24 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
         )
           return {
             success: false,
-            msg: "Missing product json free product json free quantiy"
+            msg: "Missing product json free product json free quantiy parameter"
           };
 
-        if (
-          !productJson[i].free_products[j].hasOwnProperty("status") ||
-          (productJson[i].free_products[j].status !== 0 &&
-            productJson[i].free_products[j].status !== 1)
+        if (parameter
+          !pparameterhasOwnProperty("status") ||
+          (pparameterstatus !== 0 &&
+            parameter.status !== 1)
         )
-          return {
-            success: false,
-            msg: "Missing product json free product json status"
-          };
+          reparameter
+            parameter
+            parameter product json status parameter"
+          };parameter
       }
     }
 
-    return {
-      success: true,
-      msg: "Succesful"
+    return {parameter
+      succesparameter
+      msg: "parameter
     };
   } catch (error) {
     return {
@@ -1549,7 +1552,7 @@ module.exports.storeInvoice = (invoiceJson, returnInvoiceJson) => {
       )
         return {
           success: false,
-          msg: "Missing return invoice json user key"
+          msg: "Missing return invoice json user key parameter"
         };
 
       if (
@@ -1558,7 +1561,7 @@ module.exports.storeInvoice = (invoiceJson, returnInvoiceJson) => {
       )
         return {
           success: false,
-          msg: "Missing return invoice json branch key"
+          msg: "Missing return invoice json branch key parameter"
         };
 
       if (
@@ -1567,8 +1570,32 @@ module.exports.storeInvoice = (invoiceJson, returnInvoiceJson) => {
       )
         return {
           success: false,
-          msg: "Missing return invoice json status"
+          msg: "Missing return invoice json status parameter"
         };
+
+      if (!returnInvoiceJson[i].hasOwnProperty("reason"))
+        return {
+          success: false,
+          msg: "Missing return invoice json reason parameter"
+        };
+
+        if (
+          !returnInvoiceJson[i].hasOwnProperty("invoice_number") ||
+          isNaN(returnInvoiceJson[i].invoice_number)
+        )
+          return {
+            success: false,
+            msg: "Missing return invoice json invoice number parameter"
+          };
+
+          if (
+            !returnInvoiceJson[i].hasOwnProperty("new_invoice_number") ||
+            isNaN(returnInvoiceJson[i].new_invoice_number)
+          )
+            return {
+              success: false,
+              msg: "Missing return invoice json new invoice number parameter"
+            };
     }
 
     // Validate Invoice Parameter
