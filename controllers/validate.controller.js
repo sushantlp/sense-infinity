@@ -1511,21 +1511,21 @@ module.exports.warehouseDiscount = (billJson, productJson) => {
             msg: "Missing product json free product json free quantiy parameter"
           };
 
-        if (parameter
-          !pparameterhasOwnProperty("status") ||
-          (pparameterstatus !== 0 &&
-            parameter.status !== 1)
+        if (
+          !productJson[i].free_products[j].hasOwnProperty("status") ||
+          (productJson[i].free_products[j].status !== 0 &&
+            productJson[i].free_products[j].status !== 1)
         )
-          reparameter
-            parameter
-            parameter product json status parameter"
-          };parameter
+          return {
+            success: false,
+            msg: "Missing product json status parameter"
+          };
       }
     }
 
-    return {parameter
-      succesparameter
-      msg: "parameter
+    return {
+      success: true,
+      msg: "Succesful"
     };
   } catch (error) {
     return {
@@ -1548,7 +1548,9 @@ module.exports.storeInvoice = (invoiceJson, returnInvoiceJson) => {
     for (let i = 0; i < returnInvoiceJson.length; i++) {
       if (
         !returnInvoiceJson[i].hasOwnProperty("user_key") ||
-        isNaN(returnInvoiceJson[i].user_key)
+        isNaN(returnInvoiceJson[i].user_key) ||
+        returnInvoiceJson[i].user_key === null ||
+        returnInvoiceJson[i].user_key === ""
       )
         return {
           success: false,
@@ -1557,7 +1559,9 @@ module.exports.storeInvoice = (invoiceJson, returnInvoiceJson) => {
 
       if (
         !returnInvoiceJson[i].hasOwnProperty("branch_key") ||
-        isNaN(returnInvoiceJson[i].branch_key)
+        isNaN(returnInvoiceJson[i].branch_key) ||
+        returnInvoiceJson[i].branch_key === null ||
+        returnInvoiceJson[i].branch_key === ""
       )
         return {
           success: false,
@@ -1579,27 +1583,207 @@ module.exports.storeInvoice = (invoiceJson, returnInvoiceJson) => {
           msg: "Missing return invoice json reason parameter"
         };
 
-        if (
-          !returnInvoiceJson[i].hasOwnProperty("invoice_number") ||
-          isNaN(returnInvoiceJson[i].invoice_number)
-        )
-          return {
-            success: false,
-            msg: "Missing return invoice json invoice number parameter"
-          };
+      if (
+        !returnInvoiceJson[i].hasOwnProperty("invoice_number") ||
+        isNaN(returnInvoiceJson[i].invoice_number) ||
+        returnInvoiceJson[i].invoice_number === null ||
+        returnInvoiceJson[i].invoice_number === ""
+      )
+        return {
+          success: false,
+          msg: "Missing return invoice json invoice number parameter"
+        };
 
-          if (
-            !returnInvoiceJson[i].hasOwnProperty("new_invoice_number") ||
-            isNaN(returnInvoiceJson[i].new_invoice_number)
-          )
-            return {
-              success: false,
-              msg: "Missing return invoice json new invoice number parameter"
-            };
+      if (
+        !returnInvoiceJson[i].hasOwnProperty("new_invoice_number") ||
+        isNaN(returnInvoiceJson[i].new_invoice_number) ||
+        returnInvoiceJson[i].new_invoice_number === null ||
+        returnInvoiceJson[i].new_invoice_number === ""
+      )
+        return {
+          success: false,
+          msg: "Missing return invoice json new invoice number parameter"
+        };
     }
 
     // Validate Invoice Parameter
-    for (let i = 0; i < invoiceJson.length; i++) {}
+    for (let i = 0; i < invoiceJson.length; i++) {
+      if (
+        !invoiceJson[i].hasOwnProperty("invoice_number") ||
+        isNaN(invoiceJson[i].invoice_number) ||
+        invoiceJson[i].invoice_number === null ||
+        invoiceJson[i].invoice_number === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice json invoice number parameter"
+        };
+
+      if (
+        !invoiceJson[i].hasOwnProperty("counter_key") ||
+        isNaN(invoiceJson[i].counter_key) ||
+        invoiceJson[i].counter_key === null ||
+        invoiceJson[i].counter_key === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice json counter key parameter"
+        };
+
+      if (
+        !invoiceJson[i].hasOwnProperty("user_key") ||
+        isNaN(invoiceJson[i].user_key) ||
+        invoiceJson[i].user_key === null ||
+        invoiceJson[i].user_key === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice json user key parameter"
+        };
+
+      if (
+        !invoiceJson[i].hasOwnProperty("branch_key") ||
+        isNaN(invoiceJson[i].branch_key) ||
+        invoiceJson[i].branch_key === null ||
+        invoiceJson[i].branch_key === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice json branch key parameter"
+        };
+
+      if (!invoiceJson[i].hasOwnProperty("customer_name"))
+        return {
+          success: false,
+          msg: "Missing invoice json customer name parameter"
+        };
+
+      if (
+        !invoiceJson[i].hasOwnProperty("customer_mobile") ||
+        isNaN(invoiceJson[i].customer_mobile)
+      )
+        return {
+          success: false,
+          msg: "Missing invoice json customer mobile parameter"
+        };
+
+      if (
+        !invoiceJson[i].hasOwnProperty("membership_code") ||
+        isNaN(invoiceJson[i].membership_code)
+      )
+        return {
+          success: false,
+          msg: "Missing invoice json membership code parameter"
+        };
+
+      if (
+        !invoiceJson[i].hasOwnProperty("total_amount") ||
+        isNaN(invoiceJson[i].total_amount) ||
+        invoiceJson[i].total_amount === null ||
+        invoiceJson[i].total_amount === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice json total amount parameter"
+        };
+
+      if (
+        !invoiceJson[i].hasOwnProperty("cashback") ||
+        isNaN(invoiceJson[i].cashback) ||
+        invoiceJson[i].cashback === null ||
+        invoiceJson[i].cashback === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice json cashback parameter"
+        };
+
+      if (
+        !invoiceJson[i].hasOwnProperty("loyalty_used") ||
+        isNaN(invoiceJson[i].loyalty_used) ||
+        invoiceJson[i].loyalty_used === null ||
+        invoiceJson[i].loyalty_used === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice json loyalty used parameter"
+        };
+
+      if (
+        !invoiceJson[i].hasOwnProperty("total_saving") ||
+        isNaN(invoiceJson[i].total_saving) ||
+        invoiceJson[i].total_saving === null ||
+        invoiceJson[i].total_saving === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice json total saving parameter"
+        };
+
+      if (
+        !invoiceJson[i].hasOwnProperty("sodexo_amount") ||
+        isNaN(invoiceJson[i].sodexo_amount) ||
+        invoiceJson[i].sodexo_amount === null ||
+        invoiceJson[i].sodexo_amount === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice json sodexo amount parameter"
+        };
+
+      if (
+        !invoiceJson[i].hasOwnProperty("invoice_total_amount") ||
+        isNaN(invoiceJson[i].invoice_total_amount) ||
+        invoiceJson[i].invoice_total_amount === null ||
+        invoiceJson[i].invoice_total_amount === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice json invoice total amount parameter"
+        };
+
+      if (!invoiceJson[i].hasOwnProperty("gstin_name"))
+        return {
+          success: false,
+          msg: "Missing invoice json gstin name parameter"
+        };
+
+      if (!invoiceJson[i].hasOwnProperty("gstin_number"))
+        return {
+          success: false,
+          msg: "Missing invoice json gstin number parameter"
+        };
+
+      if (
+        !invoiceJson[i].hasOwnProperty("return_status") ||
+        (invoiceJson[i].return_status !== 0 &&
+          invoiceJson[i].return_status !== 1)
+      )
+        return {
+          success: false,
+          msg: "Missing invoice json return status parameter"
+        };
+
+      if (
+        !invoiceJson[i].hasOwnProperty("status") ||
+        (invoiceJson[i].status !== 0 && invoiceJson[i].status !== 1)
+      )
+        return {
+          success: false,
+          msg: "Missing invoice json status parameter"
+        };
+
+      if (
+        !invoiceJson[i].hasOwnProperty("round_off_amount") ||
+        isNaN(invoiceJson[i].round_off_amount) ||
+        invoiceJson[i].round_off_amount === null ||
+        invoiceJson[i].round_off_amount === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice json round off amount parameter"
+        };
+    }
 
     return {
       success: true,
