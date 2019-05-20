@@ -1783,6 +1783,54 @@ module.exports.storeInvoice = (invoiceJson, returnInvoiceJson) => {
           success: false,
           msg: "Missing invoice json round off amount parameter"
         };
+
+      if (!invoiceJson[i].hasOwnProperty("invoice_coupon"))
+        return {
+          success: false,
+          msg: "Missing invoice json invoice coupon parameter"
+        };
+
+      const invoiceCoupon = validateInvoiceCoupon(
+        invoiceJson[i].invoice_coupon
+      );
+
+      if (!invoiceCoupon.success) return invoiceCoupon;
+
+      if (!invoiceJson[i].hasOwnProperty("invoice_payment"))
+        return {
+          success: false,
+          msg: "Missing invoice json invoice payment parameter"
+        };
+
+      const invoicePayment = validateInvoicePayment(
+        invoiceJson[i].invoice_payment
+      );
+
+      if (!invoicePayment.success) return invoicePayment;
+
+      if (!invoiceJson[i].hasOwnProperty("invoice_product"))
+        return {
+          success: false,
+          msg: "Missing invoice json invoice product parameter"
+        };
+
+      const invoiceProduct = validateInvoiceProduct(
+        invoiceJson[i].invoice_product
+      );
+
+      if (!invoiceProduct.success) return invoiceProduct;
+
+      if (!invoiceJson[i].hasOwnProperty("manual_discount"))
+        return {
+          success: false,
+          msg: "Missing invoice json manual discount parameter"
+        };
+
+      const manualDiscount = validateManualDiscount(
+        invoiceJson[i].manual_discount
+      );
+
+      if (!manualDiscount.success) return manualDiscount;
     }
 
     return {
@@ -1793,6 +1841,189 @@ module.exports.storeInvoice = (invoiceJson, returnInvoiceJson) => {
     return {
       success: false,
       msg: "Wrong json"
+    };
+  }
+};
+
+// Validate Manual Discount
+const validateManualDiscount = json => {
+  try {
+    for (let i = 0; i < json.length; i++) {
+      if (
+        !json[i].hasOwnProperty("status") ||
+        (json[i].status !== 0 && json[i].status !== 1)
+      )
+        return {
+          success: false,
+          msg: "Missing invoice manual discount json status parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("amount") ||
+        isNaN(json[i].amount) ||
+        json[i].amount === null ||
+        json[i].amount === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice manual discount json amount parameter"
+        };
+    }
+
+    return {
+      success: true,
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return {
+      success: false,
+      msg: "Wrong validate manual discount json"
+    };
+  }
+};
+
+// Validate Invoice Product
+const validateInvoiceProduct = json => {
+  try {
+    for (let i = 0; i < json.length; i++) {
+      if (
+        !json[i].hasOwnProperty("status") ||
+        (json[i].status !== 0 && json[i].status !== 1)
+      )
+        return {
+          success: false,
+          msg: "Missing invoice product json status parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("return_status") ||
+        (json[i].return_status !== 0 && json[i].return_status !== 1)
+      )
+        return {
+          success: false,
+          msg: "Missing invoice product json return status parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("barcode") ||
+        isNaN(json[i].barcode) ||
+        json[i].barcode === null ||
+        json[i].barcode === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice product json barcode parameter"
+        };
+
+      if (!json[i].hasOwnProperty("name"))
+        return {
+          success: false,
+          msg: "Missing invoice product json name parameter"
+        };
+
+      if (!json[i].hasOwnProperty("unit"))
+        return {
+          success: false,
+          msg: "Missing invoice product json unit parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("quantity") ||
+        isNaN(json[i].quantity) ||
+        json[i].quantity === null ||
+        json[i].quantity === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice product json quantity parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("sgst") ||
+        isNaN(json[i].sgst) ||
+        json[i].sgst === null ||
+        json[i].sgst === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice product json sgst parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("cgst") ||
+        isNaN(json[i].cgst) ||
+        json[i].cgst === null ||
+        json[i].cgst === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice product json cgst parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("igst") ||
+        isNaN(json[i].igst) ||
+        json[i].igst === null ||
+        json[i].igst === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice product json igst parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("price") ||
+        isNaN(json[i].price) ||
+        json[i].price === null ||
+        json[i].price === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice product json price parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("discount") ||
+        isNaN(json[i].discount) ||
+        json[i].discount === null ||
+        json[i].discount === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice product json discount parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("discount_price") ||
+        isNaN(json[i].discount_price) ||
+        json[i].discount_price === null ||
+        json[i].discount_price === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice product json discount price parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("sub_total") ||
+        isNaN(json[i].sub_total) ||
+        json[i].sub_total === null ||
+        json[i].sub_total === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice product json sub total parameter"
+        };
+    }
+
+    return {
+      success: true,
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return {
+      success: false,
+      msg: "Wrong validate manual discount json"
     };
   }
 };
