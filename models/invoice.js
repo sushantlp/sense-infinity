@@ -134,6 +134,11 @@ module.exports.keepInvoice = async (
     // Create Connection
     const connection = await pool.getConnection();
 
+    if (customerName === undefined)
+      customerName = connection.escape(customerName);
+    if (gstinName === undefined) gstinName = connection.escape(gstinName);
+    if (gstinNumber === undefined) gstinNumber = connection.escape(gstinNumber);
+
     // Query
     const query =
       "INSERT INTO `invoices` (`invoice_no`, `store_counter_id`, `warehouse_user_id`, `store_id`, `partner_id`, `customer_name`, `customer_mobile`, `membership_code`, `total_amount`, `invoice_cashback`, `invoice_total_saving`, `invoice_loyalty_used`, `invoice_total_amount`, `invoice_sodexo_amount`, `gstin_name`, `gstin_number`, `round_off_amount`, `return_status`, `status`, track_status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -198,6 +203,11 @@ module.exports.updateInvoice = async (
 
     // Create Connection
     const connection = await pool.getConnection();
+
+    if (customerName === undefined)
+      customerName = connection.escape(customerName);
+    if (gstinName === undefined) gstinName = connection.escape(gstinName);
+    if (gstinNumber === undefined) gstinNumber = connection.escape(gstinNumber);
 
     // Query
     const query =

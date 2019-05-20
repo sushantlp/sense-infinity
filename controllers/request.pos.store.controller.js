@@ -222,7 +222,8 @@ module.exports.requestStoreInvoice = (req, res) => {
     req.body.invoices !== undefined &&
     req.body.invoices !== "" &&
     req.body.return_invoice !== undefined &&
-    req.body.return_invoice !== ""
+    req.body.return_invoice !== "" &&
+    req.params.hasOwnProperty("storeCode")
   ) {
     // Validate Invoice And Return Invoice Parameter
     const validate = validateController.storeInvoice(
@@ -230,10 +231,13 @@ module.exports.requestStoreInvoice = (req, res) => {
       req.body.return_invoice
     );
 
+    if (!validate.success) return res.status(400).send(validate.msg);
+
     // Logic Store Invoice Record
     return posStoreController
       .logicStoreInvoice(
         res.userKey,
+        req.params.storeCode,
         req.body.invoices,
         req.body.return_invoice
       )
@@ -244,7 +248,7 @@ module.exports.requestStoreInvoice = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              "/api/v1/pos/invoices",
+              `/api/v1/pos/invoices/${req.params.storeCode}`,
               200,
               response.success,
               response.count

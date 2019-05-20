@@ -73,6 +73,10 @@ module.exports.keepInvoicePayment = async (
     // Create Connection
     const connection = await pool.getConnection();
 
+    if (transactionId === undefined)
+      transactionId = connection.escape(transactionId);
+    if (cardNo === undefined) cardNo = connection.escape(cardNo);
+
     // Query
     const query =
       "INSERT INTO `invoice_payments` (`invoice_no`, `warehouse_payment_id`, `payment_amount`, `transaction_id`, `card_no`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?)";

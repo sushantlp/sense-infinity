@@ -71,6 +71,10 @@ routes.get(
 );
 
 // Post Stores Invoice
-routes.post("/invoices", apiKeyAuth, PosStoreApiController.requestStoreInvoice);
+routes.post(
+  "/invoices/:storeCode([0-9]+)",
+  apiKeyAuth,
+  PosStoreApiController.requestStoreInvoice
+);
 
 module.exports = routes;

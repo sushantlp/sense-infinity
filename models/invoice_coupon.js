@@ -34,6 +34,29 @@ const now = moment()
  * Start Database Read and Write
  */
 
+// Read Invoice Coupon By [coupon_code,invoice_no]
+module.exports.readCouponByCode = async (select, invoiceNo, couponCode) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM invoice_coupons WHERE invoice_no = ? AND coupon_code = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [invoiceNo, couponCode]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
  // Read Invoice Coupon By [id]
 module.exports.readInvoiceCoupon = async (select, id) => {
   try {
@@ -72,6 +95,8 @@ module.exports.keepInvoiceCoupon = async (
 
     // Create Connection
     const connection = await pool.getConnection();
+
+    if (applicableOn === undefined) applicableOn = connection.escape(applicableOn);
 
     // Query
     const query =
@@ -113,6 +138,8 @@ module.exports.updateInvoiceCoupon = async (
     // Create Connection
     const connection = await pool.getConnection();
 
+    if (applicableOn === undefined) applicableOn = connection.escape(applicableOn);
+    
     // Query
     const query =
       "UPDATE `invoice_coupons` SET `coupon_code` = ?, `applicable_on` = ?, `discount` = ?, `cashback` = ?, `status` = ?, `updated_at` = ? WHERE `id` = ?";

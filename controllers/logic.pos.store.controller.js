@@ -16,6 +16,8 @@ const productDiscountModel = require("../models/product_discount");
 const discountTrackModel = require("../models/product_discount_track");
 const freeDiscountModel = require("../models/free_product_offer");
 const valueDiscountModel = require("../models/value_product_offer");
+const invoiceModel = require("../models/invoice");
+const invoiceCouponModel = require("../models/invoice_coupon");
 
 // Logic Warehouse Store List
 module.exports.logicWarehouseStoreList = async id => {
@@ -605,7 +607,12 @@ const createDiscountJson = async json => {
 };
 
 // Logic Store Invoice Record
-module.exports.logicStoreInvoice = async (id, invoices, returnInvoices) => {
+module.exports.logicStoreInvoice = async (
+  id,
+  code,
+  invoices,
+  returnInvoices
+) => {
   try {
     // Call User Partner Data
     const partnerRecord = await shareController.userPartnerData(id);
@@ -616,6 +623,240 @@ module.exports.logicStoreInvoice = async (id, invoices, returnInvoices) => {
         data: [],
         msg: "Unknown partner"
       };
+
+    // Read Partner Store Record By Store Code
+    let storeRecord = await partnerStoreModel.readStoreByCode(
+      "store_id",
+      code,
+      partnerRecord[0].partner_id,
+      1
+    );
+
+    // Parse
+    storeRecord = JSON.stringify(storeRecord);
+    storeRecord = JSON.parse(storeRecord);
+
+    if (storeRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown store"
+      };
+
+    logicInvoice(partnerRecord, storeRecord, invoices);
+    logicReturnInvoice(partnerRecord, storeRecord, returnInvoices);
+
+    return {
+      success: true,
+      data: [],
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Keep Invoice
+const logicInvoice = async (partnerRecord, storeRecord, invoices) => {
+  try {
+    return invoices.map(async (invoice, index) => {
+      let invoiceId = 0;
+      const customerName =
+        invoice.customer_name === "" || invoice.customer_name === null
+          ? undefined
+          : invoice.customer_name.replace(/\b[a-z]/g, function(f) {
+              return f.toUpperCase();
+            });
+
+      const gstinName =
+        invoice.gstin_name === "" || invoice.gstin_name === null
+          ? undefined
+          : invoice.gstin_name;
+
+      const gstinNumber =
+        invoice.gstin_number === "" || invoice.gstin_number === null
+          ? undefined
+          : invoice.gstin_number;
+
+      let invoiceRecord = await invoiceModel.readInvoice(
+        "*",
+        partnerRecord[0].partner_id,
+        storeRecord[0].store_id,
+        invoice.invoice_number
+      );
+
+      // Parse
+      invoiceRecord = JSON.stringify(invoiceRecord);
+      invoiceRecord = JSON.parse(invoiceRecord);
+
+      if (invoiceRecord.length === 0) {
+        const recentInsert = await invoiceModel.keepInvoice(
+          invoice.invoice_number,
+          invoice.counter_key,
+          invoice.user_key,
+          storeRecord[0].store_id,
+          partnerRecord[0].partner_id,
+          customerName,
+          invoice.customer_mobile,
+          invoice.membership_code,
+          invoice.total_amount,
+          invoice.cashback,
+          invoice.total_saving,
+          invoice.loyalty_used,
+          invoice.invoice_total_amount,
+          invoice.sodexo_amount,
+          gstinName,
+          gstinNumber,
+          invoice.round_off_amount,
+          invoice.return_status,
+          invoice.status,
+          1
+        );
+        console.log(recentInsert);
+        console.log(recentInsert.insertId);
+        invoiceId = recentInsert.insertId;
+      } else {
+        invoiceId = invoiceRecord[0].id;
+
+        invoiceModel.updateInvoice(
+          invoice.counter_key,
+          customerName,
+          invoice.customer_mobile,
+          invoice.membership_code,
+          invoice.total_amount,
+          invoice.cashback,
+          invoice.total_saving,
+          invoice.loyalty_used,
+          invoice.invoice_total_amount,
+          invoice.sodexo_amount,
+          gstinName,
+          gstinNumber,
+          invoice.round_off_amount,
+          invoice.return_status,
+          invoice.status,
+          1,
+          invoiceId
+        );
+      }
+
+      logicInvoiceCoupon(invoice.invoice_coupon, invoiceId);
+      logicInvoicePayment(invoice.invoice_payment, invoiceId);
+      logicInvoiceProduct(invoice.invoice_product, invoiceId);
+      logicManualDiscount(invoice.manual_discount, invoiceId);
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+const logicInvoiceCoupon = async (invoiceCoupon, invoiceId) => {
+  try {
+    return invoiceCoupon.map(async (coupon, index) => {
+      const applicable =
+        coupon.applicable === null || coupon.applicable === ""
+          ? undefined
+          : coupon.applicable;
+      let couponRecord = await invoiceCouponModel.readCouponByCode(
+        "*",
+        invoiceId,
+        coupon.barcode
+      );
+
+      // Parse
+      couponRecord = JSON.stringify(couponRecord);
+      couponRecord = JSON.parse(couponRecord);
+
+      if (couponRecord.length === 0)
+        invoiceCouponModel.keepInvoiceCoupon(
+          invoiceId,
+          coupon.barcode,
+          applicable,
+          coupon.discount,
+          coupon.cashback,
+          coupon.status
+        );
+      else
+        invoiceCouponModel.updateInvoiceCoupon(
+          coupon.barcode,
+          applicable,
+          coupon.discount,
+          coupon.cashback,
+          coupon.status,
+          couponRecord[0].id
+        );
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+const logicInvoicePayment = async (invoicePayment, invoiceId) => {
+  try {
+    return invoicePayment.map(async (payment, index) => {
+      const transaction =
+        payment.transaction === null || payment.transaction === ""
+          ? undefined
+          : payment.transaction;
+
+      const card =
+        payment.card === null || payment.card === "" ? undefined : payment.card;
+
+      let couponRecord = await invoiceCouponModel.readCouponByCode(
+        "*",
+        invoiceId,
+        coupon.barcode
+      );
+
+      // Parse
+      couponRecord = JSON.stringify(couponRecord);
+      couponRecord = JSON.parse(couponRecord);
+
+      if (couponRecord.length === 0)
+        invoiceCouponModel.keepInvoiceCoupon(
+          invoiceId,
+          coupon.barcode,
+          applicable,
+          coupon.discount,
+          coupon.cashback,
+          coupon.status
+        );
+      else
+        invoiceCouponModel.updateInvoiceCoupon(
+          coupon.barcode,
+          applicable,
+          coupon.discount,
+          coupon.cashback,
+          coupon.status,
+          couponRecord[0].id
+        );
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+const logicInvoiceProduct = async (invoiceProduct, invoiceId) => {
+  try {
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+const logicManualDiscount = async (manualDiscount, invoiceId) => {
+  try {
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Keep Return Invoice
+const logicReturnInvoice = async (
+  partnerRecord,
+  storeRecord,
+  returnInvoices
+) => {
+  try {
+    return returnInvoices.map(async (invoice, index) => {});
   } catch (error) {
     return Promise.reject(error);
   }

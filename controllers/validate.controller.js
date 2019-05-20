@@ -1541,7 +1541,7 @@ module.exports.storeInvoice = (invoiceJson, returnInvoiceJson) => {
     if (invoiceJson.length === 0 && returnInvoiceJson.length === 0)
       return {
         success: false,
-        msg: "Empty json"
+        msg: "Empty invoice and return invoice parameter json"
       };
 
     // Validate Return Invoice Parameter
@@ -1558,19 +1558,8 @@ module.exports.storeInvoice = (invoiceJson, returnInvoiceJson) => {
         };
 
       if (
-        !returnInvoiceJson[i].hasOwnProperty("branch_key") ||
-        isNaN(returnInvoiceJson[i].branch_key) ||
-        returnInvoiceJson[i].branch_key === null ||
-        returnInvoiceJson[i].branch_key === ""
-      )
-        return {
-          success: false,
-          msg: "Missing return invoice json branch key parameter"
-        };
-
-      if (
         !returnInvoiceJson[i].hasOwnProperty("status") ||
-        (returnInvoiceJson.status !== 0 && returnInvoiceJson.status !== 1)
+        (returnInvoiceJson[i].status !== 0 && returnInvoiceJson[i].status !== 1)
       )
         return {
           success: false,
@@ -1639,17 +1628,6 @@ module.exports.storeInvoice = (invoiceJson, returnInvoiceJson) => {
         return {
           success: false,
           msg: "Missing invoice json user key parameter"
-        };
-
-      if (
-        !invoiceJson[i].hasOwnProperty("branch_key") ||
-        isNaN(invoiceJson[i].branch_key) ||
-        invoiceJson[i].branch_key === null ||
-        invoiceJson[i].branch_key === ""
-      )
-        return {
-          success: false,
-          msg: "Missing invoice json branch key parameter"
         };
 
       if (!invoiceJson[i].hasOwnProperty("customer_name"))
