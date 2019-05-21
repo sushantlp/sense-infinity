@@ -18,7 +18,7 @@ module.exports.requestWarehouseStoreList = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              "/api/v1/pos/stores",
+              "/api/v1/stores/stores",
               200,
               response.success,
               {}
@@ -49,7 +49,7 @@ module.exports.requestStoreRecord = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              `/api/v1/pos/stores/${req.params.storeCode}`,
+              `/api/v1/stores/stores/${req.params.storeCode}`,
               200,
               response.success,
               {}
@@ -76,7 +76,7 @@ module.exports.requestWarehouseRecord = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              "/api/v1/pos/warehouse",
+              "/api/v1/stores/warehouse",
               200,
               response.success,
               {}
@@ -107,7 +107,7 @@ module.exports.requestEmployeeRecord = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              `/api/v1/pos/employees/${req.params.storeCode}`,
+              `/api/v1/stores/employees/${req.params.storeCode}`,
               200,
               response.success,
               {}
@@ -138,7 +138,7 @@ module.exports.requestStoreProduct = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              `/api/v1/pos/products/${req.params.storeCode}`,
+              `/api/v1/stores/products/${req.params.storeCode}`,
               200,
               response.success,
               {}
@@ -169,7 +169,7 @@ module.exports.requestStoreProductSync = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              `/api/v1/pos/products/${req.params.id}`,
+              `/api/v1/stores/products/${req.params.id}`,
               200,
               response.success,
               {}
@@ -200,7 +200,7 @@ module.exports.requestStoreDiscount = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              `/api/v1/pos/discounts/${req.params.storeCode}`,
+              `/api/v1/stores/discounts/${req.params.storeCode}`,
               200,
               response.success,
               response.count
@@ -248,10 +248,52 @@ module.exports.requestStoreInvoice = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              `/api/v1/pos/invoices/${req.params.storeCode}`,
+              `/api/v1/stores/invoices/${req.params.storeCode}`,
               200,
               response.success,
               response.count
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
+
+// Request Store Login History
+module.exports.requestStoreLoginHistory = (req, res) => {
+  if (
+    res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.body.history !== undefined &&
+    req.body.history !== "" &&
+    req.params.hasOwnProperty("storeCode")
+  ) {
+    // Validate Login History Parameter
+    const validate = validateController.loginHistory(req.body.history);
+
+    if (!validate.success) return res.status(400).send(validate.msg);
+
+    // Logic Store Login History
+    return posStoreController
+      .logicStoreLoginHistory(
+        res.userKey,
+        req.params.storeCode,
+        req.body.history
+      )
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/api/v1/stores/login-history/${req.params.storeCode}`,
+              200,
+              response.success,
+              {}
             )
           );
       })

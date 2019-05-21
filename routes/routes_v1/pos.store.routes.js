@@ -77,4 +77,11 @@ routes.post(
   PosStoreApiController.requestStoreInvoice
 );
 
+// Post Stores Login-History
+routes.post(
+  "/login-history/:storeCode([0-9]+)",
+  apiKeyAuth,
+  PosStoreApiController.requestStoreLoginHistory
+);
+
 module.exports = routes;

@@ -303,3 +303,45 @@ module.exports.requestStoresInvoice = (req, res) => {
       });
   } else return res.status(400).send("Not a good api call");
 };
+
+// Request Warehouse Login History
+module.exports.requestWarehouseLoginHistory = (req, res) => {
+  if (
+    res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.body.history !== undefined &&
+    req.body.history !== "" &&
+    req.params.hasOwnProperty("storeCode")
+  ) {
+    // Validate Login History Parameter
+    const validate = validateController.loginHistory(req.body.history);
+
+    if (!validate.success) return res.status(400).send(validate.msg);
+
+    // Logic Warehouse Login History
+    return posStoreController
+      .logicWarehouseLoginHistory(
+        res.userKey,
+        req.params.storeCode,
+        req.body.history
+      )
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/api/v1/Warehouse/login-history/${req.params.storeCode}`,
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};

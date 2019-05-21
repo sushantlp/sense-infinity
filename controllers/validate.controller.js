@@ -2133,3 +2133,131 @@ const validateInvoiceCoupon = json => {
     };
   }
 };
+
+// Validate Login History Parameter
+module.exports.loginHistory = json => {
+  try {
+    for (let i = 0; i < json.length; i++) {
+      if (
+        !json[i].hasOwnProperty("counter_key") ||
+        isNaN(json[i].counter_key) ||
+        json[i].counter_key === null ||
+        json[i].counter_key === ""
+      )
+        return {
+          success: false,
+          msg: "Missing login history json counter key parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("user_key") ||
+        isNaN(json[i].user_key) ||
+        json[i].user_key === null ||
+        json[i].user_key === ""
+      )
+        return {
+          success: false,
+          msg: "Missing login history json user key parameter"
+        };
+
+      if (!json[i].hasOwnProperty("login_time"))
+        return {
+          success: false,
+          msg: "Missing login history json login time parameter"
+        };
+
+      if (!json[i].hasOwnProperty("logout_time"))
+        return {
+          success: false,
+          msg: "Missing login history json logout time parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("opening_amount") ||
+        isNaN(json[i].opening_amount) ||
+        json[i].opening_amount === null ||
+        json[i].opening_amount === ""
+      )
+        return {
+          success: false,
+          msg: "Missing login history json opening amount parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("closing_amount") ||
+        isNaN(json[i].closing_amount) ||
+        json[i].closing_amount === null ||
+        json[i].closing_amount === ""
+      )
+        return {
+          success: false,
+          msg: "Missing login history json closing amount parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("total_invoice") ||
+        isNaN(json[i].total_invoice) ||
+        json[i].total_invoice === null ||
+        json[i].total_invoice === ""
+      )
+        return {
+          success: false,
+          msg: "Missing login history json total invoice parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("cash_amount") ||
+        isNaN(json[i].cash_amount) ||
+        json[i].cash_amount === null ||
+        json[i].cash_amount === ""
+      )
+        return {
+          success: false,
+          msg: "Missing login history json cash amount parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("card_amount") ||
+        isNaN(json[i].card_amount) ||
+        json[i].card_amount === null ||
+        json[i].card_amount === ""
+      )
+        return {
+          success: false,
+          msg: "Missing login history json card amount parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("sodexo_amount") ||
+        isNaN(json[i].sodexo_amount) ||
+        json[i].sodexo_amount === null ||
+        json[i].sodexo_amount === ""
+      )
+        return {
+          success: false,
+          msg: "Missing login history json sodexo amount parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("total_amount") ||
+        isNaN(json[i].total_amount) ||
+        json[i].total_amount === null ||
+        json[i].total_amount === ""
+      )
+        return {
+          success: false,
+          msg: "Missing login history json total amount parameter"
+        };
+    }
+
+    return {
+      success: true,
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return {
+      success: false,
+      msg: "Wrong validate manual discount json"
+    };
+  }
+};

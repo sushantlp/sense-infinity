@@ -10,6 +10,7 @@ const nodeMailer = require("nodemailer");
 const smsModel = require("../models/sms");
 const userModel = require("../models/user");
 const partnerModel = require("../models/partner");
+const historyModel = require("../models/login_history");
 
 // Import Config
 const { Mail } = require("../config/constants");
@@ -594,6 +595,45 @@ module.exports.userPartnerData = async id => {
     partnerRecord = JSON.parse(partnerRecord);
 
     return partnerRecord;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Write Login History
+module.exports.writeLoginHistory = (
+  partnerRecord,
+  storeRecord,
+  historyJson
+) => {
+  try {
+    return historyJson.map(async (history, index) => {
+      const loginTime =
+        history.login_time === "" || history.login_time === null
+          ? undefined
+          : history.login_time;
+      const logoutTime =
+        history.logout_time === "" || history.logout_time === null
+          ? undefined
+          : history.logout_time;
+
+      historyModel.keepLoginHistory(
+        partnerRecord[0].partner_id,
+        storeRecord[0].store_id,
+        history.counter_key,
+        history.user_key,
+        loginTime,
+        logoutTime,
+        history.opening_amount,
+        history.closing_amount,
+        history.total_invoice,
+        history.cash_amount,
+        history.card_amount,
+        history.sodexo_amount,
+        history.total_amount,
+        1
+      );
+    });
   } catch (error) {
     return Promise.reject(error);
   }

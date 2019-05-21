@@ -1,71 +1,67 @@
-'use strict';
+"use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('login_histories', {
-      login_history_id: {
+    return queryInterface.createTable("login_histories", {
+      id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      store_id: {
+      partner_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'partner_stores',
-          key: 'store_id'
+          model: "partners",
+          key: "partner_id"
         }
+      },
+      store_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       store_counter_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'store_counters',
-          key: 'id'
-        }
+        allowNull: false
       },
       warehouse_user_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'warehouse_user_lists',
-          key: 'id'
-        }
+        allowNull: false
       },
       login_time: {
-        type: Sequelize.TIME,
+        type: Sequelize.STRING,
         allowNull: true
       },
       logout_time: {
-        type: Sequelize.TIME,
+        type: Sequelize.STRING,
         allowNull: true
       },
       opening_amount: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       closing_amount: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       total_invoice: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       cash_amount: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       card_amount: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       sodexo_amount: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       total_amount: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL,
         defaultValue: 0
       },
       status: {
@@ -85,6 +81,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('login_histories');
+    return queryInterface.dropTable("login_histories");
   }
 };

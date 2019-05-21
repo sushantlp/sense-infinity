@@ -72,4 +72,11 @@ routes.get(
   PosWarehouseApiController.requestStoresInvoice
 );
 
+// Post Warehouse Login-History
+routes.post(
+  "/login-history/:storeCode([0-9]+)",
+  apiKeyAuth,
+  PosWarehouseApiController.requestWarehouseLoginHistory
+);
+
 module.exports = routes;
