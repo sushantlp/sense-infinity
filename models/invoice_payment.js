@@ -34,8 +34,8 @@ const now = moment()
  * Start Database Read and Write
  */
 
-// Read Invoice Payment By [id]
-module.exports.readInvoicePayment = async (select, id) => {
+// Read Invoice Payment By [invoice_no]
+module.exports.readInvoicePayment = async (select, invoiceNo) => {
   try {
     // Get Pool Object
     const pool = constants.createMysqlConnection();
@@ -44,10 +44,10 @@ module.exports.readInvoicePayment = async (select, id) => {
     const connection = await pool.getConnection();
 
     // Query
-    const query = `SELECT ${select} FROM invoice_payments WHERE id = ?`;
+    const query = `SELECT ${select} FROM invoice_payments WHERE invoice_no = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [id]);
+    const [rows, fields] = await connection.query(query, [invoiceNo]);
 
     connection.release();
 

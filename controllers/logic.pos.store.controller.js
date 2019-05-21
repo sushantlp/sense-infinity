@@ -567,47 +567,51 @@ const readDiscount = async (partnerRecord, storeRecord) => {
 
 // Create Discount Json
 const createDiscountJson = async json => {
-  let bunch = json
-    .filter(
-      discount =>
-        discount.discount_base_id === 5 ||
-        discount.discount_base_id === 3 ||
-        discount.discount_base_id === 4
-    )
-    .map(async (discount, index) => {
-      let obj = {};
-      obj.key_id = discount.id;
-      obj.discount_base_key = discount.discount_base_id;
-      obj.discount_name = discount.name;
-      obj.start_date = discount.start_date;
-      obj.end_date = discount.end_date;
-      obj.start_time = discount.start_time;
-      obj.end_time = discount.end_time;
-      obj.status = discount.status;
+  try {
+    let bunch = json
+      .filter(
+        discount =>
+          discount.discount_base_id === 5 ||
+          discount.discount_base_id === 3 ||
+          discount.discount_base_id === 4
+      )
+      .map(async (discount, index) => {
+        let obj = {};
+        obj.key_id = discount.id;
+        obj.discount_base_key = discount.discount_base_id;
+        obj.discount_name = discount.name;
+        obj.start_date = discount.start_date;
+        obj.end_date = discount.end_date;
+        obj.start_time = discount.start_time;
+        obj.end_time = discount.end_time;
+        obj.status = discount.status;
 
-      if (discount.discount_base_id === 5) {
-        obj.free_products = await freeDiscountModel.readFreeOffer(
-          "id AS key_id, buy_product_barcode AS buy_barcode, buy_product_quantity AS buy_quantity, free_product_barcode AS free_barcode, free_product_quantity AS free_quantity, status",
-          discount.id
-        );
+        if (discount.discount_base_id === 5) {
+          obj.free_products = await freeDiscountModel.readFreeOffer(
+            "id AS key_id, buy_product_barcode AS buy_barcode, buy_product_quantity AS buy_quantity, free_product_barcode AS free_barcode, free_product_quantity AS free_quantity, status",
+            discount.id
+          );
 
-        obj.value_products = [];
-      } else if (
-        discount.discount_base_id === 3 ||
-        discount.discount_base_id === 4
-      ) {
-        obj.value_products = await valueDiscountModel.readValueOffer(
-          "id AS key_id, product_barcode AS barcode, buy_product_quantity AS buy_quantity, offer_value AS value, status",
-          discount.id
-        );
+          obj.value_products = [];
+        } else if (
+          discount.discount_base_id === 3 ||
+          discount.discount_base_id === 4
+        ) {
+          obj.value_products = await valueDiscountModel.readValueOffer(
+            "id AS key_id, product_barcode AS barcode, buy_product_quantity AS buy_quantity, offer_value AS value, status",
+            discount.id
+          );
 
-        obj.free_products = [];
-      }
+          obj.free_products = [];
+        }
 
-      return obj;
-    });
+        return obj;
+      });
 
-  return await Promise.all(bunch);
+    return await Promise.all(bunch);
+  } catch (error) {
+    return Promise.reject(error);
+  }
 };
 
 // Logic Store Invoice Record
@@ -733,12 +737,7 @@ const logicInvoice = async (partnerRecord, storeRecord, invoices) => {
       logicInvoiceCoupon(invoice.invoice_coupon, invoiceId);
       logicInvoicePayment(invoice.invoice_payment, invoiceId);
       logicInvoiceProduct(invoice.invoice_product, invoiceId);
-      logicManualDiscount(
-        invoice.manual_discount,
-        invoiceId,
-        invoice.user_key,
-        storeRecord[0].store_id
-      );
+      logicManualDiscount(invoice.manual_discount, invoiceId, invoice.user_key);
     });
   } catch (error) {
     return Promise.reject(error);
@@ -844,16 +843,10 @@ const logicInvoiceProduct = async (invoiceProduct, invoiceId) => {
   }
 };
 
-const logicManualDiscount = async (
-  manualDiscount,
-  invoiceId,
-  userId,
-  storeId
-) => {
+const logicManualDiscount = async (manualDiscount, invoiceId, userId) => {
   try {
     return manualDiscount.map(async (discount, index) => {
       manualDiscountModel.keepManualDiscount(
-        storeId,
         userId,
         invoiceId,
         discount.amount,

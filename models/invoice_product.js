@@ -65,8 +65,8 @@ module.exports.readInvoiceProduct = async (select, invoiceNo, barcode) => {
   }
 };
 
-// Read Invoice Product By [id]
-module.exports.readInvoiceProductById = async (select, id) => {
+// Read Invoice Product By [invoice_no]
+module.exports.readInvoiceProductByNo = async (select, invoiceNo) => {
   try {
     // Get Pool Object
     const pool = constants.createMysqlConnection();
@@ -75,10 +75,10 @@ module.exports.readInvoiceProductById = async (select, id) => {
     const connection = await pool.getConnection();
 
     // Query
-    const query = `SELECT ${select} FROM invoice_products WHERE id = ?`;
+    const query = `SELECT ${select} FROM invoice_products WHERE invoice_no = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [id]);
+    const [rows, fields] = await connection.query(query, [invoiceNo]);
 
     connection.release();
 
