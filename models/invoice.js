@@ -194,7 +194,7 @@ module.exports.updateInvoice = async (
 
     // Query
     const query =
-      "UPDATE `bill_discounts` SET `return_status` = ?, `status` = ?, `track_status` = ?, `updated_at` = ? WHERE `id` = ?";
+      "UPDATE `invoices` SET `return_status` = ?, `status` = ?, `track_status` = ?, `updated_at` = ? WHERE `id` = ?";
 
     // Query Database
     const row = await connection.query(query, [

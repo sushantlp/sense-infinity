@@ -511,6 +511,15 @@ module.exports.warehouseStores = stores => {
           success: false,
           msg: "Missing invoice format parameter"
         };
+
+      if (
+        !stores[i].hasOwnProperty("status") ||
+        (stores[i].status !== 0 && stores[i].status !== 1)
+      )
+        return {
+          success: false,
+          msg: "Missing warehouse stores json status parameter"
+        };
     }
 
     if (stores.length !== 0)
@@ -2047,7 +2056,12 @@ const validateInvoicePayment = json => {
           msg: "Missing invoice payment json transaction parameter"
         };
 
-      if (!json[i].hasOwnProperty("card"))
+      if (
+        !json[i].hasOwnProperty("card") ||
+        isNaN(json[i].card) ||
+        json[i].card === null ||
+        json[i].card === ""
+      )
         return {
           success: false,
           msg: "Missing invoice payment json card parameter"

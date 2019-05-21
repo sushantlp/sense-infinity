@@ -91,7 +91,7 @@ module.exports.requestKeepStoreDetail = (req, res) => {
   ) {
     // Validate Warehouse Stores Parameter
     const validate = validateController.warehouseStores(req.body.stores);
-    console.log(validate.msg);
+
     if (!validate.success) return res.status(400).send(validate.msg);
 
     // Logic Keep Warehouse Stores
@@ -293,7 +293,7 @@ module.exports.requestStoresInvoice = (req, res) => {
               "/api/v1/warehouses/invoices",
               200,
               response.success,
-              {}
+              response.count
             )
           );
       })

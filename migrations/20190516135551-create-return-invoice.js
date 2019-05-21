@@ -10,11 +10,7 @@ module.exports = {
       },
       invoice_no: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "invoices",
-          key: "id"
-        }
+        allowNull: false
       },
       new_invoice_no: {
         type: Sequelize.INTEGER,
@@ -45,6 +41,10 @@ module.exports = {
         allowNull: true
       },
       status: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: 0
+      },
+      track_status: {
         type: Sequelize.BOOLEAN,
         defaultValue: 0
       },

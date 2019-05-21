@@ -720,9 +720,9 @@ const logicInvoice = async (partnerRecord, storeRecord, invoices) => {
           invoice.status,
           1
         );
-        console.log(recentInsert);
-        console.log(recentInsert.insertId);
-        invoiceId = recentInsert.insertId;
+
+        if (Array.isArray(recentInsert)) invoiceId = recentInsert[0].insertId;
+        else invoiceId = recentInsert.insertId;
       } else {
         invoiceId = invoiceRecord[0].id;
 
@@ -777,7 +777,7 @@ const logicInvoicePayment = async (invoicePayment, invoiceId) => {
       const card =
         payment.card === null || payment.card === "" ? undefined : payment.card;
 
-      invoiceCouponModel.keepInvoiceCoupon(
+      invoicePaymentModel.keepInvoicePayment(
         invoiceId,
         payment.type,
         payment.amount,
@@ -873,29 +873,30 @@ const logicReturnInvoice = async (
               return f.toUpperCase();
             });
 
-      let returnRecord = await returnInvoiceModel.readReturnInvoice(
-        "id",
+      // let returnRecord = await returnInvoiceModel.readReturnInvoice(
+      //   "id",
+      //   invoice.invoice_number,
+      //   invoice.new_invoice_number,
+      //   partnerRecord[0].partner_id,
+      //   storeRecord[0].store_id
+      // );
+
+      // // Parse
+      // returnRecord = JSON.stringify(returnRecord);
+      // returnRecord = JSON.parse(returnRecord);
+
+      // if (returnRecord.length === 0)
+      returnInvoiceModel.keepReturnInvoice(
         invoice.invoice_number,
         invoice.new_invoice_number,
+        invoice.user_key,
         partnerRecord[0].partner_id,
-        storeRecord[0].store_id
+        storeRecord[0].store_id,
+        reason,
+        invoice.status,
+        1
       );
-
-      // Parse
-      returnRecord = JSON.stringify(returnRecord);
-      returnRecord = JSON.parse(returnRecord);
-
-      if (returnRecord.length === 0)
-        returnInvoiceModel.keepReturnInvoice(
-          invoice.invoice_number,
-          invoice.new_invoice_number,
-          invoice.user_key,
-          partnerRecord[0].partner_id,
-          storeRecord[0].store_id,
-          reason,
-          invoice.status
-        );
-      else console.log("Logic keep return invoice duplicate record");
+      // else console.log("Logic keep return invoice duplicate record");
     });
   } catch (error) {
     return Promise.reject(error);

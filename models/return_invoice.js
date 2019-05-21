@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
       partner_id: DataTypes.INTEGER,
       store_id: DataTypes.INTEGER,
       reason: DataTypes.TEXT,
-      status: DataTypes.BOOLEAN
+      status: DataTypes.BOOLEAN,
+      track_status: DataTypes.BOOLEAN
     },
     {}
   );
@@ -107,7 +108,8 @@ module.exports.keepReturnInvoice = async (
   partnerId,
   storeId,
   reason,
-  status
+  status,
+  trackStatus
 ) => {
   try {
     // Get Pool Object
@@ -120,7 +122,7 @@ module.exports.keepReturnInvoice = async (
 
     // Query
     const query =
-      "INSERT INTO `return_invoices` (`invoice_no`, `new_invoice_no`, `warehouse_user_id`, `partner_id`, `store_id`, `reason`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO `return_invoices` (`invoice_no`, `new_invoice_no`, `warehouse_user_id`, `partner_id`, `store_id`, `reason`, `status`, `track_status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?)";
 
     // Query Database
     const row = await connection.query(query, [
@@ -131,6 +133,7 @@ module.exports.keepReturnInvoice = async (
       storeId,
       reason,
       status,
+      trackStatus,
       now,
       now
     ]);
