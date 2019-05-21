@@ -41,6 +41,12 @@ const productDiscountModel = require("../models/product_discount");
 const discountTrackModel = require("../models/product_discount_track");
 const freeDiscountModel = require("../models/free_product_offer");
 const valueDiscountModel = require("../models/value_product_offer");
+const invoiceModel = require("../models/invoice");
+const invoiceCouponModel = require("../models/invoice_coupon");
+const invoicePaymentModel = require("../models/invoice_payment");
+const invoiceProductModel = require("../models/invoice_product");
+const manualDiscountModel = require("../models/manual_discount");
+const returnInvoiceModel = require("../models/return_invoice");
 
 // Logic Get Warehouse Static Data
 module.exports.logicWarehouseStaticData = async (version, id) => {
@@ -1647,4 +1653,48 @@ const productDiscountTrack = (lastKey, storeJson, bool) => {
     else
       discountTrackModel.updateProductDiscountTrack(1, lastKey, store.store_id);
   });
+};
+
+// Logic Get Stores Invoice
+module.exports.logicGetInvoice = async id => {
+  try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner"
+      };
+
+    // Read Invoices
+    return await readInvoices(partnerRecord);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Read Invoices
+const readInvoices = async partnerRecord => {
+  try {
+    let parallel = await Promise.all([
+      invoiceModel.readInvoiceByPartner(
+        "invoices.invoice_no, invoices.store_counter_id, invoices.warehouse_user_id, partner_stores.store_id, invoices.customer_name, invoices.customer_mobile, invoices.membership_code, invoices.total_amount, invoices.invoice_cashback, invoices.invoice_total_saving, invoices.invoice_loyalty_used, invoices.invoice_sodexo_amount, invoices.invoice_total_amount, invoices.gstin_name, invoices.gstin_number, invoices.round_off_amount, invoices.return_status, invoices.status,",
+        partnerRecord[0].partner_id,
+        1
+      ),
+      returnInvoiceModel.readReturnInvoiceByPartner(
+        "return_invoices.invoice_no AS invoice_number, return_invoices.new_invoice_no AS new_invoice_number, return_invoices.warehouse_user_id AS user_key, partner_stores.store_id",
+        partnerRecord[0].partner_id,
+        1
+      )
+    ]);
+
+    // Parse
+    parallel = JSON.stringify(parallel);
+    parallel = JSON.parse(parallel);
+  } catch (error) {
+    return Promise.reject(error);
+  }
 };

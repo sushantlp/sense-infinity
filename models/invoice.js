@@ -28,7 +28,8 @@ module.exports = (sequelize, DataTypes) => {
       gstin_number: DataTypes.STRING,
       round_off_amount: DataTypes.DECIMAL,
       return_status: DataTypes.BOOLEAN,
-      status: DataTypes.BOOLEAN
+      status: DataTypes.BOOLEAN,
+      track_status: DataTypes.BOOLEAN
     },
     {}
   );
@@ -88,7 +89,7 @@ module.exports.readInvoiceByPartner = async (
     const connection = await pool.getConnection();
 
     // Query
-    const query = `SELECT ${select} FROM invoices WHERE partner_id = ? AND track_status = ?`;
+    const query = `SELECT ${select} FROM invoices LEFT JOIN partner_stores ON invoices.store_id = partner_stores.store_id  WHERE invoices.partner_id = ? AND invoices.track_status = ?`;
 
     // Query Database
     const [rows, fields] = await connection.query(query, [
@@ -141,7 +142,7 @@ module.exports.keepInvoice = async (
 
     // Query
     const query =
-      "INSERT INTO `invoices` (`invoice_no`, `store_counter_id`, `warehouse_user_id`, `store_id`, `partner_id`, `customer_name`, `customer_mobile`, `membership_code`, `total_amount`, `invoice_cashback`, `invoice_total_saving`, `invoice_loyalty_used`, `invoice_total_amount`, `invoice_sodexo_amount`, `gstin_name`, `gstin_number`, `round_off_amount`, `return_status`, `status`, track_status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO `invoices` (`invoice_no`, `store_counter_id`, `warehouse_user_id`, `store_id`, `partner_id`, `customer_name`, `customer_mobile`, `membership_code`, `total_amount`, `invoice_cashback`, `invoice_total_saving`, `invoice_loyalty_used`, `invoice_total_amount`, `invoice_sodexo_amount`, `gstin_name`, `gstin_number`, `round_off_amount`, `return_status`, `status`, `track_status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     // Query Database
     const row = await connection.query(query, [

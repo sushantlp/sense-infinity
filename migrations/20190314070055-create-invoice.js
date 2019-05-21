@@ -19,11 +19,7 @@ module.exports = {
       },
       warehouse_user_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "warehouse_user_lists",
-          key: "id"
-        }
+        allowNull: false
       },
       partner_id: {
         type: Sequelize.INTEGER,
@@ -94,6 +90,10 @@ module.exports = {
         defaultValue: 0
       },
       status: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: 0
+      },
+      track_status: {
         type: Sequelize.BOOLEAN,
         defaultValue: 0
       },

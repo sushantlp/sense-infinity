@@ -276,3 +276,30 @@ module.exports.requestKeepDiscount = (req, res) => {
       });
   } else return res.status(400).send("Not a good api call");
 };
+
+// Request Get Stores Invoice
+module.exports.requestStoresInvoice = (req, res) => {
+  if (res.userKey !== undefined && res.userKey !== "") {
+    // Logic Get Stores Invoice
+    return posWarehoseController
+      .logicGetInvoice(res.userKey)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              "/api/v1/warehouses/invoices",
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};

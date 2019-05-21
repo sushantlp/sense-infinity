@@ -35,6 +35,36 @@ const now = moment()
  * Start Database Read and Write
  */
 
+// Read Return Invoice [partner_id, track_status]
+module.exports.readReturnInvoiceByPartner = async (
+  select,
+  partnerId,
+  trackStatus
+) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM return_invoices LEFT JOIN partner_stores ON return_invoices.store_id = partner_stores.store_id WHERE return_invoices.partner_id = ? AND return_invoices.track_status = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [
+      partnerId,
+      trackStatus
+    ]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 // Read Return Invoice By [id]
 module.exports.readReturnInvoice = async (
   select,

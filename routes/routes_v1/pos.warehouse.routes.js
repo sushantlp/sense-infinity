@@ -65,4 +65,11 @@ routes.post(
   PosWarehouseApiController.requestKeepDiscount
 );
 
+// Get Stores Invoice
+routes.get(
+  "/invoices",
+  apiKeyAuth,
+  PosWarehouseApiController.requestStoresInvoice
+);
+
 module.exports = routes;
