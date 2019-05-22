@@ -318,7 +318,7 @@ module.exports.requestStoreErrorLog = (req, res) => {
 
     if (!validate.success) return res.status(400).send(validate.msg);
 
-    // Logic Store Login History
+    // Logic Store Error Log
     return posStoreController
       .logicStoreErrorLog(res.userKey, req.params.storeCode, req.body.errors)
       .then(response => {
