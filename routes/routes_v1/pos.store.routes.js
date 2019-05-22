@@ -84,4 +84,11 @@ routes.post(
   PosStoreApiController.requestStoreLoginHistory
 );
 
+// Post Stores Error-Log
+routes.post(
+  "/error-log/:storeCode([0-9]+)",
+  apiKeyAuth,
+  PosStoreApiController.requestStoreErrorLog
+);
+
 module.exports = routes;

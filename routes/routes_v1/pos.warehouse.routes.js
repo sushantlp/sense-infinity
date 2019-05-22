@@ -79,4 +79,11 @@ routes.post(
   PosWarehouseApiController.requestWarehouseLoginHistory
 );
 
+// Post Warehouse Error-Log
+routes.post(
+  "/error-log/:storeCode([0-9]+)",
+  apiKeyAuth,
+  PosWarehouseApiController.requestWarehouseErrorLog
+);
+
 module.exports = routes;

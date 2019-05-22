@@ -2135,7 +2135,7 @@ const validateInvoiceCoupon = json => {
 };
 
 // Validate Login History Parameter
-module.exports.loginHistory = json => {
+module.exports.validateLoginHistory = json => {
   try {
     for (let i = 0; i < json.length; i++) {
       if (
@@ -2257,7 +2257,34 @@ module.exports.loginHistory = json => {
   } catch (error) {
     return {
       success: false,
-      msg: "Wrong validate manual discount json"
+      msg: "Wrong validate login history discount json"
+    };
+  }
+};
+
+// Validate Error Log Parameter
+module.exports.validateErrorLog = json => {
+  try {
+    for (let i = 0; i < json.length; i++) {
+      if (
+        !json[i].hasOwnProperty("text") ||
+        json[i].text === null ||
+        json[i].text === ""
+      )
+        return {
+          success: false,
+          msg: "Missing login history json text parameter"
+        };
+    }
+
+    return {
+      success: true,
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return {
+      success: false,
+      msg: "Wrong validate error log json"
     };
   }
 };

@@ -272,7 +272,7 @@ module.exports.requestStoreLoginHistory = (req, res) => {
     req.params.hasOwnProperty("storeCode")
   ) {
     // Validate Login History Parameter
-    const validate = validateController.loginHistory(req.body.history);
+    const validate = validateController.validateLoginHistory(req.body.history);
 
     if (!validate.success) return res.status(400).send(validate.msg);
 
@@ -291,6 +291,44 @@ module.exports.requestStoreLoginHistory = (req, res) => {
               response.data,
               response.msg,
               `/api/v1/stores/login-history/${req.params.storeCode}`,
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
+
+// Request Write Store Error Log
+module.exports.requestStoreErrorLog = (req, res) => {
+  if (
+    res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.body.errors !== undefined &&
+    req.body.errors !== "" &&
+    req.params.hasOwnProperty("storeCode")
+  ) {
+    // Validate Store Error Log
+    const validate = validateController.validateErrorLog(req.body.errors);
+
+    if (!validate.success) return res.status(400).send(validate.msg);
+
+    // Logic Store Login History
+    return posStoreController
+      .logicStoreErrorLog(res.userKey, req.params.storeCode, req.body.errors)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/api/v1/stores/error-log/${req.params.storeCode}`,
               200,
               response.success,
               {}

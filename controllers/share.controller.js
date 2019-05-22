@@ -11,6 +11,7 @@ const smsModel = require("../models/sms");
 const userModel = require("../models/user");
 const partnerModel = require("../models/partner");
 const historyModel = require("../models/login_history");
+const posErrorModel = require("../models/pos_error_log");
 
 // Import Config
 const { Mail } = require("../config/constants");
@@ -631,6 +632,22 @@ module.exports.writeLoginHistory = (
         history.card_amount,
         history.sodexo_amount,
         history.total_amount,
+        1
+      );
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Write Error Log
+module.exports.writeErrorLog = (partnerRecord, storeRecord, errorJson) => {
+  try {
+    return errorJson.map(async (error, index) => {
+      posErrorModel.keepPosErrorLog(
+        partnerRecord[0].partner_id,
+        storeRecord[0].store_id,
+        error.text,
         1
       );
     });

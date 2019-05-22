@@ -1,7 +1,7 @@
 "use strict";
 
 // Import Controller
-const posWarehoseController = require("./logic.pos.warehouse.controller");
+const posWarehouseController = require("./logic.pos.warehouse.controller");
 const validateController = require("./validate.controller");
 const shareController = require("./share.controller");
 
@@ -21,7 +21,7 @@ module.exports.requestGetWarehouseStaticData = (req, res) => {
     if (!validate.success) return res.status(400).send(validate.msg);
 
     // Logic Pos Warehouse Controller
-    return posWarehoseController
+    return posWarehouseController
       .logicWarehouseStaticData(req.body.version, res.userKey)
       .then(response => {
         return res
@@ -58,7 +58,7 @@ module.exports.requestKeepSecretData = (req, res) => {
     if (!validate.success) return res.status(400).send(validate.msg);
 
     // Logic Keep Secret Data
-    return posWarehoseController
+    return posWarehouseController
       .logicKeepSecretData(req.body.secrets, res.userKey)
       .then(response => {
         return res
@@ -95,7 +95,7 @@ module.exports.requestKeepStoreDetail = (req, res) => {
     if (!validate.success) return res.status(400).send(validate.msg);
 
     // Logic Keep Warehouse Stores
-    return posWarehoseController
+    return posWarehouseController
       .logicKeepStoreDetail(req.body.stores, res.userKey)
       .then(response => {
         return res
@@ -132,7 +132,7 @@ module.exports.requestKeepWarehouseDetail = (req, res) => {
     if (!validate.success) return res.status(400).send(validate.msg);
 
     // Logic Keep Warehouse Detail
-    return posWarehoseController
+    return posWarehouseController
       .logicKeepWarehouseDetail(req.body.warehouses, res.userKey)
       .then(response => {
         return res
@@ -171,7 +171,7 @@ module.exports.requestKeepWarehouseProduct = (req, res) => {
     if (!validate.success) return res.status(400).send(validate.msg);
 
     // Logic Get Staple Master Product
-    return posWarehoseController
+    return posWarehouseController
       .logicKeepWarehouseProduct(res.userKey, req.body.products)
       .then(response => {
         return res
@@ -208,7 +208,7 @@ module.exports.requestKeepStapleProduct = (req, res) => {
     if (!validate.success) return res.status(400).send(validate.msg);
 
     // Logic Keep Staple Master Product
-    return posWarehoseController
+    return posWarehouseController
       .logicKeepStapleProduct(res.userKey, req.body.products)
       .then(response => {
         return res
@@ -250,7 +250,7 @@ module.exports.requestKeepDiscount = (req, res) => {
     if (!validate.success) return res.status(400).send(validate.msg);
 
     // Logic Keep Warehouse Discount
-    return posWarehoseController
+    return posWarehouseController
       .logicKeepDiscount(
         res.userKey,
         req.body.bill_discounts,
@@ -281,7 +281,7 @@ module.exports.requestKeepDiscount = (req, res) => {
 module.exports.requestStoresInvoice = (req, res) => {
   if (res.userKey !== undefined && res.userKey !== "") {
     // Logic Get Stores Invoice
-    return posWarehoseController
+    return posWarehouseController
       .logicGetInvoice(res.userKey)
       .then(response => {
         return res
@@ -314,12 +314,12 @@ module.exports.requestWarehouseLoginHistory = (req, res) => {
     req.params.hasOwnProperty("storeCode")
   ) {
     // Validate Login History Parameter
-    const validate = validateController.loginHistory(req.body.history);
+    const validate = validateController.validateLoginHistory(req.body.history);
 
     if (!validate.success) return res.status(400).send(validate.msg);
 
     // Logic Warehouse Login History
-    return posStoreController
+    return posWarehouseController
       .logicWarehouseLoginHistory(
         res.userKey,
         req.params.storeCode,
@@ -333,6 +333,48 @@ module.exports.requestWarehouseLoginHistory = (req, res) => {
               response.data,
               response.msg,
               `/api/v1/Warehouse/login-history/${req.params.storeCode}`,
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
+
+// Request Write Warehouse Error Log
+module.exports.requestWarehouseErrorLog = (req, res) => {
+  if (
+    res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.body.errors !== undefined &&
+    req.body.errors !== "" &&
+    req.params.hasOwnProperty("storeCode")
+  ) {
+    // Validate Warehouse Error Log
+    const validate = validateController.validateErrorLog(req.body.errors);
+
+    if (!validate.success) return res.status(400).send(validate.msg);
+
+    // Logic Warehouse Error Log
+    return posWarehouseController
+      .logicWarehouseErrorLog(
+        res.userKey,
+        req.params.storeCode,
+        req.body.errors
+      )
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/api/v1/stores/error-log/${req.params.storeCode}`,
               200,
               response.success,
               {}
