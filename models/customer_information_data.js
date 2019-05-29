@@ -8,11 +8,12 @@ const constants = require("../config/constants");
 
 module.exports = (sequelize, DataTypes) => {
   var customerInformationData = sequelize.define(
-    "customer_information_data", {
+    "customer_information_data",
+    {
       first_name: DataTypes.STRING,
       last_name: DataTypes.STRING,
       email: DataTypes.STRING,
-      mobile: DataTypes.STRING,
+      mobile: DataTypes.BIGINT,
       country_code: DataTypes.STRING,
       dob: DataTypes.STRING,
       gender_id: DataTypes.INTEGER,
@@ -26,7 +27,8 @@ module.exports = (sequelize, DataTypes) => {
       anniversary_date: DataTypes.STRING,
       reward_point: DataTypes.INTEGER,
       status: DataTypes.BOOLEAN
-    }, {}
+    },
+    {}
   );
   customerInformationData.associate = function(models) {
     // associations can be defined here
@@ -44,9 +46,8 @@ const now = moment()
  */
 
 // Read Customer Information Data By Customer Information Id
-module.exports.readCustomerDataId = async(select, id, status) => {
+module.exports.readCustomerDataId = async (select, id, status) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -68,9 +69,8 @@ module.exports.readCustomerDataId = async(select, id, status) => {
 };
 
 // Read Customer Information Data By Mobile
-module.exports.readCustomerDataMobile = async(select, mobile, status) => {
+module.exports.readCustomerDataMobile = async (select, mobile, status) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -92,9 +92,8 @@ module.exports.readCustomerDataMobile = async(select, mobile, status) => {
 };
 
 // Read Customer Information Data by Mobile and Country Code
-module.exports.readDataMobileCode = async(select, mobile, code, status) => {
+module.exports.readDataMobileCode = async (select, mobile, code, status) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -120,7 +119,7 @@ module.exports.readDataMobileCode = async(select, mobile, code, status) => {
 };
 
 // Keep Customer Information Data
-module.exports.keepCustomerData = async(
+module.exports.keepCustomerData = async (
   firstName,
   lastName,
   email,
@@ -139,7 +138,6 @@ module.exports.keepCustomerData = async(
   status
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -153,8 +151,8 @@ module.exports.keepCustomerData = async(
     if (addressTwo === undefined) addressTwo = connection.escape(addressTwo);
     if (landmark === undefined) landmark = connection.escape(landmark);
     if (spouseName === undefined) spouseName = connection.escape(spouseName);
-    if (anniversaryDate === undefined || anniversaryDate === null) anniversaryDate = connection.escape(anniversaryDate);
-
+    if (anniversaryDate === undefined || anniversaryDate === null)
+      anniversaryDate = connection.escape(anniversaryDate);
 
     // Query
     const query =
@@ -191,7 +189,7 @@ module.exports.keepCustomerData = async(
 };
 
 // Update Customer Information Data
-module.exports.updateCustomerData = async(
+module.exports.updateCustomerData = async (
   firstName,
   lastName,
   email,
@@ -208,7 +206,6 @@ module.exports.updateCustomerData = async(
   id
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -222,8 +219,8 @@ module.exports.updateCustomerData = async(
     if (addressTwo === undefined) addressTwo = connection.escape(addressTwo);
     if (landmark === undefined) landmark = connection.escape(landmark);
     if (spouseName === undefined) spouseName = connection.escape(spouseName);
-    if (anniversaryDate === undefined) anniversaryDate = connection.escape(anniversaryDate);
-
+    if (anniversaryDate === undefined)
+      anniversaryDate = connection.escape(anniversaryDate);
 
     // Query
     const query =
@@ -256,14 +253,9 @@ module.exports.updateCustomerData = async(
   }
 };
 
-
 // Update Customer Reward Point
-module.exports.updateCustomerRewardPoint = async(
-  point,
-  id
-) => {
+module.exports.updateCustomerRewardPoint = async (point, id) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -275,11 +267,7 @@ module.exports.updateCustomerRewardPoint = async(
       "UPDATE `customer_information_data` SET `reward_point` = ?, `updated_at` = ? WHERE `customer_information_id` = ?";
 
     // Query Database
-    const row = await connection.query(query, [
-      point,
-      now,
-      id
-    ]);
+    const row = await connection.query(query, [point, now, id]);
 
     connection.release();
 

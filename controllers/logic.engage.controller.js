@@ -8,9 +8,7 @@ const shareController = require("./share.controller");
 const databaseController = require("./database.controller");
 
 // Import Config
-const {
-  Gateway
-} = require("../config/constants");
+const { Gateway } = require("../config/constants");
 
 // Import Model
 const localityModel = require("../models/locality");
@@ -43,7 +41,6 @@ const backDate = moment()
 // Logic Sense Static
 module.exports.logicSenseStatic = async appVersion => {
   try {
-
     // Read Sense Constant Record
     const senseConstant = await senseConstModel.readSenseConstant(
       "*",
@@ -52,18 +49,20 @@ module.exports.logicSenseStatic = async appVersion => {
     );
 
     // Zero Means Empty Record
-    if (senseConstant.length === 0) return {
-      success: false,
-      data: {},
-      msg: "Empty sense constant"
-    };
+    if (senseConstant.length === 0)
+      return {
+        success: false,
+        data: {},
+        msg: "Empty sense constant"
+      };
 
     // Check Sense Static App Version
-    if (appVersion === parseFloat(senseConstant[0].value)) return {
-      success: true,
-      data: {},
-      msg: "Upto date"
-    };
+    if (appVersion === parseFloat(senseConstant[0].value))
+      return {
+        success: true,
+        data: {},
+        msg: "Upto date"
+      };
     else appVersion = parseFloat(senseConstant[0].value);
 
     // Parallel City Locality Gender Record
@@ -100,13 +99,12 @@ module.exports.logicSenseStatic = async appVersion => {
 };
 
 // Request Logic Keep Complain
-module.exports.requestLogicKeepComplain = async(
+module.exports.requestLogicKeepComplain = async (
   complainJson,
   mobile,
   storeId
 ) => {
   try {
-
     // Read Partner Record
     const merchantRecord = await partnerModel.readPartnerByMobile(
       "partner_id",
@@ -114,11 +112,12 @@ module.exports.requestLogicKeepComplain = async(
       1
     );
 
-    if (merchantRecord.length === 0) return {
-      success: false,
-      data: [],
-      msg: "Empty merchant record"
-    };
+    if (merchantRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Empty merchant record"
+      };
 
     // Merchant Constant Table Exist
     const senseConstant = await databaseController.showConstantTable(
@@ -149,7 +148,7 @@ module.exports.requestLogicKeepComplain = async(
 };
 
 // Logic Read Complain
-const logicKeepComplain = async(
+const logicKeepComplain = async (
   mobile,
   storeId,
   complainJson,
@@ -191,10 +190,9 @@ const logicKeepComplain = async(
       cityRecord = JSON.parse(cityRecord);
 
       if (cityRecord.length !== 0) cityCode = cityRecord[0].country_code;
-
     }
 
-    const promises = complainJson.map(async(json, index) => {
+    const promises = complainJson.map(async (json, index) => {
       // Variable Declare
       let customerId = undefined;
 
@@ -223,8 +221,8 @@ const logicKeepComplain = async(
         false
       );
 
-      if (reform.dob === 'Invalid date') {
-        newDob = moment(new Date('1949-08-15')).format('YYYY-MM-DD');
+      if (reform.dob === "Invalid date") {
+        newDob = moment(new Date("1949-08-15")).format("YYYY-MM-DD");
       } else {
         newDob = reform.dob;
       }
@@ -358,18 +356,20 @@ const logicKeepComplain = async(
           );
 
           // Check Complain Keep or Update
-          if (createdDate >= backDate && createdDate <= todayDate) complainModel.updateStoreComplain(
-            complainRecord[0].complain_id,
-            json.description,
-            1
-          );
-          else complainModel.keepStoreComplain(
-            customerId,
-            merchantRecord[0].partner_id,
-            parseInt(storeId, 10),
-            json.description,
-            1
-          );
+          if (createdDate >= backDate && createdDate <= todayDate)
+            complainModel.updateStoreComplain(
+              complainRecord[0].complain_id,
+              json.description,
+              1
+            );
+          else
+            complainModel.keepStoreComplain(
+              customerId,
+              merchantRecord[0].partner_id,
+              parseInt(storeId, 10),
+              json.description,
+              1
+            );
         }
       }
 
@@ -382,13 +382,13 @@ const logicKeepComplain = async(
         1
       );
 
-      if (linkValue.length === 0) linkModel.keepMerchantLinkCustomer(
-        merchantRecord[0].partner_id,
-        parseInt(storeId, 10),
-        customerId,
-        1
-      );
-
+      if (linkValue.length === 0)
+        linkModel.keepMerchantLinkCustomer(
+          merchantRecord[0].partner_id,
+          parseInt(storeId, 10),
+          customerId,
+          1
+        );
 
       if (versionFlag.customer) {
         // Reintialize Variable
@@ -415,13 +415,12 @@ const logicKeepComplain = async(
 };
 
 // Request Logic Keep Customer
-module.exports.requestLogicKeepCustomer = async(
+module.exports.requestLogicKeepCustomer = async (
   customerJson,
   mobile,
   storeId
 ) => {
   try {
-
     // Read Partner Record
     const merchantRecord = await partnerModel.readPartnerByMobile(
       "partner_id",
@@ -429,11 +428,12 @@ module.exports.requestLogicKeepCustomer = async(
       1
     );
 
-    if (merchantRecord.length === 0) return {
-      success: false,
-      data: [],
-      msg: "Empty merchant record"
-    };
+    if (merchantRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Empty merchant record"
+      };
 
     // Merchant Constant Table Exist
     const senseConstant = await databaseController.showConstantTable(
@@ -464,7 +464,7 @@ module.exports.requestLogicKeepCustomer = async(
 };
 
 // Logic Read Customer
-const logicKeepCustomer = async(
+const logicKeepCustomer = async (
   mobile,
   storeId,
   customerJson,
@@ -485,7 +485,7 @@ const logicKeepCustomer = async(
     1
   );
 
-  const promises = customerJson.map(async(json, index) => {
+  const promises = customerJson.map(async (json, index) => {
     // Variable Declare
     let customerId = undefined;
     let cityCode = 0;
@@ -504,8 +504,8 @@ const logicKeepCustomer = async(
       true
     );
 
-    if (reform.dob === 'Invalid date') {
-      newDob = moment(new Date('1949-08-15')).format('YYYY-MM-DD');
+    if (reform.dob === "Invalid date") {
+      newDob = moment(new Date("1949-08-15")).format("YYYY-MM-DD");
     } else {
       newDob = reform.dob;
     }
@@ -530,9 +530,7 @@ const logicKeepCustomer = async(
 
     if (cityRecord.length !== 0) cityCode = cityRecord[0].country_code;
 
-
     if (customerRecord.length === 0) {
-
       // Keep Customer Information Data
       let lastRecord = await customerDataModel.keepCustomerData(
         reform.first_name,
@@ -591,15 +589,19 @@ const logicKeepCustomer = async(
       1
     );
 
-    if (linkValue.length === 0) linkModel.keepMerchantLinkCustomer(
-      merchantRecord[0].partner_id,
-      parseInt(storeId, 10),
-      customerId,
-      1
-    );
+    if (linkValue.length === 0)
+      linkModel.keepMerchantLinkCustomer(
+        merchantRecord[0].partner_id,
+        parseInt(storeId, 10),
+        customerId,
+        1
+      );
 
-    if (json.membership_number !== null && json.membership_number !== undefined && json.membership_number !== "") {
-
+    if (
+      json.membership_number !== null &&
+      json.membership_number !== undefined &&
+      json.membership_number !== ""
+    ) {
       // Read Membership Card Record
       const card = await cardModel.readMembershipCardNumber(
         "*",
@@ -611,7 +613,7 @@ const logicKeepCustomer = async(
         // Keep Customer Membership Card
         cardModel.keepCustomerMembershipCard(
           customerId,
-          json.membership_number.toString(),
+          json.membership_number,
           1
         );
       } else {
@@ -621,7 +623,6 @@ const logicKeepCustomer = async(
           // Send Admin Mail
         }
       }
-
     }
 
     if (versionFlag.customer) {
@@ -669,13 +670,12 @@ const logicKeepCustomer = async(
 };
 
 // Request Logic Keep Feedback Survey
-module.exports.requestLogicFeedbackSurvey = async(
+module.exports.requestLogicFeedbackSurvey = async (
   feedbackSurveyJson,
   mobile,
   storeId
 ) => {
   try {
-
     // Merchant Constant Table Exist
     const senseConstant = await databaseController.showConstantTable(
       mobile,
@@ -698,12 +698,12 @@ module.exports.requestLogicFeedbackSurvey = async(
       1
     );
 
-    if (merchantRecord.length === 0) return {
-      success: false,
-      data: [],
-      msg: "Empty merchant record"
-    };
-
+    if (merchantRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Empty merchant record"
+      };
 
     // Create Dynamic Feedback And Survey
     await databaseController.createFeedbackQuestionTable(mobile, storeId);
@@ -714,12 +714,7 @@ module.exports.requestLogicFeedbackSurvey = async(
     await databaseController.createSurveyStoreTable(mobile, storeId);
 
     // Logic Feedback Survey
-    logicFeedbackSurvey(
-      feedbackSurveyJson,
-      mobile,
-      storeId,
-      merchantRecord
-    );
+    logicFeedbackSurvey(feedbackSurveyJson, mobile, storeId, merchantRecord);
 
     return {
       success: true,
@@ -729,11 +724,10 @@ module.exports.requestLogicFeedbackSurvey = async(
   } catch (error) {
     return Promise.reject(error);
   }
-
 };
 
 // Logic Feedback Survey
-const logicFeedbackSurvey = async(
+const logicFeedbackSurvey = async (
   feedbackSurveyJson,
   mobile,
   storeId,
@@ -764,9 +758,12 @@ const logicFeedbackSurvey = async(
 
     // Iterate
     constant.map((version, index) => {
-      if (version.name === "CUSTOMER_SURVEY_APP_VERSION") surveyVersion = version;
-      else if (version.name === "CUSTOMER_FEEDBACK_APP_VERSION") feedbackVersion = version;
-      else if (version.name === "CUSTOMER_IDENTITY_APP_VERSION") customerVersion = version;
+      if (version.name === "CUSTOMER_SURVEY_APP_VERSION")
+        surveyVersion = version;
+      else if (version.name === "CUSTOMER_FEEDBACK_APP_VERSION")
+        feedbackVersion = version;
+      else if (version.name === "CUSTOMER_IDENTITY_APP_VERSION")
+        customerVersion = version;
     });
 
     // Read Merchant Store Record By Store Id
@@ -789,10 +786,9 @@ const logicFeedbackSurvey = async(
       cityRecord = JSON.parse(cityRecord);
 
       if (cityRecord.length !== 0) cityCode = cityRecord[0].country_code;
-
     }
 
-    const promises = feedbackSurveyJson.map(async(json, index) => {
+    const promises = feedbackSurveyJson.map(async (json, index) => {
       // Read Customer Information Data By Mobile
       let customerRecord = await customerDataModel.readCustomerDataMobile(
         "*",
@@ -821,8 +817,8 @@ const logicFeedbackSurvey = async(
         false
       );
 
-      if (reform.dob === 'Invalid date') {
-        newDob = moment(new Date('1949-08-15')).format('YYYY-MM-DD');
+      if (reform.dob === "Invalid date") {
+        newDob = moment(new Date("1949-08-15")).format("YYYY-MM-DD");
       } else {
         newDob = reform.dob;
       }
@@ -893,7 +889,7 @@ const logicFeedbackSurvey = async(
           customerRecord[0].landmark,
           customerRecord[0].spouse_name,
           customerRecord[0].anniversary_date,
-          customerRecord[0].customer_information_id,
+          customerRecord[0].customer_information_id
         );
 
         // ReInitialize
@@ -949,16 +945,17 @@ const logicFeedbackSurvey = async(
         1
       );
 
-      if (linkValue.length === 0) linkModel.keepMerchantLinkCustomer(
-        merchantRecord[0].partner_id,
-        parseInt(storeId, 10),
-        customerId,
-        1
-      );
+      if (linkValue.length === 0)
+        linkModel.keepMerchantLinkCustomer(
+          merchantRecord[0].partner_id,
+          parseInt(storeId, 10),
+          customerId,
+          1
+        );
 
       // Survey
       if (json.customer_survey != null) {
-        json.customer_survey.map(async(survey, index) => {
+        json.customer_survey.map(async (survey, index) => {
           // Read One Record Merchant Store Survey
           let surveyRecord = await databaseController.readLimitMerchantSurvey(
             "*",
@@ -992,26 +989,27 @@ const logicFeedbackSurvey = async(
             );
 
             // Check Survey Keep or Update
-            if (createdDate >= backDate && createdDate <= todayDate) await databaseController.updateMerchantSurveyTable(
-              mobile,
-              storeId,
-              surveyRecord[0].keep_survey_id,
-              parseInt(survey.question_id, 10),
-              parseInt(survey.option_id, 10),
-              customerId,
-              parseInt(survey.role_id, 10),
-              1
-            );
-            else await databaseController.keepMerchantSurveyTable(
-              mobile,
-              storeId,
-              parseInt(survey.question_id, 10),
-              parseInt(survey.option_id, 10),
-              customerId,
-              parseInt(survey.role_id, 10),
-              1
-            );
-
+            if (createdDate >= backDate && createdDate <= todayDate)
+              await databaseController.updateMerchantSurveyTable(
+                mobile,
+                storeId,
+                surveyRecord[0].keep_survey_id,
+                parseInt(survey.question_id, 10),
+                parseInt(survey.option_id, 10),
+                customerId,
+                parseInt(survey.role_id, 10),
+                1
+              );
+            else
+              await databaseController.keepMerchantSurveyTable(
+                mobile,
+                storeId,
+                parseInt(survey.question_id, 10),
+                parseInt(survey.option_id, 10),
+                customerId,
+                parseInt(survey.role_id, 10),
+                1
+              );
           }
 
           if (versionFlag.survey) {
@@ -1034,7 +1032,7 @@ const logicFeedbackSurvey = async(
 
       // Feedback
       if (json.customer_feedback != null) {
-        json.customer_feedback.map(async(feedback, index) => {
+        json.customer_feedback.map(async (feedback, index) => {
           // Read One Record Merchant Store Feedback
           let feedbackRecord = await databaseController.readLimitMerchantFeedback(
             "*",
@@ -1068,26 +1066,27 @@ const logicFeedbackSurvey = async(
             );
 
             // Check Survey Keep or Update
-            if (createdDate >= backDate && createdDate <= todayDate) await databaseController.updateMerchantFeedbackTable(
-              mobile,
-              storeId,
-              feedbackRecord[0].keep_feed_id,
-              parseInt(feedback.question_id, 10),
-              parseInt(feedback.option_id, 10),
-              customerId,
-              parseInt(feedback.role_id, 10),
-              1
-            );
-            else await databaseController.keepMerchantFeedbackTable(
-              mobile,
-              storeId,
-              parseInt(feedback.question_id, 10),
-              parseInt(feedback.option_id, 10),
-              customerId,
-              parseInt(feedback.role_id, 10),
-              1
-            );
-
+            if (createdDate >= backDate && createdDate <= todayDate)
+              await databaseController.updateMerchantFeedbackTable(
+                mobile,
+                storeId,
+                feedbackRecord[0].keep_feed_id,
+                parseInt(feedback.question_id, 10),
+                parseInt(feedback.option_id, 10),
+                customerId,
+                parseInt(feedback.role_id, 10),
+                1
+              );
+            else
+              await databaseController.keepMerchantFeedbackTable(
+                mobile,
+                storeId,
+                parseInt(feedback.question_id, 10),
+                parseInt(feedback.option_id, 10),
+                customerId,
+                parseInt(feedback.role_id, 10),
+                1
+              );
           }
 
           if (versionFlag.feedback) {
@@ -1117,7 +1116,7 @@ const logicFeedbackSurvey = async(
 };
 
 // Logic Get Feedback Data
-module.exports.logicGetFeedback = async(
+module.exports.logicGetFeedback = async (
   merchantVersion,
   senseVersion,
   mobile,
@@ -1157,24 +1156,22 @@ module.exports.logicGetFeedback = async(
 
     if (parallel.length === 0) return Promise.reject("Oops our bad!!!");
 
-
     // Merchant app version
-    if (merchantVersion === parseFloat(parallel[0][0].value)) merchantFlag = true;
+    if (merchantVersion === parseFloat(parallel[0][0].value))
+      merchantFlag = true;
     else merchantVersion = parseFloat(parallel[0][0].value);
-
 
     // Admin app version
     if (senseVersion === parseFloat(parallel[1][0].value)) senseFlag = true;
     else senseVersion = parseFloat(parallel[1][0].value);
 
-
     // Both flag true then return
-    if (merchantFlag && senseFlag) return {
-      success: true,
-      data: [],
-      msg: "Upto date"
-    };
-
+    if (merchantFlag && senseFlag)
+      return {
+        success: true,
+        data: [],
+        msg: "Upto date"
+      };
 
     // Logic Read Feedback
     const feedback = await logicReadFeedback(
@@ -1197,7 +1194,7 @@ module.exports.logicGetFeedback = async(
 };
 
 // Logic Read Feedback
-const logicReadFeedback = async(mobile, storeId, merchantFlag, senseFlag) => {
+const logicReadFeedback = async (mobile, storeId, merchantFlag, senseFlag) => {
   try {
     // Variable
     let jsonArray = [];
@@ -1218,12 +1215,13 @@ const logicReadFeedback = async(mobile, storeId, merchantFlag, senseFlag) => {
         1
       );
 
-      if (merchantFeed.length !== 0) merchantArray = await creatFeedbackJson(
-        merchantFeed,
-        1,
-        mobile,
-        storeId
-      );
+      if (merchantFeed.length !== 0)
+        merchantArray = await creatFeedbackJson(
+          merchantFeed,
+          1,
+          mobile,
+          storeId
+        );
     }
 
     // Admin Version
@@ -1234,12 +1232,13 @@ const logicReadFeedback = async(mobile, storeId, merchantFlag, senseFlag) => {
         1
       );
 
-      if (adminFeed.length !== 0) adminArray = await creatFeedbackJson(
-        adminFeed,
-        2,
-        undefined,
-        undefined
-      );
+      if (adminFeed.length !== 0)
+        adminArray = await creatFeedbackJson(
+          adminFeed,
+          2,
+          undefined,
+          undefined
+        );
     }
     return merchantArray.concat(adminArray);
   } catch (error) {
@@ -1248,24 +1247,26 @@ const logicReadFeedback = async(mobile, storeId, merchantFlag, senseFlag) => {
 };
 
 // Create Feedback Json
-const creatFeedbackJson = async(json, role, mobile, storeId) => {
+const creatFeedbackJson = async (json, role, mobile, storeId) => {
   try {
     // Variable
     let option = [];
-    const jsonArray = json.map(async(feed, index) => {
+    const jsonArray = json.map(async (feed, index) => {
       // Block
       let lowerObject = {};
-      if (role === 1) option = await databaseController.readFeedbackOption(
-        mobile,
-        storeId,
-        feed.feed_ques_id,
-        1
-      );
-      else option = await feedbackOptionModel.readAdminFeedbackOption(
-        "*",
-        feed.feed_ques_id,
-        1
-      );
+      if (role === 1)
+        option = await databaseController.readFeedbackOption(
+          mobile,
+          storeId,
+          feed.feed_ques_id,
+          1
+        );
+      else
+        option = await feedbackOptionModel.readAdminFeedbackOption(
+          "*",
+          feed.feed_ques_id,
+          1
+        );
 
       lowerObject.feedback_id = feed.feed_ques_id;
       lowerObject.feedback_question = feed.feed_question;
@@ -1290,7 +1291,7 @@ const creatFeedbackJson = async(json, role, mobile, storeId) => {
 const createFeedbackOptionJson = json => {
   // Variable
   let upperArray = [];
-  json.map(async(option, index) => {
+  json.map(async (option, index) => {
     // Block Variable Declaration
     let lowerobject = {};
 
@@ -1306,7 +1307,7 @@ const createFeedbackOptionJson = json => {
 };
 
 // Logic Get Survey Data
-module.exports.logicGetSurvey = async(
+module.exports.logicGetSurvey = async (
   merchantVersion,
   senseVersion,
   mobile,
@@ -1346,24 +1347,22 @@ module.exports.logicGetSurvey = async(
 
     if (parallel.length === 0) return Promise.reject("Oops our bad!!!");
 
-
     // Merchant app version
-    if (merchantVersion === parseFloat(parallel[0][0].value)) merchantFlag = true;
+    if (merchantVersion === parseFloat(parallel[0][0].value))
+      merchantFlag = true;
     else merchantVersion = parseFloat(parallel[0][0].value);
-
 
     // Admin app version
     if (senseVersion === parseFloat(parallel[1][0].value)) senseFlag = true;
     else senseVersion = parseFloat(parallel[1][0].value);
 
-
     // Both flag true then return
-    if (merchantFlag && senseFlag) return {
-      success: true,
-      data: [],
-      msg: "Upto date"
-    };
-
+    if (merchantFlag && senseFlag)
+      return {
+        success: true,
+        data: [],
+        msg: "Upto date"
+      };
 
     // Logic Read Survey
     const survey = await logicReadSurvey(
@@ -1386,7 +1385,7 @@ module.exports.logicGetSurvey = async(
 };
 
 // Logic Read Survey
-const logicReadSurvey = async(mobile, storeId, merchantFlag, senseFlag) => {
+const logicReadSurvey = async (mobile, storeId, merchantFlag, senseFlag) => {
   try {
     // Variable
     let jsonArray = [];
@@ -1407,7 +1406,8 @@ const logicReadSurvey = async(mobile, storeId, merchantFlag, senseFlag) => {
         1
       );
 
-      if (merchantFeed.length !== 0) merchantArray = await creatSurveyJson(merchantFeed, 1, mobile, storeId);
+      if (merchantFeed.length !== 0)
+        merchantArray = await creatSurveyJson(merchantFeed, 1, mobile, storeId);
     }
 
     // Admin Version
@@ -1419,8 +1419,8 @@ const logicReadSurvey = async(mobile, storeId, merchantFlag, senseFlag) => {
         1
       );
 
-      if (adminFeed.length !== 0) adminArray = await creatSurveyJson(adminFeed, 2, undefined, undefined);
-
+      if (adminFeed.length !== 0)
+        adminArray = await creatSurveyJson(adminFeed, 2, undefined, undefined);
     }
     return merchantArray.concat(adminArray);
   } catch (error) {
@@ -1429,24 +1429,26 @@ const logicReadSurvey = async(mobile, storeId, merchantFlag, senseFlag) => {
 };
 
 // Create Survey Json
-const creatSurveyJson = async(json, role, mobile, storeId) => {
+const creatSurveyJson = async (json, role, mobile, storeId) => {
   try {
     // Variable
     let option = [];
-    const jsonArray = json.map(async(survey, index) => {
+    const jsonArray = json.map(async (survey, index) => {
       // Block
       let lowerObject = {};
-      if (role === 1) option = await databaseController.readSurveyOption(
-        mobile,
-        storeId,
-        survey.survey_ques_id,
-        1
-      );
-      else option = await surveyOptionModel.readAdminSurveyOption(
-        "*",
-        survey.survey_ques_id,
-        1
-      );
+      if (role === 1)
+        option = await databaseController.readSurveyOption(
+          mobile,
+          storeId,
+          survey.survey_ques_id,
+          1
+        );
+      else
+        option = await surveyOptionModel.readAdminSurveyOption(
+          "*",
+          survey.survey_ques_id,
+          1
+        );
 
       lowerObject.survey_id = survey.survey_ques_id;
       lowerObject.survey_question = survey.survey_question;
@@ -1471,7 +1473,7 @@ const creatSurveyJson = async(json, role, mobile, storeId) => {
 const createSurveyOptionJson = json => {
   // Variable
   let upperArray = [];
-  json.map(async(option, index) => {
+  json.map(async (option, index) => {
     // Block Variable Declaration
     let lowerobject = {};
 
@@ -1487,9 +1489,8 @@ const createSurveyOptionJson = json => {
 };
 
 // Logic Customer Data
-module.exports.logicCustomerData = async(customerVersion, mobile, storeId) => {
+module.exports.logicCustomerData = async (customerVersion, mobile, storeId) => {
   try {
-
     // Read Partner Record
     const merchantRecord = await partnerModel.readPartnerByMobile(
       "partner_id",
@@ -1523,15 +1524,14 @@ module.exports.logicCustomerData = async(customerVersion, mobile, storeId) => {
 
     if (constant.length === 0) return Promise.reject("Oops our bad!!!");
 
-
     // Customer version
-    if (customerVersion === parseFloat(constant[0].value)) return {
-      success: true,
-      data: [],
-      msg: "Upto date"
-    };
+    if (customerVersion === parseFloat(constant[0].value))
+      return {
+        success: true,
+        data: [],
+        msg: "Upto date"
+      };
     else customerVersion = parseFloat(constant[0].value);
-
 
     // Read Merchant Customer Idenitity Record
     const record = await linkModel.readMerchantStoreCustomer(
@@ -1553,9 +1553,8 @@ module.exports.logicCustomerData = async(customerVersion, mobile, storeId) => {
 };
 
 // Logic Device Data
-module.exports.logicDeviceData = async(deviceJson, mobile, storeId) => {
+module.exports.logicDeviceData = async (deviceJson, mobile, storeId) => {
   try {
-
     deviceJson.map((json, index) => {
       if (
         json.hasOwnProperty("latitude") &&
@@ -1590,14 +1589,13 @@ module.exports.logicDeviceData = async(deviceJson, mobile, storeId) => {
       data: [],
       msg: "Succesful"
     };
-
   } catch (error) {
     return Promise.reject(error);
   }
 };
 
 // Logic Keep Merchant Constant
-const logicMerchantConstant = async(mobile, storeId) => {
+const logicMerchantConstant = async (mobile, storeId) => {
   try {
     // Block Variable
     const seed = [];
@@ -1621,7 +1619,7 @@ const logicMerchantConstant = async(mobile, storeId) => {
       status: 1
     });
 
-    seed.map(async(json, index) => {
+    seed.map(async (json, index) => {
       // Keep Merchant Constant Table
       await databaseController.keepMerchantConstantTable(
         mobile,

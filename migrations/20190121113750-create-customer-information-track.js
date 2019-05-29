@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('customer_information_tracks', {
+    return queryInterface.createTable("customer_information_tracks", {
       customer_information_track_id: {
         allowNull: false,
         autoIncrement: true,
@@ -21,10 +21,10 @@ module.exports = {
         allowNull: true
       },
       mobile: {
-        type: Sequelize.STRING
+        type: Sequelize.BIGINT
       },
       country_code: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
       dob: {
         type: Sequelize.STRING,
@@ -40,10 +40,10 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       partner_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER
       },
       store_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER
       },
       address_one: {
         type: Sequelize.STRING,
@@ -78,18 +78,18 @@ module.exports = {
         defaultValue: 1
       },
       createdAt: {
-        field: 'created_at',
+        field: "created_at",
         allowNull: false,
         type: Sequelize.DATE
       },
       updatedAt: {
-        field: 'updated_at',
+        field: "updated_at",
         allowNull: false,
         type: Sequelize.DATE
       }
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('customer_information_tracks');
+    return queryInterface.dropTable("customer_information_tracks");
   }
 };

@@ -22,12 +22,12 @@ module.exports = {
           allowNull: true
         },
         mobile: {
-          type: Sequelize.STRING,
-          allowNull: false,
+          type: Sequelize.BIGINT,
+          allowNull: false
         },
         country_code: {
           type: Sequelize.STRING,
-          allowNull: false,
+          allowNull: false
         },
         dob: {
           type: Sequelize.STRING,
@@ -86,11 +86,11 @@ module.exports = {
         }
       })
 
-    .then(function() {
-      return queryInterface.sequelize.query(
-        "ALTER TABLE `customer_information_data` ADD UNIQUE `unique_index`(`mobile`,`country_code`, `status`)"
-      );
-    });
+      .then(function() {
+        return queryInterface.sequelize.query(
+          "ALTER TABLE `customer_information_data` ADD UNIQUE `unique_index`(`mobile`,`country_code`, `status`)"
+        );
+      });
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable("customer_information_data");
