@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       mobile: {
-        type: Sequelize.STRING(10),
+        type: Sequelize.BIGINT,
         unique: true
       },
       email: {

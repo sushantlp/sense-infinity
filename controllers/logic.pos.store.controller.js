@@ -686,6 +686,16 @@ const logicInvoice = async (partnerRecord, storeRecord, invoices) => {
           ? undefined
           : invoice.gstin_number;
 
+      const invoiceCreatedDate =
+        invoice.created_date === "" || invoice.created_date === null
+          ? undefined
+          : invoice.created_date;
+
+      const invoiceUpdatedDate =
+        invoice.updated_date === "" || invoice.updated_date === null
+          ? undefined
+          : invoice.updated_date;
+
       let invoiceRecord = await invoiceModel.readInvoice(
         "id",
         partnerRecord[0].partner_id,
@@ -715,6 +725,9 @@ const logicInvoice = async (partnerRecord, storeRecord, invoices) => {
           invoice.sodexo_amount,
           gstinName,
           gstinNumber,
+          invoiceCreatedDate,
+          invoiceUpdatedDate,
+          invoice.home_delivery,
           invoice.round_off_amount,
           invoice.return_status,
           invoice.status,
@@ -737,7 +750,7 @@ const logicInvoice = async (partnerRecord, storeRecord, invoices) => {
       logicInvoiceCoupon(invoice.invoice_coupon, invoiceId);
       logicInvoicePayment(invoice.invoice_payment, invoiceId);
       logicInvoiceProduct(invoice.invoice_product, invoiceId);
-      logicManualDiscount(invoice.manual_discount, invoiceId, invoice.user_key);
+      logicManualDiscount(invoice.manual_discount, invoiceId);
     });
   } catch (error) {
     return Promise.reject(error);
@@ -828,6 +841,7 @@ const logicInvoiceProduct = async (invoiceProduct, invoiceId) => {
           product.discount,
           product.discount_price,
           product.sub_total,
+          product.hsn_code,
           product.return_status,
           product.status
         );
@@ -843,11 +857,11 @@ const logicInvoiceProduct = async (invoiceProduct, invoiceId) => {
   }
 };
 
-const logicManualDiscount = async (manualDiscount, invoiceId, userId) => {
+const logicManualDiscount = async (manualDiscount, invoiceId) => {
   try {
     return manualDiscount.map(async (discount, index) => {
       manualDiscountModel.keepManualDiscount(
-        userId,
+        discount.user_key,
         invoiceId,
         discount.amount,
         discount.status

@@ -6,10 +6,10 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER.UNSIGNED
       },
       invoice_no: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         unique: "actions_unique"
       },
@@ -18,7 +18,7 @@ module.exports = {
         allowNull: false
       },
       warehouse_user_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false
       },
       partner_id: {
@@ -88,6 +88,18 @@ module.exports = {
       return_status: {
         type: Sequelize.BOOLEAN,
         defaultValue: 0
+      },
+      home_delivery: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: 0
+      },
+      invoice_created_date: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      invoice_updated_date: {
+        type: Sequelize.STRING,
+        allowNull: true
       },
       status: {
         type: Sequelize.BOOLEAN,

@@ -1680,7 +1680,7 @@ const readInvoices = async partnerRecord => {
   try {
     let parallel = await Promise.all([
       invoiceModel.readInvoiceByPartner(
-        "invoices.invoice_no, invoices.store_counter_id, invoices.warehouse_user_id, partner_stores.store_id, invoices.customer_name, invoices.customer_mobile, invoices.membership_code, invoices.total_amount, invoices.invoice_cashback, invoices.invoice_total_saving, invoices.invoice_loyalty_used, invoices.invoice_sodexo_amount, invoices.invoice_total_amount, invoices.gstin_name, invoices.gstin_number, invoices.round_off_amount, invoices.return_status, invoices.status",
+        "invoices.invoice_no, invoices.store_counter_id, invoices.warehouse_user_id, partner_stores.store_id, invoices.customer_name, invoices.customer_mobile, invoices.membership_code, invoices.total_amount, invoices.invoice_cashback, invoices.invoice_total_saving, invoices.invoice_loyalty_used, invoices.invoice_sodexo_amount, invoices.invoice_total_amount, invoices.gstin_name, invoices.gstin_number, invoices.invoice_created_date, invoices.invoice_updated_date, invoices.home_delivery, invoices.round_off_amount, invoices.return_status, invoices.status",
         partnerRecord[0].partner_id,
         1
       ),
@@ -1790,6 +1790,11 @@ const createInvoiceJson = async invoiceJson => {
       obj.invoice_total_amount = invoice.invoice_total_amount;
       obj.gstin_name = invoice.gstin_name;
       obj.gstin_number = invoice.gstin_number;
+
+      obj.created_date = invoice.invoice_created_date;
+      obj.updated_date = invoice.invoice_updated_date;
+
+      obj.home_delivery = invoice.home_delivery;
       obj.round_off_amount = invoice.round_off_amount;
       obj.return_status = invoice.return_status;
       obj.status = invoice.status;
@@ -1804,7 +1809,7 @@ const createInvoiceJson = async invoiceJson => {
           invoice.invoice_no
         ),
         invoiceProductModel.readInvoiceProductByNo(
-          "product_name AS name, product_barcode AS barcode, product_unit AS unit, product_quantity AS quantity, product_sgst AS sgst, product_cgst AS cgst, product_igst AS igst, product_price AS price, product_discount AS discount, product_discount_price AS discount_price, product_sub_total AS sub_total, return_status, status",
+          "product_name AS name, product_barcode AS barcode, product_unit AS unit, product_quantity AS quantity, product_sgst AS sgst, product_cgst AS cgst, product_igst AS igst, product_price AS price, product_discount AS discount, product_discount_price AS discount_price, product_sub_total AS sub_total, hsn_code, return_status, status",
           invoice.invoice_no
         ),
         manualDiscountModel.readManualDiscountByNo(

@@ -10,9 +10,9 @@ module.exports = (sequelize, DataTypes) => {
   var returnInvoice = sequelize.define(
     "return_invoice",
     {
-      invoice_no: DataTypes.INTEGER,
-      new_invoice_no: DataTypes.INTEGER,
-      warehouse_user_id: DataTypes.INTEGER,
+      invoice_no: DataTypes.INTEGER.UNSIGNED,
+      new_invoice_no: DataTypes.INTEGER.UNSIGNED,
+      warehouse_user_id: DataTypes.INTEGER.UNSIGNED,
       partner_id: DataTypes.INTEGER,
       store_id: DataTypes.INTEGER,
       reason: DataTypes.TEXT,

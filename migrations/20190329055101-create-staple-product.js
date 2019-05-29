@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('staple_products', {
+    return queryInterface.createTable("staple_products", {
       staple_product_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER.UNSIGNED
       },
       product_name: {
         type: Sequelize.STRING,
@@ -94,6 +94,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('staple_products');
+    return queryInterface.dropTable("staple_products");
   }
 };

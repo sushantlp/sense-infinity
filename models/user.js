@@ -1,20 +1,22 @@
-'use strict';
+"use strict";
 
 // Import Config
-const constants = require('../config/constants');
+const constants = require("../config/constants");
 
 module.exports = (sequelize, DataTypes) => {
   var User = sequelize.define(
-    'user', {
+    "user",
+    {
       name: DataTypes.STRING,
-      mobile: DataTypes.STRING,
+      mobile: DataTypes.BIGINT,
       email: DataTypes.STRING,
       password: DataTypes.STRING,
       role_id: DataTypes.INTEGER,
       email_active: DataTypes.BOOLEAN,
       mobile_active: DataTypes.BOOLEAN,
       status: DataTypes.BOOLEAN
-    }, {
+    },
+    {
       classMethods: {
         associate: function(models) {
           // associations can be defined here
@@ -30,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
  */
 
 // Read User Table Record
-module.exports.readUserRecord = async(select, mobile, role, status) => {
+module.exports.readUserRecord = async (select, mobile, role, status) => {
   try {
     // Get Pool Object
     const pool = constants.createMysqlConnection();
@@ -42,7 +44,11 @@ module.exports.readUserRecord = async(select, mobile, role, status) => {
     const query = `SELECT ${select} FROM users WHERE mobile = ? AND role_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [mobile, role, status]);
+    const [rows, fields] = await connection.query(query, [
+      mobile,
+      role,
+      status
+    ]);
 
     connection.release();
 
@@ -52,9 +58,8 @@ module.exports.readUserRecord = async(select, mobile, role, status) => {
   }
 };
 
-
 // Read User Record By Id
-module.exports.readUserById = async(select, id, status) => {
+module.exports.readUserById = async (select, id, status) => {
   try {
     // Get Pool Object
     const pool = constants.createMysqlConnection();

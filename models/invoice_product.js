@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
   var invoiceProduct = sequelize.define(
     "invoice_product",
     {
-      invoice_no: DataTypes.INTEGER,
+      invoice_no: DataTypes.INTEGER.UNSIGNED,
       product_name: DataTypes.STRING,
       product_barcode: DataTypes.BIGINT,
       product_unit: DataTypes.STRING,
@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       product_discount: DataTypes.FLOAT,
       product_discount_price: DataTypes.DECIMAL,
       product_sub_total: DataTypes.DECIMAL,
+      hsn_code: DataTypes.INTEGER.UNSIGNED,
       return_status: DataTypes.BOOLEAN,
       status: DataTypes.BOOLEAN
     },
@@ -102,6 +103,7 @@ module.exports.keepInvoiceProduct = async (
   productDiscount,
   productDiscountPrice,
   productSubTotal,
+  hsnCode,
   returnStatus,
   status
 ) => {
@@ -117,7 +119,7 @@ module.exports.keepInvoiceProduct = async (
 
     // Query
     const query =
-      "INSERT INTO `invoice_products` (`invoice_no`, `product_name`, `product_barcode`, `product_unit`, `product_quantity`, `product_sgst`, `product_cgst`, `product_igst`, `product_price`, `product_discount`, `product_discount_price`, `product_sub_total`, `return_status`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO `invoice_products` (`invoice_no`, `product_name`, `product_barcode`, `product_unit`, `product_quantity`, `product_sgst`, `product_cgst`, `product_igst`, `product_price`, `product_discount`, `product_discount_price`, `product_sub_total`, `hsn_code`, `return_status`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     // Query Database
     const row = await connection.query(query, [
@@ -133,6 +135,7 @@ module.exports.keepInvoiceProduct = async (
       productDiscount,
       productDiscountPrice,
       productSubTotal,
+      hsnCode,
       returnStatus,
       status,
       now,

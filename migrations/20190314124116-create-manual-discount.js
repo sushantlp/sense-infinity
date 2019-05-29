@@ -9,15 +9,11 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       warehouse_user_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "warehouse_user_lists",
-          key: "id"
-        }
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false
       },
       invoice_no: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         references: {
           model: "invoices",

@@ -10,9 +10,9 @@ module.exports = (sequelize, DataTypes) => {
   var invoice = sequelize.define(
     "invoice",
     {
-      invoice_no: DataTypes.BIGINT,
+      invoice_no: DataTypes.INTEGER.UNSIGNED,
       store_counter_id: DataTypes.INTEGER,
-      warehouse_user_id: DataTypes.INTEGER,
+      warehouse_user_id: DataTypes.INTEGER.UNSIGNED,
       store_id: DataTypes.INTEGER,
       partner_id: DataTypes.INTEGER,
       customer_name: DataTypes.STRING,
@@ -26,6 +26,9 @@ module.exports = (sequelize, DataTypes) => {
       invoice_sodexo_amount: DataTypes.DECIMAL,
       gstin_name: DataTypes.STRING,
       gstin_number: DataTypes.STRING,
+      invoice_created_date: DataTypes.STRING,
+      invoice_updated_date: DataTypes.STRING,
+      home_delivery: DataTypes.BOOLEAN,
       round_off_amount: DataTypes.DECIMAL,
       return_status: DataTypes.BOOLEAN,
       status: DataTypes.BOOLEAN,
@@ -123,6 +126,9 @@ module.exports.keepInvoice = async (
   invoiceSodexoAmount,
   gstinName,
   gstinNumber,
+  invoiceCreatedDate,
+  invoiceUpdatedDate,
+  homeDelivery,
   roundOffAmount,
   returnStatus,
   status,
@@ -139,10 +145,14 @@ module.exports.keepInvoice = async (
       customerName = connection.escape(customerName);
     if (gstinName === undefined) gstinName = connection.escape(gstinName);
     if (gstinNumber === undefined) gstinNumber = connection.escape(gstinNumber);
+    if (invoiceCreatedDate === undefined)
+      invoiceCreatedDate = connection.escape(invoiceCreatedDate);
+    if (invoiceUpdatedDate === undefined)
+      invoiceUpdatedDate = connection.escape(invoiceUpdatedDate);
 
     // Query
     const query =
-      "INSERT INTO `invoices` (`invoice_no`, `store_counter_id`, `warehouse_user_id`, `store_id`, `partner_id`, `customer_name`, `customer_mobile`, `membership_code`, `total_amount`, `invoice_cashback`, `invoice_total_saving`, `invoice_loyalty_used`, `invoice_total_amount`, `invoice_sodexo_amount`, `gstin_name`, `gstin_number`, `round_off_amount`, `return_status`, `status`, `track_status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO `invoices` (`invoice_no`, `store_counter_id`, `warehouse_user_id`, `store_id`, `partner_id`, `customer_name`, `customer_mobile`, `membership_code`, `total_amount`, `invoice_cashback`, `invoice_total_saving`, `invoice_loyalty_used`, `invoice_total_amount`, `invoice_sodexo_amount`, `gstin_name`, `gstin_number`, `invoice_created_date`, `invoice_updated_date`, `home_delivery`, `round_off_amount`, `return_status`, `status`, `track_status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     // Query Database
     const row = await connection.query(query, [
@@ -162,6 +172,9 @@ module.exports.keepInvoice = async (
       invoiceSodexoAmount,
       gstinName,
       gstinNumber,
+      invoiceCreatedDate,
+      invoiceUpdatedDate,
+      homeDelivery,
       roundOffAmount,
       returnStatus,
       status,

@@ -32,7 +32,7 @@ const now = moment()
  * Start Database Read and Write
  */
 
- // Keep Pos Error Log
+// Keep Pos Error Log
 module.exports.keepPosErrorLog = async (
   partnerId,
   storeId,
@@ -55,7 +55,7 @@ module.exports.keepPosErrorLog = async (
       partnerId,
       storeId,
       errorMessage,
-      status
+      status,
       now,
       now
     ]);

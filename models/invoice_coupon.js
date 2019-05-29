@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
   var invoiceCoupon = sequelize.define(
     "invoice_coupon",
     {
-      invoice_no: DataTypes.INTEGER,
+      invoice_no: DataTypes.INTEGER.UNSIGNED,
       coupon_code: DataTypes.BIGINT,
       applicable_on: DataTypes.STRING,
       discount: DataTypes.FLOAT,

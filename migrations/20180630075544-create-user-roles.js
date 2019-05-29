@@ -10,7 +10,7 @@ module.exports = {
       },
       role_name: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: false
       },
       status: {
         type: Sequelize.BOOLEAN,

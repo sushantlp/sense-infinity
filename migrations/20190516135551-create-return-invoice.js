@@ -9,15 +9,15 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       invoice_no: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false
       },
       new_invoice_no: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false
       },
       warehouse_user_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false
       },
       partner_id: {

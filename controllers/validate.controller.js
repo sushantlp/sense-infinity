@@ -1741,6 +1741,28 @@ module.exports.storeInvoice = (invoiceJson, returnInvoiceJson) => {
           msg: "Missing invoice json gstin number parameter"
         };
 
+      if (!invoiceJson[i].hasOwnProperty("created_date"))
+        return {
+          success: false,
+          msg: "Missing invoice json created date parameter"
+        };
+
+      if (!invoiceJson[i].hasOwnProperty("updated_date"))
+        return {
+          success: false,
+          msg: "Missing invoice json updated date parameter"
+        };
+
+      if (
+        !invoiceJson[i].hasOwnProperty("home_delivery") ||
+        (invoiceJson[i].home_delivery !== 0 &&
+          invoiceJson[i].home_delivery !== 1)
+      )
+        return {
+          success: false,
+          msg: "Missing invoice json home delivery parameter"
+        };
+
       if (
         !invoiceJson[i].hasOwnProperty("return_status") ||
         (invoiceJson[i].return_status !== 0 &&
@@ -1854,6 +1876,17 @@ const validateManualDiscount = json => {
         return {
           success: false,
           msg: "Missing invoice manual discount json amount parameter"
+        };
+
+      if (
+        !invoiceJson[i].hasOwnProperty("user_key") ||
+        isNaN(invoiceJson[i].user_key) ||
+        invoiceJson[i].user_key === null ||
+        invoiceJson[i].user_key === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice json user key parameter"
         };
     }
 
@@ -2000,6 +2033,17 @@ const validateInvoiceProduct = json => {
         return {
           success: false,
           msg: "Missing invoice product json sub total parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("hsn_code") ||
+        isNaN(json[i].hsn_code) ||
+        json[i].hsn_code === null ||
+        json[i].hsn_code === ""
+      )
+        return {
+          success: false,
+          msg: "Missing invoice product json hsn code parameter"
         };
     }
 

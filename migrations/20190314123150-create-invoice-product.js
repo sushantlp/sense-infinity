@@ -6,10 +6,10 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER.UNSIGNED
       },
       invoice_no: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         references: {
           model: "invoices",
@@ -58,6 +58,10 @@ module.exports = {
       },
       product_sub_total: {
         type: Sequelize.DECIMAL,
+        allowNull: false
+      },
+      hsn_code: {
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false
       },
       return_status: {

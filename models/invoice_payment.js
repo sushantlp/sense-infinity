@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
   var invoicePayment = sequelize.define(
     "invoice_payment",
     {
-      invoice_no: DataTypes.INTEGER,
+      invoice_no: DataTypes.INTEGER.UNSIGNED,
       warehouse_payment_id: DataTypes.INTEGER,
       payment_amount: DataTypes.DECIMAL,
       transaction_id: DataTypes.STRING,

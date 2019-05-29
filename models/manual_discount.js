@@ -10,8 +10,8 @@ module.exports = (sequelize, DataTypes) => {
   var manualDiscount = sequelize.define(
     "manual_discount",
     {
-      warehouse_user_id: DataTypes.INTEGER,
-      invoice_no: DataTypes.INTEGER,
+      warehouse_user_id: DataTypes.INTEGER.UNSIGNED,
+      invoice_no: DataTypes.INTEGER.UNSIGNED,
       discount_amount: DataTypes.DECIMAL,
       status: DataTypes.BOOLEAN
     },
