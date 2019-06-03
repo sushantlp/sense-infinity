@@ -9,7 +9,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       customer_information_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         references: {
           model: "customer_information_data",
