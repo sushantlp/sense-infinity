@@ -91,4 +91,11 @@ routes.post(
   PosStoreApiController.requestStoreErrorLog
 );
 
+// Post Stores Error-Log
+routes.get(
+  "/membership-card/:storeCode([0-9]+)",
+  apiKeyAuth,
+  PosStoreApiController.requestMembershipCard
+);
+
 module.exports = routes;

@@ -31,7 +31,7 @@ const now = moment()
  * Start Database Read and Write
  */
 
-// Read Membership Card Owner Id
+// Read Membership Card Owner By [membership_card_id, status]
 module.exports.readCardOwner = async (select, cardId, status) => {
   try {
     // Get Pool Object
@@ -45,6 +45,38 @@ module.exports.readCardOwner = async (select, cardId, status) => {
 
     // Query Database
     const [rows, fields] = await connection.query(query, [cardId, status]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Read Membership Card Owner By [customer_information_id, membership_card_id, status]
+module.exports.readCustomerCard = async (
+  select,
+  customerId,
+  cardId,
+  status
+) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM customer_link_membership_cards WHERE customer_information_id = ? AND membership_card_id = ? AND status = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [
+      customerId,
+      cardId,
+      status
+    ]);
 
     connection.release();
 

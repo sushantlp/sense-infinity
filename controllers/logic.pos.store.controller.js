@@ -495,16 +495,19 @@ const readDiscount = async (partnerRecord, storeRecord) => {
     // then, create a dynamic list of comma-separated question marks
     const marks = new Array(id.length).fill("?").join(",");
 
-    let discountRecord = await productDiscountModel.readProductDiscountArray(
-      "id, discount_base_id, name, start_date, end_date, start_time, end_time, status",
-      marks,
-      id
-    );
+    let discountRecord = [];
 
-    // Parse
-    discountRecord = JSON.stringify(discountRecord);
-    discountRecord = JSON.parse(discountRecord);
+    if (id.length !== 0) {
+      discountRecord = await productDiscountModel.readProductDiscountArray(
+        "id, discount_base_id, name, start_date, end_date, start_time, end_time, status",
+        marks,
+        id
+      );
 
+      // Parse
+      discountRecord = JSON.stringify(discountRecord);
+      discountRecord = JSON.parse(discountRecord);
+    }
     if (discountRecord.length === 0 && parallel[0].length === 0) {
       return {
         success: true,

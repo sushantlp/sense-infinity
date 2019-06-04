@@ -1879,10 +1879,10 @@ const validateManualDiscount = json => {
         };
 
       if (
-        !invoiceJson[i].hasOwnProperty("user_key") ||
-        isNaN(invoiceJson[i].user_key) ||
-        invoiceJson[i].user_key === null ||
-        invoiceJson[i].user_key === ""
+        !json[i].hasOwnProperty("user_key") ||
+        isNaN(json[i].user_key) ||
+        json[i].user_key === null ||
+        json[i].user_key === ""
       )
         return {
           success: false,

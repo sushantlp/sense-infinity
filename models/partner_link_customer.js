@@ -105,7 +105,7 @@ module.exports.readMerchantLinkCustomer = async (
 // Read All Merchant Store Customer Record
 module.exports.readMerchantStoreCustomer = async (
   select,
-  merchantId,
+  partnerId,
   storeId,
   status
 ) => {
@@ -117,11 +117,11 @@ module.exports.readMerchantStoreCustomer = async (
     const connection = await pool.getConnection();
 
     // Query
-    const query = `SELECT ${select} FROM partner_link_customers LEFT JOIN customer_information_data ON partner_link_customers.customer_information_id = customer_information_data.customer_information_id LEFT JOIN genders ON customer_information_data.gender_id = genders.gender_id LEFT JOIN cities ON customer_information_data.city_id = cities.city_id LEFT JOIN localities ON customer_information_data.locality_id = localities.locality_id LEFT JOIN customer_membership_cards ON customer_information_data.customer_information_id = customer_membership_cards.customer_information_id WHERE partner_link_customers.partner_id = ? AND partner_link_customers.store_id = ? AND partner_link_customers.status = ? AND customer_information_data.status = ?`;
+    const query = `SELECT ${select} FROM partner_link_customers LEFT JOIN customer_information_data ON partner_link_customers.customer_information_id = customer_information_data.customer_information_id LEFT JOIN genders ON customer_information_data.gender_id = genders.gender_id LEFT JOIN cities ON customer_information_data.city_id = cities.city_id LEFT JOIN localities ON customer_information_data.locality_id = localities.locality_id LEFT JOIN customer_link_membership_cards ON customer_information_data.customer_information_id = customer_link_membership_cards.customer_information_id LEFT JOIN membership_cards ON customer_link_membership_cards.membership_card_id = membership_cards.id WHERE partner_link_customers.partner_id = ? AND partner_link_customers.store_id = ? AND partner_link_customers.status = ? AND customer_information_data.status = ?`;
 
     // Query Database
     const [rows, fields] = await connection.query(query, [
-      merchantId,
+      partnerId,
       storeId,
       status,
       status
