@@ -22,6 +22,7 @@ const invoicePaymentModel = require("../models/invoice_payment");
 const invoiceProductModel = require("../models/invoice_product");
 const manualDiscountModel = require("../models/manual_discount");
 const returnInvoiceModel = require("../models/return_invoice");
+const membershipSyncModel = require("../models/membership_sync");
 
 // Logic Warehouse Store List
 module.exports.logicWarehouseStoreList = async id => {
@@ -1005,6 +1006,89 @@ module.exports.logicStoreErrorLog = async (id, code, errorJson) => {
       data: [],
       msg: "Succesful"
     };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Get New Membership Card
+module.exports.logicMembershipCard = async (id, code) => {
+  try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner"
+      };
+
+    // Read Partner Store Record By Store Code
+    let storeRecord = await partnerStoreModel.readStoreByCode(
+      "store_id",
+      code,
+      partnerRecord[0].partner_id,
+      1
+    );
+
+    // Parse
+    storeRecord = JSON.stringify(storeRecord);
+    storeRecord = JSON.parse(storeRecord);
+
+    if (storeRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown store"
+      };
+
+    const cards = await checkNewCardGeneration(partnerRecord, storeRecord);
+
+    if (cards.data.length === 0)
+      return {
+        success: true,
+        data: {
+          membership_card: cards.data,
+          next: cards.next,
+          id: cards.id
+        },
+        msg: "Successful",
+        count: cards.data.length
+      };
+    else
+      return {
+        success: true,
+        data: cards,
+        msg: "Successful",
+        count: cards.length
+      };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Check New Membership Card Generation
+const checkNewCardGeneration = async (partnerRecord, storeRecord) => {
+  try {
+    let syncRecord = await membershipSyncModel.readMembershipSync(
+      partnerRecord[0].partner_id,
+      storeRecord[0].store_id,
+      1,
+      1
+    );
+
+    // Parse
+    syncRecord = JSON.stringify(syncRecord);
+    syncRecord = JSON.parse(syncRecord);
+
+    if (syncRecord.length === 0)
+      return {
+        success: true,
+        data: syncRecord,
+        next: false,
+        id: 0
+      };
   } catch (error) {
     return Promise.reject(error);
   }

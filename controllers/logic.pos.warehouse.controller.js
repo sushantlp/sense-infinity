@@ -1680,12 +1680,12 @@ const readInvoices = async partnerRecord => {
   try {
     let parallel = await Promise.all([
       invoiceModel.readInvoiceByPartner(
-        "invoices.invoice_no, invoices.store_counter_id, invoices.warehouse_user_id, partner_stores.store_id, invoices.customer_name, invoices.customer_mobile, invoices.membership_code, invoices.total_amount, invoices.invoice_cashback, invoices.invoice_total_saving, invoices.invoice_loyalty_used, invoices.invoice_sodexo_amount, invoices.invoice_total_amount, invoices.gstin_name, invoices.gstin_number, invoices.invoice_created_date, invoices.invoice_updated_date, invoices.home_delivery, invoices.round_off_amount, invoices.return_status, invoices.status",
+        "invoices.id, invoices.invoice_no, invoices.store_counter_id, invoices.warehouse_user_id, partner_stores.store_id, invoices.customer_name, invoices.customer_mobile, invoices.membership_code, invoices.total_amount, invoices.invoice_cashback, invoices.invoice_total_saving, invoices.invoice_loyalty_used, invoices.invoice_sodexo_amount, invoices.invoice_total_amount, invoices.gstin_name, invoices.gstin_number, invoices.invoice_created_date, invoices.invoice_updated_date, invoices.home_delivery, invoices.round_off_amount, invoices.return_status, invoices.status",
         partnerRecord[0].partner_id,
         1
       ),
       returnInvoiceModel.readReturnInvoiceByPartner(
-        "return_invoices.invoice_no AS invoice_number, return_invoices.new_invoice_no AS new_invoice_number, return_invoices.warehouse_user_id AS user_key, partner_stores.store_id",
+        "return_invoices.invoice_no AS invoice_number, return_invoices.new_invoice_no AS new_invoice_number, return_invoices.reason, return_invoices.warehouse_user_id AS user_key, partner_stores.store_id",
         partnerRecord[0].partner_id,
         1
       )
@@ -1802,19 +1802,19 @@ const createInvoiceJson = async invoiceJson => {
       let parallel = await Promise.all([
         invoiceCouponModel.readInvoiceCoupon(
           "coupon_code AS code, applicable_on AS applicable, discount, cashback, status",
-          invoice.invoice_no
+          invoice.id
         ),
         invoicePaymentModel.readInvoicePayment(
           "payment_amount AS amount, transaction_id AS transaction, card_no AS card, warehouse_payment_id AS payment_id, status",
-          invoice.invoice_no
+          invoice.id
         ),
         invoiceProductModel.readInvoiceProductByNo(
           "product_name AS name, product_barcode AS barcode, product_unit AS unit, product_quantity AS quantity, product_sgst AS sgst, product_cgst AS cgst, product_igst AS igst, product_price AS price, product_discount AS discount, product_discount_price AS discount_price, product_sub_total AS sub_total, hsn_code, return_status, status",
-          invoice.invoice_no
+          invoice.id
         ),
         manualDiscountModel.readManualDiscountByNo(
           "warehouse_user_id AS user_key, discount_amount, status",
-          invoice.invoice_no
+          invoice.id
         )
       ]);
 

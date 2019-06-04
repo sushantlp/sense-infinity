@@ -53,6 +53,29 @@ module.exports.readMembershipCard = async (select, card, status) => {
   }
 };
 
+// Read Membership Between Card [id-id]
+module.exports.readMembershipBetween = async (select, start, end, status) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM membership_cards WHERE id <= AND id >=  AND status = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [start, end, status]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 /**
  * End Database Read and Write
  */

@@ -91,11 +91,11 @@ routes.post(
   PosStoreApiController.requestStoreErrorLog
 );
 
-// Post Stores Error-Log
+// Get New Membership Card
 routes.get(
-  "/membership-card/:storeCode([0-9]+)",
+  "/new/membership/card/:storeCode([0-9]+)/:page([0-9]+)",
   apiKeyAuth,
-  PosStoreApiController.requestMembershipCard
+  PosStoreApiController.requestNewMembershipCard
 );
 
 module.exports = routes;

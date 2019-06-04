@@ -341,3 +341,34 @@ module.exports.requestStoreErrorLog = (req, res) => {
       });
   } else return res.status(400).send("Not a good api call");
 };
+
+// Request Get New Membership Card
+module.exports.requestNewMembershipCard = (req, res) => {
+  if (
+    res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.params.hasOwnProperty("storeCode")
+  ) {
+    // Logic Get New Membership Card
+    return posStoreController
+      .logicMembershipCard(res.userKey, req.params.storeCode)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/new/membership/card/${req.params.storeCode}`,
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
