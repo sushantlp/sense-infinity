@@ -23,10 +23,12 @@ const surveyOptionModel = require("../models/survey_option");
 const complainModel = require("../models/store_complain");
 const partnerModel = require("../models/partner");
 const storeModel = require("../models/partner_store");
-const cardModel = require("../models/customer_membership_card");
 const customerDataModel = require("../models/customer_information_data");
 const customerTrackModel = require("../models/customer_information_track");
 const linkModel = require("../models/partner_link_customer");
+
+const cardModel = require("../models/membership_card");
+const cardLinkCustomerModel = require("../models/customer_link_membership_card");
 
 // Current Date and Time
 const todayDate = moment()
@@ -602,24 +604,39 @@ const logicKeepCustomer = async (
       json.membership_number !== undefined &&
       json.membership_number !== ""
     ) {
-      // Read Membership Card Record
-      const card = await cardModel.readMembershipCardNumber(
-        "*",
+      // Read Membership Card
+      let cardRecord = await cardModel.readMembershipCard(
+        "id",
         json.membership_number,
         1
       );
 
-      if (card.length === 0) {
-        // Keep Customer Membership Card
-        cardModel.keepCustomerMembershipCard(
-          customerId,
-          json.membership_number,
+      // Parse
+      cardRecord = JSON.stringify(cardRecord);
+      cardRecord = JSON.parse(cardRecord);
+
+      if (cardRecord.length === 0) console.log("Card not found");
+      else {
+        let linkRecord = await cardLinkCustomerModel.readCardOwner(
+          "*",
+          cardRecord[0].id,
           1
         );
-      } else {
-        // One Membership Card to One Customer
-        if (card[0].customer_information_id !== customerId) {
-          console.log("Alert");
+
+        // Parse
+        linkRecord = JSON.stringify(linkRecord);
+        linkRecord = JSON.parse(linkRecord);
+
+        if (linkRecord.length === 0)
+          cardLinkCustomerModel.keepLinkCustomerMembershipCard(
+            customerId,
+            cardRecord[0].id,
+            1
+          );
+        else {
+          // One Membership Card to One Customer
+          if (linkRecord[0].customer_information_id !== customerId)
+            console.log("Alert");
           // Send Admin Mail
         }
       }

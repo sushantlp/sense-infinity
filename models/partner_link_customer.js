@@ -1,19 +1,21 @@
-'use strict';
+"use strict";
 
 // Import Package
-const moment = require('moment-timezone');
+const moment = require("moment-timezone");
 
 // Import Config
-const constants = require('../config/constants');
+const constants = require("../config/constants");
 
 module.exports = (sequelize, DataTypes) => {
   var partnerLinkCustomer = sequelize.define(
-    'partner_link_customer', {
+    "partner_link_customer",
+    {
       partner_id: DataTypes.INTEGER,
       store_id: DataTypes.INTEGER,
-      customer_information_id: DataTypes.INTEGER,
+      customer_information_id: DataTypes.INTEGER.UNSIGNED,
       status: DataTypes.BOOLEAN
-    }, {}
+    },
+    {}
   );
   partnerLinkCustomer.associate = function(models) {
     // associations can be defined here
@@ -23,17 +25,21 @@ module.exports = (sequelize, DataTypes) => {
 
 // Current Date and Time
 const now = moment()
-  .tz('Asia/Kolkata')
-  .format('YYYY-MM-DD HH-m-ss');
+  .tz("Asia/Kolkata")
+  .format("YYYY-MM-DD HH-m-ss");
 
 /**
  * Start Database Read and Write
  */
 
 // Keep Merchant Link Customer
-module.exports.keepMerchantLinkCustomer = async(merchantId, storeId, customerInformationId, status) => {
+module.exports.keepMerchantLinkCustomer = async (
+  merchantId,
+  storeId,
+  customerInformationId,
+  status
+) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -42,10 +48,17 @@ module.exports.keepMerchantLinkCustomer = async(merchantId, storeId, customerInf
 
     // Query
     const query =
-      'INSERT INTO `partner_link_customers` (`partner_id`,`store_id`,`customer_information_id`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?)';
+      "INSERT INTO `partner_link_customers` (`partner_id`,`store_id`,`customer_information_id`,`status`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?)";
 
     // Query Database
-    const row = await connection.query(query, [merchantId, storeId, customerInformationId, status, now, now]);
+    const row = await connection.query(query, [
+      merchantId,
+      storeId,
+      customerInformationId,
+      status,
+      now,
+      now
+    ]);
 
     connection.release();
 
@@ -56,9 +69,14 @@ module.exports.keepMerchantLinkCustomer = async(merchantId, storeId, customerInf
 };
 
 // Read Merchant Link Customer
-module.exports.readMerchantLinkCustomer = async(select, merchantId, storeId, customerInformationId, status) => {
+module.exports.readMerchantLinkCustomer = async (
+  select,
+  merchantId,
+  storeId,
+  customerInformationId,
+  status
+) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -69,7 +87,12 @@ module.exports.readMerchantLinkCustomer = async(select, merchantId, storeId, cus
     const query = `SELECT ${select} FROM partner_link_customers WHERE partner_id = ? AND store_id = ? AND customer_information_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [merchantId, storeId, customerInformationId, status]);
+    const [rows, fields] = await connection.query(query, [
+      merchantId,
+      storeId,
+      customerInformationId,
+      status
+    ]);
 
     connection.release();
 
@@ -80,9 +103,13 @@ module.exports.readMerchantLinkCustomer = async(select, merchantId, storeId, cus
 };
 
 // Read All Merchant Store Customer Record
-module.exports.readMerchantStoreCustomer = async(select, merchantId, storeId, status) => {
+module.exports.readMerchantStoreCustomer = async (
+  select,
+  merchantId,
+  storeId,
+  status
+) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -93,7 +120,12 @@ module.exports.readMerchantStoreCustomer = async(select, merchantId, storeId, st
     const query = `SELECT ${select} FROM partner_link_customers LEFT JOIN customer_information_data ON partner_link_customers.customer_information_id = customer_information_data.customer_information_id LEFT JOIN genders ON customer_information_data.gender_id = genders.gender_id LEFT JOIN cities ON customer_information_data.city_id = cities.city_id LEFT JOIN localities ON customer_information_data.locality_id = localities.locality_id LEFT JOIN customer_membership_cards ON customer_information_data.customer_information_id = customer_membership_cards.customer_information_id WHERE partner_link_customers.partner_id = ? AND partner_link_customers.store_id = ? AND partner_link_customers.status = ? AND customer_information_data.status = ?`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [merchantId, storeId, status, status]);
+    const [rows, fields] = await connection.query(query, [
+      merchantId,
+      storeId,
+      status,
+      status
+    ]);
 
     connection.release();
 
