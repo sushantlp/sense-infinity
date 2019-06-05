@@ -362,6 +362,40 @@ module.exports.requestNewMembershipCard = (req, res) => {
               `/new/membership/card/${req.params.storeCode}`,
               200,
               response.success,
+              response.count
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
+
+// Request Deactivated Membership Sync
+module.exports.requestMembershipSync = (req, res) => {
+  if (
+    res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.params.hasOwnProperty("storeCode") &&
+    req.params.hasOwnProperty("syncId")
+  ) {
+    // Logic Deactivated Membership Sync
+    return posStoreController
+      .logicMembershipSync(res.userKey, req.params.storeCode, req.params.syncId)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/new/membership/card/${req.params.storeCode}/${
+                req.params.syncId
+              }`,
+              200,
+              response.success,
               {}
             )
           );

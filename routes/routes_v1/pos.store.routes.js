@@ -93,9 +93,16 @@ routes.post(
 
 // Get New Membership Card
 routes.get(
-  "/new/membership/card/:storeCode([0-9]+)/:page([0-9]+)",
+  "/new/card/:storeCode([0-9]+)",
   apiKeyAuth,
   PosStoreApiController.requestNewMembershipCard
+);
+
+// Deactivated Membership Sync
+routes.put(
+  "/new/card/:storeCode([0-9]+):syncId([0-9]+)",
+  apiKeyAuth,
+  PosStoreApiController.requestMembershipSync
 );
 
 module.exports = routes;

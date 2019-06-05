@@ -68,6 +68,30 @@ module.exports.readMembershipSync = async (
   }
 };
 
+// Update Membership Sync By [id, sync_status, status]
+module.exports.updateMembershipSync = async (syncStatus, status, id) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query =
+      "UPDATE `membership_syncs` SET `sync_status` = ?, `status` = ?, `updated_at` = ? WHERE `id` = ?";
+
+    // Query Database
+    const row = await connection.query(query, [syncStatus, status, now, id]);
+
+    connection.release();
+
+    return row;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 /**
  * End Database Read and Write
  */

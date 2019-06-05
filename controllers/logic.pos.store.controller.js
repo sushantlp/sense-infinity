@@ -23,6 +23,7 @@ const invoiceProductModel = require("../models/invoice_product");
 const manualDiscountModel = require("../models/manual_discount");
 const returnInvoiceModel = require("../models/return_invoice");
 const membershipSyncModel = require("../models/membership_sync");
+const membershipCardModel = require("../models/membership_card");
 
 // Logic Warehouse Store List
 module.exports.logicWarehouseStoreList = async id => {
@@ -1020,7 +1021,7 @@ module.exports.logicMembershipCard = async (id, code) => {
     if (partnerRecord.length === 0)
       return {
         success: false,
-        data: [],
+        data: {},
         msg: "Unknown partner"
       };
 
@@ -1039,7 +1040,7 @@ module.exports.logicMembershipCard = async (id, code) => {
     if (storeRecord.length === 0)
       return {
         success: false,
-        data: [],
+        data: {},
         msg: "Unknown store"
       };
 
@@ -1059,7 +1060,11 @@ module.exports.logicMembershipCard = async (id, code) => {
     else
       return {
         success: true,
-        data: cards,
+        data: {
+          membership_card: cards.data,
+          next: cards.next,
+          id: cards.id
+        },
         msg: "Successful",
         count: cards.length
       };
@@ -1089,6 +1094,76 @@ const checkNewCardGeneration = async (partnerRecord, storeRecord) => {
         next: false,
         id: 0
       };
+
+    let cardRecord = await membershipCardModel.readMembershipBetween(
+      "id AS unique_key, membership_card_number AS card_number",
+      syncRecord[0].membership_start_id,
+      syncRecord[0].membership_end_id,
+      1
+    );
+
+    // Parse
+    cardRecord = JSON.stringify(cardRecord);
+    cardRecord = JSON.parse(cardRecord);
+
+    if (cardRecord.length === 0)
+      return {
+        success: true,
+        data: cardRecord,
+        next: false,
+        id: 0
+      };
+    else
+      return {
+        success: true,
+        data: cardRecord,
+        next: syncRecord.length > 1 ? true : false,
+        id: syncRecord[0].id
+      };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Deactivated Membership Sync
+module.exports.logicMembershipSync = async (id, code, syncId) => {
+  try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner"
+      };
+
+    // Read Partner Store Record By Store Code
+    let storeRecord = await partnerStoreModel.readStoreByCode(
+      "store_id",
+      code,
+      partnerRecord[0].partner_id,
+      1
+    );
+
+    // Parse
+    storeRecord = JSON.stringify(storeRecord);
+    storeRecord = JSON.parse(storeRecord);
+
+    if (storeRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown store"
+      };
+
+    membershipSyncModel.updateMembershipSync(0, 1, syncId);
+
+    return {
+      success: true,
+      data: [],
+      msg: "Succesful"
+    };
   } catch (error) {
     return Promise.reject(error);
   }

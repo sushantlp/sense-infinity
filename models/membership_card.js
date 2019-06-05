@@ -63,7 +63,7 @@ module.exports.readMembershipBetween = async (select, start, end, status) => {
     const connection = await pool.getConnection();
 
     // Query
-    const query = `SELECT ${select} FROM membership_cards WHERE id <= AND id >=  AND status = ?`;
+    const query = `SELECT ${select} FROM membership_cards WHERE id <= ? AND id >= ? AND status = ?`;
 
     // Query Database
     const [rows, fields] = await connection.query(query, [start, end, status]);
