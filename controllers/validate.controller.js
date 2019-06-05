@@ -2317,7 +2317,7 @@ module.exports.validateErrorLog = json => {
       )
         return {
           success: false,
-          msg: "Missing login history json text parameter"
+          msg: "Missing error log json text parameter"
         };
     }
 

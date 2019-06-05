@@ -3,32 +3,40 @@
  */
 
 // Import Package
-// const express = require('express');
-const expressValidator = require('express-validator');
-const expressStatusMonitor = require('express-status-monitor');
-const bodyParser = require('body-parser');
-const morgan = require('morgan');
-const errorHandler = require('errorhandler');
-const cors = require('cors');
+//const express = require('express');
+const expressValidator = require("express-validator");
+const expressStatusMonitor = require("express-status-monitor");
+const bodyParser = require("body-parser");
+const morgan = require("morgan");
+const errorHandler = require("errorhandler");
+const cors = require("cors");
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV === "development";
 
 exports.default = app => {
   // Express configuration.
-  app.set('host', process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0');
-  app.set('port', process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080);
+  app.set("host", process.env.OPENSHIFT_NODEJS_IP || "0.0.0.0");
+  app.set(
+    "port",
+    process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080
+  );
 
-  if (isDev) app.use(morgan('dev'));
+  if (isDev) app.use(morgan("dev"));
 
   app.use(cors());
   app.use(expressStatusMonitor());
-  app.use(bodyParser.json({
-    limit: '50mb'
-  }));
-  app.use(bodyParser.urlencoded({
-    limit: '50mb',
-    extended: true
-  }));
+  app.use(
+    bodyParser.json({
+      limit: "50mb"
+    })
+  );
+  app.use(
+    bodyParser.urlencoded({
+      limit: "50mb",
+      extended: true,
+      parameterLimit: 50000
+    })
+  );
   app.use(expressValidator());
 
   // Error Handler.
