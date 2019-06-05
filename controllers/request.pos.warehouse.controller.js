@@ -310,8 +310,7 @@ module.exports.requestWarehouseLoginHistory = (req, res) => {
     res.userKey !== undefined &&
     res.userKey !== "" &&
     req.body.history !== undefined &&
-    req.body.history !== "" &&
-    req.params.hasOwnProperty("storeCode")
+    req.body.history !== ""
   ) {
     // Validate Login History Parameter
     const validate = validateController.validateLoginHistory(req.body.history);
@@ -320,11 +319,7 @@ module.exports.requestWarehouseLoginHistory = (req, res) => {
 
     // Logic Warehouse Login History
     return posWarehouseController
-      .logicWarehouseLoginHistory(
-        res.userKey,
-        req.params.storeCode,
-        req.body.history
-      )
+      .logicWarehouseLoginHistory(res.userKey, req.body.history)
       .then(response => {
         return res
           .status(200)
@@ -332,7 +327,7 @@ module.exports.requestWarehouseLoginHistory = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              `/api/v1/Warehouse/login-history/${req.params.storeCode}`,
+              `/api/v1/Warehouse/login-history`,
               200,
               response.success,
               {}
@@ -352,8 +347,7 @@ module.exports.requestWarehouseErrorLog = (req, res) => {
     res.userKey !== undefined &&
     res.userKey !== "" &&
     req.body.errors !== undefined &&
-    req.body.errors !== "" &&
-    req.params.hasOwnProperty("storeCode")
+    req.body.errors !== ""
   ) {
     // Validate Warehouse Error Log
     const validate = validateController.validateErrorLog(req.body.errors);
@@ -362,11 +356,7 @@ module.exports.requestWarehouseErrorLog = (req, res) => {
 
     // Logic Warehouse Error Log
     return posWarehouseController
-      .logicWarehouseErrorLog(
-        res.userKey,
-        req.params.storeCode,
-        req.body.errors
-      )
+      .logicWarehouseErrorLog(res.userKey, req.body.errors)
       .then(response => {
         return res
           .status(200)
@@ -374,7 +364,34 @@ module.exports.requestWarehouseErrorLog = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              `/api/v1/stores/error-log/${req.params.storeCode}`,
+              `/api/v1/Warehouse/error-log`,
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
+
+// Request Track Status Change
+module.exports.requestUpdateInvoice = (req, res) => {
+  if (res.userKey !== undefined && res.userKey !== "") {
+    // Logic Track Status Change
+    return posWarehouseController
+      .logicUpdateInvoice(res.userKey)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/api/v1/Warehouse/invoices`,
               200,
               response.success,
               {}

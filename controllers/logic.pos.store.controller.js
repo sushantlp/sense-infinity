@@ -386,14 +386,17 @@ const getWarehouseProduct = async (sync, mobile) => {
     // then, create a dynamic list of comma-separated question marks
     const quesmarks = new Array(attribute.length).fill("?").join(",");
 
-    // Read Warehouse Product Record By Array
-    const productRecord = await databaseController.readWarehouseProductArray(
-      `product_barcode AS barcode, IFNULL(product_name,'') as product_name, IFNULL(brand_name,'') as brand_name, IFNULL(description,'') as description, global_category_id AS category_id, global_sub_category_id AS sub_category_id, global_sub_sub_category_id AS sub_sub_category_id, product_unit_id AS unit_id, product_sub_unit_id AS sub_unit_id, product_size, selling_price, product_margin, actual_price, sgst, cgst, igst, hsn, sodexo, status`,
-      mobile,
-      quesmarks,
-      attribute
-    );
+    let productRecord = [];
 
+    if (attribute.length !== 0) {
+      // Read Warehouse Product Record By Array
+      productRecord = await databaseController.readWarehouseProductArray(
+        `product_barcode AS barcode, IFNULL(product_name,'') as product_name, IFNULL(brand_name,'') as brand_name, IFNULL(description,'') as description, global_category_id AS category_id, global_sub_category_id AS sub_category_id, global_sub_sub_category_id AS sub_sub_category_id, product_unit_id AS unit_id, product_sub_unit_id AS sub_unit_id, product_size, selling_price, product_margin, actual_price, sgst, cgst, igst, hsn, sodexo, status`,
+        mobile,
+        quesmarks,
+        attribute
+      );
+    }
     if (productRecord === 0)
       return {
         success: false,
@@ -955,7 +958,11 @@ module.exports.logicStoreLoginHistory = async (id, code, historyJson) => {
       };
 
     // Write Login History
-    shareController.writeLoginHistory(partnerRecord, storeRecord, historyJson);
+    shareController.writeLoginHistory(
+      partnerRecord[0].partner_id,
+      storeRecord[0].store_id,
+      historyJson
+    );
 
     return {
       success: true,
@@ -1000,7 +1007,11 @@ module.exports.logicStoreErrorLog = async (id, code, errorJson) => {
       };
 
     // Write Login History
-    shareController.writeErrorLog(partnerRecord, storeRecord, errorJson);
+    shareController.writeErrorLog(
+      partnerRecord[0].partner_id,
+      storeRecord[0].store_id,
+      errorJson
+    );
 
     return {
       success: true,

@@ -602,11 +602,7 @@ module.exports.userPartnerData = async id => {
 };
 
 // Write Login History
-module.exports.writeLoginHistory = (
-  partnerRecord,
-  storeRecord,
-  historyJson
-) => {
+module.exports.writeLoginHistory = (partnerId, storeId, historyJson) => {
   try {
     return historyJson.map(async (history, index) => {
       const loginTime =
@@ -619,8 +615,8 @@ module.exports.writeLoginHistory = (
           : history.logout_time;
 
       historyModel.keepLoginHistory(
-        partnerRecord[0].partner_id,
-        storeRecord[0].store_id,
+        partnerId,
+        storeId,
         history.counter_key,
         history.user_key,
         loginTime,
@@ -641,15 +637,10 @@ module.exports.writeLoginHistory = (
 };
 
 // Write Error Log
-module.exports.writeErrorLog = (partnerRecord, storeRecord, errorJson) => {
+module.exports.writeErrorLog = (partnerId, storeId, errorJson) => {
   try {
     return errorJson.map(async (error, index) => {
-      posErrorModel.keepPosErrorLog(
-        partnerRecord[0].partner_id,
-        storeRecord[0].store_id,
-        error.text,
-        1
-      );
+      posErrorModel.keepPosErrorLog(partnerId, storeId, error.text, 1);
     });
   } catch (error) {
     return Promise.reject(error);

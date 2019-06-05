@@ -72,16 +72,23 @@ routes.get(
   PosWarehouseApiController.requestStoresInvoice
 );
 
+// Put Stores Invoice
+routes.put(
+  "/invoices",
+  apiKeyAuth,
+  PosWarehouseApiController.requestUpdateInvoice
+);
+
 // Post Warehouse Login-History
 routes.post(
-  "/login-history/:storeCode([0-9]+)",
+  "/login-history",
   apiKeyAuth,
   PosWarehouseApiController.requestWarehouseLoginHistory
 );
 
 // Post Warehouse Error-Log
 routes.post(
-  "/error-log/:storeCode([0-9]+)",
+  "/error-log",
   apiKeyAuth,
   PosWarehouseApiController.requestWarehouseErrorLog
 );

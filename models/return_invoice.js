@@ -181,6 +181,30 @@ module.exports.updateReturnInvoice = async (
   }
 };
 
+// Update Return Invoice [track_status, partner_id]
+module.exports.returnInvoiceTrackStatus = async (trackStatus, id) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query =
+      "UPDATE `return_invoices` SET `track_status` = ?, `updated_at` = ? WHERE `partner_id` = ?";
+
+    // Query Database
+    const row = await connection.query(query, [trackStatus, now, id]);
+
+    connection.release();
+
+    return row;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 /**
  * End Database Read and Write
  */

@@ -6,7 +6,7 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER.UNSIGNED
       },
       partner_id: {
         type: Sequelize.INTEGER,
@@ -25,7 +25,7 @@ module.exports = {
         allowNull: false
       },
       warehouse_user_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false
       },
       login_time: {

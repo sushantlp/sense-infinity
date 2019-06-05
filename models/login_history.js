@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       partner_id: DataTypes.INTEGER,
       store_id: DataTypes.INTEGER,
       store_counter_id: DataTypes.INTEGER,
-      warehouse_user_id: DataTypes.INTEGER,
+      warehouse_user_id: DataTypes.INTEGER.UNSIGNED,
       login_time: DataTypes.STRING,
       logout_time: DataTypes.STRING,
       opening_amount: DataTypes.DECIMAL,
@@ -71,7 +71,7 @@ module.exports.keepLoginHistory = async (
 
     // Query
     const query =
-      "INSERT INTO `invoice_coupons` (`partner_id`, `store_id`, `store_counter_id`, `warehouse_user_id`, `login_time`, `logout_time`, `opening_amount`, `closing_amount`, `total_invoice`, `cash_amount`, `card_amount`, `sodexo_amount`, `total_amount`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO `login_histories` (`partner_id`, `store_id`, `store_counter_id`, `warehouse_user_id`, `login_time`, `logout_time`, `opening_amount`, `closing_amount`, `total_invoice`, `cash_amount`, `card_amount`, `sodexo_amount`, `total_amount`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     // Query Database
     const row = await connection.query(query, [

@@ -1680,12 +1680,12 @@ const readInvoices = async partnerRecord => {
   try {
     let parallel = await Promise.all([
       invoiceModel.readInvoiceByPartner(
-        "invoices.id, invoices.invoice_no, invoices.store_counter_id, invoices.warehouse_user_id, partner_stores.store_id, invoices.customer_name, invoices.customer_mobile, invoices.membership_code, invoices.total_amount, invoices.invoice_cashback, invoices.invoice_total_saving, invoices.invoice_loyalty_used, invoices.invoice_sodexo_amount, invoices.invoice_total_amount, invoices.gstin_name, invoices.gstin_number, invoices.invoice_created_date, invoices.invoice_updated_date, invoices.home_delivery, invoices.round_off_amount, invoices.return_status, invoices.status",
+        "invoices.id, invoices.invoice_no, invoices.store_counter_id, invoices.warehouse_user_id, partner_stores.store_id, CASE WHEN invoices.customer_name <> 'NULL' THEN invoices.customer_name ELSE '' END AS customer_name, invoices.customer_mobile, invoices.membership_code, invoices.total_amount, invoices.invoice_cashback, invoices.invoice_total_saving, invoices.invoice_loyalty_used, invoices.invoice_sodexo_amount, invoices.invoice_total_amount, CASE WHEN invoices.gstin_name <> 'NULL' THEN invoices.gstin_name ELSE '' END AS gstin_name, CASE WHEN invoices.gstin_number <> 'NULL' THEN invoices.gstin_number ELSE '' END AS gstin_number, invoices.invoice_created_date, invoices.invoice_updated_date, invoices.home_delivery,invoices.round_off_amount, invoices.return_status, invoices.status",
         partnerRecord[0].partner_id,
         1
       ),
       returnInvoiceModel.readReturnInvoiceByPartner(
-        "return_invoices.invoice_no AS invoice_number, return_invoices.new_invoice_no AS new_invoice_number, return_invoices.reason, return_invoices.warehouse_user_id AS user_key, partner_stores.store_id",
+        "return_invoices.invoice_no AS invoice_number, return_invoices.new_invoice_no AS new_invoice_number, CASE WHEN return_invoices.reason <> 'NULL' THEN return_invoices.reason ELSE '' END AS return_invoices, return_invoices.warehouse_user_id AS user_key, partner_stores.store_id",
         partnerRecord[0].partner_id,
         1
       )
@@ -1801,15 +1801,15 @@ const createInvoiceJson = async invoiceJson => {
 
       let parallel = await Promise.all([
         invoiceCouponModel.readInvoiceCoupon(
-          "coupon_code AS code, applicable_on AS applicable, discount, cashback, status",
+          "coupon_code AS code, CASE WHEN applicable_on <> 'NULL' THEN applicable_on ELSE '' END AS applicable, discount, cashback, status",
           invoice.id
         ),
         invoicePaymentModel.readInvoicePayment(
-          "payment_amount AS amount, transaction_id AS transaction, card_no AS card, warehouse_payment_id AS payment_id, status",
+          "payment_amount AS amount, CASE WHEN transaction_id <> 'NULL' THEN transaction_id ELSE '' END AS transaction, card_no AS card, warehouse_payment_id AS payment_id, status",
           invoice.id
         ),
         invoiceProductModel.readInvoiceProductByNo(
-          "product_name AS name, product_barcode AS barcode, product_unit AS unit, product_quantity AS quantity, product_sgst AS sgst, product_cgst AS cgst, product_igst AS igst, product_price AS price, product_discount AS discount, product_discount_price AS discount_price, product_sub_total AS sub_total, hsn_code, return_status, status",
+          "CASE WHEN product_name <> 'NULL' THEN product_name ELSE '' END AS name, product_barcode AS barcode, CASE WHEN product_unit <> 'NULL' THEN product_unit ELSE '' END AS unit, product_quantity AS quantity, product_sgst AS sgst, product_cgst AS cgst, product_igst AS igst, product_price AS price, product_discount AS discount, product_discount_price AS discount_price, product_sub_total AS sub_total, hsn_code, return_status, status",
           invoice.id
         ),
         manualDiscountModel.readManualDiscountByNo(
@@ -1837,7 +1837,7 @@ const createInvoiceJson = async invoiceJson => {
 };
 
 // Logic Pos Warehouse Login History
-module.exports.logicWarehouseLoginHistory = async (id, code, historyJson) => {
+module.exports.logicWarehouseLoginHistory = async (id, historyJson) => {
   try {
     // Call User Partner Data
     const partnerRecord = await shareController.userPartnerData(id);
@@ -1849,27 +1849,12 @@ module.exports.logicWarehouseLoginHistory = async (id, code, historyJson) => {
         msg: "Unknown partner"
       };
 
-    // Read Partner Store Record By Store Code
-    let storeRecord = await partnerStoreModel.readStoreByCode(
-      "store_id",
-      code,
-      partnerRecord[0].partner_id,
-      1
-    );
-
-    // Parse
-    storeRecord = JSON.stringify(storeRecord);
-    storeRecord = JSON.parse(storeRecord);
-
-    if (storeRecord.length === 0)
-      return {
-        success: false,
-        data: [],
-        msg: "Unknown store"
-      };
-
     // Write Login History
-    shareController.writeLoginHistory(partnerRecord, storeRecord, historyJson);
+    shareController.writeLoginHistory(
+      partnerRecord[0].partner_id,
+      0,
+      historyJson
+    );
 
     return {
       success: true,
@@ -1882,7 +1867,7 @@ module.exports.logicWarehouseLoginHistory = async (id, code, historyJson) => {
 };
 
 // Logic Pos Warehouse Error Log
-module.exports.logicWarehouseErrorLog = async (id, code, errorJson) => {
+module.exports.logicWarehouseErrorLog = async (id, errorJson) => {
   try {
     // Call User Partner Data
     const partnerRecord = await shareController.userPartnerData(id);
@@ -1894,27 +1879,34 @@ module.exports.logicWarehouseErrorLog = async (id, code, errorJson) => {
         msg: "Unknown partner"
       };
 
-    // Read Partner Store Record By Store Code
-    let storeRecord = await partnerStoreModel.readStoreByCode(
-      "store_id",
-      code,
-      partnerRecord[0].partner_id,
-      1
-    );
+    // Write Login History
+    shareController.writeErrorLog(partnerRecord[0].partner_id, 0, errorJson);
 
-    // Parse
-    storeRecord = JSON.stringify(storeRecord);
-    storeRecord = JSON.parse(storeRecord);
+    return {
+      success: true,
+      data: [],
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
 
-    if (storeRecord.length === 0)
+// Logic Track Status Change
+module.exports.logicUpdateInvoice = async id => {
+  try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
       return {
         success: false,
         data: [],
-        msg: "Unknown store"
+        msg: "Unknown partner"
       };
 
-    // Write Login History
-    shareController.writeErrorLog(partnerRecord, storeRecord, errorJson);
+    invoiceModel.invoiceTrackStatus(0, partnerRecord[0].partner_id);
+    returnInvoiceModel.returnInvoiceTrackStatus(0, partnerRecord[0].partner_id);
 
     return {
       success: true,
