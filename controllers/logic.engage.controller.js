@@ -133,7 +133,7 @@ module.exports.requestLogicKeepComplain = async (
       await databaseController.createConstantTable(mobile, storeId);
 
       // Logic Keep Merchant Constant
-      await logicMerchantConstant(mobile, storeId);
+      await shareController.logicMerchantConstant(mobile, storeId);
     }
 
     // Logic Read Complain
@@ -449,7 +449,7 @@ module.exports.requestLogicKeepCustomer = async (
       await databaseController.createConstantTable(mobile, storeId);
 
       // Logic Keep Merchant Constant
-      await logicMerchantConstant(mobile, storeId);
+      await shareController.logicMerchantConstant(mobile, storeId);
     }
 
     // Logic Read Customer
@@ -705,7 +705,7 @@ module.exports.requestLogicFeedbackSurvey = async (
       await databaseController.createConstantTable(mobile, storeId);
 
       // Logic Keep Merchant Constant
-      await logicMerchantConstant(mobile, storeId);
+      await shareController.logicMerchantConstant(mobile, storeId);
     }
 
     // Read Partner Record
@@ -1156,7 +1156,7 @@ module.exports.logicGetFeedback = async (
       await databaseController.createConstantTable(mobile, storeId);
 
       // Logic Keep Merchant Constant
-      await logicMerchantConstant(mobile, storeId);
+      await shareController.logicMerchantConstant(mobile, storeId);
     }
 
     // Parallel Merchant and Sense Constant
@@ -1347,7 +1347,7 @@ module.exports.logicGetSurvey = async (
       await databaseController.createConstantTable(mobile, storeId);
 
       // Logic Keep Merchant Constant
-      await logicMerchantConstant(mobile, storeId);
+      await shareController.logicMerchantConstant(mobile, storeId);
     }
 
     // Parallel Merchant and Sense Constant
@@ -1527,7 +1527,7 @@ module.exports.logicCustomerData = async (customerVersion, mobile, storeId) => {
       await databaseController.createConstantTable(mobile, storeId);
 
       // Logic Keep Merchant Constant
-      await logicMerchantConstant(mobile, storeId);
+      await shareController.logicMerchantConstant(mobile, storeId);
     }
 
     // Read Constant Record
@@ -1599,53 +1599,6 @@ module.exports.logicDeviceData = async (deviceJson, mobile, storeId) => {
           json.sense_version_number
         );
       }
-    });
-
-    return {
-      success: true,
-      data: [],
-      msg: "Succesful"
-    };
-  } catch (error) {
-    return Promise.reject(error);
-  }
-};
-
-// Logic Keep Merchant Constant
-const logicMerchantConstant = async (mobile, storeId) => {
-  try {
-    // Block Variable
-    const seed = [];
-
-    seed.push({
-      name: "CUSTOMER_FEEDBACK_APP_VERSION",
-      value: "1.0",
-      comment: null,
-      status: 1
-    });
-    seed.push({
-      name: "CUSTOMER_SURVEY_APP_VERSION",
-      value: "1.0",
-      comment: null,
-      status: 1
-    });
-    seed.push({
-      name: "CUSTOMER_IDENTITY_APP_VERSION",
-      value: "1.0",
-      comment: null,
-      status: 1
-    });
-
-    seed.map(async (json, index) => {
-      // Keep Merchant Constant Table
-      await databaseController.keepMerchantConstantTable(
-        mobile,
-        storeId,
-        json.name,
-        json.value,
-        json.comment,
-        json.status
-      );
     });
 
     return {

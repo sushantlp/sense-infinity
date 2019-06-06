@@ -1269,6 +1269,27 @@ module.exports.logicPostCustomers = async (id, code, customers) => {
 // Keep Customer Detail
 const postCustomerDetail = async (partnerRecord, storeRecord, customers) => {
   try {
+    // Partner Constant Table Exist
+    const senseConstant = await databaseController.showConstantTable(
+      partnerRecord[0].mobile,
+      storeRecord[0].store_id
+    );
+
+    // Zero Means Empty Record
+    if (senseConstant.length === 0) {
+      // Create Partner Constant Store Table
+      await databaseController.createConstantTable(
+        partnerRecord[0].mobile,
+        storeRecord[0].store_id
+      );
+
+      // Logic Keep Partner Constant
+      await shareController.logicMerchantConstant(
+        partnerRecord[0].mobile,
+        storeRecord[0].store_id
+      );
+    }
+
     // Read Constant Record
     const constant = await databaseController.readConstantRecordName(
       "*",
@@ -1335,7 +1356,7 @@ const postCustomerDetail = async (partnerRecord, storeRecord, customers) => {
           reform.landmark,
           reform.spouse_name,
           reform.anniversary,
-          1
+          customer.status
         );
 
         // Parse
@@ -1386,7 +1407,7 @@ const postCustomerDetail = async (partnerRecord, storeRecord, customers) => {
 
       if (linkValue.length === 0)
         linkModel.keepMerchantLinkCustomer(
-          merchantRecord[0].partner_id,
+          partnerRecord[0].partner_id,
           storeRecord[0].store_id,
           customerId,
           1
@@ -1440,9 +1461,9 @@ const postCustomerDetail = async (partnerRecord, storeRecord, customers) => {
         customer.mobile,
         cityCode,
         reform.dob,
-        parseInt(json.gender_id, 10),
-        parseInt(json.city_id, 10),
-        parseInt(json.locality_id, 10),
+        parseInt(customer.gender, 10),
+        parseInt(customer.city, 10),
+        parseInt(customer.locality, 10),
         partnerRecord[0].partner_id,
         storeRecord[0].store_id,
         0,

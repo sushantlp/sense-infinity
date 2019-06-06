@@ -1,5 +1,8 @@
 "use strict";
 
+// Import Controller
+const databaseController = require("./database.controller");
+
 // Import Package
 const jwt = require("jsonwebtoken");
 const jwtRefresh = require("jsonwebtoken-refresh");
@@ -166,24 +169,28 @@ module.exports.reformCustomerDetail = (
   };
 
   // EMPTY || NULL || UNDEFINED
-  if (firstName !== "" && firstName !== null && typeof firstName !== undefined)
+  if (
+    firstName !== "" &&
+    firstName !== null &&
+    typeof firstName !== "undefined"
+  )
     reform.first_name = firstName.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
 
-  if (lastName !== "" && lastName !== null && typeof lastName !== undefined)
+  if (lastName !== "" && lastName !== null && typeof lastName !== "undefined")
     reform.last_name = lastName.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
 
-  if (dob !== "" && dob !== null && typeof dob !== undefined)
+  if (dob !== "" && dob !== null && typeof dob !== "undefined")
     reform.dob = moment(new Date(dob)).format("YYYY-MM-DD");
 
   if (flag) {
     if (
       spouseName !== "" &&
       spouseName !== null &&
-      typeof spouseName !== undefined
+      typeof spouseName !== "undefined"
     )
       reform.spouse_name = spouseName.replace(/\b[a-z]/g, function(f) {
         return f.toUpperCase();
@@ -192,7 +199,7 @@ module.exports.reformCustomerDetail = (
     if (
       anniversary !== "" &&
       anniversary !== null &&
-      typeof anniversary !== undefined
+      typeof anniversary !== "undefined"
     ) {
       reform.anniversary = moment(new Date(anniversary)).format("YYYY-MM-DD");
       if (isNaN(Date.parse(reform.anniversary)))
@@ -201,13 +208,13 @@ module.exports.reformCustomerDetail = (
         );
     }
 
-    if (married !== "" && married !== null && typeof married !== undefined)
+    if (married !== "" && married !== null && typeof married !== "undefined")
       reform.married = married;
 
     if (
       addressOne !== "" &&
       addressOne !== null &&
-      typeof addressOne !== undefined
+      typeof addressOne !== "undefined"
     )
       reform.address_one = addressOne.replace(/\b[a-z]/g, function(f) {
         return f.toUpperCase();
@@ -216,13 +223,13 @@ module.exports.reformCustomerDetail = (
     if (
       addressTwo !== "" &&
       addressTwo !== null &&
-      typeof addressTwo !== undefined
+      typeof addressTwo !== "undefined"
     )
       reform.address_two = addressTwo.replace(/\b[a-z]/g, function(f) {
         return f.toUpperCase();
       });
 
-    if (landmark !== "" && landmark !== null && typeof landmark !== undefined)
+    if (landmark !== "" && landmark !== null && typeof landmark !== "undefined")
       reform.landmark = landmark.replace(/\b[a-z]/g, function(f) {
         return f.toUpperCase();
       });
@@ -596,6 +603,53 @@ module.exports.writeErrorLog = (partnerId, storeId, errorJson) => {
     return errorJson.map(async (error, index) => {
       posErrorModel.keepPosErrorLog(partnerId, storeId, error.text, 1);
     });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Keep Merchant Constant
+module.exports.logicMerchantConstant = async (mobile, storeId) => {
+  try {
+    // Block Variable
+    const seed = [];
+
+    seed.push({
+      name: "CUSTOMER_FEEDBACK_APP_VERSION",
+      value: "1.0",
+      comment: null,
+      status: 1
+    });
+    seed.push({
+      name: "CUSTOMER_SURVEY_APP_VERSION",
+      value: "1.0",
+      comment: null,
+      status: 1
+    });
+    seed.push({
+      name: "CUSTOMER_IDENTITY_APP_VERSION",
+      value: "1.0",
+      comment: null,
+      status: 1
+    });
+
+    seed.map(async (json, index) => {
+      // Keep Merchant Constant Table
+      await databaseController.keepMerchantConstantTable(
+        mobile,
+        storeId,
+        json.name,
+        json.value,
+        json.comment,
+        json.status
+      );
+    });
+
+    return {
+      success: true,
+      data: [],
+      msg: "Succesful"
+    };
   } catch (error) {
     return Promise.reject(error);
   }

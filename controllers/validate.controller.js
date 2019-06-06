@@ -2407,8 +2407,8 @@ module.exports.validateStoreCustomer = json => {
 
       if (
         !json[i].hasOwnProperty("mobile") ||
-        json[i].text === null ||
-        json[i].text === ""
+        json[i].mobile === null ||
+        json[i].mobile === ""
       )
         return {
           success: false,
