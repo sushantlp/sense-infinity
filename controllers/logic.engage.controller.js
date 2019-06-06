@@ -538,7 +538,7 @@ const logicKeepCustomer = async (
         reform.first_name,
         reform.last_name,
         json.email,
-        json.customer_mobile.toString(),
+        json.customer_mobile,
         cityCode,
         newDob,
         parseInt(json.gender_id, 10),

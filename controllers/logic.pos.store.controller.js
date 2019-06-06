@@ -4,6 +4,9 @@
 const shareController = require("./share.controller");
 const databaseController = require("./database.controller");
 
+// Import Config
+const { Gateway } = require("../config/constants");
+
 // Import Model
 const partnerStoreModel = require("../models/partner_store");
 const warehouseInformationModel = require("../models/warehouse_information_list");
@@ -25,6 +28,12 @@ const returnInvoiceModel = require("../models/return_invoice");
 const membershipSyncModel = require("../models/membership_sync");
 const membershipCardModel = require("../models/membership_card");
 const customerModel = require("../models/customer_information_data");
+const customerDataModel = require("../models/customer_information_data");
+const customerTrackModel = require("../models/customer_information_track");
+const cityModel = require("../models/city");
+const linkModel = require("../models/partner_link_customer");
+const cardModel = require("../models/membership_card");
+const cardLinkCustomerModel = require("../models/customer_link_membership_card");
 
 // Logic Warehouse Store List
 module.exports.logicWarehouseStoreList = async id => {
@@ -1244,6 +1253,208 @@ module.exports.logicPostCustomers = async (id, code, customers) => {
         data: [],
         msg: "Unknown store"
       };
+
+    postCustomerDetail(partnerRecord, storeRecord, customers);
+
+    return {
+      success: true,
+      data: [],
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Keep Customer Detail
+const postCustomerDetail = async (partnerRecord, storeRecord, customers) => {
+  try {
+    // Read Constant Record
+    const constant = await databaseController.readConstantRecordName(
+      "*",
+      partnerRecord[0].mobile,
+      storeRecord[0].store_id,
+      "CUSTOMER_IDENTITY_APP_VERSION",
+      1
+    );
+
+    return customers.map(async (customer, index) => {
+      // Block Variable
+      let cityCode = 0;
+      let customerId = undefined;
+
+      // Reform Customer Detail
+      const reform = shareController.reformCustomerDetail(
+        customer.first_name,
+        customer.last_name,
+        undefined,
+        customer.birth,
+        undefined,
+        undefined,
+        customer.address_one,
+        customer.address_two,
+        customer.landmark,
+        true
+      );
+
+      // Read Customer Information Data By Mobile
+      let customerRecord = await customerDataModel.readCustomerDataMobile(
+        "*",
+        customer.mobile,
+        1
+      );
+
+      // Parse
+      customerRecord = JSON.stringify(customerRecord);
+      customerRecord = JSON.parse(customerRecord);
+
+      // Read City Record By City Id
+      let cityRecord = await cityModel.readCityBYId("*", customer.city, 1);
+
+      // Parse
+      cityRecord = JSON.stringify(cityRecord);
+      cityRecord = JSON.parse(cityRecord);
+
+      if (cityRecord.length !== 0) cityCode = cityRecord[0].country_code;
+
+      if (customerRecord.length === 0) {
+        // Keep Customer Information Data
+        let lastRecord = await customerDataModel.keepCustomerData(
+          reform.first_name,
+          reform.last_name,
+          customer.email,
+          customer.mobile,
+          cityCode,
+          reform.dob,
+          parseInt(customer.gender, 10),
+          parseInt(customer.city, 10),
+          parseInt(customer.locality, 10),
+          0,
+          reform.address_one,
+          reform.address_two,
+          reform.landmark,
+          reform.spouse_name,
+          reform.anniversary,
+          1
+        );
+
+        // Parse
+        lastRecord = JSON.stringify(lastRecord);
+        lastRecord = JSON.parse(lastRecord);
+
+        if (Array.isArray(lastRecord)) customerId = lastRecord[0].insertId;
+        else customerId = lastRecord.insertId;
+      } else {
+        // ReIntialize
+        customerId = customerRecord[0].customer_information_id;
+
+        // Update Customer Information Data
+        customerDataModel.updateCustomerData(
+          reform.first_name,
+          reform.last_name,
+          customer.email,
+          reform.dob,
+          parseInt(customer.gender, 10),
+          parseInt(customer.city, 10),
+          parseInt(customer.locality, 10),
+          0,
+          reform.address_one,
+          reform.address_two,
+          reform.landmark,
+          reform.spouse_name,
+          reform.anniversary,
+          customerId
+        );
+      }
+
+      // Read Merchant Link Customer
+      const linkValue = await linkModel.readMerchantLinkCustomer(
+        "*",
+        partnerRecord[0].partner_id,
+        storeRecord[0].store_id,
+        customerId,
+        1
+      );
+
+      if (linkValue.length === 0)
+        linkModel.keepMerchantLinkCustomer(
+          partnerRecord[0].partner_id,
+          storeRecord[0].store_id,
+          customerId,
+          1
+        );
+
+      if (linkValue.length === 0)
+        linkModel.keepMerchantLinkCustomer(
+          merchantRecord[0].partner_id,
+          storeRecord[0].store_id,
+          customerId,
+          1
+        );
+
+      // Logic Membership Card
+      if (customer.card !== 0) {
+        // Read Membership Card
+        let cardRecord = await cardModel.readMembershipCard(
+          "id",
+          customer.card,
+          1
+        );
+
+        // Parse
+        cardRecord = JSON.stringify(cardRecord);
+        cardRecord = JSON.parse(cardRecord);
+
+        if (cardRecord.length === 0) console.log("Card not found");
+        else {
+          let linkRecord = await cardLinkCustomerModel.readCardOwner(
+            "*",
+            cardRecord[0].id,
+            1
+          );
+
+          // Parse
+          linkRecord = JSON.stringify(linkRecord);
+          linkRecord = JSON.parse(linkRecord);
+
+          if (linkRecord.length === 0)
+            cardLinkCustomerModel.keepLinkCustomerMembershipCard(
+              customerId,
+              cardRecord[0].id,
+              1
+            );
+          else {
+            // One Membership Card to One Customer
+            if (linkRecord[0].customer_information_id !== customerId)
+              console.log("Alert");
+            // Send Admin Mail
+          }
+        }
+      }
+
+      // Keep Information Track
+      customerTrackModel.keepInformationTrack(
+        reform.first_name,
+        reform.last_name,
+        customer.email,
+        customer.mobile,
+        cityCode,
+        reform.dob,
+        parseInt(json.gender_id, 10),
+        parseInt(json.city_id, 10),
+        parseInt(json.locality_id, 10),
+        partnerRecord[0].partner_id,
+        storeRecord[0].store_id,
+        0,
+        reform.address_one,
+        reform.address_two,
+        reform.landmark,
+        reform.spouse_name,
+        reform.anniversary,
+        Gateway.POS,
+        1
+      );
+    });
   } catch (error) {
     return Promise.reject(error);
   }

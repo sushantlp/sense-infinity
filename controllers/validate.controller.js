@@ -2337,7 +2337,12 @@ module.exports.validateErrorLog = json => {
 module.exports.validateStoreCustomer = json => {
   try {
     for (let i = 0; i < json.length; i++) {
-      if (!json[i].hasOwnProperty("card") || isNaN(json[i].card))
+      if (
+        !json[i].hasOwnProperty("card") ||
+        isNaN(json[i].card) ||
+        json[i].card === null ||
+        json[i].card === ""
+      )
         return {
           success: false,
           msg: "Missing store customer json card parameter"
@@ -2388,13 +2393,13 @@ module.exports.validateStoreCustomer = json => {
           msg: "Missing store customer json landmark parameter"
         };
 
-      if (!json[i].hasOwnProperty("city"))
+      if (!json[i].hasOwnProperty("city") || isNaN(json[i].city))
         return {
           success: false,
           msg: "Missing store customer json city parameter"
         };
 
-      if (!json[i].hasOwnProperty("locality"))
+      if (!json[i].hasOwnProperty("locality") || isNaN(json[i].locality))
         return {
           success: false,
           msg: "Missing store customer json locality parameter"
