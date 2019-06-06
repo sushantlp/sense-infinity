@@ -100,7 +100,7 @@ routes.get(
 
 // Deactivated Membership Sync
 routes.put(
-  "/new/card/:storeCode([0-9]+):syncId([0-9]+)",
+  "/new/card/:storeCode([0-9]+)/:syncId([0-9]+)",
   apiKeyAuth,
   PosStoreApiController.requestMembershipSync
 );

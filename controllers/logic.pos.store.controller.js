@@ -1094,7 +1094,7 @@ const checkNewCardGeneration = async (partnerRecord, storeRecord) => {
       };
 
     let cardRecord = await membershipCardModel.readMembershipBetween(
-      "id AS unique_key, membership_card_number AS card_number",
+      "membership_card_number AS card_number",
       syncRecord[0].membership_start_id,
       syncRecord[0].membership_end_id,
       1
@@ -1208,6 +1208,42 @@ const getCustomerDetail = async () => {
     }
 
     if (!stop) return customer;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Post Customer Detail
+module.exports.logicPostCustomers = async (id, code, customers) => {
+  try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner"
+      };
+
+    // Read Partner Store Record By Store Code
+    let storeRecord = await partnerStoreModel.readStoreByCode(
+      "store_id",
+      code,
+      partnerRecord[0].partner_id,
+      1
+    );
+
+    // Parse
+    storeRecord = JSON.stringify(storeRecord);
+    storeRecord = JSON.parse(storeRecord);
+
+    if (storeRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown store"
+      };
   } catch (error) {
     return Promise.reject(error);
   }

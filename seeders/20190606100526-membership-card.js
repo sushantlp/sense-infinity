@@ -3,49 +3,34 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert(
-      "tax_tables",
+      "membership_cards",
       [
         {
-          hsn: 1234,
-          sgst: 2.5,
-          cgst: 2.5,
-          igst: 2.5,
+          membership_card_number: 1234567891234567,
           status: 1,
           created_at: new Date(),
           updated_at: new Date()
         },
         {
-          hsn: 1235,
-          sgst: 2.5,
-          cgst: 2.5,
-          igst: 2.5,
+          membership_card_number: 1234567891234568,
           status: 1,
           created_at: new Date(),
           updated_at: new Date()
         },
         {
-          hsn: 1236,
-          sgst: 2.5,
-          cgst: 2.5,
-          igst: 2.5,
+          membership_card_number: 1234567891234569,
           status: 1,
           created_at: new Date(),
           updated_at: new Date()
         },
         {
-          hsn: 1237,
-          sgst: 2.5,
-          cgst: 2.5,
-          igst: 2.5,
+          membership_card_number: 1234567891234579,
           status: 1,
           created_at: new Date(),
           updated_at: new Date()
         },
         {
-          hsn: 1238,
-          sgst: 2.5,
-          cgst: 2.5,
-          igst: 2.5,
+          membership_card_number: 1234567891234589,
           status: 1,
           created_at: new Date(),
           updated_at: new Date()
@@ -56,6 +41,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete("tax_tables", null, {});
+    return queryInterface.bulkDelete("membership_cards", null, {});
   }
 };

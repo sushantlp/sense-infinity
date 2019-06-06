@@ -50,7 +50,7 @@ module.exports.readMembershipSync = async (
     const connection = await pool.getConnection();
 
     // Query
-    const query = `SELECT ${select} FROM membership_syncs WHERE partner_id = ? AND store_id = ? And sync_status = ? AND status = ? ORDER BY DESC`;
+    const query = `SELECT ${select} FROM membership_syncs WHERE partner_id = ? AND store_id = ? And sync_status = ? AND status = ? ORDER BY id ASC`;
 
     // Query Database
     const [rows, fields] = await connection.query(query, [
