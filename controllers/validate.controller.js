@@ -2332,3 +2332,108 @@ module.exports.validateErrorLog = json => {
     };
   }
 };
+
+// Validate Store Customer Parameter
+module.exports.validateStoreCustomer = json => {
+  try {
+    for (let i = 0; i < json.length; i++) {
+      if (!json[i].hasOwnProperty("card") || isNaN(json[i].card))
+        return {
+          success: false,
+          msg: "Missing store customer json card parameter"
+        };
+
+      if (!json[i].hasOwnProperty("first_name"))
+        return {
+          success: false,
+          msg: "Missing store customer json first name parameter"
+        };
+
+      if (!json[i].hasOwnProperty("last_name"))
+        return {
+          success: false,
+          msg: "Missing store customer json last name parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("gender") ||
+        (json[i].gender !== 0 && json[i].gender !== 1)
+      )
+        return {
+          success: false,
+          msg: "Missing store customer json gender parameter"
+        };
+
+      if (!json[i].hasOwnProperty("birth"))
+        return {
+          success: false,
+          msg: "Missing store customer json birth parameter"
+        };
+
+      if (!json[i].hasOwnProperty("address_one"))
+        return {
+          success: false,
+          msg: "Missing store customer json address one parameter"
+        };
+
+      if (!json[i].hasOwnProperty("address_two"))
+        return {
+          success: false,
+          msg: "Missing store customer json address two parameter"
+        };
+
+      if (!json[i].hasOwnProperty("landmark"))
+        return {
+          success: false,
+          msg: "Missing store customer json landmark parameter"
+        };
+
+      if (!json[i].hasOwnProperty("city"))
+        return {
+          success: false,
+          msg: "Missing store customer json city parameter"
+        };
+
+      if (!json[i].hasOwnProperty("locality"))
+        return {
+          success: false,
+          msg: "Missing store customer json locality parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("mobile") ||
+        json[i].text === null ||
+        json[i].text === ""
+      )
+        return {
+          success: false,
+          msg: "Missing store customer json mobile parameter"
+        };
+
+      if (!json[i].hasOwnProperty("email"))
+        return {
+          success: false,
+          msg: "Missing store customer json email parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("status") ||
+        (json[i].status !== 0 && json[i].status !== 1)
+      )
+        return {
+          success: false,
+          msg: "Missing store customer json status parameter"
+        };
+    }
+
+    return {
+      success: true,
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return {
+      success: false,
+      msg: "Wrong validate store customer json"
+    };
+  }
+};

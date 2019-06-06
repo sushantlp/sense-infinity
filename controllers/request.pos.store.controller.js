@@ -391,9 +391,78 @@ module.exports.requestMembershipSync = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              `/new/membership/card/${req.params.storeCode}/${
-                req.params.syncId
-              }`,
+              `/new/card/${req.params.storeCode}/${req.params.syncId}`,
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
+
+// Request Get Customers Detail
+module.exports.requestGetCustomers = (req, res) => {
+  if (
+    res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.params.hasOwnProperty("storeCode")
+  ) {
+    // Logic Get Customers Detail
+    return posStoreController
+      .logicGetCustomers(res.userKey, req.params.storeCode)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/customers/${req.params.storeCode}`,
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
+
+// Request Post Customers Detail
+module.exports.requestPostCustomers = (req, res) => {
+  if (
+    res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.body.customers !== undefined &&
+    req.body.customers !== "" &&
+    req.params.hasOwnProperty("storeCode")
+  ) {
+    // Validate Store Customer Parameter
+    const validate = validateController.validateStoreCustomer(
+      req.body.customers
+    );
+
+    if (!validate.success) return res.status(400).send(validate.msg);
+
+    // Logic Post Customers Detail
+    return posStoreController
+      .logicPostCustomers(res.userKey, req.params.storeCode, req.body.customers)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/customers/${req.params.storeCode}`,
               200,
               response.success,
               {}

@@ -24,6 +24,7 @@ const manualDiscountModel = require("../models/manual_discount");
 const returnInvoiceModel = require("../models/return_invoice");
 const membershipSyncModel = require("../models/membership_sync");
 const membershipCardModel = require("../models/membership_card");
+const customerModel = require("../models/customer_information_data");
 
 // Logic Warehouse Store List
 module.exports.logicWarehouseStoreList = async id => {
@@ -895,19 +896,6 @@ const logicReturnInvoice = async (
               return f.toUpperCase();
             });
 
-      // let returnRecord = await returnInvoiceModel.readReturnInvoice(
-      //   "id",
-      //   invoice.invoice_number,
-      //   invoice.new_invoice_number,
-      //   partnerRecord[0].partner_id,
-      //   storeRecord[0].store_id
-      // );
-
-      // // Parse
-      // returnRecord = JSON.stringify(returnRecord);
-      // returnRecord = JSON.parse(returnRecord);
-
-      // if (returnRecord.length === 0)
       returnInvoiceModel.keepReturnInvoice(
         invoice.invoice_number,
         invoice.new_invoice_number,
@@ -918,7 +906,6 @@ const logicReturnInvoice = async (
         invoice.status,
         1
       );
-      // else console.log("Logic keep return invoice duplicate record");
     });
   } catch (error) {
     return Promise.reject(error);
@@ -1175,6 +1162,52 @@ module.exports.logicMembershipSync = async (id, code, syncId) => {
       data: [],
       msg: "Succesful"
     };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Get Customer Detail
+module.exports.logicGetCustomers = async (id, code) => {
+  try {
+    return {
+      success: true,
+      data: await getCustomerDetail(),
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Get All Customer Detail
+const getCustomerDetail = async () => {
+  try {
+    // Variable
+    let stop = true;
+    let customer = [];
+    let lowerLimit = 0;
+    const upperLimit = 1000;
+
+    while (stop) {
+      const record = await customerModel.readCustomerByLimit(
+        "CASE WHEN customer_information_data.first_name <> 'NULL' THEN customer_information_data.first_name ELSE '' END AS first_name, CASE WHEN customer_information_data.last_name <> 'NULL' THEN customer_information_data.last_name ELSE '' END AS last_name, CASE WHEN customer_information_data.email <> 'NULL' THEN customer_information_data.email ELSE '' END AS email, customer_information_data.mobile, membership_cards.membership_card_number",
+        lowerLimit,
+        upperLimit,
+        1
+      );
+
+      // Increase Lower Limit
+      lowerLimit = lowerLimit + upperLimit;
+
+      if (record.length === 0) stop = false;
+      else if (record.length < upperLimit) {
+        customer.push(record);
+        stop = false;
+      } else customer.push(record);
+    }
+
+    if (!stop) return customer;
   } catch (error) {
     return Promise.reject(error);
   }

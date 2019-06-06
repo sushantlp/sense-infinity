@@ -105,11 +105,18 @@ routes.put(
   PosStoreApiController.requestMembershipSync
 );
 
-// Get New Membership Card
+// Get Customer Record
 routes.get(
   "/customers/:storeCode([0-9]+)",
   apiKeyAuth,
-  PosStoreApiController.requestCustomer
+  PosStoreApiController.requestGetCustomers
+);
+
+// Post Customer Record
+routes.post(
+  "/customers/:storeCode([0-9]+)",
+  apiKeyAuth,
+  PosStoreApiController.requestPostCustomers
 );
 
 module.exports = routes;

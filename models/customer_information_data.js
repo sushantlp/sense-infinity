@@ -118,6 +118,38 @@ module.exports.readDataMobileCode = async (select, mobile, code, status) => {
   }
 };
 
+// Read Customer Detail And Membership Card
+module.exports.readCustomerByLimit = async (
+  select,
+  lowerLimit,
+  upperLimit,
+  status
+) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM customer_information_data LEFT JOIN customer_link_membership_cards ON customer_link_membership_cards.customer_information_id = customer_information_data.customer_information_id LEFT JOIN membership_cards ON customer_link_membership_cards.membership_card_id = membership_cards.id WHERE customer_information_data.status = ? AND membership_cards.status = ? AND customer_link_membership_cards.status LIMIT ${lowerLimit},${upperLimit}`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [
+      status,
+      status,
+      status
+    ]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 // Keep Customer Information Data
 module.exports.keepCustomerData = async (
   firstName,
