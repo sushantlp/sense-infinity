@@ -291,7 +291,11 @@ module.exports.reformStoresDetail = (
   };
 
   // EMPTY || NULL || UNDEFINED
-  if (storeName !== "" && storeName !== null && typeof storeName !== undefined)
+  if (
+    storeName !== "" &&
+    storeName !== null &&
+    typeof storeName !== "undefined"
+  )
     reform.storeName = storeName.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
@@ -299,7 +303,7 @@ module.exports.reformStoresDetail = (
   if (
     addressOne !== "" &&
     addressOne !== null &&
-    typeof addressOne !== undefined
+    typeof addressOne !== "undefined"
   )
     reform.addressOne = addressOne.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
@@ -308,13 +312,13 @@ module.exports.reformStoresDetail = (
   if (
     addressTwo !== "" &&
     addressTwo !== null &&
-    typeof addressTwo !== undefined
+    typeof addressTwo !== "undefined"
   )
     reform.addressTwo = addressTwo.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
 
-  if (landmark !== "" && landmark !== null && typeof landmark !== undefined)
+  if (landmark !== "" && landmark !== null && typeof landmark !== "undefined")
     reform.landmark = landmark.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
@@ -322,21 +326,21 @@ module.exports.reformStoresDetail = (
   if (
     storeEmail !== "" &&
     storeEmail !== null &&
-    typeof storeEmail !== undefined
+    typeof storeEmail !== "undefined"
   )
     reform.storeEmail = storeEmail;
 
   if (
     refundDiscount !== "" &&
     refundDiscount !== null &&
-    typeof refundDiscount !== undefined
+    typeof refundDiscount !== "undefined"
   )
     reform.refundDiscount = refundDiscount;
 
   if (
     refundPolicy !== "" &&
     refundPolicy !== null &&
-    typeof refundPolicy !== undefined
+    typeof refundPolicy !== "undefined"
   )
     reform.refundPolicy = refundPolicy;
 
@@ -370,7 +374,7 @@ module.exports.reformWarehouseDetail = (
   if (
     businessName !== "" &&
     businessName !== null &&
-    typeof businessName !== undefined
+    typeof businessName !== "undefined"
   )
     reform.businessName = businessName.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
@@ -379,7 +383,7 @@ module.exports.reformWarehouseDetail = (
   if (
     addressOne !== "" &&
     addressOne !== null &&
-    typeof addressOne !== undefined
+    typeof addressOne !== "undefined"
   )
     reform.addressOne = addressOne.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
@@ -388,26 +392,28 @@ module.exports.reformWarehouseDetail = (
   if (
     addressTwo !== "" &&
     addressTwo !== null &&
-    typeof addressTwo !== undefined
+    typeof addressTwo !== "undefined"
   )
     reform.addressTwo = addressTwo.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
 
-  if (landmark !== "" && landmark !== null && typeof landmark !== undefined)
+  if (landmark !== "" && landmark !== null && typeof landmark !== "undefined")
     reform.landmark = landmark.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
 
-  if (gstin !== "" && gstin !== null && typeof gstin !== undefined)
+  if (gstin !== "" && gstin !== null && typeof gstin !== "undefined")
     reform.gstin = gstin;
 
-  if (email !== "" && email !== null && typeof email !== undefined)
+  if (email !== "" && email !== null && typeof email !== "undefined")
     reform.email = email;
 
-  if (cin !== "" && cin !== null && typeof cin !== undefined) reform.cin = cin;
+  if (cin !== "" && cin !== null && typeof cin !== "undefined")
+    reform.cin = cin;
 
-  if (pan !== "" && pan !== null && typeof pan !== undefined) reform.pan = pan;
+  if (pan !== "" && pan !== null && typeof pan !== "undefined")
+    reform.pan = pan;
 
   return reform;
 };
@@ -430,29 +436,37 @@ module.exports.reformSecretDetail = (
   };
 
   // EMPTY || NULL || UNDEFINED
-  if (firstName !== "" && firstName !== null && typeof firstName !== undefined)
+  if (
+    firstName !== "" &&
+    firstName !== null &&
+    typeof firstName !== "undefined"
+  )
     reform.firstName = firstName.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
 
-  if (lastName !== "" && lastName !== null && typeof lastName !== undefined)
+  if (lastName !== "" && lastName !== null && typeof lastName !== "undefined")
     reform.lastName = lastName.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
 
-  if (birthDate !== "" && birthDate !== null && typeof birthDate !== undefined)
+  if (
+    birthDate !== "" &&
+    birthDate !== null &&
+    typeof birthDate !== "undefined"
+  )
     reform.birthDate = moment(new Date(birthDate)).format("YYYY-MM-DD");
 
   if (
     departmentName !== "" &&
     departmentName !== null &&
-    typeof departmentName !== undefined
+    typeof departmentName !== "undefined"
   )
     reform.departmentName = departmentName.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
 
-  if (email !== "" && email !== null && typeof email !== undefined)
+  if (email !== "" && email !== null && typeof email !== "undefined")
     reform.email = email;
 
   return reform;
@@ -476,7 +490,7 @@ module.exports.reformWarehouseProduct = (
   else if (
     productName !== "" &&
     productName !== null &&
-    typeof productName !== undefined
+    typeof productName !== "undefined"
   )
     reform.productName = productName.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
@@ -486,7 +500,7 @@ module.exports.reformWarehouseProduct = (
   else if (
     brandName !== "" &&
     brandName !== null &&
-    typeof brandName !== undefined
+    typeof brandName !== "undefined"
   )
     reform.brandName = brandName.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
@@ -497,7 +511,7 @@ module.exports.reformWarehouseProduct = (
   } else if (
     description !== "" &&
     description !== null &&
-    typeof description !== undefined
+    typeof description !== "undefined"
   ) {
     reform.description = description.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
