@@ -1545,13 +1545,13 @@ const postStoreStocks = async (partnerRecord, storeRecord, customers) => {
           partnerRecord[0].partner_id,
           storeRecord[0].store_id,
           customer.barcode,
-          customer.quantity,
+          parseInt(customer.quantity, 10),
           1,
           customer.status
         );
       else
         storeStockModel.updateStoreStock(
-          customer.quantity,
+          parseInt(customer.quantity, 10),
           customer.status,
           1,
           stockRecord[0].id

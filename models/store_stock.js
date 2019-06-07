@@ -65,12 +65,13 @@ module.exports.readStockSearchByBracode = async (
   }
 };
 
-// Read Store Stock Record for Warehouse Search By [partner_id, track_status, status]
+// Read Store Stock Record for Warehouse Search By [partner_id, track_status]
 module.exports.readStockForWarehouse = async (
   select,
   partnerId,
   trackStatus,
-  status
+  lowerLimit,
+  upperLimit
 ) => {
   try {
     // Get Pool Object
@@ -80,13 +81,12 @@ module.exports.readStockForWarehouse = async (
     const connection = await pool.getConnection();
 
     // Query
-    const query = `SELECT ${select} FROM store_stocks WHERE partner_id = ? AND track_status = ? AND status = ?`;
+    const query = `SELECT ${select} FROM store_stocks LEFT JOIN partner_stores ON store_stocks.store_id = partner_stores.store_id WHERE store_stocks.partner_id = ? AND store_stocks.track_status = ? LIMIT ${lowerLimit},${upperLimit}`;
 
     // Query Database
     const [rows, fields] = await connection.query(query, [
       partnerId,
-      trackStatus,
-      status
+      trackStatus
     ]);
 
     connection.release();

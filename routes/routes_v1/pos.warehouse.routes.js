@@ -93,4 +93,7 @@ routes.post(
   PosWarehouseApiController.requestWarehouseErrorLog
 );
 
+// Get Store Stocks Record
+routes.get("/stocks", apiKeyAuth, PosWarehouseApiController.requestStoreStocks);
+
 module.exports = routes;

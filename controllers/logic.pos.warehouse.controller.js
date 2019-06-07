@@ -47,6 +47,7 @@ const invoicePaymentModel = require("../models/invoice_payment");
 const invoiceProductModel = require("../models/invoice_product");
 const manualDiscountModel = require("../models/manual_discount");
 const returnInvoiceModel = require("../models/return_invoice");
+const storeStockModel = require("../models/store_stock");
 
 // Logic Get Warehouse Static Data
 module.exports.logicWarehouseStaticData = async (version, id) => {
@@ -1913,6 +1914,65 @@ module.exports.logicUpdateInvoice = async id => {
       data: [],
       msg: "Succesful"
     };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Get Store Stocks
+module.exports.logicStoreStocks = async id => {
+  try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner",
+        count: 0
+      };
+
+    const stocks = getStoreStocks(partnerRecord);
+
+    return {
+      success: true,
+      data: stocks,
+      msg: "Succesful",
+      count: stocks.length
+    };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Get Store Stocks
+const getStoreStocks = async partnerRecord => {
+  try {
+    // Variable
+    let stop = true;
+    let stock = [];
+    let lowerLimit = 0;
+    const upperLimit = 1000;
+
+    while (stop) {
+      const store = await storeStockModel.readStockForWarehouse(
+        "store_stocks.barcode, store_stocks.quantity, store_stocks.status, partner_stores.store_code AS branch_store",
+        partnerRecord[0].partner_id,
+        1
+      );
+
+      // Increase Lower Limit
+      lowerLimit = lowerLimit + upperLimit;
+
+      if (store.length === 0) stop = false;
+      else if (record.length < upperLimit) {
+        stock.push(record);
+        stop = false;
+      } else stock.push(store);
+    }
+
+    if (!stop) return customer;
   } catch (error) {
     return Promise.reject(error);
   }

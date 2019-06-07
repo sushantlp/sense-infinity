@@ -359,7 +359,7 @@ module.exports.requestNewMembershipCard = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              `/new/membership/card/${req.params.storeCode}`,
+              `/api/v1/stores/new/membership/card/${req.params.storeCode}`,
               200,
               response.success,
               response.count
@@ -391,7 +391,9 @@ module.exports.requestMembershipSync = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              `/new/card/${req.params.storeCode}/${req.params.syncId}`,
+              `/api/v1/stores/new/card/${req.params.storeCode}/${
+                req.params.syncId
+              }`,
               200,
               response.success,
               {}
@@ -422,7 +424,7 @@ module.exports.requestGetCustomers = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              `/customers/${req.params.storeCode}`,
+              `/api/v1/stores/customers/${req.params.storeCode}`,
               200,
               response.success,
               {}
@@ -462,7 +464,7 @@ module.exports.requestPostCustomers = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              `/customers/${req.params.storeCode}`,
+              `/api/v1/stores/customers/${req.params.storeCode}`,
               200,
               response.success,
               {}
@@ -500,7 +502,7 @@ module.exports.requestStoreStocks = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              `/stocks/${req.params.storeCode}`,
+              `/api/v1/stores/stocks/${req.params.storeCode}`,
               200,
               response.success,
               {}
