@@ -119,4 +119,11 @@ routes.post(
   PosStoreApiController.requestPostCustomers
 );
 
+// Post Store Stocks Record
+routes.post(
+  "/stocks/:storeCode([0-9]+)",
+  apiKeyAuth,
+  PosStoreApiController.requestStoreStocks
+);
+
 module.exports = routes;

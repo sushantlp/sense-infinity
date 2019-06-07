@@ -10,7 +10,7 @@ const { Gateway } = require("../config/constants");
 // Import Model
 const partnerStoreModel = require("../models/partner_store");
 const warehouseInformationModel = require("../models/warehouse_information_list");
-const userEmployeeConnectModel = require("../models/warehouse_user_employee_connect");
+// const userEmployeeConnectModel = require("../models/warehouse_user_employee_connect");
 const warehouseUserModel = require("../models/warehouse_user_list");
 const storeProductSyncModel = require("../models/store_product_sync");
 const partnerProductSyncModel = require("../models/partner_product_sync");
@@ -34,6 +34,7 @@ const cityModel = require("../models/city");
 const linkModel = require("../models/partner_link_customer");
 const cardModel = require("../models/membership_card");
 const cardLinkCustomerModel = require("../models/customer_link_membership_card");
+const storeStockModel = require("../models/store_stock");
 
 // Logic Warehouse Store List
 module.exports.logicWarehouseStoreList = async id => {
@@ -1475,6 +1476,86 @@ const postCustomerDetail = async (partnerRecord, storeRecord, customers) => {
         Gateway.POS,
         1
       );
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Store Stocks Record
+module.exports.logicStoreStocks = async (id, code, stocks) => {
+  try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner"
+      };
+
+    // Read Partner Store Record By Store Code
+    let storeRecord = await partnerStoreModel.readStoreByCode(
+      "store_id",
+      code,
+      partnerRecord[0].partner_id,
+      1
+    );
+
+    // Parse
+    storeRecord = JSON.stringify(storeRecord);
+    storeRecord = JSON.parse(storeRecord);
+
+    if (storeRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown store"
+      };
+
+    postStoreStocks(partnerRecord, storeRecord, customers);
+
+    return {
+      success: true,
+      data: [],
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Post Store Stock Detail
+const postStoreStocks = async (partnerRecord, storeRecord, customers) => {
+  try {
+    return customers.map(async (customer, index) => {
+      let stockRecord = await storeStockModel.readStockSearchByBracode(
+        partnerRecord[0].partner_id,
+        storeRecord[0].store_id,
+        customer.barcode
+      );
+
+      // Parse
+      stockRecord = JSON.stringify(stockRecord);
+      stockRecord = JSON.parse(stockRecord);
+
+      if (stockRecord.length === 0)
+        storeStockModel.keepStoreStock(
+          partnerRecord[0].partner_id,
+          storeRecord[0].store_id,
+          customer.barcode,
+          customer.quantity,
+          1,
+          customer.status
+        );
+      else
+        storeStockModel.updateStoreStock(
+          customer.quantity,
+          customer.status,
+          1,
+          stockRecord[0].id
+        );
     });
   } catch (error) {
     return Promise.reject(error);
