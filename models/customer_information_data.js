@@ -133,14 +133,10 @@ module.exports.readCustomerByLimit = async (
     const connection = await pool.getConnection();
 
     // Query
-    const query = `SELECT ${select} FROM customer_information_data LEFT JOIN customer_link_membership_cards ON customer_link_membership_cards.customer_information_id = customer_information_data.customer_information_id LEFT JOIN membership_cards ON customer_link_membership_cards.membership_card_id = membership_cards.id WHERE customer_information_data.status = ? AND membership_cards.status = ? AND customer_link_membership_cards.status LIMIT ${lowerLimit},${upperLimit}`;
+    const query = `SELECT ${select} FROM customer_information_data LEFT JOIN customer_link_membership_cards ON customer_link_membership_cards.customer_information_id = customer_information_data.customer_information_id LEFT JOIN membership_cards ON customer_link_membership_cards.membership_card_id = membership_cards.id WHERE customer_information_data.status = ? LIMIT ${lowerLimit},${upperLimit}`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [
-      status,
-      status,
-      status
-    ]);
+    const [rows, fields] = await connection.query(query, [status]);
 
     connection.release();
 

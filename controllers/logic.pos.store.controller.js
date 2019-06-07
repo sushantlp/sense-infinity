@@ -1200,7 +1200,7 @@ const getCustomerDetail = async () => {
 
     while (stop) {
       const record = await customerModel.readCustomerByLimit(
-        "CASE WHEN customer_information_data.first_name <> 'NULL' THEN customer_information_data.first_name ELSE '' END AS first_name, CASE WHEN customer_information_data.last_name <> 'NULL' THEN customer_information_data.last_name ELSE '' END AS last_name, CASE WHEN customer_information_data.email <> 'NULL' THEN customer_information_data.email ELSE '' END AS email, customer_information_data.mobile, membership_cards.membership_card_number",
+        "CASE WHEN customer_information_data.first_name <> 'fake' THEN customer_information_data.first_name ELSE '' END AS first_name, CASE WHEN customer_information_data.last_name <> 'fake' THEN customer_information_data.last_name ELSE '' END AS last_name, CASE WHEN customer_information_data.email <> 'NULL' THEN customer_information_data.email ELSE '' END AS email, customer_information_data.mobile, CASE WHEN membership_cards.membership_card_number <> null THEN membership_cards.membership_card_number ELSE 0 END AS card_number",
         lowerLimit,
         upperLimit,
         1
