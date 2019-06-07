@@ -406,11 +406,11 @@ module.exports.requestUpdateInvoice = (req, res) => {
 };
 
 // Request Get Store Stocks
-module.exports.requestStoreStocks = (req, res) => {
+module.exports.requestStoreStock = (req, res) => {
   if (res.userKey !== undefined && res.userKey !== "") {
     // Logic Get Store Stocks
     return posWarehouseController
-      .logicStoreStocks(res.userKey)
+      .logicStoreStock(res.userKey)
       .then(response => {
         return res
           .status(200)
@@ -433,11 +433,11 @@ module.exports.requestStoreStocks = (req, res) => {
 };
 
 // Update Track Status Store Stocks Record
-module.exports.updateTrackStatusStocks = (req, res) => {
+module.exports.updateTrackStatusStock = (req, res) => {
   if (res.userKey !== undefined && res.userKey !== "") {
     // Logic Track Status Store Stocks Record
     return posWarehouseController
-      .logicTrackStatusStocks(res.userKey)
+      .logicTrackStatusStock(res.userKey)
       .then(response => {
         return res
           .status(200)
@@ -449,6 +449,87 @@ module.exports.updateTrackStatusStocks = (req, res) => {
               200,
               response.success,
               response.count
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
+
+// Request Post Warehouse Stock
+module.exports.requestWarehouseStock = (req, res) => {
+  if (
+    res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.body.stocks !== undefined &&
+    req.body.stocks !== ""
+  ) {
+    // Validate warehouse Stocks Parameter
+    const validate = validateController.validateStoreStock(req.body.stocks);
+
+    if (!validate.success) return res.status(400).send(validate.msg);
+
+    // Logic Post Warehouse Stock
+    return posWarehouseController
+      .logicWarehouseStock(res.userKey, req.body.stocks)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/api/v1/warehouse/stocks`,
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
+
+// Request Post Warehouse Stocks Log Record
+module.exports.requestWarehouseStockLog = (req, res) => {
+  if (
+    res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.body.stocks !== undefined &&
+    req.body.stocks !== ""
+  ) {
+    // Validate Stocks Log Parameter
+    const validate = validateController.validateStockLog(
+      req.body.stocks,
+      "WAREHOUSE"
+    );
+
+    if (!validate.success) return res.status(400).send(validate.msg);
+
+    // Logic Store Stocks Log Record
+    return posWarehouseController
+      .logicWarehouseStockLog(
+        res.userKey,
+        req.params.storeCode,
+        req.body.stocks
+      )
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/api/v1/warehouse/stock/logs`,
+              200,
+              response.success,
+              {}
             )
           );
       })

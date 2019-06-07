@@ -479,7 +479,7 @@ module.exports.requestPostCustomers = (req, res) => {
 };
 
 // Request Post Store Stocks Record
-module.exports.requestStoreStocks = (req, res) => {
+module.exports.requestStoreStock = (req, res) => {
   if (
     res.userKey !== undefined &&
     res.userKey !== "" &&
@@ -488,13 +488,13 @@ module.exports.requestStoreStocks = (req, res) => {
     req.params.hasOwnProperty("storeCode")
   ) {
     // Validate Store Stocks Parameter
-    const validate = validateController.validateStoreStocks(req.body.stocks);
+    const validate = validateController.validateStoreStock(req.body.stocks);
 
     if (!validate.success) return res.status(400).send(validate.msg);
 
     // Logic Store Stocks Record
     return posStoreController
-      .logicStoreStocks(res.userKey, req.params.storeCode, req.body.stocks)
+      .logicStoreStock(res.userKey, req.params.storeCode, req.body.stocks)
       .then(response => {
         return res
           .status(200)
@@ -503,6 +503,47 @@ module.exports.requestStoreStocks = (req, res) => {
               response.data,
               response.msg,
               `/api/v1/stores/stocks/${req.params.storeCode}`,
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
+
+// Request Post Store Stocks Log Record
+module.exports.requestStoreStockLog = (req, res) => {
+  if (
+    res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.body.stocks !== undefined &&
+    req.body.stocks !== "" &&
+    req.params.hasOwnProperty("storeCode")
+  ) {
+    // Validate Stocks Log Parameter
+    const validate = validateController.validateStockLog(
+      req.body.stocks,
+      "STORE"
+    );
+
+    if (!validate.success) return res.status(400).send(validate.msg);
+
+    // Logic Store Stocks Log Record
+    return posStoreController
+      .logicStoreStockLog(res.userKey, req.params.storeCode, req.body.stocks)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/api/v1/stores/stock/logs/${req.params.storeCode}`,
               200,
               response.success,
               {}

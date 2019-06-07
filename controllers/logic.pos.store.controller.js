@@ -35,6 +35,7 @@ const linkModel = require("../models/partner_link_customer");
 const cardModel = require("../models/membership_card");
 const cardLinkCustomerModel = require("../models/customer_link_membership_card");
 const storeStockModel = require("../models/store_stock");
+const storeStockLogModel = require("../models/store_stock_log");
 
 // Logic Warehouse Store List
 module.exports.logicWarehouseStoreList = async id => {
@@ -1200,12 +1201,16 @@ const getCustomerDetail = async () => {
     const upperLimit = 1000;
 
     while (stop) {
-      const record = await customerModel.readCustomerByLimit(
-        "CASE WHEN customer_information_data.first_name <> 'fake' THEN customer_information_data.first_name ELSE '' END AS first_name, CASE WHEN customer_information_data.last_name <> 'fake' THEN customer_information_data.last_name ELSE '' END AS last_name, CASE WHEN customer_information_data.email <> 'NULL' THEN customer_information_data.email ELSE '' END AS email, customer_information_data.mobile, CASE WHEN membership_cards.membership_card_number <> null THEN membership_cards.membership_card_number ELSE 0 END AS card_number",
+      let record = await customerModel.readCustomerByLimit(
+        "CASE WHEN customer_information_data.first_name <> 'fake' THEN customer_information_data.first_name ELSE '' END AS first_name, CASE WHEN customer_information_data.last_name <> 'fake' THEN customer_information_data.last_name ELSE '' END AS last_name, CASE WHEN customer_information_data.email <> 'NULL' THEN customer_information_data.email ELSE '' END AS email, customer_information_data.mobile, IFNULL(membership_cards.membership_card_number, 0) AS card_number",
         lowerLimit,
         upperLimit,
         1
       );
+
+      // Parse
+      record = JSON.stringify(record);
+      record = JSON.parse(record);
 
       // Increase Lower Limit
       lowerLimit = lowerLimit + upperLimit;
@@ -1217,7 +1222,7 @@ const getCustomerDetail = async () => {
       } else customer.push(record);
     }
 
-    if (!stop) return customer;
+    if (!stop) return customer.length >= 1 ? customer[0] : customer;
   } catch (error) {
     return Promise.reject(error);
   }
@@ -1483,7 +1488,7 @@ const postCustomerDetail = async (partnerRecord, storeRecord, customers) => {
 };
 
 // Logic Store Stocks Record
-module.exports.logicStoreStocks = async (id, code, stocks) => {
+module.exports.logicStoreStock = async (id, code, stocks) => {
   try {
     // Call User Partner Data
     const partnerRecord = await shareController.userPartnerData(id);
@@ -1514,7 +1519,7 @@ module.exports.logicStoreStocks = async (id, code, stocks) => {
         msg: "Unknown store"
       };
 
-    postStoreStocks(partnerRecord, storeRecord, customers);
+    postStoreStock(partnerRecord, storeRecord, stocks);
 
     return {
       success: true,
@@ -1527,13 +1532,14 @@ module.exports.logicStoreStocks = async (id, code, stocks) => {
 };
 
 // Post Store Stock Detail
-const postStoreStocks = async (partnerRecord, storeRecord, customers) => {
+const postStoreStock = async (partnerRecord, storeRecord, stocks) => {
   try {
-    return customers.map(async (customer, index) => {
-      let stockRecord = await storeStockModel.readStockSearchByBracode(
+    return stocks.map(async (stock, index) => {
+      let stockRecord = await storeStockModel.readStockSearchByBarcode(
+        "id",
         partnerRecord[0].partner_id,
         storeRecord[0].store_id,
-        customer.barcode
+        stock.barcode
       );
 
       // Parse
@@ -1544,18 +1550,81 @@ const postStoreStocks = async (partnerRecord, storeRecord, customers) => {
         storeStockModel.keepStoreStock(
           partnerRecord[0].partner_id,
           storeRecord[0].store_id,
-          customer.barcode,
-          parseInt(customer.quantity, 10),
+          stock.barcode,
+          parseInt(stock.quantity, 10),
           1,
-          customer.status
+          stock.status
         );
       else
         storeStockModel.updateStoreStock(
-          parseInt(customer.quantity, 10),
-          customer.status,
+          parseInt(stock.quantity, 10),
+          stock.status,
           1,
           stockRecord[0].id
         );
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Store Stocks Log Record
+module.exports.logicStoreStockLog = async (id, code, stocks) => {
+  try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner"
+      };
+
+    // Read Partner Store Record By Store Code
+    let storeRecord = await partnerStoreModel.readStoreByCode(
+      "store_id",
+      code,
+      partnerRecord[0].partner_id,
+      1
+    );
+
+    // Parse
+    storeRecord = JSON.stringify(storeRecord);
+    storeRecord = JSON.parse(storeRecord);
+
+    if (storeRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown store"
+      };
+
+    postStoreStockLog(partnerRecord, storeRecord, stocks);
+
+    return {
+      success: true,
+      data: [],
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Post Store Stock Log
+const postStoreStockLog = async (partnerRecord, storeRecord, stocks) => {
+  try {
+    return stocks.map(async (stock, index) => {
+      storeStockLogModel.keepStoreStockLog(
+        stock.user_key,
+        partnerRecord[0].partner_id,
+        storeRecord[0].store_id,
+        stock.barcode,
+        parseInt(stock.quantity, 10),
+        1,
+        stock.status
+      );
     });
   } catch (error) {
     return Promise.reject(error);

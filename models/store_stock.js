@@ -1,5 +1,6 @@
 "use strict";
 
+// Import Package
 const moment = require("moment-timezone");
 
 // Import Config
@@ -34,7 +35,7 @@ const now = moment()
  */
 
 // Read Store Stock Record Search By [partner_id, store_id, barcode]
-module.exports.readStockSearchByBracode = async (
+module.exports.readStockSearchByBarcode = async (
   select,
   partnerId,
   storeId,
@@ -132,12 +133,11 @@ module.exports.updateStoreStock = async (quantity, status, trackStatus, id) => {
 
     // Query
     const query =
-      "UPDATE `invoices` SET `store_stocks` = ?, `quantity` = ?, `status` = ?, `track_status` = ?, `updated_at` = ? WHERE `id` = ?";
+      "UPDATE `store_stocks` SET `quantity` = ?, `status` = ?, `track_status` = ?, `updated_at` = ? WHERE `id` = ?";
 
     // Query Database
     const row = await connection.query(query, [
       quantity,
-      returnStatus,
       status,
       trackStatus,
       now,

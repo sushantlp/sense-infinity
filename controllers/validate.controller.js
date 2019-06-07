@@ -2443,10 +2443,70 @@ module.exports.validateStoreCustomer = json => {
   }
 };
 
-// Validate Store Stocks Parameter
-module.exports.validateStoreStocks = json => {
+// Validate Stocks Parameter
+module.exports.validateStoreStock = json => {
   try {
     for (let i = 0; i < json.length; i++) {
+      if (
+        !json[i].hasOwnProperty("barcode") ||
+        isNaN(json[i].barcode) ||
+        json[i].barcode === null ||
+        json[i].barcode === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error Store Stocks barcode parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("quantity") ||
+        isNaN(json[i].quantity) ||
+        json[i].quantity === null ||
+        json[i].quantity === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error Store Stocks quantity parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("status") ||
+        (json[i].status !== 0 && json[i].status !== 1)
+      )
+        return {
+          success: false,
+          msg: "Missing error Store Stocks status parameter"
+        };
+    }
+
+    return {
+      success: true,
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return {
+      success: false,
+      msg: "Wrong validate error log json"
+    };
+  }
+};
+
+// Validate Stocks Log Parameter
+module.exports.validateStockLog = (json, actor) => {
+  try {
+    for (let i = 0; i < json.length; i++) {
+      if (actor === "STORE") {
+        if (
+          !json[i].hasOwnProperty("user_key") ||
+          isNaN(json[i].user_key) ||
+          json[i].user_key === null ||
+          json[i].user_key === ""
+        )
+          return {
+            success: false,
+            msg: "Missing error stocks log user key parameter"
+          };
+      }
       if (
         !json[i].hasOwnProperty("barcode") ||
         isNaN(json[i].barcode) ||

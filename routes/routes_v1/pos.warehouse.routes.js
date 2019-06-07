@@ -94,13 +94,27 @@ routes.post(
 );
 
 // Get Store Stocks Record
-routes.get("/stocks", apiKeyAuth, PosWarehouseApiController.requestStoreStocks);
+routes.get("/stocks", apiKeyAuth, PosWarehouseApiController.requestStoreStock);
 
 // Update Track Status Store Stocks Record
 routes.put(
   "/stocks",
   apiKeyAuth,
-  PosWarehouseApiController.updateTrackStatusStocks
+  PosWarehouseApiController.updateTrackStatusStock
+);
+
+// Post Warehouse Stocks Record
+routes.post(
+  "/stocks",
+  apiKeyAuth,
+  PosWarehouseApiController.requestWarehouseStock
+);
+
+// Post Warehouse Stocks Log Record
+routes.post(
+  "/stock/logs",
+  apiKeyAuth,
+  PosWarehouseApiController.requestWarehouseStockLog
 );
 
 module.exports = routes;

@@ -48,6 +48,8 @@ const invoiceProductModel = require("../models/invoice_product");
 const manualDiscountModel = require("../models/manual_discount");
 const returnInvoiceModel = require("../models/return_invoice");
 const storeStockModel = require("../models/store_stock");
+const warehouseStockModel = require("../models/warehouse_stock");
+const warehouseStockLogModel = require("../models/warehouse_stock_log");
 
 // Logic Get Warehouse Static Data
 module.exports.logicWarehouseStaticData = async (version, id) => {
@@ -1920,7 +1922,7 @@ module.exports.logicUpdateInvoice = async id => {
 };
 
 // Logic Get Store Stocks
-module.exports.logicStoreStocks = async id => {
+module.exports.logicStoreStock = async id => {
   try {
     // Call User Partner Data
     const partnerRecord = await shareController.userPartnerData(id);
@@ -1933,7 +1935,7 @@ module.exports.logicStoreStocks = async id => {
         count: 0
       };
 
-    const stocks = getStoreStocks(partnerRecord);
+    const stocks = await getStoreStock(partnerRecord);
 
     return {
       success: true,
@@ -1947,7 +1949,7 @@ module.exports.logicStoreStocks = async id => {
 };
 
 // Get Store Stocks
-const getStoreStocks = async partnerRecord => {
+const getStoreStock = async partnerRecord => {
   try {
     // Variable
     let stop = true;
@@ -1956,30 +1958,36 @@ const getStoreStocks = async partnerRecord => {
     const upperLimit = 1000;
 
     while (stop) {
-      const store = await storeStockModel.readStockForWarehouse(
+      let store = await storeStockModel.readStockForWarehouse(
         "store_stocks.barcode, store_stocks.quantity, store_stocks.status, partner_stores.store_code AS branch_store",
         partnerRecord[0].partner_id,
-        1
+        1,
+        lowerLimit,
+        upperLimit
       );
+
+      // Parse
+      store = JSON.stringify(store);
+      store = JSON.parse(store);
 
       // Increase Lower Limit
       lowerLimit = lowerLimit + upperLimit;
 
       if (store.length === 0) stop = false;
-      else if (record.length < upperLimit) {
-        stock.push(record);
+      else if (store.length < upperLimit) {
+        stock.push(store);
         stop = false;
       } else stock.push(store);
     }
 
-    if (!stop) return customer;
+    if (!stop) return stock.length >= 1 ? stock[0] : stock;
   } catch (error) {
     return Promise.reject(error);
   }
 };
 
 // Logic Track Status Store Stocks Record
-module.exports.logicTrackStatusStocks = async id => {
+module.exports.logicTrackStatusStock = async id => {
   try {
     // Call User Partner Data
     const partnerRecord = await shareController.userPartnerData(id);
@@ -1998,6 +2006,108 @@ module.exports.logicTrackStatusStocks = async id => {
       data: [],
       msg: "Succesful"
     };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Post Warehouse Stock
+module.exports.logicWarehouseStock = async (id, stocks) => {
+  try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner"
+      };
+
+    postWarehouseStock(partnerRecord, stocks);
+
+    return {
+      success: true,
+      data: [],
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Post Warehouse Stock Detail
+const postWarehouseStock = async (partnerRecord, stocks) => {
+  try {
+    return stocks.map(async (stock, index) => {
+      let stockRecord = await warehouseStockModel.readWarehouseStockByBarcode(
+        "id",
+        partnerRecord[0].partner_id,
+        stock.barcode
+      );
+
+      // Parse
+      stockRecord = JSON.stringify(stockRecord);
+      stockRecord = JSON.parse(stockRecord);
+
+      if (stockRecord.length === 0)
+        warehouseStockModel.keepWarehouseStock(
+          partnerRecord[0].partner_id,
+          stock.barcode,
+          parseInt(stock.quantity, 10),
+          1,
+          stock.status
+        );
+      else
+        warehouseStockModel.updateWarehouseStock(
+          parseInt(stock.quantity, 10),
+          stock.status,
+          1,
+          stockRecord[0].id
+        );
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Warehouse Stocks Log Record
+module.exports.logicWarehouseStockLog = async (id, stocks) => {
+  try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner"
+      };
+
+    postWarehouseStockLog(partnerRecord, stocks);
+
+    return {
+      success: true,
+      data: [],
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Post Warehouse Stock Log
+const postWarehouseStockLog = async (partnerRecord, stocks) => {
+  try {
+    return stocks.map(async (stock, index) => {
+      warehouseStockLogModel.keepWarehouseStockLog(
+        partnerRecord[0].partner_id,
+        stock.barcode,
+        parseInt(stock.quantity, 10),
+        1,
+        stock.status
+      );
+    });
   } catch (error) {
     return Promise.reject(error);
   }
