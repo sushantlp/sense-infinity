@@ -96,4 +96,11 @@ routes.post(
 // Get Store Stocks Record
 routes.get("/stocks", apiKeyAuth, PosWarehouseApiController.requestStoreStocks);
 
+// Update Track Status Store Stocks Record
+routes.put(
+  "/stocks",
+  apiKeyAuth,
+  PosWarehouseApiController.updateTrackStatusStocks
+);
+
 module.exports = routes;

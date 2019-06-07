@@ -1977,3 +1977,28 @@ const getStoreStocks = async partnerRecord => {
     return Promise.reject(error);
   }
 };
+
+// Logic Track Status Store Stocks Record
+module.exports.logicTrackStatusStocks = async id => {
+  try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner"
+      };
+
+    storeStockModel.stockTrackStatus(0, partnerRecord[0].partner_id);
+
+    return {
+      success: true,
+      data: [],
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

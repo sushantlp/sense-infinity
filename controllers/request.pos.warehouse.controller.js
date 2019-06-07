@@ -327,7 +327,7 @@ module.exports.requestWarehouseLoginHistory = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              `/api/v1/Warehouse/login-history`,
+              `/api/v1/warehouse/login-history`,
               200,
               response.success,
               {}
@@ -364,7 +364,7 @@ module.exports.requestWarehouseErrorLog = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              `/api/v1/Warehouse/error-log`,
+              `/api/v1/warehouse/error-log`,
               200,
               response.success,
               {}
@@ -391,7 +391,7 @@ module.exports.requestUpdateInvoice = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              `/api/v1/Warehouse/invoices`,
+              `/api/v1/warehouse/invoices`,
               200,
               response.success,
               {}
@@ -418,7 +418,34 @@ module.exports.requestStoreStocks = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              `/api/v1/Warehouse/stocks`,
+              `/api/v1/warehouse/stocks`,
+              200,
+              response.success,
+              response.count
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
+
+// Update Track Status Store Stocks Record
+module.exports.updateTrackStatusStocks = (req, res) => {
+  if (res.userKey !== undefined && res.userKey !== "") {
+    // Logic Track Status Store Stocks Record
+    return posWarehouseController
+      .logicTrackStatusStocks(res.userKey)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/api/v1/warehouse/stocks`,
               200,
               response.success,
               response.count
