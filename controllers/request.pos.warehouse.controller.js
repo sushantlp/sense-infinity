@@ -514,11 +514,7 @@ module.exports.requestWarehouseStockLog = (req, res) => {
 
     // Logic Store Stocks Log Record
     return posWarehouseController
-      .logicWarehouseStockLog(
-        res.userKey,
-        req.params.storeCode,
-        req.body.stocks
-      )
+      .logicWarehouseStockLog(res.userKey, req.body.stocks)
       .then(response => {
         return res
           .status(200)
@@ -527,6 +523,45 @@ module.exports.requestWarehouseStockLog = (req, res) => {
               response.data,
               response.msg,
               `/api/v1/warehouse/stock/logs`,
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
+
+// Request Post Warehouse Supplier Detail
+module.exports.requestSupplierDetail = (req, res) => {
+  if (
+    res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.body.supplier_detail !== undefined &&
+    req.body.supplier_detail !== ""
+  ) {
+    // Validate Supplier Detail Parameter
+    const validate = validateController.validateSupplierDetail(
+      req.body.supplier_detail
+    );
+
+    if (!validate.success) return res.status(400).send(validate.msg);
+
+    // Logic Warehouse Supplier Detail
+    return posWarehouseController
+      .logicWarehouseSupplierDetail(res.userKey, req.body.supplier_detail)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/api/v1/warehouse/supplier/detail`,
               200,
               response.success,
               {}

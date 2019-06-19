@@ -117,4 +117,11 @@ routes.post(
   PosWarehouseApiController.requestWarehouseStockLog
 );
 
+// Post Warehouse Supplier Detail
+routes.post(
+  "/supplier/detail",
+  apiKeyAuth,
+  PosWarehouseApiController.requestSupplierDetail
+);
+
 module.exports = routes;

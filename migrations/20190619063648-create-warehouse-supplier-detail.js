@@ -8,6 +8,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER.UNSIGNED
       },
+      partner_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "partners",
+          key: "partner_id"
+        }
+      },
       supplier_name: {
         type: Sequelize.STRING,
         allowNull: false

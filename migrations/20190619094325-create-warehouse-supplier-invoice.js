@@ -1,34 +1,38 @@
 "use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("store_supplier_details", {
+    return queryInterface.createTable("warehouse_supplier_invoices", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER.UNSIGNED
       },
-      store_id: {
+      partner_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "partner_stores",
-          key: "store_id"
+          model: "partners",
+          key: "partner_id"
         }
+      },
+      invoice_number: {
+        type: Sequelize.BIGINT,
+        allowNull: false
       },
       supplier_name: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      supplier_address_one: {
+      address_one: {
         type: Sequelize.STRING,
         allowNull: true
       },
-      supplier_address_two: {
+      address_two: {
         type: Sequelize.STRING,
         allowNull: true
       },
-      supplier_landmark: {
+      landmark: {
         type: Sequelize.STRING,
         allowNull: true
       },
@@ -48,11 +52,11 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: true
       },
-      supplier_mobile: {
+      mobile: {
         type: Sequelize.BIGINT,
         allowNull: true
       },
-      supplier_email: {
+      email: {
         type: Sequelize.STRING,
         allowNull: true
       },
@@ -72,6 +76,60 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: true
       },
+      inv_no: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      invoice_date: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      sn_name: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      rt_name: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      sm_phone: {
+        type: Sequelize.BIGINT,
+        allowNull: true
+      },
+      del_date: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      invoice_total_amount: {
+        type: Sequelize.DOUBLE
+      },
+      payment_status: {
+        type: Sequelize.INTEGER
+      },
+      payment_type: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      payment_date: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      payment_reference_number: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      e_way_bill: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      s_note: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      warehouse_user_id: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false
+      },
       status: {
         type: Sequelize.BOOLEAN,
         defaultValue: 0
@@ -89,6 +147,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("store_supplier_details");
+    return queryInterface.dropTable("warehouse_supplier_invoices");
   }
 };

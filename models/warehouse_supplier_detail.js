@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
   const warehouseSupplierDetail = sequelize.define(
     "warehouse_supplier_detail",
     {
+      partner_id: DataTypes.INTEGER,
       supplier_name: DataTypes.STRING,
       supplier_address_one: DataTypes.STRING,
       supplier_address_two: DataTypes.STRING,

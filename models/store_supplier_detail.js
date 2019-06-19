@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
   const storeSupplierDetail = sequelize.define(
     "store_supplier_detail",
     {
+      store_id: DataTypes.INTEGER,
       supplier_name: DataTypes.STRING,
       supplier_address_one: DataTypes.STRING,
       supplier_address_two: DataTypes.STRING,
