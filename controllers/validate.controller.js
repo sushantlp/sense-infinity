@@ -2894,6 +2894,11 @@ module.exports.validateSupplierInvoice = json => {
           success: false,
           msg: "Missing error supplier invoice status parameter"
         };
+
+      // Validate Supplier Invoice Product
+      const invoiceProduct = supplierInvoiceProduct(json[i].invoice_product);
+
+      if (!invoiceProduct.success) return invoiceProduct;
     }
 
     return {
@@ -2903,7 +2908,229 @@ module.exports.validateSupplierInvoice = json => {
   } catch (error) {
     return {
       success: false,
-      msg: "Wrong validate supplier detail json"
+      msg: "Wrong validate supplier invoice json"
+    };
+  }
+};
+
+// Validate Supplier Invoice Product
+const supplierInvoiceProduct = json => {
+  try {
+    for (let i = 0; i < json.length; i++) {
+      if (
+        !json[i].hasOwnProperty("product_code") ||
+        isNaN(json[i].product_code) ||
+        json[i].product_code === null ||
+        json[i].product_code === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice product product_code parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("product_type") ||
+        isNaN(json[i].product_type) ||
+        json[i].product_type === null ||
+        json[i].product_type === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice product product_type parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("product_name") ||
+        json[i].product_name === null ||
+        json[i].product_name === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice product product_name parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("hsn_code") ||
+        isNaN(json[i].hsn_code) ||
+        json[i].hsn_code === null ||
+        json[i].hsn_code === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice product hsn_code parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("mrp") ||
+        isNaN(json[i].mrp) ||
+        json[i].mrp === null ||
+        json[i].mrp === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice product mrp parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("quantity") ||
+        isNaN(json[i].quantity) ||
+        json[i].quantity === null ||
+        json[i].quantity === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice product quantity parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("free_quantity") ||
+        isNaN(json[i].free_quantity) ||
+        json[i].free_quantity === null ||
+        json[i].free_quantity === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice product free_quantity parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("rate") ||
+        isNaN(json[i].rate) ||
+        json[i].rate === null ||
+        json[i].rate === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice product rate parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("unit_value") ||
+        isNaN(json[i].unit_value) ||
+        json[i].unit_value === null ||
+        json[i].unit_value === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice product unit_value parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("unit") ||
+        json[i].unit === null ||
+        json[i].unit === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice product unit parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("pri_sch") ||
+        isNaN(json[i].pri_sch) ||
+        json[i].pri_sch === null ||
+        json[i].pri_sch === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice product pri_sch parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("sec_sch") ||
+        isNaN(json[i].sec_sch) ||
+        json[i].sec_sch === null ||
+        json[i].sec_sch === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice product sec_sch parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("spl_disc") ||
+        isNaN(json[i].spl_disc) ||
+        json[i].spl_disc === null ||
+        json[i].spl_disc === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice product spl_disc parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("cgst") ||
+        isNaN(json[i].cgst) ||
+        json[i].cgst === null ||
+        json[i].cgst === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice product cgst parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("sgst") ||
+        isNaN(json[i].sgst) ||
+        json[i].sgst === null ||
+        json[i].sgst === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice product sgst parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("igst") ||
+        isNaN(json[i].igst) ||
+        json[i].igst === null ||
+        json[i].igst === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice product igst parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("margin") ||
+        isNaN(json[i].margin) ||
+        json[i].margin === null ||
+        json[i].margin === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice product margin parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("total_amount") ||
+        isNaN(json[i].total_amount) ||
+        json[i].total_amount === null ||
+        json[i].total_amount === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice product total_amount parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("status") ||
+        (json[i].status !== 0 && json[i].status !== 1)
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice product status parameter"
+        };
+    }
+
+    return {
+      success: true,
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return {
+      success: false,
+      msg: "Wrong validate supplier invoice product json"
     };
   }
 };
