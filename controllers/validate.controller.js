@@ -2552,7 +2552,7 @@ module.exports.validateStockLog = (json, actor) => {
 };
 
 // Validate Supplier Detail Parameter
-module.exports.validateSupplierDetail = (json, actor) => {
+module.exports.validateSupplierDetail = json => {
   try {
     for (let i = 0; i < json.length; i++) {
       if (

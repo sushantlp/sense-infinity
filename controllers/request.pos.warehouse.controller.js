@@ -546,8 +546,7 @@ module.exports.requestSupplierDetail = (req, res) => {
   ) {
     // Validate Supplier Detail Parameter
     const validate = validateController.validateSupplierDetail(
-      req.body.supplier_detail,
-      "WAREHOUSE"
+      req.body.supplier_detail
     );
 
     if (!validate.success) return res.status(400).send(validate.msg);

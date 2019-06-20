@@ -36,6 +36,7 @@ const cardModel = require("../models/membership_card");
 const cardLinkCustomerModel = require("../models/customer_link_membership_card");
 const storeStockModel = require("../models/store_stock");
 const storeStockLogModel = require("../models/store_stock_log");
+const storeSupplierModel = require("../models/store_supplier_detail");
 
 // Logic Warehouse Store List
 module.exports.logicWarehouseStoreList = async id => {
@@ -1625,6 +1626,124 @@ const postStoreStockLog = async (partnerRecord, storeRecord, stocks) => {
         1,
         stock.status
       );
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Store Supplier Detail
+module.exports.logicStoreSupplierDetail = async (id, code, suppliers) => {
+  try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner"
+      };
+
+    // Read Partner Store Record By Store Code
+    let storeRecord = await partnerStoreModel.readStoreByCode(
+      "store_id",
+      code,
+      partnerRecord[0].partner_id,
+      1
+    );
+
+    // Parse
+    storeRecord = JSON.stringify(storeRecord);
+    storeRecord = JSON.parse(storeRecord);
+
+    if (storeRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown store"
+      };
+
+    storeSupplierDetail(storeRecord, suppliers);
+
+    return {
+      success: true,
+      data: [],
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Post Store Supplier Detail
+const storeSupplierDetail = async (storeRecord, suppliers) => {
+  try {
+    return suppliers.map(async (supplier, index) => {
+      const reform = shareController.reformSupplierRecord(
+        supplier.supplier_name,
+        supplier.address_one,
+        supplier.address_two,
+        supplier.landmark,
+        supplier.state,
+        supplier.city,
+        supplier.country,
+        supplier.email,
+        supplier.gstin,
+        supplier.cin,
+        supplier.pan,
+        supplier.note
+      );
+
+      let supplierRecord = storeSupplierModel.readStoreSupplier(
+        "id",
+        storeRecord[0].store_id,
+        supplier.supplier_id
+      );
+
+      // Parse
+      supplierRecord = JSON.stringify(supplierRecord);
+      supplierRecord = JSON.parse(supplierRecord);
+
+      if (supplierRecord.length === 0)
+        storeSupplierModel.keepStoreSupplier(
+          supplier.supplier_id,
+          storeRecord[0].store_id,
+          reform.supplierName,
+          reform.addressOne,
+          reform.addressTwo,
+          reform.landmark,
+          reform.state,
+          reform.city,
+          reform.country,
+          supplier.pincode,
+          supplier.mobile,
+          reform.email,
+          reform.gstin,
+          reform.cin,
+          reform.pan,
+          reform.note,
+          supplier.status
+        );
+      else
+        storeSupplierModel.updateStoreSupplier(
+          reform.supplierName,
+          reform.addressOne,
+          reform.addressTwo,
+          reform.landmark,
+          reform.state,
+          reform.city,
+          reform.country,
+          supplier.pincode,
+          supplier.mobile,
+          reform.email,
+          reform.gstin,
+          reform.cin,
+          reform.pan,
+          reform.note,
+          supplier.status,
+          supplierRecord[0].id
+        );
     });
   } catch (error) {
     return Promise.reject(error);

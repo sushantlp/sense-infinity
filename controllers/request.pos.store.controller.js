@@ -556,3 +556,47 @@ module.exports.requestStoreStockLog = (req, res) => {
       });
   } else return res.status(400).send("Not a good api call");
 };
+
+// Request Post Store Supplier Detail
+module.exports.requestSupplierDetail = (req, res) => {
+  if (
+    res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.body.supplier_detail !== undefined &&
+    req.body.supplier_detail !== "" &&
+    req.params.hasOwnProperty("storeCode")
+  ) {
+    // Validate Supplier Detail Parameter
+    const validate = validateController.validateSupplierDetail(
+      req.body.supplier_detail
+    );
+
+    if (!validate.success) return res.status(400).send(validate.msg);
+
+    // Logic Store Supplier Detail
+    return posStoreController
+      .logicStoreSupplierDetail(
+        res.userKey,
+        req.params.storeCode,
+        req.body.supplier_detail
+      )
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/api/v1/store/supplier/detail/${req.params.storeCode}`,
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};

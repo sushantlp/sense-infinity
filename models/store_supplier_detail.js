@@ -45,6 +45,174 @@ const now = moment()
  * Start Database Read and Write
  */
 
+// Read Store Supplier Record Search By [store_id, supplier_id]
+module.exports.readStoreSupplier = async (select, storeId, supplierId) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM store_supplier_details WHERE store_id = ? AND supplier_id = ? LIMIT 1`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [storeId, supplierId]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Keep Store Supplier
+module.exports.keepStoreSupplier = async (
+  supplierId,
+  storeId,
+  supplierName,
+  addressOne,
+  addressTwo,
+  landmark,
+  state,
+  city,
+  country,
+  pincode,
+  mobile,
+  email,
+  gstin,
+  cin,
+  pan,
+  note,
+  status
+) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    if (addressOne === undefined) addressOne = connection.escape(addressOne);
+    if (addressTwo === undefined) addressTwo = connection.escape(addressTwo);
+    if (landmark === undefined) landmark = connection.escape(landmark);
+    if (state === undefined) state = connection.escape(state);
+    if (city === undefined) city = connection.escape(city);
+    if (country === undefined) country = connection.escape(country);
+    if (email === undefined) email = connection.escape(email);
+    if (gstin === undefined) gstin = connection.escape(gstin);
+    if (cin === undefined) cin = connection.escape(cin);
+    if (pan === undefined) pan = connection.escape(pan);
+    if (note === undefined) note = connection.escape(note);
+
+    // Query
+    const query =
+      "INSERT INTO `store_supplier_details` (`supplier_id`, `store_id`, `supplier_name`, `supplier_address_one`, `supplier_address_two`, `supplier_landmark`, `state`, `city`, `country`, `pincode`, `supplier_mobile`, `supplier_email`, `gstin`, `cin`, `pan`, `note`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+    // Query Database
+    const row = await connection.query(query, [
+      supplierId,
+      storeId,
+      supplierName,
+      addressOne,
+      addressTwo,
+      landmark,
+      state,
+      city,
+      country,
+      pincode,
+      mobile,
+      email,
+      gstin,
+      cin,
+      pan,
+      note,
+      status,
+      now,
+      now
+    ]);
+
+    connection.release();
+
+    return row;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Update Store Supplier By [id]
+module.exports.updateStoreSupplier = async (
+  supplierName,
+  addressOne,
+  addressTwo,
+  landmark,
+  state,
+  city,
+  country,
+  pincode,
+  mobile,
+  email,
+  gstin,
+  cin,
+  pan,
+  note,
+  status,
+  id
+) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    if (addressOne === undefined) addressOne = connection.escape(addressOne);
+    if (addressTwo === undefined) addressTwo = connection.escape(addressTwo);
+    if (landmark === undefined) landmark = connection.escape(landmark);
+    if (state === undefined) state = connection.escape(state);
+    if (city === undefined) city = connection.escape(city);
+    if (country === undefined) country = connection.escape(country);
+    if (email === undefined) email = connection.escape(email);
+    if (gstin === undefined) gstin = connection.escape(gstin);
+    if (cin === undefined) cin = connection.escape(cin);
+    if (pan === undefined) pan = connection.escape(pan);
+    if (note === undefined) note = connection.escape(note);
+
+    // Query
+    const query =
+      "UPDATE `store_supplier_details` SET `supplier_name` = ?, `supplier_address_one` = ?, `supplier_address_two` = ?, `supplier_landmark` = ?, `state` = ?, `city` = ?, `country` = ?, `pincode` = ?, `supplier_mobile` = ?, `supplier_email` = ?, `gstin` = ?, `cin` = ?, `pan` = ?, `note` = ?, `status` = ?, `updated_at` = ? WHERE `id` = ?";
+
+    // Query Database
+    const row = await connection.query(query, [
+      supplierName,
+      addressOne,
+      addressTwo,
+      landmark,
+      state,
+      city,
+      country,
+      pincode,
+      mobile,
+      email,
+      gstin,
+      cin,
+      pan,
+      note,
+      status,
+      now,
+      id
+    ]);
+
+    connection.release();
+
+    return row;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 /**
  * End Database Read and Write
  */
