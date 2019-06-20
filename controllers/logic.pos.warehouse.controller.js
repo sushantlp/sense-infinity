@@ -51,6 +51,7 @@ const storeStockModel = require("../models/store_stock");
 const warehouseStockModel = require("../models/warehouse_stock");
 const warehouseStockLogModel = require("../models/warehouse_stock_log");
 const warehouseSupplierModel = require("../models/warehouse_supplier_detail");
+const warehouseSupplierInvoiceModel = require("../models/warehouse_supplier_invoice");
 
 // Logic Get Warehouse Static Data
 module.exports.logicWarehouseStaticData = async (version, id) => {
@@ -2139,7 +2140,7 @@ module.exports.logicWarehouseSupplierDetail = async (id, suppliers) => {
   }
 };
 
-// Post Warehouse Supplier Detail
+// Warehouse Supplier Detail
 const warehouseSupplierDetail = async (partnerRecord, suppliers) => {
   try {
     return suppliers.map(async (supplier, index) => {
@@ -2207,6 +2208,123 @@ const warehouseSupplierDetail = async (partnerRecord, suppliers) => {
           supplier.status,
           supplierRecord[0].id
         );
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Warehouse Supplier Invoice
+module.exports.logicWarehouseSupplierInvoice = async (id, invoices) => {
+  try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner"
+      };
+
+    warehouseSupplierInvoice(partnerRecord, invoices);
+
+    return {
+      success: true,
+      data: [],
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Warehouse Supplier Invoice
+const warehouseSupplierInvoice = async (partnerRecord, invoices) => {
+  try {
+    return invoices.map(async (invoice, index) => {
+      const reform = shareController.reformSupplierInvoiceRecord(
+        invoice.supplier_name,
+        invoice.address_one,
+        invoice.address_two,
+        invoice.landmark,
+        invoice.state,
+        invoice.city,
+        invoice.country,
+        invoice.email,
+        invoice.gstin,
+        invoice.cin,
+        invoice.pan,
+        invoice.note,
+        invoice.sn_name,
+        invoice.rt_name,
+        invoice.payment_type,
+        invoice.payment_date,
+        invoice.reference_number,
+        invoice.eway_bill,
+        invoice.s_note
+      );
+
+      let invoiceRecord = await warehouseSupplierInvoiceModel.readWarehouseSupplierInvoice(
+        "id",
+        partnerRecord[0].partner_id,
+        invoice.invoice_number,
+        1
+      );
+
+      // Parse
+      invoiceRecord = JSON.stringify(invoiceRecord);
+      invoiceRecord = JSON.parse(invoiceRecord);
+
+      if (invoiceRecord.length === 0) {
+        let recentKey = await warehouseSupplierInvoiceModel.keepWarehouseSupplierInvoice(
+          partnerRecord[0].partner_id,
+          invoice.invoice_number,
+          supplierName,
+          addressOne,
+          addressTwo,
+          landmark,
+          state,
+          city,
+          country,
+          pincode,
+          mobile,
+          email,
+          gstin,
+          cin,
+          pan,
+          note,
+          invNo,
+          invoiceDate,
+          snName,
+          rtName,
+          smPhone,
+          delDate,
+          totalAmt,
+          paymentStatus,
+          paymentType,
+          paymentDate,
+          paymentReference,
+          eWayBill,
+          sNote,
+          userId,
+          status
+        );
+
+        if (Array.isArray(recentKey)) recentKey = recentKey[0].insertId;
+        else recentKey = recentKey.insertId;
+      } else {
+        await warehouseSupplierInvoiceModel.updateWarehouseSupplierInvoice(
+          0,
+          partnerRecord[0].partner_id,
+          invoice.invoice_number
+        );
+
+        let recentKey = await warehouseSupplierInvoiceModel.keepWarehouseSupplierInvoice();
+
+        if (Array.isArray(recentKey)) recentKey = recentKey[0].insertId;
+        else recentKey = recentKey.insertId;
+      }
     });
   } catch (error) {
     return Promise.reject(error);

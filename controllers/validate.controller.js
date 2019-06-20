@@ -2857,17 +2857,16 @@ module.exports.validateSupplierInvoice = json => {
           msg: "Missing error supplier invoice payment_date parameter"
         };
 
-      if (!json[i].hasOwnProperty("payment_reference_number"))
+      if (!json[i].hasOwnProperty("reference_number"))
         return {
           success: false,
-          msg:
-            "Missing error supplier invoice payment_reference_number parameter"
+          msg: "Missing error supplier invoice reference_number parameter"
         };
 
-      if (!json[i].hasOwnProperty("e_way_bill"))
+      if (!json[i].hasOwnProperty("eway_bill"))
         return {
           success: false,
-          msg: "Missing error supplier invoice e_way_bill parameter"
+          msg: "Missing error supplier invoice eway_bill parameter"
         };
 
       if (!json[i].hasOwnProperty("s_note"))

@@ -771,3 +771,159 @@ module.exports.reformSupplierRecord = (
 
   return reform;
 };
+
+// Reform Supplier Invoice Record Date
+module.exports.reformSupplierInvoiceRecord = (
+  supplierName,
+  addressOne,
+  addressTwo,
+  landmark,
+  state,
+  city,
+  country,
+  email,
+  gstin,
+  cin,
+  pan,
+  note,
+  snName,
+  rtName,
+  paymentType,
+  paymentDate,
+  referenceNumber,
+  eWayBill,
+  sNote
+) => {
+  // Variable
+  let reform = {
+    supplierName: undefined,
+    addressOne: undefined,
+    addressTwo: undefined,
+    landmark: undefined,
+    state: undefined,
+    city: undefined,
+    country: undefined,
+    email: undefined,
+    gstin: undefined,
+    cin: undefined,
+    pan: undefined,
+    note: undefined,
+    snName: undefined,
+    rtName: undefined,
+    paymentType: undefined,
+    paymentDate: undefined,
+    referenceNumber: undefined,
+    eWayBill: undefined,
+    sNote: undefined
+  };
+
+  reform.supplierName = supplierName.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
+
+  if (
+    addressOne !== "" &&
+    addressOne !== null &&
+    typeof addressOne !== "undefined"
+  )
+    reform.addressOne = addressOne.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+
+  if (
+    addressTwo !== "" &&
+    addressTwo !== null &&
+    typeof addressTwo !== "undefined"
+  ) {
+    reform.addressTwo = addressTwo.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+  }
+
+  if (landmark !== "" && landmark !== null && typeof landmark !== "undefined") {
+    reform.landmark = landmark.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+  }
+
+  if (state !== "" && state !== null && typeof state !== "undefined") {
+    reform.state = state.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+  }
+
+  if (city !== "" && city !== null && typeof city !== "undefined") {
+    reform.city = city.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+  }
+
+  if (country !== "" && country !== null && typeof country !== "undefined") {
+    reform.country = country.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+  }
+
+  if (email !== "" && email !== null && typeof email !== "undefined") {
+    reform.email = email;
+  }
+
+  if (gstin !== "" && gstin !== null && typeof gstin !== "undefined") {
+    reform.gstin = gstin;
+  }
+
+  if (cin !== "" && cin !== null && typeof cin !== "undefined") {
+    reform.cin = cin;
+  }
+
+  if (pan !== "" && pan !== null && typeof pan !== "undefined") {
+    reform.pan = pan;
+  }
+
+  if (note !== "" && note !== null && typeof note !== "undefined") {
+    reform.note = note.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+  }
+
+  if (snName !== "" && snName !== null && typeof snName !== "undefined") {
+    reform.snName = snName;
+  }
+
+  if (rtName !== "" && rtName !== null && typeof rtName !== "undefined") {
+    reform.rtName = rtName;
+  }
+
+  if (
+    paymentType !== "" &&
+    paymentType !== null &&
+    typeof paymentType !== "undefined"
+  ) {
+    reform.paymentType = paymentType;
+  }
+
+  if (
+    paymentDate !== "" &&
+    paymentDate !== null &&
+    typeof paymentDate !== "undefined"
+  ) {
+    reform.paymentDate = paymentDate;
+  }
+
+  if (
+    referenceNumber !== "" &&
+    referenceNumber !== null &&
+    typeof referenceNumber !== "undefined"
+  ) {
+    reform.referenceNumber = referenceNumber;
+  }
+
+  if (eWayBill !== "" && eWayBill !== null && typeof eWayBill !== "undefined") {
+    reform.eWayBill = eWayBill;
+  }
+
+  if (sNote !== "" && sNote !== null && typeof sNote !== "undefined") {
+    reform.sNote = sNote;
+  }
+  return reform;
+};
