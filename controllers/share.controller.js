@@ -668,3 +668,70 @@ module.exports.logicMerchantConstant = async (mobile, storeId) => {
     return Promise.reject(error);
   }
 };
+
+// Reform Supplier Record Date
+module.exports.reformSupplierRecord = (
+  supplierName,
+  addressOne,
+  addressTwo,
+  landmark,
+  state,
+  city,
+  country,
+  email,
+  gstin,
+  cin,
+  pan,
+  note
+) => {
+  // Variable
+  let reform = {
+    supplierName: undefined,
+    addressOne: undefined,
+    addressTwo: undefined,
+    landmark: undefined,
+    state: undefined,
+    city: undefined,
+    country: undefined,
+    email: undefined,
+    gstin: undefined,
+    cin: undefined,
+    pan: undefined,
+    note: undefined
+  };
+
+  // EMPTY || NULL || UNDEFINED
+  if (!isNaN(productName)) reform.productName = productName;
+  else if (
+    productName !== "" &&
+    productName !== null &&
+    typeof productName !== "undefined"
+  )
+    reform.productName = productName.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+
+  if (!isNaN(brandName)) reform.brandName = brandName;
+  else if (
+    brandName !== "" &&
+    brandName !== null &&
+    typeof brandName !== "undefined"
+  )
+    reform.brandName = brandName.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+
+  if (!isNaN(description)) {
+    reform.description = description;
+  } else if (
+    description !== "" &&
+    description !== null &&
+    typeof description !== "undefined"
+  ) {
+    reform.description = description.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+  }
+
+  return reform;
+};

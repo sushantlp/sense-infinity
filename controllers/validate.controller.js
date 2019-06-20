@@ -2550,3 +2550,134 @@ module.exports.validateStockLog = (json, actor) => {
     };
   }
 };
+
+// Validate Supplier Detail Parameter
+module.exports.validateSupplierDetail = (json, actor) => {
+  try {
+    for (let i = 0; i < json.length; i++) {
+      if (
+        !json[i].hasOwnProperty("supplier_id") ||
+        isNaN(json[i].supplier_id) ||
+        json[i].supplier_id === null ||
+        json[i].supplier_id === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error Store Stocks supplier_id parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("supplier_name") ||
+        json[i].supplier_name === null ||
+        json[i].supplier_name === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier detail supplier_name parameter"
+        };
+
+      if (!json[i].hasOwnProperty("address_one"))
+        return {
+          success: false,
+          msg: "Missing error supplier detail address_one parameter"
+        };
+
+      if (!json[i].hasOwnProperty("address_two"))
+        return {
+          success: false,
+          msg: "Missing error supplier detail address_two parameter"
+        };
+
+      if (!json[i].hasOwnProperty("landmark"))
+        return {
+          success: false,
+          msg: "Missing error supplier detail landmark parameter"
+        };
+
+      if (!json[i].hasOwnProperty("state"))
+        return {
+          success: false,
+          msg: "Missing error supplier detail state parameter"
+        };
+
+      if (!json[i].hasOwnProperty("city"))
+        return {
+          success: false,
+          msg: "Missing error supplier detail city parameter"
+        };
+
+      if (!json[i].hasOwnProperty("country"))
+        return {
+          success: false,
+          msg: "Missing error supplier detail country parameter"
+        };
+
+      if (!json[i].hasOwnProperty("state"))
+        return {
+          success: false,
+          msg: "Missing error supplier detail state parameter"
+        };
+
+      if (!json[i].hasOwnProperty("pincode") || isNaN(json[i].pincode))
+        return {
+          success: false,
+          msg: "Missing error supplier detail pincode parameter"
+        };
+
+      if (!json[i].hasOwnProperty("mobile") || isNaN(json[i].supplier_mobile))
+        return {
+          success: false,
+          msg: "Missing error supplier detail supplier_mobile parameter"
+        };
+
+      if (!json[i].hasOwnProperty("email"))
+        return {
+          success: false,
+          msg: "Missing error supplier detail supplier_email parameter"
+        };
+
+      if (!json[i].hasOwnProperty("gstin"))
+        return {
+          success: false,
+          msg: "Missing error supplier detail gstin parameter"
+        };
+
+      if (!json[i].hasOwnProperty("cin"))
+        return {
+          success: false,
+          msg: "Missing error supplier detail cin parameter"
+        };
+
+      if (!json[i].hasOwnProperty("pan"))
+        return {
+          success: false,
+          msg: "Missing error supplier detail pan parameter"
+        };
+
+      if (!json[i].hasOwnProperty("note"))
+        return {
+          success: false,
+          msg: "Missing error supplier detail note parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("status") ||
+        (json[i].status !== 0 && json[i].status !== 1)
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier detail status parameter"
+        };
+    }
+
+    return {
+      success: true,
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return {
+      success: false,
+      msg: "Wrong validate supplier detail json"
+    };
+  }
+};

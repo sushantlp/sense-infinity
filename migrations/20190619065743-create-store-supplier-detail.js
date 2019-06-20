@@ -8,6 +8,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER.UNSIGNED
       },
+      supplier_id: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false
+      },
       store_id: {
         type: Sequelize.INTEGER,
         allowNull: false,

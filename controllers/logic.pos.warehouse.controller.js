@@ -50,6 +50,7 @@ const returnInvoiceModel = require("../models/return_invoice");
 const storeStockModel = require("../models/store_stock");
 const warehouseStockModel = require("../models/warehouse_stock");
 const warehouseStockLogModel = require("../models/warehouse_stock_log");
+const warehouseSupplierModel = require("../models/warehouse_supplier_detail");
 
 // Logic Get Warehouse Static Data
 module.exports.logicWarehouseStaticData = async (version, id) => {
@@ -2107,6 +2108,42 @@ const postWarehouseStockLog = async (partnerRecord, stocks) => {
         1,
         stock.status
       );
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Warehouse Supplier Detail
+module.exports.logicWarehouseSupplierDetail = async (id, suppliers) => {
+  try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner"
+      };
+
+    warehouseSupplierDetail(partnerRecord, suppliers);
+
+    return {
+      success: true,
+      data: [],
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Post Warehouse Supplier Detail
+const warehouseSupplierDetail = async (partnerRecord, suppliers) => {
+  try {
+    return suppliers.map(async (supplier, index) => {
+      // warehouseSupplierModel
     });
   } catch (error) {
     return Promise.reject(error);
