@@ -2143,7 +2143,70 @@ module.exports.logicWarehouseSupplierDetail = async (id, suppliers) => {
 const warehouseSupplierDetail = async (partnerRecord, suppliers) => {
   try {
     return suppliers.map(async (supplier, index) => {
-      // warehouseSupplierModel
+      const reform = shareController.reformSupplierRecord(
+        supplier.supplier_name,
+        supplier.address_one,
+        supplier.address_two,
+        supplier.landmark,
+        supplier.state,
+        supplier.city,
+        supplier.country,
+        supplier.email,
+        supplier.gstin,
+        supplier.cin,
+        supplier.pan,
+        supplier.note
+      );
+
+      let supplierRecord = warehouseSupplierModel.readWarehouseSupplier(
+        "id",
+        partnerRecord[0].partner_id,
+        supplier.supplier_id
+      );
+
+      // Parse
+      supplierRecord = JSON.stringify(supplierRecord);
+      supplierRecord = JSON.parse(supplierRecord);
+
+      if (supplierRecord.length === 0)
+        warehouseSupplierModel.keepWarehouseSupplier(
+          supplier.supplier_id,
+          partnerRecord[0].partner_id,
+          reform.supplierName,
+          reform.addressOne,
+          reform.addressTwo,
+          reform.landmark,
+          reform.state,
+          reform.city,
+          reform.country,
+          supplier.pincode,
+          supplier.mobile,
+          reform.email,
+          reform.gstin,
+          reform.cin,
+          reform.pan,
+          reform.note,
+          supplier.status
+        );
+      else
+        warehouseSupplierModel.updateWarehouseSupplier(
+          reform.supplierName,
+          reform.addressOne,
+          reform.addressTwo,
+          reform.landmark,
+          reform.state,
+          reform.city,
+          reform.country,
+          supplier.pincode,
+          supplier.mobile,
+          reform.email,
+          reform.gstin,
+          reform.cin,
+          reform.pan,
+          reform.note,
+          supplier.status,
+          supplierRecord[0].id
+        );
     });
   } catch (error) {
     return Promise.reject(error);

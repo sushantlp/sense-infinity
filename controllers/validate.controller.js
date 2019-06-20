@@ -2624,7 +2624,7 @@ module.exports.validateSupplierDetail = (json, actor) => {
           msg: "Missing error supplier detail pincode parameter"
         };
 
-      if (!json[i].hasOwnProperty("mobile") || isNaN(json[i].supplier_mobile))
+      if (!json[i].hasOwnProperty("mobile") || isNaN(json[i].mobile))
         return {
           success: false,
           msg: "Missing error supplier detail supplier_mobile parameter"

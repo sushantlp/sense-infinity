@@ -700,35 +700,71 @@ module.exports.reformSupplierRecord = (
     note: undefined
   };
 
-  // EMPTY || NULL || UNDEFINED
-  if (!isNaN(productName)) reform.productName = productName;
-  else if (
-    productName !== "" &&
-    productName !== null &&
-    typeof productName !== "undefined"
+  reform.supplierName = supplierName.replace(/\b[a-z]/g, function(f) {
+    return f.toUpperCase();
+  });
+
+  if (
+    addressOne !== "" &&
+    addressOne !== null &&
+    typeof addressOne !== "undefined"
   )
-    reform.productName = productName.replace(/\b[a-z]/g, function(f) {
+    reform.addressOne = addressOne.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
 
-  if (!isNaN(brandName)) reform.brandName = brandName;
-  else if (
-    brandName !== "" &&
-    brandName !== null &&
-    typeof brandName !== "undefined"
-  )
-    reform.brandName = brandName.replace(/\b[a-z]/g, function(f) {
-      return f.toUpperCase();
-    });
-
-  if (!isNaN(description)) {
-    reform.description = description;
-  } else if (
-    description !== "" &&
-    description !== null &&
-    typeof description !== "undefined"
+  if (
+    addressTwo !== "" &&
+    addressTwo !== null &&
+    typeof addressTwo !== "undefined"
   ) {
-    reform.description = description.replace(/\b[a-z]/g, function(f) {
+    reform.addressTwo = addressTwo.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+  }
+
+  if (landmark !== "" && landmark !== null && typeof landmark !== "undefined") {
+    reform.landmark = landmark.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+  }
+
+  if (state !== "" && state !== null && typeof state !== "undefined") {
+    reform.state = state.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+  }
+
+  if (city !== "" && city !== null && typeof city !== "undefined") {
+    reform.city = city.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+  }
+
+  if (country !== "" && country !== null && typeof country !== "undefined") {
+    reform.country = country.replace(/\b[a-z]/g, function(f) {
+      return f.toUpperCase();
+    });
+  }
+
+  if (email !== "" && email !== null && typeof email !== "undefined") {
+    reform.email = email;
+  }
+
+  if (gstin !== "" && gstin !== null && typeof gstin !== "undefined") {
+    reform.gstin = gstin;
+  }
+
+  if (cin !== "" && cin !== null && typeof cin !== "undefined") {
+    reform.cin = cin;
+  }
+
+  if (pan !== "" && pan !== null && typeof pan !== "undefined") {
+    reform.pan = pan;
+  }
+
+  if (note !== "" && note !== null && typeof note !== "undefined") {
+    reform.note = note.replace(/\b[a-z]/g, function(f) {
       return f.toUpperCase();
     });
   }
