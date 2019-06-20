@@ -124,4 +124,11 @@ routes.post(
   PosWarehouseApiController.requestSupplierDetail
 );
 
+// Post Warehouse Supplier Invoice
+routes.post(
+  "/supplier/invoice",
+  apiKeyAuth,
+  PosWarehouseApiController.requestSupplierInvoice
+);
+
 module.exports = routes;

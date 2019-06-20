@@ -2158,7 +2158,7 @@ const warehouseSupplierDetail = async (partnerRecord, suppliers) => {
         supplier.note
       );
 
-      let supplierRecord = warehouseSupplierModel.readWarehouseSupplier(
+      let supplierRecord = await warehouseSupplierModel.readWarehouseSupplier(
         "id",
         partnerRecord[0].partner_id,
         supplier.supplier_id

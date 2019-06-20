@@ -133,4 +133,11 @@ routes.post(
   PosStoreApiController.requestStoreStockLog
 );
 
+// Post Store Supplier Detail
+routes.post(
+  "/supplier/detail/:storeCode([0-9]+)",
+  apiKeyAuth,
+  PosStoreApiController.requestSupplierDetail
+);
+
 module.exports = routes;

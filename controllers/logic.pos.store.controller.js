@@ -1695,7 +1695,7 @@ const storeSupplierDetail = async (storeRecord, suppliers) => {
         supplier.note
       );
 
-      let supplierRecord = storeSupplierModel.readStoreSupplier(
+      let supplierRecord = await storeSupplierModel.readStoreSupplier(
         "id",
         storeRecord[0].store_id,
         supplier.supplier_id

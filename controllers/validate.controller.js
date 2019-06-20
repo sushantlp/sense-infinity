@@ -2612,12 +2612,6 @@ module.exports.validateSupplierDetail = json => {
           msg: "Missing error supplier detail country parameter"
         };
 
-      if (!json[i].hasOwnProperty("state"))
-        return {
-          success: false,
-          msg: "Missing error supplier detail state parameter"
-        };
-
       if (!json[i].hasOwnProperty("pincode") || isNaN(json[i].pincode))
         return {
           success: false,
@@ -2627,13 +2621,13 @@ module.exports.validateSupplierDetail = json => {
       if (!json[i].hasOwnProperty("mobile") || isNaN(json[i].mobile))
         return {
           success: false,
-          msg: "Missing error supplier detail supplier_mobile parameter"
+          msg: "Missing error supplier detail mobile parameter"
         };
 
       if (!json[i].hasOwnProperty("email"))
         return {
           success: false,
-          msg: "Missing error supplier detail supplier_email parameter"
+          msg: "Missing error supplier detail email parameter"
         };
 
       if (!json[i].hasOwnProperty("gstin"))
@@ -2667,6 +2661,238 @@ module.exports.validateSupplierDetail = json => {
         return {
           success: false,
           msg: "Missing error supplier detail status parameter"
+        };
+    }
+
+    return {
+      success: true,
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return {
+      success: false,
+      msg: "Wrong validate supplier detail json"
+    };
+  }
+};
+
+// Validate Supplier Invoice Parameter
+module.exports.validateSupplierInvoice = json => {
+  try {
+    for (let i = 0; i < json.length; i++) {
+      if (
+        !json[i].hasOwnProperty("invoice_number") ||
+        isNaN(json[i].invoice_number) ||
+        json[i].invoice_number === null ||
+        json[i].invoice_number === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice invoice_number parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("supplier_name") ||
+        json[i].supplier_name === null ||
+        json[i].supplier_name === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice supplier_name parameter"
+        };
+
+      if (!json[i].hasOwnProperty("address_one"))
+        return {
+          success: false,
+          msg: "Missing error supplier invoice address_one parameter"
+        };
+
+      if (!json[i].hasOwnProperty("address_two"))
+        return {
+          success: false,
+          msg: "Missing error supplier invoice address_two parameter"
+        };
+
+      if (!json[i].hasOwnProperty("landmark"))
+        return {
+          success: false,
+          msg: "Missing error supplier invoice landmark parameter"
+        };
+
+      if (!json[i].hasOwnProperty("state"))
+        return {
+          success: false,
+          msg: "Missing error supplier invoice state parameter"
+        };
+
+      if (!json[i].hasOwnProperty("city"))
+        return {
+          success: false,
+          msg: "Missing error supplier invoice city parameter"
+        };
+
+      if (!json[i].hasOwnProperty("country"))
+        return {
+          success: false,
+          msg: "Missing error supplier invoice country parameter"
+        };
+
+      if (!json[i].hasOwnProperty("pincode") || isNaN(json[i].pincode))
+        return {
+          success: false,
+          msg: "Missing error supplier invoice pincode parameter"
+        };
+
+      if (!json[i].hasOwnProperty("mobile") || isNaN(json[i].mobile))
+        return {
+          success: false,
+          msg: "Missing error supplier invoice mobile parameter"
+        };
+
+      if (!json[i].hasOwnProperty("email"))
+        return {
+          success: false,
+          msg: "Missing error supplier invoice email parameter"
+        };
+
+      if (!json[i].hasOwnProperty("gstin"))
+        return {
+          success: false,
+          msg: "Missing error supplier invoice gstin parameter"
+        };
+
+      if (!json[i].hasOwnProperty("cin"))
+        return {
+          success: false,
+          msg: "Missing error supplier invoice cin parameter"
+        };
+
+      if (!json[i].hasOwnProperty("pan"))
+        return {
+          success: false,
+          msg: "Missing error supplier invoice pan parameter"
+        };
+
+      if (!json[i].hasOwnProperty("note"))
+        return {
+          success: false,
+          msg: "Missing error supplier invoice note parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("inv_no") ||
+        json[i].inv_no === null ||
+        json[i].inv_no === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice inv_no parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("invoice_date") ||
+        json[i].invoice_date === null ||
+        json[i].invoice_date === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice invoice_date parameter"
+        };
+
+      if (!json[i].hasOwnProperty("sn_name"))
+        return {
+          success: false,
+          msg: "Missing error supplier invoice sn_name parameter"
+        };
+
+      if (!json[i].hasOwnProperty("rt_name"))
+        return {
+          success: false,
+          msg: "Missing error supplier invoice rt_name parameter"
+        };
+
+      if (!json[i].hasOwnProperty("sm_phone") || isNaN(json[i].sm_phone))
+        return {
+          success: false,
+          msg: "Missing error supplier invoice sm_phone parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("del_date") ||
+        json[i].del_date === null ||
+        json[i].del_date === ""
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice del_date parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("invoice_total_amount") ||
+        isNaN(json[i].invoice_total_amount)
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice invoice_total_amount parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("payment_status") ||
+        isNaN(json[i].payment_status)
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice payment_status parameter"
+        };
+
+      if (!json[i].hasOwnProperty("payment_type"))
+        return {
+          success: false,
+          msg: "Missing error supplier invoice payment_type parameter"
+        };
+
+      if (!json[i].hasOwnProperty("payment_date"))
+        return {
+          success: false,
+          msg: "Missing error supplier invoice payment_date parameter"
+        };
+
+      if (!json[i].hasOwnProperty("payment_reference_number"))
+        return {
+          success: false,
+          msg:
+            "Missing error supplier invoice payment_reference_number parameter"
+        };
+
+      if (!json[i].hasOwnProperty("e_way_bill"))
+        return {
+          success: false,
+          msg: "Missing error supplier invoice e_way_bill parameter"
+        };
+
+      if (!json[i].hasOwnProperty("s_note"))
+        return {
+          success: false,
+          msg: "Missing error supplier invoice s_note parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("warehouse_user_id") ||
+        isNaN(json[i].warehouse_user_id) ||
+        json[i].warehouse_user_id === 0
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice warehouse_user_id parameter"
+        };
+
+      if (
+        !json[i].hasOwnProperty("status") ||
+        (json[i].status !== 0 && json[i].status !== 1)
+      )
+        return {
+          success: false,
+          msg: "Missing error supplier invoice status parameter"
         };
     }
 
