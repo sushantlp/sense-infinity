@@ -1753,7 +1753,7 @@ const storeSupplierDetail = async (storeRecord, suppliers) => {
 };
 
 // Logic Store Supplier Invoice
-module.exports.logicStoreSupplierInvoice = async (id, invoices) => {
+module.exports.logicStoreSupplierInvoice = async (id, code, invoices) => {
   try {
     // Call User Partner Data
     const partnerRecord = await shareController.userPartnerData(id);
