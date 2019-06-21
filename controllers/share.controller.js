@@ -790,7 +790,7 @@ module.exports.reformSupplierInvoiceRecord = (
   rtName,
   paymentType,
   paymentDate,
-  referenceNumber,
+  paymentReference,
   eWayBill,
   sNote
 ) => {
@@ -812,7 +812,7 @@ module.exports.reformSupplierInvoiceRecord = (
     rtName: undefined,
     paymentType: undefined,
     paymentDate: undefined,
-    referenceNumber: undefined,
+    paymentReference: undefined,
     eWayBill: undefined,
     sNote: undefined
   };
@@ -911,11 +911,11 @@ module.exports.reformSupplierInvoiceRecord = (
   }
 
   if (
-    referenceNumber !== "" &&
-    referenceNumber !== null &&
-    typeof referenceNumber !== "undefined"
+    paymentReference !== "" &&
+    paymentReference !== null &&
+    typeof paymentReference !== "undefined"
   ) {
-    reform.referenceNumber = referenceNumber;
+    reform.paymentReference = paymentReference;
   }
 
   if (eWayBill !== "" && eWayBill !== null && typeof eWayBill !== "undefined") {

@@ -2828,12 +2828,12 @@ module.exports.validateSupplierInvoice = json => {
         };
 
       if (
-        !json[i].hasOwnProperty("invoice_total_amount") ||
-        isNaN(json[i].invoice_total_amount)
+        !json[i].hasOwnProperty("total_amount") ||
+        isNaN(json[i].total_amount)
       )
         return {
           success: false,
-          msg: "Missing error supplier invoice invoice_total_amount parameter"
+          msg: "Missing error supplier invoice total_amount parameter"
         };
 
       if (
@@ -2876,13 +2876,13 @@ module.exports.validateSupplierInvoice = json => {
         };
 
       if (
-        !json[i].hasOwnProperty("warehouse_user_id") ||
-        isNaN(json[i].warehouse_user_id) ||
-        json[i].warehouse_user_id === 0
+        !json[i].hasOwnProperty("user_id") ||
+        isNaN(json[i].user_id) ||
+        json[i].user_id === 0
       )
         return {
           success: false,
-          msg: "Missing error supplier invoice warehouse_user_id parameter"
+          msg: "Missing error supplier invoice user_id parameter"
         };
 
       if (

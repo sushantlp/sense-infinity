@@ -52,6 +52,7 @@ const warehouseStockModel = require("../models/warehouse_stock");
 const warehouseStockLogModel = require("../models/warehouse_stock_log");
 const warehouseSupplierModel = require("../models/warehouse_supplier_detail");
 const warehouseSupplierInvoiceModel = require("../models/warehouse_supplier_invoice");
+const warehouseSupplierInvoiceProductModel = require("../models/warehouse_supplier_invoice_product");
 
 // Logic Get Warehouse Static Data
 module.exports.logicWarehouseStaticData = async (version, id) => {
@@ -2280,39 +2281,41 @@ const warehouseSupplierInvoice = async (partnerRecord, invoices) => {
         let recentKey = await warehouseSupplierInvoiceModel.keepWarehouseSupplierInvoice(
           partnerRecord[0].partner_id,
           invoice.invoice_number,
-          supplierName,
-          addressOne,
-          addressTwo,
-          landmark,
-          state,
-          city,
-          country,
-          pincode,
-          mobile,
-          email,
-          gstin,
-          cin,
-          pan,
-          note,
-          invNo,
-          invoiceDate,
-          snName,
-          rtName,
-          smPhone,
-          delDate,
-          totalAmt,
-          paymentStatus,
-          paymentType,
-          paymentDate,
-          paymentReference,
-          eWayBill,
-          sNote,
-          userId,
-          status
+          reform.supplierName,
+          reform.addressOne,
+          reform.addressTwo,
+          reform.landmark,
+          reform.state,
+          reform.city,
+          reform.country,
+          invoice.pincode,
+          invoice.mobile,
+          reform.email,
+          reform.gstin,
+          reform.cin,
+          reform.pan,
+          reform.note,
+          invoice.inv_no,
+          invoice.invoice_date,
+          reform.snName,
+          reform.rtName,
+          invoice.sm_phone,
+          invoice.del_date,
+          invoice.total_amount,
+          invoice.payment_status,
+          reform.paymentType,
+          reform.paymentDate,
+          reform.paymentReference,
+          reform.eWayBill,
+          reform.sNote,
+          invoice.user_id,
+          1
         );
 
         if (Array.isArray(recentKey)) recentKey = recentKey[0].insertId;
         else recentKey = recentKey.insertId;
+
+        warehouseSupplierInvoiceProduct(recentKey, invoice.invoice_product);
       } else {
         await warehouseSupplierInvoiceModel.updateWarehouseSupplierInvoice(
           0,
@@ -2320,11 +2323,101 @@ const warehouseSupplierInvoice = async (partnerRecord, invoices) => {
           invoice.invoice_number
         );
 
-        let recentKey = await warehouseSupplierInvoiceModel.keepWarehouseSupplierInvoice();
+        warehouseSupplierInvoiceProductModel.updateWarehouseSupplierInvoiceProduct(
+          0,
+          invoiceRecord[0].id
+        );
+
+        let recentKey = await warehouseSupplierInvoiceModel.keepWarehouseSupplierInvoice(
+          partnerRecord[0].partner_id,
+          invoice.invoice_number,
+          reform.supplierName,
+          reform.addressOne,
+          reform.addressTwo,
+          reform.landmark,
+          reform.state,
+          reform.city,
+          reform.country,
+          invoice.pincode,
+          invoice.mobile,
+          reform.email,
+          reform.gstin,
+          reform.cin,
+          reform.pan,
+          reform.note,
+          invoice.inv_no,
+          invoice.invoice_date,
+          reform.snName,
+          reform.rtName,
+          invoice.sm_phone,
+          invoice.del_date,
+          invoice.total_amount,
+          invoice.payment_status,
+          reform.paymentType,
+          reform.paymentDate,
+          reform.paymentReference,
+          reform.eWayBill,
+          reform.sNote,
+          invoice.user_id,
+          1
+        );
 
         if (Array.isArray(recentKey)) recentKey = recentKey[0].insertId;
         else recentKey = recentKey.insertId;
+
+        warehouseSupplierInvoiceProduct(recentKey, invoice.invoice_product);
       }
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Warehouse Supplier Invoice Product
+const warehouseSupplierInvoiceProduct = async (key, products) => {
+  try {
+    return products.map(async (product, index) => {
+      let productName = undefined;
+      let unit = undefined;
+
+      if (
+        product.product_name !== "" &&
+        product.product_name !== null &&
+        typeof product.product_name !== "undefined"
+      )
+        productName = product.product_name.replace(/\b[a-z]/g, function(f) {
+          return f.toUpperCase();
+        });
+
+      if (
+        product.unit !== "" &&
+        product.unit !== null &&
+        typeof product.unit !== "undefined"
+      )
+        unit = product.unit;
+
+      warehouseSupplierInvoiceProductModel.keepWarehouseSupplierInvoiceProduct(
+        key,
+        parseInt(product.product_code, 10),
+        parseInt(product.product_type, 10),
+        productName,
+        parseInt(product.hsn_code, 10),
+        parseFloat(product.mrp),
+        parseFloat(product.quantity),
+        parseFloat(product.free_quantity),
+        parseFloat(product.rate),
+        parseFloat(product.unit_value),
+        unit,
+        parseFloat(product.pri_sch),
+        parseFloat(product.sec_sch),
+        parseFloat(product.spl_disc),
+        parseFloat(product.cgst),
+        parseFloat(product.sgst),
+        parseFloat(product.igst),
+        parseFloat(product.margin),
+        parseFloat(product.total_amount),
+        1
+      );
     });
   } catch (error) {
     return Promise.reject(error);
