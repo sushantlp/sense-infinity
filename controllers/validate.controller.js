@@ -2885,15 +2885,6 @@ module.exports.validateSupplierInvoice = json => {
           msg: "Missing error supplier invoice user_id parameter"
         };
 
-      if (
-        !json[i].hasOwnProperty("status") ||
-        (json[i].status !== 0 && json[i].status !== 1)
-      )
-        return {
-          success: false,
-          msg: "Missing error supplier invoice status parameter"
-        };
-
       // Validate Supplier Invoice Product
       const invoiceProduct = supplierInvoiceProduct(json[i].invoice_product);
 
@@ -3110,15 +3101,6 @@ const supplierInvoiceProduct = json => {
         return {
           success: false,
           msg: "Missing error supplier invoice product total_amount parameter"
-        };
-
-      if (
-        !json[i].hasOwnProperty("status") ||
-        (json[i].status !== 0 && json[i].status !== 1)
-      )
-        return {
-          success: false,
-          msg: "Missing error supplier invoice product status parameter"
         };
     }
 

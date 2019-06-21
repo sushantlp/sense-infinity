@@ -49,3 +49,192 @@ module.exports = (sequelize, DataTypes) => {
   };
   return storeSupplierInvoice;
 };
+
+// Current Date and Time
+const now = moment()
+  .tz("Asia/Kolkata")
+  .format("YYYY-MM-DD HH-m-ss");
+
+/**
+ * Start Database Read and Write
+ */
+
+// Read Store Supplier Invoice Record Search By [store_id, invoice_number, status]
+module.exports.readStoreSupplierInvoice = async (
+  select,
+  storeId,
+  invoiceNo,
+  status
+) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM store_supplier_invoices WHERE store_id = ? AND invoice_number = ? AND status = ? LIMIT 1`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [
+      storeId,
+      invoiceNo,
+      status
+    ]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Keep Store Supplier Invoice
+module.exports.keepStoreSupplierInvoice = async (
+  storeId,
+  invoiceNo,
+  supplierName,
+  addressOne,
+  addressTwo,
+  landmark,
+  state,
+  city,
+  country,
+  pincode,
+  mobile,
+  email,
+  gstin,
+  cin,
+  pan,
+  note,
+  invNo,
+  invoiceDate,
+  snName,
+  rtName,
+  smPhone,
+  delDate,
+  totalAmt,
+  paymentStatus,
+  paymentType,
+  paymentDate,
+  paymentReference,
+  eWayBill,
+  sNote,
+  userId,
+  status
+) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    if (addressOne === undefined) addressOne = connection.escape(addressOne);
+    if (addressTwo === undefined) addressTwo = connection.escape(addressTwo);
+    if (landmark === undefined) landmark = connection.escape(landmark);
+    if (state === undefined) state = connection.escape(state);
+    if (city === undefined) city = connection.escape(city);
+    if (country === undefined) country = connection.escape(country);
+    if (email === undefined) email = connection.escape(email);
+    if (gstin === undefined) gstin = connection.escape(gstin);
+    if (cin === undefined) cin = connection.escape(cin);
+    if (pan === undefined) pan = connection.escape(pan);
+    if (note === undefined) note = connection.escape(note);
+    if (snName === undefined) snName = connection.escape(snName);
+    if (rtName === undefined) rtName = connection.escape(rtName);
+    if (delDate === undefined) delDate = connection.escape(delDate);
+    if (paymentType === undefined) paymentType = connection.escape(paymentType);
+    if (paymentDate === undefined) paymentDate = connection.escape(paymentDate);
+    if (paymentReference === undefined)
+      paymentReference = connection.escape(paymentReference);
+    if (eWayBill === undefined) eWayBill = connection.escape(eWayBill);
+    if (sNote === undefined) sNote = connection.escape(sNote);
+
+    // Query
+    const query =
+      "INSERT INTO `store_supplier_invoices` (`store_id`, `invoice_number`, `supplier_name`, `address_one`, `address_two`, `landmark`, `state`, `city`, `country`, `pincode`, `mobile`, `email`, `gstin`, `cin`, `pan`, `note`, `inv_no`, `invoice_date`, `sn_name`, `rt_name`, `sm_phone`, `del_date`, `invoice_total_amount`, `payment_status`, `payment_type`, `payment_date`, `payment_reference_number`, `e_way_bill`, `s_note`, `warehouse_user_id`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+    // Query Database
+    const row = await connection.query(query, [
+      storeId,
+      invoiceNo,
+      supplierName,
+      addressOne,
+      addressTwo,
+      landmark,
+      state,
+      city,
+      country,
+      pincode,
+      mobile,
+      email,
+      gstin,
+      cin,
+      pan,
+      note,
+      invNo,
+      invoiceDate,
+      snName,
+      rtName,
+      smPhone,
+      delDate,
+      totalAmt,
+      paymentStatus,
+      paymentType,
+      paymentDate,
+      paymentReference,
+      eWayBill,
+      sNote,
+      userId,
+      status,
+      now,
+      now
+    ]);
+
+    connection.release();
+
+    return row;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Status Change Store Supplier Invoice By [store_id, invoice_number]
+module.exports.updateStoreSupplierInvoice = async (
+  status,
+  storeId,
+  invoiceNo
+) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query =
+      "UPDATE `store_supplier_invoices` SET `status` = ?, `updated_at` = ? WHERE `store_id` = ? AND `invoice_number` = ?";
+
+    // Query Database
+    const row = await connection.query(query, [
+      status,
+      now,
+      storeId,
+      invoiceNo
+    ]);
+
+    connection.release();
+
+    return row;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+/**
+ * End Database Read and Write
+ */

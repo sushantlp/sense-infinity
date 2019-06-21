@@ -140,4 +140,11 @@ routes.post(
   PosStoreApiController.requestSupplierDetail
 );
 
+// Post Store Supplier Invoice
+routes.post(
+  "/supplier/invoice/:storeCode([0-9]+)",
+  apiKeyAuth,
+  PosWarehouseApiController.requestSupplierInvoice
+);
+
 module.exports = routes;

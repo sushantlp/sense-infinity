@@ -37,6 +37,8 @@ const cardLinkCustomerModel = require("../models/customer_link_membership_card")
 const storeStockModel = require("../models/store_stock");
 const storeStockLogModel = require("../models/store_stock_log");
 const storeSupplierModel = require("../models/store_supplier_detail");
+const storeSupplierInvoiceModel = require("../models/store_supplier_invoice");
+const storeSupplierInvoiceProductModel = require("../models/store_supplier_invoice_product");
 
 // Logic Warehouse Store List
 module.exports.logicWarehouseStoreList = async id => {
@@ -1744,6 +1746,234 @@ const storeSupplierDetail = async (storeRecord, suppliers) => {
           supplier.status,
           supplierRecord[0].id
         );
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Store Supplier Invoice
+module.exports.logicStoreSupplierInvoice = async (id, invoices) => {
+  try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner"
+      };
+
+    // Read Partner Store Record By Store Code
+    let storeRecord = await partnerStoreModel.readStoreByCode(
+      "store_id",
+      code,
+      partnerRecord[0].partner_id,
+      1
+    );
+
+    // Parse
+    storeRecord = JSON.stringify(storeRecord);
+    storeRecord = JSON.parse(storeRecord);
+
+    if (storeRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown store"
+      };
+
+    storeSupplierInvoice(storeRecord, invoices);
+
+    return {
+      success: true,
+      data: [],
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Store Supplier Invoice
+const storeSupplierInvoice = async (storeRecord, invoices) => {
+  try {
+    return invoices.map(async (invoice, index) => {
+      const reform = shareController.reformSupplierInvoiceRecord(
+        invoice.supplier_name,
+        invoice.address_one,
+        invoice.address_two,
+        invoice.landmark,
+        invoice.state,
+        invoice.city,
+        invoice.country,
+        invoice.email,
+        invoice.gstin,
+        invoice.cin,
+        invoice.pan,
+        invoice.note,
+        invoice.sn_name,
+        invoice.rt_name,
+        invoice.payment_type,
+        invoice.payment_date,
+        invoice.reference_number,
+        invoice.eway_bill,
+        invoice.s_note
+      );
+
+      let invoiceRecord = await storeSupplierInvoiceModel.readStoreSupplierInvoice(
+        "id",
+        storeRecord[0].store_id,
+        parseInt(invoice.invoice_number, 10),
+        1
+      );
+
+      // Parse
+      invoiceRecord = JSON.stringify(invoiceRecord);
+      invoiceRecord = JSON.parse(invoiceRecord);
+
+      if (invoiceRecord.length === 0) {
+        let recentKey = await storeSupplierInvoiceModel.keepStoreSupplierInvoice(
+          storeRecord[0].store_id,
+          parseInt(invoice.invoice_number, 10),
+          reform.supplierName,
+          reform.addressOne,
+          reform.addressTwo,
+          reform.landmark,
+          reform.state,
+          reform.city,
+          reform.country,
+          parseInt(invoice.pincode, 10),
+          parseInt(invoice.mobile, 10),
+          reform.email,
+          reform.gstin,
+          reform.cin,
+          reform.pan,
+          reform.note,
+          invoice.inv_no,
+          invoice.invoice_date,
+          reform.snName,
+          reform.rtName,
+          parseInt(invoice.sm_phone, 10),
+          invoice.del_date,
+          parseFloat(invoice.total_amount),
+          parseInt(invoice.payment_status, 10),
+          reform.paymentType,
+          reform.paymentDate,
+          reform.paymentReference,
+          reform.eWayBill,
+          reform.sNote,
+          parseInt(invoice.user_id, 10),
+          1
+        );
+
+        if (Array.isArray(recentKey)) recentKey = recentKey[0].insertId;
+        else recentKey = recentKey.insertId;
+
+        storeSupplierInvoiceProduct(recentKey, invoice.invoice_product);
+      } else {
+        await storeSupplierInvoiceModel.updateStoreSupplierInvoice(
+          0,
+          storeRecord[0].store_id,
+          parseInt(invoice.invoice_number, 10)
+        );
+
+        storeSupplierInvoiceProductModel.updateStoreSupplierInvoiceProduct(
+          0,
+          invoiceRecord[0].id
+        );
+
+        let recentKey = await storeSupplierInvoiceModel.keepStoreSupplierInvoice(
+          storeRecord[0].store_id,
+          parseInt(invoice.invoice_number, 10),
+          reform.supplierName,
+          reform.addressOne,
+          reform.addressTwo,
+          reform.landmark,
+          reform.state,
+          reform.city,
+          reform.country,
+          parseInt(invoice.pincode, 10),
+          parseInt(invoice.mobile, 10),
+          reform.email,
+          reform.gstin,
+          reform.cin,
+          reform.pan,
+          reform.note,
+          invoice.inv_no,
+          invoice.invoice_date,
+          reform.snName,
+          reform.rtName,
+          parseInt(invoice.sm_phone, 10),
+          invoice.del_date,
+          parseFloat(invoice.total_amount),
+          parseInt(invoice.payment_status, 10),
+          reform.paymentType,
+          reform.paymentDate,
+          reform.paymentReference,
+          reform.eWayBill,
+          reform.sNote,
+          parseInt(invoice.user_id, 10),
+          1
+        );
+
+        if (Array.isArray(recentKey)) recentKey = recentKey[0].insertId;
+        else recentKey = recentKey.insertId;
+
+        storeSupplierInvoiceProduct(recentKey, invoice.invoice_product);
+      }
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Store Supplier Invoice Product
+const storeSupplierInvoiceProduct = async (key, products) => {
+  try {
+    return products.map(async (product, index) => {
+      let productName = undefined;
+      let unit = undefined;
+
+      if (
+        product.product_name !== "" &&
+        product.product_name !== null &&
+        typeof product.product_name !== "undefined"
+      )
+        productName = product.product_name.replace(/\b[a-z]/g, function(f) {
+          return f.toUpperCase();
+        });
+
+      if (
+        product.unit !== "" &&
+        product.unit !== null &&
+        typeof product.unit !== "undefined"
+      )
+        unit = product.unit;
+
+      storeSupplierInvoiceProductModel.keepStoreSupplierInvoiceProduct(
+        key,
+        parseInt(product.product_code, 10),
+        parseInt(product.product_type, 10),
+        productName,
+        parseInt(product.hsn_code, 10),
+        parseFloat(product.mrp),
+        parseFloat(product.quantity),
+        parseFloat(product.free_quantity),
+        parseFloat(product.rate),
+        parseFloat(product.unit_value),
+        unit,
+        parseFloat(product.pri_sch),
+        parseFloat(product.sec_sch),
+        parseFloat(product.spl_disc),
+        parseFloat(product.cgst),
+        parseFloat(product.sgst),
+        parseFloat(product.igst),
+        parseFloat(product.margin),
+        parseFloat(product.total_amount),
+        1
+      );
     });
   } catch (error) {
     return Promise.reject(error);

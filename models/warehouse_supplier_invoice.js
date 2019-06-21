@@ -155,7 +155,7 @@ module.exports.keepWarehouseSupplierInvoice = async (
 
     // Query
     const query =
-      "INSERT INTO `warehouse_supplier_invoices` (`partner_id`, `invoice_number`, `supplier_name`, `address_one`, `address_two`, `landmark`, `state`, `city`, `country`, `pincode`, `mobile`, `email`, `gstin`, `cin`, `pan`, `note`, `inv_no`, `invoice_date`, `sn_name`, `rt_name`, `sm_phone`, `del_date`, `invoice_total_amount`, `payment_status`, `payment_type`, `payment_date`, `payment_reference_number`, `e_way_bill`, `s_note`, `warehouse_user_id`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO `warehouse_supplier_invoices` (`partner_id`, `invoice_number`, `supplier_name`, `address_one`, `address_two`, `landmark`, `state`, `city`, `country`, `pincode`, `mobile`, `email`, `gstin`, `cin`, `pan`, `note`, `inv_no`, `invoice_date`, `sn_name`, `rt_name`, `sm_phone`, `del_date`, `invoice_total_amount`, `payment_status`, `payment_type`, `payment_date`, `payment_reference_number`, `e_way_bill`, `s_note`, `warehouse_user_id`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     // Query Database
     const row = await connection.query(query, [

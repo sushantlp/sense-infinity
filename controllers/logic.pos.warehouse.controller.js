@@ -2163,7 +2163,7 @@ const warehouseSupplierDetail = async (partnerRecord, suppliers) => {
       let supplierRecord = await warehouseSupplierModel.readWarehouseSupplier(
         "id",
         partnerRecord[0].partner_id,
-        supplier.supplier_id
+        parseInt(supplier.supplier_id, 10)
       );
 
       // Parse
@@ -2172,7 +2172,7 @@ const warehouseSupplierDetail = async (partnerRecord, suppliers) => {
 
       if (supplierRecord.length === 0)
         warehouseSupplierModel.keepWarehouseSupplier(
-          supplier.supplier_id,
+          parseInt(supplier.supplier_id, 10),
           partnerRecord[0].partner_id,
           reform.supplierName,
           reform.addressOne,
@@ -2181,8 +2181,8 @@ const warehouseSupplierDetail = async (partnerRecord, suppliers) => {
           reform.state,
           reform.city,
           reform.country,
-          supplier.pincode,
-          supplier.mobile,
+          parseInt(supplier.pincode, 10),
+          parseInt(supplier.mobile, 10),
           reform.email,
           reform.gstin,
           reform.cin,
@@ -2199,8 +2199,8 @@ const warehouseSupplierDetail = async (partnerRecord, suppliers) => {
           reform.state,
           reform.city,
           reform.country,
-          supplier.pincode,
-          supplier.mobile,
+          parseInt(supplier.pincode, 10),
+          parseInt(supplier.mobile, 10),
           reform.email,
           reform.gstin,
           reform.cin,
@@ -2269,7 +2269,7 @@ const warehouseSupplierInvoice = async (partnerRecord, invoices) => {
       let invoiceRecord = await warehouseSupplierInvoiceModel.readWarehouseSupplierInvoice(
         "id",
         partnerRecord[0].partner_id,
-        invoice.invoice_number,
+        parseInt(invoice.invoice_number, 10),
         1
       );
 
@@ -2280,7 +2280,7 @@ const warehouseSupplierInvoice = async (partnerRecord, invoices) => {
       if (invoiceRecord.length === 0) {
         let recentKey = await warehouseSupplierInvoiceModel.keepWarehouseSupplierInvoice(
           partnerRecord[0].partner_id,
-          invoice.invoice_number,
+          parseInt(invoice.invoice_number, 10),
           reform.supplierName,
           reform.addressOne,
           reform.addressTwo,
@@ -2288,8 +2288,8 @@ const warehouseSupplierInvoice = async (partnerRecord, invoices) => {
           reform.state,
           reform.city,
           reform.country,
-          invoice.pincode,
-          invoice.mobile,
+          parseInt(invoice.pincode, 10),
+          parseInt(invoice.mobile, 10),
           reform.email,
           reform.gstin,
           reform.cin,
@@ -2299,16 +2299,16 @@ const warehouseSupplierInvoice = async (partnerRecord, invoices) => {
           invoice.invoice_date,
           reform.snName,
           reform.rtName,
-          invoice.sm_phone,
+          parseInt(invoice.sm_phone, 10),
           invoice.del_date,
-          invoice.total_amount,
-          invoice.payment_status,
+          parseFloat(invoice.total_amount),
+          parseInt(invoice.payment_status, 10),
           reform.paymentType,
           reform.paymentDate,
           reform.paymentReference,
           reform.eWayBill,
           reform.sNote,
-          invoice.user_id,
+          parseInt(invoice.user_id, 10),
           1
         );
 
@@ -2320,7 +2320,7 @@ const warehouseSupplierInvoice = async (partnerRecord, invoices) => {
         await warehouseSupplierInvoiceModel.updateWarehouseSupplierInvoice(
           0,
           partnerRecord[0].partner_id,
-          invoice.invoice_number
+          parseInt(invoice.invoice_number, 10)
         );
 
         warehouseSupplierInvoiceProductModel.updateWarehouseSupplierInvoiceProduct(
@@ -2330,7 +2330,7 @@ const warehouseSupplierInvoice = async (partnerRecord, invoices) => {
 
         let recentKey = await warehouseSupplierInvoiceModel.keepWarehouseSupplierInvoice(
           partnerRecord[0].partner_id,
-          invoice.invoice_number,
+          parseInt(invoice.invoice_number, 10),
           reform.supplierName,
           reform.addressOne,
           reform.addressTwo,
@@ -2338,8 +2338,8 @@ const warehouseSupplierInvoice = async (partnerRecord, invoices) => {
           reform.state,
           reform.city,
           reform.country,
-          invoice.pincode,
-          invoice.mobile,
+          parseInt(invoice.pincode, 10),
+          parseInt(invoice.mobile, 10),
           reform.email,
           reform.gstin,
           reform.cin,
@@ -2349,16 +2349,16 @@ const warehouseSupplierInvoice = async (partnerRecord, invoices) => {
           invoice.invoice_date,
           reform.snName,
           reform.rtName,
-          invoice.sm_phone,
+          parseInt(invoice.sm_phone, 10),
           invoice.del_date,
-          invoice.total_amount,
-          invoice.payment_status,
+          parseFloat(invoice.total_amount),
+          parseInt(invoice.payment_status, 10),
           reform.paymentType,
           reform.paymentDate,
           reform.paymentReference,
           reform.eWayBill,
           reform.sNote,
-          invoice.user_id,
+          parseInt(invoice.user_id, 10),
           1
         );
 

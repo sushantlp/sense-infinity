@@ -600,3 +600,47 @@ module.exports.requestSupplierDetail = (req, res) => {
       });
   } else return res.status(400).send("Not a good api call");
 };
+
+// Request Post Store Supplier Invoice
+module.exports.requestSupplierInvoice = (req, res) => {
+  if (
+    res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.body.supplier_invoice !== undefined &&
+    req.body.supplier_invoice !== "" &&
+    req.params.hasOwnProperty("storeCode")
+  ) {
+    // Validate Supplier Invoice Parameter
+    const validate = validateController.validateSupplierInvoice(
+      req.body.supplier_invoice
+    );
+
+    if (!validate.success) return res.status(400).send(validate.msg);
+
+    // Logic Store Supplier Invoice
+    return posStoreController
+      .logicStoreSupplierInvoice(
+        res.userKey,
+        req.params.storeCode,
+        req.body.supplier_invoice
+      )
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/api/v1/warehouse/supplier/invoice/${req.params.storeCode}`,
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
