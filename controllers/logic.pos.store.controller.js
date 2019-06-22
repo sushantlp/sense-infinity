@@ -1725,6 +1725,7 @@ const storeSupplierDetail = async (storeRecord, suppliers) => {
           reform.cin,
           reform.pan,
           reform.note,
+          1,
           supplier.status
         );
       else
@@ -1743,6 +1744,7 @@ const storeSupplierDetail = async (storeRecord, suppliers) => {
           reform.cin,
           reform.pan,
           reform.note,
+          1,
           supplier.status,
           supplierRecord[0].id
         );
@@ -1865,7 +1867,8 @@ const storeSupplierInvoice = async (storeRecord, invoices) => {
           reform.eWayBill,
           reform.sNote,
           parseInt(invoice.user_id, 10),
-          1
+          1,
+          invoice.status
         );
 
         if (Array.isArray(recentKey)) recentKey = recentKey[0].insertId;
@@ -1874,6 +1877,7 @@ const storeSupplierInvoice = async (storeRecord, invoices) => {
         storeSupplierInvoiceProduct(recentKey, invoice.invoice_product);
       } else {
         await storeSupplierInvoiceModel.updateStoreSupplierInvoice(
+          1,
           0,
           storeRecord[0].store_id,
           parseInt(invoice.invoice_number, 10)
@@ -1915,7 +1919,8 @@ const storeSupplierInvoice = async (storeRecord, invoices) => {
           reform.eWayBill,
           reform.sNote,
           parseInt(invoice.user_id, 10),
-          1
+          1,
+          invoice.status
         );
 
         if (Array.isArray(recentKey)) recentKey = recentKey[0].insertId;

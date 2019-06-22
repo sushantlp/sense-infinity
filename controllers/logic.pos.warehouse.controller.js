@@ -53,6 +53,7 @@ const warehouseStockLogModel = require("../models/warehouse_stock_log");
 const warehouseSupplierModel = require("../models/warehouse_supplier_detail");
 const warehouseSupplierInvoiceModel = require("../models/warehouse_supplier_invoice");
 const warehouseSupplierInvoiceProductModel = require("../models/warehouse_supplier_invoice_product");
+const storeSupplierDetailModel = require("../models/store_supplier_detail");
 
 // Logic Get Warehouse Static Data
 module.exports.logicWarehouseStaticData = async (version, id) => {
@@ -2309,7 +2310,7 @@ const warehouseSupplierInvoice = async (partnerRecord, invoices) => {
           reform.eWayBill,
           reform.sNote,
           parseInt(invoice.user_id, 10),
-          1
+          invoice.status
         );
 
         if (Array.isArray(recentKey)) recentKey = recentKey[0].insertId;
@@ -2359,7 +2360,7 @@ const warehouseSupplierInvoice = async (partnerRecord, invoices) => {
           reform.eWayBill,
           reform.sNote,
           parseInt(invoice.user_id, 10),
-          1
+          invoice.status
         );
 
         if (Array.isArray(recentKey)) recentKey = recentKey[0].insertId;
@@ -2419,6 +2420,70 @@ const warehouseSupplierInvoiceProduct = async (key, products) => {
         1
       );
     });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Store Supplier Invoice
+module.exports.logicStoreSupplierDetail = async id => {
+  try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner"
+      };
+
+    const suppliers = await storeSupplierDetailModel.readStoreSupplierById(
+      "store_supplier_details.id AS unique_key, store_supplier_details.supplier_id, store_supplier_details.supplier_name, CASE WHEN store_supplier_details.supplier_address_one <> 'NULL' THEN store_supplier_details.supplier_address_one ELSE '' END AS address_one, CASE WHEN store_supplier_details.supplier_address_two <> 'NULL' THEN store_supplier_details.supplier_address_two ELSE '' END AS address_two, CASE WHEN store_supplier_details.supplier_landmark <> 'NULL' THEN store_supplier_details.supplier_landmark ELSE '' END AS landmark, CASE WHEN store_supplier_details.state <> 'NULL' THEN store_supplier_details.state ELSE '' END AS supplier_state, CASE WHEN store_supplier_details.city <> 'NULL' THEN store_supplier_details.city ELSE '' END AS supplier_city, CASE WHEN store_supplier_details.country <> 'NULL' THEN store_supplier_details.country ELSE '' END AS supplier_country, store_supplier_details.pincode, store_supplier_details.supplier_mobile AS mobile, CASE WHEN store_supplier_details.supplier_email <> 'NULL' THEN store_supplier_details.supplier_email ELSE '' END AS email, CASE WHEN store_supplier_details.gstin <> 'NULL' THEN store_supplier_details.gstin ELSE '' END AS supplier_gstin, CASE WHEN store_supplier_details.cin <> 'NULL' THEN store_supplier_details.cin ELSE '' END AS supplier_cin, CASE WHEN store_supplier_details.pan <> 'NULL' THEN store_supplier_details.pan ELSE '' END AS supplier_pan, CASE WHEN store_supplier_details.note <> 'NULL' THEN store_supplier_details.note ELSE '' END AS supplier_note, store_supplier_details.status, partner_stores.store_code AS branch_code",
+      partnerRecord[0].partner_id,
+      1
+    );
+
+    if (suppliers.length === 0)
+      return {
+        success: true,
+        data: {},
+        msg: "Succesful"
+      };
+    return {
+      success: true,
+      data: {
+        store_supplier: suppliers,
+        start_id: suppliers[0].unique_key,
+        last_id: suppliers[suppliers.length - 1].unique_key
+      },
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Change Track Status Store Supplier Detail
+module.exports.logicChangeSupplierDetail = async (id, start, end) => {
+  try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner"
+      };
+
+    storeSupplierDetailModel.changeTrackStatusSupplierDetail(0, start, end);
+
+    return {
+      success: true,
+      data: [],
+      msg: "Succesful"
+    };
   } catch (error) {
     return Promise.reject(error);
   }

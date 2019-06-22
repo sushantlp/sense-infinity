@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       cin: DataTypes.STRING,
       pan: DataTypes.STRING,
       note: DataTypes.TEXT,
+      track_status: DataTypes.BOOLEAN,
       status: DataTypes.BOOLEAN
     },
     {}
@@ -68,6 +69,36 @@ module.exports.readStoreSupplier = async (select, storeId, supplierId) => {
   }
 };
 
+// Read Store Supplier Record Search By [partner_id, track_status]
+module.exports.readStoreSupplierById = async (
+  select,
+  partnerId,
+  trackStatus
+) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM store_supplier_details LEFT JOIN partner_stores ON store_supplier_details.store_id = partner_stores.store_id WHERE partner_stores.partner_id = ? AND store_supplier_details.track_status = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [
+      partnerId,
+      trackStatus
+    ]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 // Keep Store Supplier
 module.exports.keepStoreSupplier = async (
   supplierId,
@@ -86,6 +117,7 @@ module.exports.keepStoreSupplier = async (
   cin,
   pan,
   note,
+  trackStatus,
   status
 ) => {
   try {
@@ -109,7 +141,7 @@ module.exports.keepStoreSupplier = async (
 
     // Query
     const query =
-      "INSERT INTO `store_supplier_details` (`supplier_id`, `store_id`, `supplier_name`, `supplier_address_one`, `supplier_address_two`, `supplier_landmark`, `state`, `city`, `country`, `pincode`, `supplier_mobile`, `supplier_email`, `gstin`, `cin`, `pan`, `note`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO `store_supplier_details` (`supplier_id`, `store_id`, `supplier_name`, `supplier_address_one`, `supplier_address_two`, `supplier_landmark`, `state`, `city`, `country`, `pincode`, `supplier_mobile`, `supplier_email`, `gstin`, `cin`, `pan`, `note`, `track_status`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     // Query Database
     const row = await connection.query(query, [
@@ -129,6 +161,7 @@ module.exports.keepStoreSupplier = async (
       cin,
       pan,
       note,
+      trackStatus,
       status,
       now,
       now
@@ -158,6 +191,7 @@ module.exports.updateStoreSupplier = async (
   cin,
   pan,
   note,
+  trackStatus,
   status,
   id
 ) => {
@@ -182,7 +216,7 @@ module.exports.updateStoreSupplier = async (
 
     // Query
     const query =
-      "UPDATE `store_supplier_details` SET `supplier_name` = ?, `supplier_address_one` = ?, `supplier_address_two` = ?, `supplier_landmark` = ?, `state` = ?, `city` = ?, `country` = ?, `pincode` = ?, `supplier_mobile` = ?, `supplier_email` = ?, `gstin` = ?, `cin` = ?, `pan` = ?, `note` = ?, `status` = ?, `updated_at` = ? WHERE `id` = ?";
+      "UPDATE `store_supplier_details` SET `supplier_name` = ?, `supplier_address_one` = ?, `supplier_address_two` = ?, `supplier_landmark` = ?, `state` = ?, `city` = ?, `country` = ?, `pincode` = ?, `supplier_mobile` = ?, `supplier_email` = ?, `gstin` = ?, `cin` = ?, `pan` = ?, `note` = ?, `track_status` = ?, `status` = ?, `updated_at` = ? WHERE `id` = ?";
 
     // Query Database
     const row = await connection.query(query, [
@@ -200,9 +234,43 @@ module.exports.updateStoreSupplier = async (
       cin,
       pan,
       note,
+      trackStatus,
       status,
       now,
       id
+    ]);
+
+    connection.release();
+
+    return row;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Track Status Change Store Supplier Detail By [store_id, invoice_number]
+module.exports.changeTrackStatusSupplierDetail = async (
+  trackStatus,
+  startId,
+  lastId
+) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query =
+      "UPDATE `store_supplier_details` SET `track_status` = ?, `updated_at` = ? WHERE `id` >= ? AND `id` <= ?";
+
+    // Query Database
+    const row = await connection.query(query, [
+      trackStatus,
+      now,
+      startId,
+      lastId
     ]);
 
     connection.release();

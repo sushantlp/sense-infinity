@@ -131,4 +131,25 @@ routes.post(
   PosWarehouseApiController.requestSupplierInvoice
 );
 
+// Get Store Supplier Detail
+routes.get(
+  "/supplier/detail",
+  apiKeyAuth,
+  PosWarehouseApiController.requestStoreSupplierDetail
+);
+
+// Put Store Supplier Detail
+routes.put(
+  "/supplier/detail/:start([0-9]+)/:end([0-9]+)",
+  apiKeyAuth,
+  PosWarehouseApiController.requestChangeSupplierDetail
+);
+
+// Get Store Supplier invoice
+routes.get(
+  "/supplier/invoice",
+  apiKeyAuth,
+  PosWarehouseApiController.requestStoreSupplierInvoice
+);
+
 module.exports = routes;

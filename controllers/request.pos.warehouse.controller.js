@@ -613,3 +613,91 @@ module.exports.requestSupplierInvoice = (req, res) => {
       });
   } else return res.status(400).send("Not a good api call");
 };
+
+// Request Get Store Supplier Detail
+module.exports.requestStoreSupplierDetail = (req, res) => {
+  if (res.userKey !== undefined && res.userKey !== "") {
+    // Logic Store Supplier Detail
+    return posWarehouseController
+      .logicStoreSupplierDetail(res.userKey)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/api/v1/warehouse/supplier/detail`,
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
+
+// Request Change Track Status Store Supplier Detail
+module.exports.requestChangeSupplierDetail = (req, res) => {
+  if (
+    res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.params.hasOwnProperty("start") &&
+    req.params.hasOwnProperty("end")
+  ) {
+    // Logic Change Track Status Store Supplier Detail
+    return posWarehouseController
+      .logicChangeSupplierDetail(res.userKey, req.params.start, req.params.end)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/api/v1/warehouse/supplier/detail/${req.params.start}/${
+                req.params.end
+              }`,
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
+
+// Request Get Store Supplier Invoice
+module.exports.requestStoreSupplierInvoice = (req, res) => {
+  if (res.userKey !== undefined && res.userKey !== "") {
+    // Logic Store Supplier Invoice
+    return posWarehouseController
+      .logicStoreSupplierInvoice(res.userKey)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/api/v1/warehouse/supplier/invoice`,
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
