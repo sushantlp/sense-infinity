@@ -678,9 +678,9 @@ module.exports.requestChangeSupplierDetail = (req, res) => {
 // Request Get Store Supplier Invoice
 module.exports.requestStoreSupplierInvoice = (req, res) => {
   if (res.userKey !== undefined && res.userKey !== "") {
-    // Logic Store Supplier Invoice
+    // Logic Get Store Supplier Invoice
     return posWarehouseController
-      .logicStoreSupplierInvoice(res.userKey)
+      .logicGetStoreSupplierInvoice(res.userKey)
       .then(response => {
         return res
           .status(200)

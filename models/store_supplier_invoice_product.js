@@ -48,6 +48,33 @@ const now = moment()
  * Start Database Read and Write
  */
 
+// Read Store Supplier Invoice Product Record Search By [supplier_invoice_id]
+module.exports.readStoreSupplierInvoiceProduct = async (
+  select,
+  invoiceId,
+  status
+) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Query
+    const query = `SELECT ${select} FROM store_supplier_invoice_products WHERE supplier_invoice_id = ? AND invoice_number = ? AND status = ?`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, [invoiceId, status]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 // Keep Store Supplier Invoice Product
 module.exports.keepStoreSupplierInvoiceProduct = async (
   supplierInvoiceId,

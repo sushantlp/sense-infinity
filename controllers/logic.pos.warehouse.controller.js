@@ -54,6 +54,7 @@ const warehouseSupplierModel = require("../models/warehouse_supplier_detail");
 const warehouseSupplierInvoiceModel = require("../models/warehouse_supplier_invoice");
 const warehouseSupplierInvoiceProductModel = require("../models/warehouse_supplier_invoice_product");
 const storeSupplierDetailModel = require("../models/store_supplier_detail");
+const storeSupplierInvoiceModel = require("../models/store_supplier_invoice");
 
 // Logic Get Warehouse Static Data
 module.exports.logicWarehouseStaticData = async (version, id) => {
@@ -2484,6 +2485,118 @@ module.exports.logicChangeSupplierDetail = async (id, start, end) => {
       data: [],
       msg: "Succesful"
     };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Get Store Supplier Invoice
+module.exports.logicGetStoreSupplierInvoice = async id => {
+  try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner"
+      };
+
+    const invoice = await getStoreSupplierInvoice(partnerRecord);
+
+    return {
+      success: true,
+      data: invoice,
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+const getStoreSupplierInvoice = async partnerRecord => {
+  try {
+    const invoices = await storeSupplierInvoiceModel.readStoreSupplierInvoiceById(
+      "store_supplier_invoices.id, store_supplier_invoices.invoice_number, store_supplier_invoices.supplier_name, store_supplier_invoices.address_one, store_supplier_invoices.address_two, store_supplier_invoices.landmark, store_supplier_invoices.state, store_supplier_invoices.city, store_supplier_invoices.country, store_supplier_invoices.pincode, store_supplier_invoices.mobile, store_supplier_invoices.email, store_supplier_invoices.gstin, store_supplier_invoices.cin, store_supplier_invoices.pan, store_supplier_invoices.note, store_supplier_invoices.inv_no, store_supplier_invoices.invoice_date,store_supplier_invoices.sn_name, store_supplier_invoices.rt_name, store_supplier_invoices.sm_phone,store_supplier_invoices.del_date, store_supplier_invoices.invoice_total_amount, store_supplier_invoices.payment_status, store_supplier_invoices.payment_type,  store_supplier_invoices.payment_date, store_supplier_invoices.payment_reference_number,  store_supplier_invoices.e_way_bill, store_supplier_invoices.s_note, store_supplier_invoices.warehouse_user_id, store_supplier_invoices.status, partner_stores.store_code",
+      partnerRecord[0].partner_id,
+      1
+    );
+
+    if (invoices.length === 0) return {};
+
+    const bunch = await createSupplierInvoiceJson(invoices);
+
+    // if (invoices.length === 0)
+    //   return {
+    //     success: true,
+    //     data: {},
+    //     msg: "Succesful"
+    //   };
+    // return {
+    //   success: true,
+    //   data: {
+    //     store_supplier_invoice: invoices,
+    //     start_id: invoices[0].unique_key,
+    //     last_id: invoices[invoices.length - 1].unique_key
+    //   },
+    //   msg: "Succesful"
+    // };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Create Supplier Invoice Json
+const createSupplierInvoiceJson = async invoices => {
+  try {
+    let bunch = invoices.map(async (invoice, index) => {
+      let obj = {};
+      obj.key_id = invoice.id;
+      obj.branch_code = invoice.store_code;
+      obj.invoice_invoice_key = invoice.invoice_number;
+      obj.invoice_supplier_name = invoice.supplier_name;
+      obj.invoice_address_one =
+        invoice.address_one === "NULL" ? "" : invoice.address_one;
+      obj.invoice_address_two =
+        invoice.address_two === "NULL" ? "" : invoice.address_two;
+      obj.invoice_landmark =
+        invoice.landmark === "NULL" ? "" : invoice.landmark;
+      obj.invoice_state = invoice.state === "NULL" ? "" : invoice.state;
+      obj.invoice_city = invoice.city === "NULL" ? "" : invoice.city;
+      obj.invoice_country = invoice.country === "NULL" ? "" : invoice.country;
+      obj.invoice_pincode = invoice.pincode;
+      obj.invoice_mobile = invoice.mobile;
+      obj.invoice_email = invoice.email === "NULL" ? "" : invoice.email;
+      obj.invoice_gstin = invoice.gstin === "NULL" ? "" : invoice.gstin;
+      obj.invoice_cin = invoice.cin === "NULL" ? "" : invoice.cin;
+      obj.invoice_pan = invoice.pan === "NULL" ? "" : invoice.pan;
+      obj.invoice_note = invoice.note === "NULL" ? "" : invoice.note;
+      obj.inv_no = invoice.inv_no;
+      obj.invoice_date = invoice.invoice_date;
+      obj.invoice_sn_name = invoice.sn_name === "NULL" ? "" : invoice.sn_name;
+      obj.invoice_rt_name = invoice.rt_name === "NULL" ? "" : invoice.rt_name;
+      obj.invoice_sm_phone = invoice.sm_phone;
+      obj.invoice_delivery_date = invoice.del_date;
+      obj.total_amount = invoice.invoice_total_amount;
+      obj.invoice_payment_status = invoice.payment_status;
+      obj.invoice_payment_type =
+        invoice.payment_type === "NULL" ? "" : invoice.payment_type;
+      obj.invoice_payment_date =
+        invoice.payment_date === "NULL" ? "" : invoice.payment_date;
+      obj.invoice_reference_number =
+        invoice.payment_reference_number === "NULL"
+          ? ""
+          : invoice.payment_reference_number;
+      obj.invoice_e_way_bill =
+        invoice.e_way_bill === "NULL" ? "" : invoice.e_way_bill;
+      obj.invoice_s_note = invoice.s_note === "NULL" ? "" : invoice.s_note;
+      obj.user_key = invoice.warehouse_user_id;
+      obj.status = invoice.status;
+      return obj;
+    });
+
+    return await Promise.all(bunch);
   } catch (error) {
     return Promise.reject(error);
   }

@@ -274,34 +274,34 @@ module.exports.changeTrackStatusSupplierInvoice = async (
 };
 
 // Read Store Supplier Invoice Search By [partner_id, track_status]
-// module.exports.readStoreSupplierInvoiceById = async (
-//   select,
-//   partnerId,
-//   trackStatus
-// ) => {
-//   try {
-//     // Get Pool Object
-//     const pool = constants.createMysqlConnection();
+module.exports.readStoreSupplierInvoiceById = async (
+  select,
+  partnerId,
+  trackStatus
+) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
 
-//     // Create Connection
-//     const connection = await pool.getConnection();
+    // Create Connection
+    const connection = await pool.getConnection();
 
-//     // Query
-//     const query = `SELECT ${select} FROM store_supplier_invoices LEFT JOIN partner_stores ON store_supplier_invoices.store_id = partner_stores.store_id WHERE partner_stores.partner_id = ? AND store_supplier_invoices.track_status = ?`;
+    // Query
+    const query = `SELECT ${select} FROM store_supplier_invoices LEFT JOIN partner_stores ON store_supplier_invoices.store_id = partner_stores.store_id WHERE partner_stores.partner_id = ? AND store_supplier_invoices.track_status = ?`;
 
-//     // Query Database
-//     const [rows, fields] = await connection.query(query, [
-//       partnerId,
-//       trackStatus
-//     ]);
+    // Query Database
+    const [rows, fields] = await connection.query(query, [
+      partnerId,
+      trackStatus
+    ]);
 
-//     connection.release();
+    connection.release();
 
-//     return rows;
-//   } catch (error) {
-//     return Promise.reject(error);
-//   }
-// };
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
 
 /**
  * End Database Read and Write
