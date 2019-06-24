@@ -701,3 +701,37 @@ module.exports.requestStoreSupplierInvoice = (req, res) => {
       });
   } else return res.status(400).send("Not a good api call");
 };
+
+// Request Change Track Status Store Supplier Invoice
+module.exports.requestChangeSupplierInvoice = (req, res) => {
+  if (
+    res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.params.hasOwnProperty("start") &&
+    req.params.hasOwnProperty("end")
+  ) {
+    // Logic Change Track Status Store Supplier Invoice
+    return posWarehouseController
+      .logicChangeSupplierInvoice(res.userKey, req.params.start, req.params.end)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/api/v1/warehouse/supplier/invoice/${req.params.start}/${
+                req.params.end
+              }`,
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};

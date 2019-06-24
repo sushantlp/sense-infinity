@@ -1802,6 +1802,7 @@ module.exports.logicStoreSupplierInvoice = async (id, code, invoices) => {
 const storeSupplierInvoice = async (storeRecord, invoices) => {
   try {
     return invoices.map(async (invoice, index) => {
+      console.log(invoice.status);
       const reform = shareController.reformSupplierInvoiceRecord(
         invoice.supplier_name,
         invoice.address_one,

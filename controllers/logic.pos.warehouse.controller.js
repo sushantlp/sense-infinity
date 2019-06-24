@@ -55,6 +55,7 @@ const warehouseSupplierInvoiceModel = require("../models/warehouse_supplier_invo
 const warehouseSupplierInvoiceProductModel = require("../models/warehouse_supplier_invoice_product");
 const storeSupplierDetailModel = require("../models/store_supplier_detail");
 const storeSupplierInvoiceModel = require("../models/store_supplier_invoice");
+const storeSupplierInvoiceProductModel = require("../models/store_supplier_invoice_product");
 
 // Logic Get Warehouse Static Data
 module.exports.logicWarehouseStaticData = async (version, id) => {
@@ -2468,18 +2469,7 @@ module.exports.logicStoreSupplierDetail = async id => {
 // Logic Change Track Status Store Supplier Detail
 module.exports.logicChangeSupplierDetail = async (id, start, end) => {
   try {
-    // Call User Partner Data
-    const partnerRecord = await shareController.userPartnerData(id);
-
-    if (partnerRecord.length === 0)
-      return {
-        success: false,
-        data: [],
-        msg: "Unknown partner"
-      };
-
     storeSupplierDetailModel.changeTrackStatusSupplierDetail(0, start, end);
-
     return {
       success: true,
       data: [],
@@ -2506,9 +2496,9 @@ module.exports.logicGetStoreSupplierInvoice = async id => {
     const invoice = await getStoreSupplierInvoice(partnerRecord);
 
     return {
-      success: true,
-      data: invoice,
-      msg: "Succesful"
+      success: invoice.success,
+      data: invoice.data,
+      msg: invoice.msg
     };
   } catch (error) {
     return Promise.reject(error);
@@ -2527,21 +2517,21 @@ const getStoreSupplierInvoice = async partnerRecord => {
 
     const bunch = await createSupplierInvoiceJson(invoices);
 
-    // if (invoices.length === 0)
-    //   return {
-    //     success: true,
-    //     data: {},
-    //     msg: "Succesful"
-    //   };
-    // return {
-    //   success: true,
-    //   data: {
-    //     store_supplier_invoice: invoices,
-    //     start_id: invoices[0].unique_key,
-    //     last_id: invoices[invoices.length - 1].unique_key
-    //   },
-    //   msg: "Succesful"
-    // };
+    if (bunch.length === 0)
+      return {
+        success: true,
+        data: {},
+        msg: "Succesful"
+      };
+    return {
+      success: true,
+      data: {
+        store_supplier_invoice: bunch,
+        start_id: bunch[0].key_id,
+        last_id: bunch[bunch.length - 1].key_id
+      },
+      msg: "Succesful"
+    };
   } catch (error) {
     return Promise.reject(error);
   }
@@ -2593,10 +2583,33 @@ const createSupplierInvoiceJson = async invoices => {
       obj.invoice_s_note = invoice.s_note === "NULL" ? "" : invoice.s_note;
       obj.user_key = invoice.warehouse_user_id;
       obj.status = invoice.status;
+
+      const invoiceProduct = await storeSupplierInvoiceProductModel.readStoreSupplierInvoiceProduct(
+        "product_code, product_type, product_name, hsn_code, mrp, quantity, free_quantity, rate, unit_value, unit, pri_sch, sec_sch, spl_disc, cgst, sgst, igst, margin, total_amount",
+        invoice.id,
+        1
+      );
+
+      if (invoiceProduct.length === 0) obj.invoice_product = [];
+      obj.invoice_product = invoiceProduct;
       return obj;
     });
 
     return await Promise.all(bunch);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Change Track Status Store Supplier Invoice
+module.exports.logicChangeSupplierInvoice = async (id, start, end) => {
+  try {
+    storeSupplierInvoiceModel.changeTrackStatusSupplierInvoice(0, start, end);
+    return {
+      success: true,
+      data: [],
+      msg: "Succesful"
+    };
   } catch (error) {
     return Promise.reject(error);
   }

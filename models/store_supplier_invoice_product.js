@@ -62,7 +62,7 @@ module.exports.readStoreSupplierInvoiceProduct = async (
     const connection = await pool.getConnection();
 
     // Query
-    const query = `SELECT ${select} FROM store_supplier_invoice_products WHERE supplier_invoice_id = ? AND invoice_number = ? AND status = ?`;
+    const query = `SELECT ${select} FROM store_supplier_invoice_products WHERE supplier_invoice_id = ? AND status = ?`;
 
     // Query Database
     const [rows, fields] = await connection.query(query, [invoiceId, status]);
