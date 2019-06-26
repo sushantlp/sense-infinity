@@ -1,27 +1,27 @@
-'use strict';
+"use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('coupon_syncs', {
+    return queryInterface.createTable("coupon_syncs", {
       coupon_sync_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER.UNSIGNED
       },
       partner_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'partners',
-          key: 'partner_id'
+          model: "partners",
+          key: "partner_id"
         }
       },
       store_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'partner_stores',
-          key: 'store_id'
+          model: "partner_stores",
+          key: "store_id"
         }
       },
       coupon_start_id: {
@@ -32,7 +32,8 @@ module.exports = {
         type: Sequelize.INTEGER,
         defaultValue: 0
       },
-      sync_status: { // 1 means done and 0 means pending 
+      sync_status: {
+        // 1 means done and 0 means pending
         type: Sequelize.BOOLEAN,
         defaultValue: 0
       },
@@ -53,6 +54,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('coupon_syncs');
+    return queryInterface.dropTable("coupon_syncs");
   }
 };

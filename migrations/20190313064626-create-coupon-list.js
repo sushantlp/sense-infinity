@@ -1,19 +1,24 @@
-'use strict';
+"use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('coupon_lists', {
+    return queryInterface.createTable("coupon_lists", {
       coupon_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER.UNSIGNED
       },
-      coupon_code: { // (p(3) + c(2) + y(2) + s(3) + 8)
+      coupon_code: {
+        // (p(3) + c(2) + y(2) + s(3) + 8)
         type: Sequelize.BIGINT,
         allowNull: false
       },
-      expiry: {
-        type: Sequelize.DATE,
+      expiry_date: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      expiry_time: {
+        type: Sequelize.STRING,
         allowNull: false
       },
       status: {
@@ -33,6 +38,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('coupon_lists');
+    return queryInterface.dropTable("coupon_lists");
   }
 };

@@ -1985,3 +1985,257 @@ const storeSupplierInvoiceProduct = async (key, products) => {
     return Promise.reject(error);
   }
 };
+
+// Logic Get Store Specific Coupon Detail
+module.exports.logicGetStoreCoupon = async (id, code) => {
+  try {
+    // Call User Partner Data
+    const partnerRecord = await shareController.userPartnerData(id);
+
+    if (partnerRecord.length === 0)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown partner"
+      };
+
+    // Read Partner Store Record By Store Code
+    let storeRecord = await partnerStoreModel.readStoreByCode(
+      "store_id",
+      code,
+      partnerRecord[0].partner_id,
+      1
+    );
+
+    // Parse
+    storeRecord = JSON.stringify(storeRecord);
+    storeRecord = JSON.parse(storeRecord);
+
+    const object = [
+      {
+        store_coupon_type_id: 1,
+        store_coupon_type_name: "Bill Level Discount",
+        store_coupon_sub_type_id: 1,
+        store_coupon_sub_type_name: "Cash",
+        store_coupon_code: parseInt("001021900112345678", 10),
+        store_coupon_expiry_date: "2019-06-25",
+        store_coupon_expiry_time: "17:00",
+        bill_json: {
+          coupon_minimum_amount: 2000,
+          coupon_maximum_amount: 3000,
+          coupon_value: 1111
+        },
+        product_json: {},
+        category_json: {},
+        combo_json: {},
+        status: 1
+      },
+      {
+        store_coupon_type_id: 1,
+        store_coupon_type_name: "Bill Level Discount",
+        store_coupon_sub_type_id: 2,
+        store_coupon_sub_type_name: "Cashback",
+        store_coupon_code: parseInt("001021900112345679", 10),
+        store_coupon_expiry_date: "2019-06-26",
+        store_coupon_expiry_time: "17:00",
+        bill_json: {
+          coupon_minimum_amount: 1000,
+          coupon_maximum_amount: 4500,
+          coupon_value: 500
+        },
+        product_json: {},
+        category_json: {},
+        combo_json: {},
+        status: 1
+      },
+      {
+        store_coupon_type_id: 1,
+        store_coupon_type_name: "Bill Level Discount",
+        store_coupon_sub_type_id: 3,
+        store_coupon_sub_type_name: "Complementary Product",
+        store_coupon_code: parseInt("001021900112345619", 10),
+        store_coupon_expiry_date: "2019-06-27",
+        store_coupon_expiry_time: "20:00",
+        bill_json: {
+          coupon_minimum_amount: 1000,
+          coupon_maximum_amount: 6000,
+          coupon_value: 205000003645179
+        },
+        product_json: {},
+        category_json: {},
+        combo_json: {},
+        status: 1
+      },
+      {
+        store_coupon_type_id: 2,
+        store_coupon_type_name: "Product Level Discount",
+        store_coupon_sub_type_id: 4,
+        store_coupon_sub_type_name: "Cash Discount On Product",
+        store_coupon_code: parseInt("001021900112345629", 10),
+        store_coupon_expiry_date: "2019-06-28",
+        store_coupon_expiry_time: "20:00",
+        bill_json: {},
+        product_json: {
+          barcode: 914141535142018,
+          buy_quantity: 1,
+          coupon_value: 200,
+          free_quantity: 0
+        },
+        category_json: {},
+        combo_json: {},
+        status: 1
+      },
+      {
+        store_coupon_type_id: 2,
+        store_coupon_type_name: "Product Level Discount",
+        store_coupon_sub_type_id: 5,
+        store_coupon_sub_type_name: "Cashback On Product",
+        store_coupon_code: parseInt("001021900112345639", 10),
+        store_coupon_expiry_date: "2019-06-28",
+        store_coupon_expiry_time: "20:00",
+        bill_json: {},
+        product_json: {
+          barcode: 50164561123051,
+          buy_quantity: 2,
+          coupon_value: 500,
+          free_quantity: 0
+        },
+        category_json: {},
+        combo_json: {},
+        status: 1
+      },
+      {
+        store_coupon_type_id: 2,
+        store_coupon_type_name: "Product Level Discount",
+        store_coupon_sub_type_id: 6,
+        store_coupon_sub_type_name: "Complementary On Product",
+        store_coupon_code: parseInt("001021900112345649", 10),
+        store_coupon_expiry_date: "2019-06-29",
+        store_coupon_expiry_time: "10:00",
+        bill_json: {},
+        product_json: {
+          barcode: 89060064390477,
+          buy_quantity: 2,
+          coupon_value: 36073440618710,
+          free_quantity: 4
+        },
+        category_json: {},
+        combo_json: {},
+        status: 1
+      },
+      {
+        store_coupon_type_id: 2,
+        store_coupon_type_name: "Product Level Discount",
+        store_coupon_sub_type_id: 7,
+        store_coupon_sub_type_name: "Cash Discount On Category",
+        store_coupon_code: parseInt("001021900112345659", 10),
+        store_coupon_expiry_date: "2019-06-27",
+        store_coupon_expiry_time: "12:00",
+        bill_json: {},
+        product_json: {},
+        category_json: {
+          category_id: 1,
+          sub_category_id: 1,
+          sub_sub_category_id: 1,
+          buy_quantity: 2,
+          coupon_value: 20,
+          free_quantity: 0
+        },
+        combo_json: {},
+        status: 1
+      },
+      {
+        store_coupon_type_id: 2,
+        store_coupon_type_name: "Product Level Discount",
+        store_coupon_sub_type_id: 8,
+        store_coupon_sub_type_name: "Cashback On Category",
+        store_coupon_code: parseInt("001021900112345669", 10),
+        store_coupon_expiry_date: "2019-06-21",
+        store_coupon_expiry_time: "12:00",
+        bill_json: {},
+        product_json: {},
+        category_json: {
+          category_id: 1,
+          sub_category_id: 1,
+          sub_sub_category_id: 1,
+          buy_quantity: 2,
+          coupon_value: 50,
+          free_quantity: 4
+        },
+        combo_json: {},
+        status: 1
+      },
+      {
+        store_coupon_type_id: 2,
+        store_coupon_type_name: "Product Level Discount",
+        store_coupon_sub_type_id: 9,
+        store_coupon_sub_type_name: "Complementary On Category",
+        store_coupon_code: parseInt("001021900112345679", 10),
+        store_coupon_expiry_date: "2019-06-21",
+        store_coupon_expiry_time: "12:00",
+        bill_json: {},
+        product_json: {},
+        category_json: {
+          category_id: 1,
+          sub_category_id: 1,
+          sub_sub_category_id: 1,
+          buy_quantity: 2,
+          coupon_value: 89060064390477,
+          free_quantity: 3
+        },
+        combo_json: {},
+        status: 1
+      },
+      {
+        store_coupon_type_id: 2,
+        store_coupon_type_name: "Product Level Discount",
+        store_coupon_sub_type_id: 10,
+        store_coupon_sub_type_name: "Product Combo",
+        store_coupon_code: parseInt("001021900112345689", 10),
+        store_coupon_expiry_date: "2019-06-30",
+        store_coupon_expiry_time: "22:00",
+        bill_json: {},
+        product_json: {},
+        category_json: {},
+        combo_json: {
+          buy_product: [
+            {
+              buy_barcode: 9556085302771,
+              buy_quantity: 2
+            },
+            {
+              buy_barcode: 9556085318321,
+              buy_quantity: 1
+            },
+            {
+              buy_barcode: 9556085319328,
+              buy_quantity: 3
+            }
+          ],
+          free_product: [
+            {
+              free_barcode: 9556023442293,
+              free_quantity: 1
+            },
+            {
+              free_barcode: 9556006060513,
+              free_quantity: 5
+            }
+          ]
+        },
+        status: 1
+      }
+    ];
+
+    return {
+      success: true,
+      data: {
+        store_coupon: object,
+        sync_id: 1
+      },
+      msg: "Succesful"
+    };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

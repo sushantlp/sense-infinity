@@ -2513,7 +2513,12 @@ const getStoreSupplierInvoice = async partnerRecord => {
       1
     );
 
-    if (invoices.length === 0) return {};
+    if (invoices.length === 0)
+      return {
+        success: true,
+        data: {},
+        msg: "Succesful"
+      };
 
     const bunch = await createSupplierInvoiceJson(invoices);
 

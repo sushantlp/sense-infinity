@@ -147,4 +147,11 @@ routes.post(
   PosStoreApiController.requestSupplierInvoice
 );
 
+// Get Coupon Record
+routes.get(
+  "/coupons/:storeCode([0-9]+)",
+  apiKeyAuth,
+  PosStoreApiController.requestStoreCoupon
+);
+
 module.exports = routes;

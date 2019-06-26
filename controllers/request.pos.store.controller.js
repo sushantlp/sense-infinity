@@ -644,3 +644,34 @@ module.exports.requestSupplierInvoice = (req, res) => {
       });
   } else return res.status(400).send("Not a good api call");
 };
+
+// Request Get Store Specific Coupon Detail
+module.exports.requestStoreCoupon = (req, res) => {
+  if (
+    res.userKey !== undefined &&
+    res.userKey !== "" &&
+    req.params.hasOwnProperty("storeCode")
+  ) {
+    // Logic Get Store Specific Coupon Detail
+    return posStoreController
+      .logicGetStoreCoupon(res.userKey, req.params.storeCode)
+      .then(response => {
+        return res
+          .status(200)
+          .send(
+            shareController.createJsonObject(
+              response.data,
+              response.msg,
+              `/api/v1/stores/coupons/${req.params.storeCode}`,
+              200,
+              response.success,
+              {}
+            )
+          );
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send("Oops our bad!!!");
+      });
+  } else return res.status(400).send("Not a good api call");
+};
