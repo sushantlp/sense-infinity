@@ -2160,7 +2160,7 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
           sub_sub_category_id: 1,
           buy_quantity: 2,
           coupon_value: 50,
-          free_quantity: 4
+          free_quantity: 0
         },
         combo_json: {},
         status: 1

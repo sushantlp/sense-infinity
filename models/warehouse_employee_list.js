@@ -1,45 +1,51 @@
-'use strict';
+"use strict";
 
 // Import Package
 const moment = require("moment-timezone");
 
 // Import Config
-const constants = require('../config/constants');
+const constants = require("../config/constants");
 
 module.exports = (sequelize, DataTypes) => {
-  var warehouseEmployeeList = sequelize.define('warehouse_employee_list', {
-    warehouse_employe_id: DataTypes.BIGINT,
-    first_name: DataTypes.STRING,
-    last_name: DataTypes.STRING,
-    birth_date: DataTypes.STRING,
-    mobile: DataTypes.STRING,
-    email: DataTypes.STRING,
-    dept_name: DataTypes.STRING,
-    gender_id: DataTypes.INTEGER,
-    store_id: DataTypes.INTEGER,
-    status: DataTypes.BOOLEAN
-  }, {});
+  var warehouseEmployeeList = sequelize.define(
+    "warehouse_employee_list",
+    {
+      warehouse_employe_id: DataTypes.BIGINT,
+      first_name: DataTypes.STRING,
+      last_name: DataTypes.STRING,
+      birth_date: DataTypes.STRING,
+      mobile: DataTypes.STRING,
+      email: DataTypes.STRING,
+      dept_name: DataTypes.STRING,
+      gender_id: DataTypes.INTEGER,
+      store_id: DataTypes.INTEGER,
+      status: DataTypes.BOOLEAN
+    },
+    {}
+  );
   warehouseEmployeeList.associate = function(models) {
     // associations can be defined here
   };
   return warehouseEmployeeList;
 };
 
-
 // Current Date and Time
 const now = moment()
   .tz("Asia/Kolkata")
   .format("YYYY-MM-DD HH-m-ss");
-
 
 /**
  * Start Database Read and Write
  */
 
 // Read Warehouse Employee By Employee Id
-module.exports.readEmployeeByEmployeeId = async(select, employeeId, storeId, status) => {
+module.exports.readEmployeeByEmployeeId = async (
+  select,
+  employeeId,
+  storeId,
+  status
+) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -50,7 +56,11 @@ module.exports.readEmployeeByEmployeeId = async(select, employeeId, storeId, sta
     const query = `SELECT ${select} FROM warehouse_employee_lists WHERE warehouse_employe_id = ? AND store_id = ? AND status = ? LIMIT 1`;
 
     // Query Database
-    const [rows, fields] = await connection.query(query, [employeeId, storeId, status]);
+    const [rows, fields] = await connection.query(query, [
+      employeeId,
+      storeId,
+      status
+    ]);
 
     connection.release();
 
@@ -61,9 +71,8 @@ module.exports.readEmployeeByEmployeeId = async(select, employeeId, storeId, sta
 };
 
 // Read Warehouse Employee By Id
-module.exports.readEmployeeById = async(select, Id, status) => {
+module.exports.readEmployeeById = async (select, Id, status) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
@@ -85,7 +94,7 @@ module.exports.readEmployeeById = async(select, Id, status) => {
 };
 
 // Keep Warehouse Employee Data
-module.exports.keepEmployeeData = async(
+module.exports.keepEmployeeData = async (
   employeId,
   firstName,
   lastName,
@@ -98,13 +107,13 @@ module.exports.keepEmployeeData = async(
   status
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
     // Create Connection
     const connection = await pool.getConnection();
 
+    if (birthDate === "Invalid date") birthDate = undefined;
     if (firstName === undefined) firstName = connection.escape(firstName);
     if (lastName === undefined) lastName = connection.escape(lastName);
     if (email === undefined) email = connection.escape(email);
@@ -140,7 +149,7 @@ module.exports.keepEmployeeData = async(
 };
 
 // Update Warehouse Employee Data
-module.exports.updateEmployeeData = async(
+module.exports.updateEmployeeData = async (
   firstName,
   lastName,
   birthDate,
@@ -149,16 +158,17 @@ module.exports.updateEmployeeData = async(
   deptName,
   genderId,
   storeId,
-  status, id
+  status,
+  id
 ) => {
   try {
-
     // Get Pool Object
     const pool = constants.createMysqlConnection();
 
     // Create Connection
     const connection = await pool.getConnection();
 
+    if (birthDate === "Invalid date") birthDate = undefined;
     if (firstName === undefined) firstName = connection.escape(firstName);
     if (lastName === undefined) lastName = connection.escape(lastName);
     if (email === undefined) email = connection.escape(email);
@@ -191,7 +201,6 @@ module.exports.updateEmployeeData = async(
     return Promise.reject(error);
   }
 };
-
 
 /**
  * End Database Read and Write

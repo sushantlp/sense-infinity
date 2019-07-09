@@ -1689,12 +1689,12 @@ const readInvoices = async partnerRecord => {
   try {
     let parallel = await Promise.all([
       invoiceModel.readInvoiceByPartner(
-        "invoices.id, invoices.invoice_no, invoices.store_counter_id, invoices.warehouse_user_id, partner_stores.store_id, CASE WHEN invoices.customer_name <> 'NULL' THEN invoices.customer_name ELSE '' END AS customer_name, invoices.customer_mobile, invoices.membership_code, invoices.total_amount, invoices.invoice_cashback, invoices.invoice_total_saving, invoices.invoice_loyalty_used, invoices.invoice_sodexo_amount, invoices.invoice_total_amount, CASE WHEN invoices.gstin_name <> 'NULL' THEN invoices.gstin_name ELSE '' END AS gstin_name, CASE WHEN invoices.gstin_number <> 'NULL' THEN invoices.gstin_number ELSE '' END AS gstin_number, invoices.invoice_created_date, invoices.invoice_updated_date, invoices.home_delivery,invoices.round_off_amount, invoices.return_status, invoices.status",
+        "invoices.id, invoices.invoice_no, invoices.store_counter_id, invoices.warehouse_user_id, partner_stores.store_code, CASE WHEN invoices.customer_name <> 'NULL' THEN invoices.customer_name ELSE '' END AS customer_name, invoices.customer_mobile, invoices.membership_code, invoices.total_amount, invoices.invoice_cashback, invoices.invoice_total_saving, invoices.invoice_loyalty_used, invoices.invoice_sodexo_amount, invoices.invoice_total_amount, CASE WHEN invoices.gstin_name <> 'NULL' THEN invoices.gstin_name ELSE '' END AS gstin_name, CASE WHEN invoices.gstin_number <> 'NULL' THEN invoices.gstin_number ELSE '' END AS gstin_number, invoices.invoice_created_date, invoices.invoice_updated_date, invoices.home_delivery,invoices.round_off_amount, invoices.return_status, invoices.status",
         partnerRecord[0].partner_id,
         1
       ),
       returnInvoiceModel.readReturnInvoiceByPartner(
-        "return_invoices.invoice_no AS invoice_number, return_invoices.new_invoice_no AS new_invoice_number, CASE WHEN return_invoices.reason <> 'NULL' THEN return_invoices.reason ELSE '' END AS return_invoices, return_invoices.warehouse_user_id AS user_key, partner_stores.store_id",
+        "return_invoices.invoice_no AS invoice_number, return_invoices.new_invoice_no AS new_invoice_number, CASE WHEN return_invoices.reason <> 'NULL' THEN return_invoices.reason ELSE '' END AS return_invoices, return_invoices.warehouse_user_id AS user_key, partner_stores.store_code AS store_id",
         partnerRecord[0].partner_id,
         1
       )
@@ -1787,7 +1787,7 @@ const createInvoiceJson = async invoiceJson => {
       obj.invoice_number = invoice.invoice_no;
       obj.counter_key = invoice.store_counter_id;
       obj.user_key = invoice.warehouse_user_id;
-      obj.branch_key = invoice.store_id;
+      obj.branch_key = invoice.store_code;
       obj.customer_name = invoice.customer_name;
       obj.customer_mobile = invoice.customer_mobile;
       obj.membership_code = invoice.membership_code;
@@ -1981,12 +1981,12 @@ const getStoreStock = async partnerRecord => {
 
       if (store.length === 0) stop = false;
       else if (store.length < upperLimit) {
-        stock.push(store);
+        Array.prototype.push.apply(stock, store);
         stop = false;
-      } else stock.push(store);
+      } else Array.prototype.push.apply(stock, store);
     }
 
-    if (!stop) return stock.length >= 1 ? stock[0] : stock;
+    if (!stop) return stock;
   } catch (error) {
     return Promise.reject(error);
   }
