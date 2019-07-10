@@ -1,19 +1,18 @@
-'use strict';
+"use strict";
 
 // Import Controller
-const shareController = require('./share.controller');
+const shareController = require("./share.controller");
 
 // Import Model
-const smsModel = require('../models/sms');
-const errorModel = require('../models/error_log');
-const userModel = require('../models/user');
-const partnerModel = require('../models/partner');
-const storeModel = require('../models/partner_store');
+const smsModel = require("../models/sms");
+const errorModel = require("../models/error_log");
+const userModel = require("../models/user");
+const partnerModel = require("../models/partner");
+const storeModel = require("../models/partner_store");
 
 // Request Merchant Signup
 module.exports.requestAppSignup = (req, res) => {
-  if (req.query.mobile !== undefined && req.query.mobile !== '') {
-
+  if (req.query.mobile !== undefined && req.query.mobile !== "") {
     // Logic App Signup
     return logicAppSignup(req.query.mobile)
       .then(response => {
@@ -28,7 +27,7 @@ module.exports.requestAppSignup = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              '/api/v1/merchant/signup',
+              "/api/v1/merchant/signup",
               200,
               response.success,
               metadata
@@ -36,10 +35,10 @@ module.exports.requestAppSignup = (req, res) => {
           );
       })
       .catch(error => {
-        return res.status(500).send('Oops our bad!!!');
+        return res.status(500).send("Oops our bad!!!");
       });
   } else {
-    return res.status(400).send('Not a good api call');
+    return res.status(400).send("Not a good api call");
   }
 };
 
@@ -47,13 +46,12 @@ module.exports.requestAppSignup = (req, res) => {
 module.exports.requestOtpVerify = (req, res) => {
   if (
     req.query.mobile !== undefined &&
-    req.query.mobile !== '' &&
+    req.query.mobile !== "" &&
     req.query.otp !== undefined &&
-    req.query.otp !== '' &&
+    req.query.otp !== "" &&
     req.query.password !== undefined &&
-    req.query.password !== ''
+    req.query.password !== ""
   ) {
-
     // Logic Otp Verify
     return logicOtpVerify(req.query.mobile, req.query.otp, req.query.password)
       .then(response => {
@@ -67,7 +65,7 @@ module.exports.requestOtpVerify = (req, res) => {
             shareController.createJsonObject(
               response.data,
               response.msg,
-              '/api/v1/otp/verify',
+              "/api/v1/otp/verify",
               200,
               response.success,
               metadata
@@ -76,54 +74,63 @@ module.exports.requestOtpVerify = (req, res) => {
       })
       .catch(error => {
         console.log(error);
-        return res.status(500).send('Oops our bad!!!');
+        return res.status(500).send("Oops our bad!!!");
       });
   } else {
-    return res.status(400).send('Not a good api call');
+    return res.status(400).send("Not a good api call");
   }
 };
 
 // Request Refresh Token
-module.exports.requestRefreshToken = async(req, res) => {
-  if (req.headers['authorization'] !== undefined && req.headers['authorization'] !== '') {
+module.exports.requestRefreshToken = async (req, res) => {
+  if (
+    req.headers["authorization"] !== undefined &&
+    req.headers["authorization"] !== ""
+  ) {
     // Refresh JWT Token
-    const token = shareController.refreshToken(req.headers['authorization']);
-    return res
-      .status(200)
-      .send(shareController.createJsonObject({
-        token: token
-      }, 'Successful', '/refresh/token', 200, true, null));
+    const token = shareController.refreshToken(req.headers["authorization"]);
+    return res.status(200).send(
+      shareController.createJsonObject(
+        {
+          token: token
+        },
+        "Successful",
+        "/refresh/token",
+        200,
+        true,
+        null
+      )
+    );
   } else {
-    return res.status(400).send('Not a good api call');
+    return res.status(400).send("Not a good api call");
   }
 };
 
 // Logic App Signup
 const logicAppSignup = async mobile => {
   try {
-
-
     // Read Partner Record
-    const merchant = await partnerModel.readPartnerByMobile('*', mobile, 1);
+    const merchant = await partnerModel.readPartnerByMobile("*", mobile, 1);
 
     // Check Sms Limit Per Day
-    if (merchant.length < 1) return {
-      success: false,
-      data: [],
-      msg: 'Unknown merchant'
-    };
-
+    if (merchant.length < 1)
+      return {
+        success: false,
+        data: [],
+        msg: "Unknown merchant"
+      };
 
     // Read Daily Sms Limit
-    const limit = await smsModel.dailySmsLimit('*', mobile);
+    const limit = await smsModel.dailySmsLimit("*", mobile);
 
     // Check Sms Limit Per Day
-    if (limit.length > 3) return {
-      success: false,
-      data: [],
-      msg: 'You have exceeded your OTP request limit, please try again 24 hour'
-    };
-
+    if (limit.length > 3)
+      return {
+        success: false,
+        data: [],
+        msg:
+          "You have exceeded your OTP request limit, please try again 24 hour"
+      };
 
     // Generate OTP
     const random = shareController.generateRandomNumber(4);
@@ -137,7 +144,7 @@ const logicAppSignup = async mobile => {
     return {
       success: true,
       data: [],
-      msg: 'Otp send respective user mobile number'
+      msg: "Otp send respective user mobile number"
     };
   } catch (error) {
     console.log(error);
@@ -146,27 +153,32 @@ const logicAppSignup = async mobile => {
 };
 
 // Logic Otp Verify
-const logicOtpVerify = async(mobile, otp, password) => {
+const logicOtpVerify = async (mobile, otp, password) => {
   try {
-
-
     // Validate Password
-    const passwordValidate = shareController.passwordAlgorthim(mobile, password);
+    const passwordValidate = shareController.passwordAlgorthim(
+      mobile,
+      password
+    );
     if (!passwordValidate.success) return passwordValidate;
-
 
     // Parallel Read User Table Record And Validate Otp
     const parallel = await Promise.all([
       shareController.validateOtp(mobile, otp),
-      userModel.readUserRecord('user_id, name, mobile, email, password', mobile, 1, 1),
-      partnerModel.readPartnerByMobile('*', mobile, 1)
+      userModel.readUserRecord(
+        "user_id, name, mobile, email, password",
+        mobile,
+        1,
+        1
+      ),
+      partnerModel.readPartnerByMobile("*", mobile, 1)
     ]);
 
     if (parallel.length > 0) {
       if (!parallel[0].success) return parallel[0];
 
       const merchantStore = await storeModel.readStoreRecord(
-        'store_id AS store_unique, store_name AS name',
+        "store_id AS store_unique, store_name AS name",
         parallel[2][0].partner_id,
         1
       );
@@ -183,10 +195,10 @@ const logicOtpVerify = async(mobile, otp, password) => {
           token: token,
           store: merchantStore
         },
-        msg: 'Successful'
+        msg: "Successful"
       };
     } else {
-      return Promise.reject('Oops our bad!!!');
+      return Promise.reject("Oops our bad!!!");
     }
   } catch (error) {
     console.log(error);

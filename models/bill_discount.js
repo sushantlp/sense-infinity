@@ -51,7 +51,7 @@ module.exports.readBillDiscount = async (select, storeId, trackStatus) => {
     const connection = await pool.getConnection();
 
     // Query
-    const query = `SELECT ${select} FROM bill_discounts WHERE store_id = ? AND track_status = ?`;
+    const query = `SELECT ${select} FROM bill_discounts LEFT JOIN partner_stores ON bill_discounts.store_id = partner_stores.store_id WHERE bill_discounts.store_id = ? AND bill_discounts.track_status = ?`;
 
     // Query Database
     const [rows, fields] = await connection.query(query, [

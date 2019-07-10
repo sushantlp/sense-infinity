@@ -488,7 +488,7 @@ const readDiscount = async (partnerRecord, storeRecord) => {
   try {
     const parallel = await Promise.all([
       billDiscountModel.readBillDiscount(
-        "id AS key_id, discount_base_id AS discount_base_key, store_id AS branch_id, name AS discount_name, start_date, end_date, start_time, end_time, min_amount AS minimum_amount, max_discount_amount AS Maximum_amount, bill_offer_value AS value, status",
+        "bill_discounts.bill_discount_id AS key_id, bill_discounts.discount_base_id AS discount_base_key, partner_stores.store_code AS branch_id, bill_discounts.name AS discount_name, bill_discounts.start_date, bill_discounts.end_date, bill_discounts.start_time, bill_discounts.end_time, bill_discounts.min_amount AS minimum_amount, bill_discounts.max_discount_amount AS Maximum_amount, bill_discounts.bill_offer_value AS value, bill_discounts.status",
         storeRecord[0].store_id,
         1
       ),
@@ -519,7 +519,7 @@ const readDiscount = async (partnerRecord, storeRecord) => {
 
     if (id.length !== 0) {
       discountRecord = await productDiscountModel.readProductDiscountArray(
-        "id, discount_base_id, name, start_date, end_date, start_time, end_time, status",
+        "id, product_discount_id, discount_base_id, name, start_date, end_date, start_time, end_time, status",
         marks,
         id
       );
@@ -600,7 +600,8 @@ const createDiscountJson = async json => {
       )
       .map(async (discount, index) => {
         let obj = {};
-        obj.key_id = discount.id;
+        obj.key_id = discount.product_discount_id;
+        obj.product_discount_id = discount.product_discount_id;
         obj.discount_base_key = discount.discount_base_id;
         obj.discount_name = discount.name;
         obj.start_date = discount.start_date;
@@ -1802,7 +1803,6 @@ module.exports.logicStoreSupplierInvoice = async (id, code, invoices) => {
 const storeSupplierInvoice = async (storeRecord, invoices) => {
   try {
     return invoices.map(async (invoice, index) => {
-      console.log(invoice.status);
       const reform = shareController.reformSupplierInvoiceRecord(
         invoice.supplier_name,
         invoice.address_one,
@@ -2017,7 +2017,7 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Bill Level Discount",
         store_coupon_sub_type_id: 1,
         store_coupon_sub_type_name: "Cash",
-        store_coupon_code: parseInt("001021900112345678", 10),
+        store_coupon_code: "100021900112345689",
         store_coupon_expiry_date: "2019-06-25",
         store_coupon_expiry_time: "17:00",
         bill_json: {
@@ -2035,7 +2035,7 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Bill Level Discount",
         store_coupon_sub_type_id: 2,
         store_coupon_sub_type_name: "Cashback",
-        store_coupon_code: parseInt("001021900112345679", 10),
+        store_coupon_code: "100021900122345689",
         store_coupon_expiry_date: "2019-06-26",
         store_coupon_expiry_time: "17:00",
         bill_json: {
@@ -2053,7 +2053,7 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Bill Level Discount",
         store_coupon_sub_type_id: 3,
         store_coupon_sub_type_name: "Complementary Product",
-        store_coupon_code: parseInt("001021900112345619", 10),
+        store_coupon_code: "100021900132345689",
         store_coupon_expiry_date: "2019-06-27",
         store_coupon_expiry_time: "20:00",
         bill_json: {
@@ -2071,7 +2071,7 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Product Level Discount",
         store_coupon_sub_type_id: 4,
         store_coupon_sub_type_name: "Cash Discount On Product",
-        store_coupon_code: parseInt("001021900112345629", 10),
+        store_coupon_code: "100021900142345689",
         store_coupon_expiry_date: "2019-06-28",
         store_coupon_expiry_time: "20:00",
         bill_json: {},
@@ -2090,7 +2090,7 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Product Level Discount",
         store_coupon_sub_type_id: 5,
         store_coupon_sub_type_name: "Cashback On Product",
-        store_coupon_code: parseInt("001021900112345639", 10),
+        store_coupon_code: "100021900152345689",
         store_coupon_expiry_date: "2019-06-28",
         store_coupon_expiry_time: "20:00",
         bill_json: {},
@@ -2109,7 +2109,7 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Product Level Discount",
         store_coupon_sub_type_id: 6,
         store_coupon_sub_type_name: "Complementary On Product",
-        store_coupon_code: parseInt("001021900112345649", 10),
+        store_coupon_code: "100021900162345689",
         store_coupon_expiry_date: "2019-06-29",
         store_coupon_expiry_time: "10:00",
         bill_json: {},
@@ -2128,7 +2128,7 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Product Level Discount",
         store_coupon_sub_type_id: 7,
         store_coupon_sub_type_name: "Cash Discount On Category",
-        store_coupon_code: parseInt("001021900112345659", 10),
+        store_coupon_code: "100021900172345689",
         store_coupon_expiry_date: "2019-06-27",
         store_coupon_expiry_time: "12:00",
         bill_json: {},
@@ -2149,7 +2149,7 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Product Level Discount",
         store_coupon_sub_type_id: 8,
         store_coupon_sub_type_name: "Cashback On Category",
-        store_coupon_code: parseInt("001021900112345669", 10),
+        store_coupon_code: "100021900182345689",
         store_coupon_expiry_date: "2019-06-21",
         store_coupon_expiry_time: "12:00",
         bill_json: {},
@@ -2170,7 +2170,7 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Product Level Discount",
         store_coupon_sub_type_id: 9,
         store_coupon_sub_type_name: "Complementary On Category",
-        store_coupon_code: parseInt("001021900112345679", 10),
+        store_coupon_code: "100021900192345689",
         store_coupon_expiry_date: "2019-06-21",
         store_coupon_expiry_time: "12:00",
         bill_json: {},
@@ -2191,7 +2191,7 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Product Level Discount",
         store_coupon_sub_type_id: 10,
         store_coupon_sub_type_name: "Product Combo",
-        store_coupon_code: parseInt("001021900112345689", 10),
+        store_coupon_code: "100021900113345689",
         store_coupon_expiry_date: "2019-06-30",
         store_coupon_expiry_time: "22:00",
         bill_json: {},

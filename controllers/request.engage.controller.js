@@ -15,12 +15,13 @@ module.exports.requestKeepDeviceData = (req, res) => {
     req.body.device !== undefined &&
     req.body.device !== ""
   ) {
-
     // Variable
     let token = undefined;
 
-    if (process.env.NODE_ENV !== "development") token = req.headers["authorization"];
-    else token = req.body.token || req.query.token || req.headers["authorization"];
+    if (process.env.NODE_ENV !== "development")
+      token = req.headers["authorization"];
+    else
+      token = req.body.token || req.query.token || req.headers["authorization"];
 
     // Logic Device Data
     return engageController
@@ -37,7 +38,8 @@ module.exports.requestKeepDeviceData = (req, res) => {
               response.msg,
               "/api/v1/merchant/keep/device",
               200,
-              response.success, {}
+              response.success,
+              {}
             )
           );
       })
@@ -46,7 +48,6 @@ module.exports.requestKeepDeviceData = (req, res) => {
         return res.status(500).send("Oops our bad!!!");
       });
   } else return res.status(400).send("Not a good api call");
-
 };
 
 // Request Sense Infinity Static Data
@@ -55,19 +56,18 @@ module.exports.requestSenseStatic = (req, res) => {
     req.query.static_app_version !== undefined &&
     req.query.static_app_version !== ""
   ) {
-
     // Variable
     let token = undefined;
 
-    if (process.env.NODE_ENV !== "development") token = req.headers["authorization"];
-    else token = req.body.token || req.query.token || req.headers["authorization"];
-
+    if (process.env.NODE_ENV !== "development")
+      token = req.headers["authorization"];
+    else
+      token = req.body.token || req.query.token || req.headers["authorization"];
 
     // Logic Sense Static
     return engageController
       .logicSenseStatic(parseFloat(req.query.static_app_version))
       .then(response => {
-
         // Variable
         let flag = false;
 
@@ -78,7 +78,9 @@ module.exports.requestSenseStatic = (req, res) => {
 
         // Intialize
         const metadata = {
-          static_version: flag ? response.version : req.query.static_app_version,
+          static_version: flag
+            ? response.version
+            : req.query.static_app_version,
           count: Object.keys(response.data).length
         };
 
@@ -100,7 +102,6 @@ module.exports.requestSenseStatic = (req, res) => {
         return res.status(500).send("Oops our bad!!!");
       });
   } else return res.status(400).send("Not a good api call");
-
 };
 
 // Request Keep Merchant Store Specific Complain
@@ -113,13 +114,13 @@ module.exports.requestKeepStoreComplain = (req, res) => {
     req.body.complain !== undefined &&
     req.body.complain !== ""
   ) {
-
     // Variable
     let token = undefined;
 
-    if (process.env.NODE_ENV !== "development") token = req.headers["authorization"];
-    else token = req.body.token || req.query.token || req.headers["authorization"];
-
+    if (process.env.NODE_ENV !== "development")
+      token = req.headers["authorization"];
+    else
+      token = req.body.token || req.query.token || req.headers["authorization"];
 
     // Validate Customer Detail
     const validate = validateController.validateCustomerDetail(
@@ -131,7 +132,11 @@ module.exports.requestKeepStoreComplain = (req, res) => {
 
     // Request Logic Keep Complain
     return engageController
-      .requestLogicKeepComplain(req.body.complain, req.query.mobile, req.query.store_id)
+      .requestLogicKeepComplain(
+        req.body.complain,
+        req.query.mobile,
+        req.query.store_id
+      )
       .then(response => {
         // Jwt Token Pass in Header
         res.header("token", token);
@@ -144,7 +149,8 @@ module.exports.requestKeepStoreComplain = (req, res) => {
               response.msg,
               "/api/v1/merchant/keep/complain",
               200,
-              response.success, {}
+              response.success,
+              {}
             )
           );
       })
@@ -153,7 +159,6 @@ module.exports.requestKeepStoreComplain = (req, res) => {
         return res.status(500).send("Oops our bad!!!");
       });
   } else return res.status(400).send("Not a good api call");
-
 };
 
 // Request Keep Merchant Specific Customer Detail
@@ -166,20 +171,28 @@ module.exports.requestKeepCustomerDetail = (req, res) => {
     req.body.customer !== undefined &&
     req.body.customer !== ""
   ) {
-
     // Variable
     let token = undefined;
 
-    if (process.env.NODE_ENV !== "development") token = req.headers["authorization"];
-    else token = req.body.token || req.query.token || req.headers["authorization"];
+    if (process.env.NODE_ENV !== "development")
+      token = req.headers["authorization"];
+    else
+      token = req.body.token || req.query.token || req.headers["authorization"];
 
     // Validate Customer Detail
-    const validate = validateController.validateCustomerDetail(req.body.customer, true);
+    const validate = validateController.validateCustomerDetail(
+      req.body.customer,
+      true
+    );
     if (!validate.success) return res.status(400).send(validate.msg);
 
     // Request Logic Keep Customer
     return engageController
-      .requestLogicKeepCustomer(req.body.customer, req.query.mobile, req.query.store_id)
+      .requestLogicKeepCustomer(
+        req.body.customer,
+        req.query.mobile,
+        req.query.store_id
+      )
       .then(response => {
         // Jwt Token Pass In Header
         res.header("token", token);
@@ -192,7 +205,8 @@ module.exports.requestKeepCustomerDetail = (req, res) => {
               response.msg,
               "/api/v1/merchant/keep/customer/detail",
               200,
-              response.success, {}
+              response.success,
+              {}
             )
           );
       })
@@ -201,7 +215,6 @@ module.exports.requestKeepCustomerDetail = (req, res) => {
         return res.status(500).send("Oops our bad!!!");
       });
   } else return res.status(400).send("Not a good api call");
-
 };
 
 // Request Keep Merchant Feedback Survey
@@ -214,12 +227,13 @@ module.exports.requestKeepFeedbackSurvey = (req, res) => {
     req.body.feedback_survey !== undefined &&
     req.body.feedback_survey !== ""
   ) {
-
     // Variable
     let token = undefined;
 
-    if (process.env.NODE_ENV !== "development") token = req.headers["authorization"];
-    else token = req.body.token || req.query.token || req.headers["authorization"];
+    if (process.env.NODE_ENV !== "development")
+      token = req.headers["authorization"];
+    else
+      token = req.body.token || req.query.token || req.headers["authorization"];
 
     // Validate Customer Detail
     const validate1 = validateController.validateCustomerDetail(
@@ -228,13 +242,19 @@ module.exports.requestKeepFeedbackSurvey = (req, res) => {
     );
     if (!validate1.success) return res.status(400).send(validate1.msg);
 
-    // Validate Survey Feedback 
-    const validate2 = validateController.validateSurveyFeedback(req.body.feedback_survey);
+    // Validate Survey Feedback
+    const validate2 = validateController.validateSurveyFeedback(
+      req.body.feedback_survey
+    );
     if (!validate2.success) return res.status(400).send(validate2.msg);
 
     // Request Logic Keep Feedback Survey
     return engageController
-      .requestLogicFeedbackSurvey(req.body.feedback_survey, req.query.mobile, req.query.store_id)
+      .requestLogicFeedbackSurvey(
+        req.body.feedback_survey,
+        req.query.mobile,
+        req.query.store_id
+      )
       .then(response => {
         // Jwt Token Pass in Header
         res.header("token", token);
@@ -247,7 +267,8 @@ module.exports.requestKeepFeedbackSurvey = (req, res) => {
               response.msg,
               "/api/v1/merchant/keep/feedback/survey",
               200,
-              response.success, {}
+              response.success,
+              {}
             )
           );
       })
@@ -256,7 +277,6 @@ module.exports.requestKeepFeedbackSurvey = (req, res) => {
         return res.status(500).send("Oops our bad!!!");
       });
   } else return res.status(400).send("Not a good api call");
-
 };
 
 // Request Feedback Data
@@ -271,18 +291,23 @@ module.exports.requestReadFeedbackData = (req, res) => {
     req.query.merchant_feed_version !== undefined &&
     req.query.merchant_feed_version !== ""
   ) {
-
     // Variable
     let token = undefined;
 
-    if (process.env.NODE_ENV !== "development") token = req.headers["authorization"];
-    else token = req.body.token || req.query.token || req.headers["authorization"];
+    if (process.env.NODE_ENV !== "development")
+      token = req.headers["authorization"];
+    else
+      token = req.body.token || req.query.token || req.headers["authorization"];
 
     // Logic Get Feedback Data
     return engageController
-      .logicGetFeedback(parseFloat(req.query.merchant_feed_version), parseFloat(req.query.sense_feed_version), req.query.mobile, req.query.store_id)
+      .logicGetFeedback(
+        parseFloat(req.query.merchant_feed_version),
+        parseFloat(req.query.sense_feed_version),
+        req.query.mobile,
+        req.query.store_id
+      )
       .then(response => {
-
         // Variable
         let flag = false;
 
@@ -293,9 +318,12 @@ module.exports.requestReadFeedbackData = (req, res) => {
 
         // Intialize
         const metadata = {
-          sense_feedback_version: flag ? response.sense_version : req.query.sense_feed_version,
-          merchant_feedback_version: flag ?
-            response.merchant_version : req.query.merchant_feed_version,
+          sense_feedback_version: flag
+            ? response.sense_version
+            : req.query.sense_feed_version,
+          merchant_feedback_version: flag
+            ? response.merchant_version
+            : req.query.merchant_feed_version,
           count: Object.keys(response.data).length
         };
 
@@ -317,7 +345,6 @@ module.exports.requestReadFeedbackData = (req, res) => {
         return res.status(500).send("Oops our bad!!!");
       });
   } else return res.status(400).send("Not a good api call");
-
 };
 
 // Request Survey Data
@@ -332,18 +359,23 @@ module.exports.requestReadSurveyData = (req, res) => {
     req.query.merchant_survey_version !== undefined &&
     req.query.merchant_survey_version !== ""
   ) {
-
     // Variable
     let token = undefined;
 
-    if (process.env.NODE_ENV !== "development") token = req.headers["authorization"];
-    else token = req.body.token || req.query.token || req.headers["authorization"];
+    if (process.env.NODE_ENV !== "development")
+      token = req.headers["authorization"];
+    else
+      token = req.body.token || req.query.token || req.headers["authorization"];
 
     // Logic Get Survey Data
     return engageController
-      .logicGetSurvey(parseFloat(req.query.merchant_survey_version), parseFloat(req.query.sense_survey_version), req.query.mobile, req.query.store_id)
+      .logicGetSurvey(
+        parseFloat(req.query.merchant_survey_version),
+        parseFloat(req.query.sense_survey_version),
+        req.query.mobile,
+        req.query.store_id
+      )
       .then(response => {
-
         // Variable
         let flag = false;
 
@@ -354,9 +386,12 @@ module.exports.requestReadSurveyData = (req, res) => {
 
         // Intialize
         const metadata = {
-          sense_survey_version: flag ? response.sense_version : req.query.sense_survey_version,
-          merchant_survey_version: flag ?
-            response.merchant_version : req.query.merchant_survey_version,
+          sense_survey_version: flag
+            ? response.sense_version
+            : req.query.sense_survey_version,
+          merchant_survey_version: flag
+            ? response.merchant_version
+            : req.query.merchant_survey_version,
           count: Object.keys(response.data).length
         };
 
@@ -378,7 +413,6 @@ module.exports.requestReadSurveyData = (req, res) => {
         return res.status(500).send("Oops our bad!!!");
       });
   } else return res.status(400).send("Not a good api call");
-
 };
 
 // Request Read Customer Data
@@ -391,19 +425,23 @@ module.exports.requestReadCustomerData = (req, res) => {
     req.query.customer_version !== undefined &&
     req.query.customer_version !== ""
   ) {
-
     // Variable
     let token = undefined;
 
     // If Production then Execute
-    if (process.env.NODE_ENV !== "development") token = req.headers["authorization"];
-    else token = req.body.token || req.query.token || req.headers["authorization"];
+    if (process.env.NODE_ENV !== "development")
+      token = req.headers["authorization"];
+    else
+      token = req.body.token || req.query.token || req.headers["authorization"];
 
     // Logic Customer Data
     return engageController
-      .logicCustomerData(parseFloat(req.query.customer_version), req.query.mobile, req.query.store_id)
+      .logicCustomerData(
+        parseFloat(req.query.customer_version),
+        req.query.mobile,
+        req.query.store_id
+      )
       .then(response => {
-
         // Variable
         let flag = false;
 
@@ -414,7 +452,9 @@ module.exports.requestReadCustomerData = (req, res) => {
 
         // Intialize
         const metadata = {
-          customer_version: flag ? response.customer_version : req.query.customer_version,
+          customer_version: flag
+            ? response.customer_version
+            : req.query.customer_version,
           count: Object.keys(response.data).length
         };
 
@@ -436,5 +476,4 @@ module.exports.requestReadCustomerData = (req, res) => {
         return res.status(500).send("Oops our bad!!!");
       });
   } else return res.status(400).send("Not a good api call");
-
 };

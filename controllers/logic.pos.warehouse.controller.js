@@ -1603,7 +1603,6 @@ const productJsonLogic = async (partnerRecord, productJson) => {
       } else {
         productDiscountModel.updateProductDiscount(
           product.status,
-          1,
           productDiscountRecord[0].id
         );
 
@@ -1979,10 +1978,13 @@ const getStoreStock = async partnerRecord => {
       // Increase Lower Limit
       lowerLimit = lowerLimit + upperLimit;
 
-      if (store.length === 0) stop = false;
-      else if (store.length < upperLimit) {
+      if (store.length === 0) {
+        stop = false;
+      } else if (store.length < upperLimit) {
+        // stock.concat(store);
         Array.prototype.push.apply(stock, store);
         stop = false;
+        console.log(stock.length + "ELse IF");
       } else Array.prototype.push.apply(stock, store);
     }
 
