@@ -1283,6 +1283,65 @@ module.exports.readWarehouseProduct = async (
   }
 };
 
+// Count Warehouse Product
+module.exports.countWarehouseProduct = async partnerMobile => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Dynamic Table
+    const ProductTable = `${partnerMobile}_warehouse_products`;
+
+    // Query
+    const query = `SELECT COUNT(*) FROM ${ProductTable}`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, []);
+
+    // connection.release();
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Read Warehouse Product By Limit
+module.exports.readWarehouseProductByLimit = async (
+  select,
+  partnerMobile,
+  lowerLimit,
+  upperLimit
+) => {
+  try {
+    // Get Pool Object
+    const pool = constants.createMysqlConnection();
+
+    // Create Connection
+    const connection = await pool.getConnection();
+
+    // Dynamic Table
+    const ProductTable = `${partnerMobile}_warehouse_products`;
+
+    // Query
+    const query = `SELECT ${select} FROM ${ProductTable} LIMIT ${lowerLimit},${upperLimit}`;
+
+    // Query Database
+    const [rows, fields] = await connection.query(query, []);
+
+    // connection.release();
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 // Read Warehouse Product Record By Array
 module.exports.readWarehouseProductArray = async (
   select,
