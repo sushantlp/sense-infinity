@@ -426,7 +426,7 @@ module.exports.reformSecretDetail = (
   departmentName,
   email
 ) => {
-  console.log(birthDate);
+  console.log(birthDate)
   // Variable
   let reform = {
     firstName: undefined,

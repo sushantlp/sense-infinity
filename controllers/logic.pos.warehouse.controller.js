@@ -1974,21 +1974,20 @@ const getStoreStock = async partnerRecord => {
       // Parse
       store = JSON.stringify(store);
       store = JSON.parse(store);
-
+    
       // Increase Lower Limit
       lowerLimit = lowerLimit + upperLimit;
 
-      if (store.length === 0) {
-        stop = false;
-      } else if (store.length < upperLimit) {
+      if (store.length === 0) {stop = false;}
+      else if (store.length < upperLimit) {
         // stock.concat(store);
-        Array.prototype.push.apply(stock, store);
+        Array.prototype.push.apply(stock,store);
         stop = false;
-        console.log(stock.length + "ELse IF");
-      } else Array.prototype.push.apply(stock, store);
+      
+      } else Array.prototype.push.apply(stock,store);
     }
-
-    if (!stop) return stock;
+    
+    if (!stop) return stock; 
   } catch (error) {
     return Promise.reject(error);
   }
@@ -2515,8 +2514,7 @@ const getStoreSupplierInvoice = async partnerRecord => {
       1
     );
 
-    if (invoices.length === 0)
-      return {
+    if (invoices.length === 0)  return {
         success: true,
         data: {},
         msg: "Succesful"

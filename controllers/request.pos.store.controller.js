@@ -440,6 +440,7 @@ module.exports.requestGetCustomers = (req, res) => {
 
 // Request Post Customers Detail
 module.exports.requestPostCustomers = (req, res) => {
+
   if (
     res.userKey !== undefined &&
     res.userKey !== "" &&
@@ -451,9 +452,9 @@ module.exports.requestPostCustomers = (req, res) => {
     const validate = validateController.validateStoreCustomer(
       req.body.customers
     );
-
+ console.log(validate.msg)
     if (!validate.success) return res.status(400).send(validate.msg);
-
+ 
     // Logic Post Customers Detail
     return posStoreController
       .logicPostCustomers(res.userKey, req.params.storeCode, req.body.customers)
@@ -610,6 +611,9 @@ module.exports.requestSupplierInvoice = (req, res) => {
     req.body.supplier_invoice !== "" &&
     req.params.hasOwnProperty("storeCode")
   ) {
+    
+    console.log(req.body.supplier_invoice)
+    console.log(req.body.supplier_invoice.length)
     // Validate Supplier Invoice Parameter
     const validate = validateController.validateSupplierInvoice(
       req.body.supplier_invoice

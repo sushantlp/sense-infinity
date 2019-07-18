@@ -2359,10 +2359,9 @@ module.exports.validateStoreCustomer = json => {
           success: false,
           msg: "Missing store customer json last name parameter"
         };
-
+    
       if (
-        !json[i].hasOwnProperty("gender") ||
-        (json[i].gender !== 0 && json[i].gender !== 1)
+        !json[i].hasOwnProperty("gender") 
       )
         return {
           success: false,

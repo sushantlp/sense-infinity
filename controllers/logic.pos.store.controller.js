@@ -1803,6 +1803,7 @@ module.exports.logicStoreSupplierInvoice = async (id, code, invoices) => {
 const storeSupplierInvoice = async (storeRecord, invoices) => {
   try {
     return invoices.map(async (invoice, index) => {
+     
       const reform = shareController.reformSupplierInvoiceRecord(
         invoice.supplier_name,
         invoice.address_one,
@@ -1878,7 +1879,7 @@ const storeSupplierInvoice = async (storeRecord, invoices) => {
         storeSupplierInvoiceProduct(recentKey, invoice.invoice_product);
       } else {
         await storeSupplierInvoiceModel.updateStoreSupplierInvoice(
-          1,
+          0,
           0,
           storeRecord[0].store_id,
           parseInt(invoice.invoice_number, 10)
@@ -2071,7 +2072,7 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Product Level Discount",
         store_coupon_sub_type_id: 4,
         store_coupon_sub_type_name: "Cash Discount On Product",
-        store_coupon_code: "100021900142345689",
+        store_coupon_code: "100021900142345689", 
         store_coupon_expiry_date: "2019-06-28",
         store_coupon_expiry_time: "20:00",
         bill_json: {},
@@ -2170,7 +2171,7 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Product Level Discount",
         store_coupon_sub_type_id: 9,
         store_coupon_sub_type_name: "Complementary On Category",
-        store_coupon_code: "100021900192345689",
+        store_coupon_code: "100021900192345689", 
         store_coupon_expiry_date: "2019-06-21",
         store_coupon_expiry_time: "12:00",
         bill_json: {},
@@ -2231,7 +2232,7 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
       success: true,
       data: {
         store_coupon: object,
-        sync_id: 1
+        sync_id: 1,
       },
       msg: "Succesful"
     };

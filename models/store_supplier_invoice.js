@@ -287,7 +287,7 @@ module.exports.readStoreSupplierInvoiceById = async (
     const connection = await pool.getConnection();
 
     // Query
-    const query = `SELECT ${select} FROM store_supplier_invoices LEFT JOIN partner_stores ON store_supplier_invoices.store_id = partner_stores.store_id WHERE partner_stores.partner_id = ? AND store_supplier_invoices.track_status = ?`;
+    const query = `SELECT ${select} FROM store_supplier_invoices LEFT JOIN partner_stores ON store_supplier_invoices.store_id = partner_stores.store_id WHERE partner_stores.partner_id = ? AND store_supplier_invoices.track_status = ? ORDER BY store_supplier_invoices.created_at`;
 
     // Query Database
     const [rows, fields] = await connection.query(query, [
