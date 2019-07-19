@@ -720,11 +720,10 @@ const iterateKeepStoreDetail = async (stores, partner) => {
     );
 
     // Parse
-    productCount = JSON.stringify(productCount);
-    productCount = JSON.parse(productCount);
-
+     productCount = JSON.stringify(productCount);
+     productCount = JSON.parse(productCount);
+  console.log(productCount[0].count);
     stores.map(async (store, index) => {
-      let storeId = 0;
 
       const reform = shareController.reformStoresDetail(
         store.store_name,
@@ -750,7 +749,7 @@ const iterateKeepStoreDetail = async (stores, partner) => {
 
       if (storeCode.length === 0) {
         // Keep Partner Stores Data
-        const recentInsert = partnerStoreModel.keepStoreData(
+        let recentKey = await partnerStoreModel.keepStoreData(
           store.store_code,
           partner[0].partner_id,
           reform.storeName,
@@ -767,10 +766,10 @@ const iterateKeepStoreDetail = async (stores, partner) => {
           store.status
         );
 
-        if (Array.isArray(recentInsert)) storeId = recentInsert[0].insertId;
-        else storeId = recentInsert.insertId;
+        if (Array.isArray(recentKey)) recentKey = recentKey[0].insertId;
+        else recentKey = recentKey.insertId;
 
-        if (productCount > 0) logicNewStoreProduct(storeId, partner);
+        if (productCount[0].count > 0) logicNewStoreProduct(recentKey, partner);
       } else {
         // Update Partner Store Data
         partnerStoreModel.updateStoreData(
@@ -804,6 +803,7 @@ const logicNewStoreProduct = async (storeId, partner) => {
     let upperLimit = 3000;
 
     while (stop) {
+      console.log("While");
       // Count Warehouse Product
       let productDetail = await databaseController.readWarehouseProductByLimit(
         "product_barcode, product_quantity, status",
@@ -818,7 +818,9 @@ const logicNewStoreProduct = async (storeId, partner) => {
 
       // Increase Lower Limit
       lowerLimit = lowerLimit + upperLimit;
-
+      
+  
+      
       if (productDetail.length === 0) stop = false;
       else if (productDetail.length < upperLimit) {
         iterateNewStoreProduct(partner[0].mobile, productDetail, storeId);
@@ -841,6 +843,15 @@ const iterateNewStoreProduct = async (
   storeId
 ) => {
   try {
+    
+    await databaseController.createStoreProductTable(
+        partnerMobile,
+        storeId
+      );
+    
+    console.log(storeId)
+    console.log("iterateNewStoreProduct");
+    
     return productDetail.map(async (product, index) => {
       databaseStoreProduct(
         partnerMobile,
@@ -858,6 +869,10 @@ const iterateNewStoreProduct = async (
 // Logic Product Sync
 const logicProductSync = async (partnerId, storeId, productDetail) => {
   try {
+    
+     console.log(storeId)
+     console.log("logicProductSync");
+     
     let syncArray = [];
 
     productDetail.map(async product => {

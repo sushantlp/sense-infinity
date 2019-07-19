@@ -1296,7 +1296,7 @@ module.exports.countWarehouseProduct = async partnerMobile => {
     const ProductTable = `${partnerMobile}_warehouse_products`;
 
     // Query
-    const query = `SELECT COUNT(*) FROM ${ProductTable}`;
+    const query = `SELECT COUNT(*) AS count FROM ${ProductTable}`;
 
     // Query Database
     const [rows, fields] = await connection.query(query, []);
