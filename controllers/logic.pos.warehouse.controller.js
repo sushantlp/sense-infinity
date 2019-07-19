@@ -714,7 +714,18 @@ module.exports.logicKeepStoreDetail = async (stores, id) => {
 // Iterate Keep Store Detail
 const iterateKeepStoreDetail = async (stores, partner) => {
   try {
+    // Count Warehouse Product
+    let productCount = await databaseController.countWarehouseProduct(
+      partner[0].mobile
+    );
+
+    // Parse
+    productCount = JSON.stringify(productCount);
+    productCount = JSON.parse(productCount);
+
     stores.map(async (store, index) => {
+      let storeId = 0;
+
       const reform = shareController.reformStoresDetail(
         store.store_name,
         store.address_one,
@@ -739,7 +750,7 @@ const iterateKeepStoreDetail = async (stores, partner) => {
 
       if (storeCode.length === 0) {
         // Keep Partner Stores Data
-        partnerStoreModel.keepStoreData(
+        const recentInsert = partnerStoreModel.keepStoreData(
           store.store_code,
           partner[0].partner_id,
           reform.storeName,
@@ -755,6 +766,11 @@ const iterateKeepStoreDetail = async (stores, partner) => {
           store.invoice_format,
           store.status
         );
+
+        if (Array.isArray(recentInsert)) storeId = recentInsert[0].insertId;
+        else storeId = recentInsert.insertId;
+
+        if (productCount > 0) logicNewStoreProduct(storeId, partner);
       } else {
         // Update Partner Store Data
         partnerStoreModel.updateStoreData(
@@ -779,6 +795,95 @@ const iterateKeepStoreDetail = async (stores, partner) => {
   }
 };
 
+// Logic Keep New Store Product
+const logicNewStoreProduct = async (storeId, partner) => {
+  try {
+    // Variable
+    let stop = true;
+    let lowerLimit = 0;
+    let upperLimit = 3000;
+
+    while (stop) {
+      // Count Warehouse Product
+      let productDetail = await databaseController.readWarehouseProductByLimit(
+        "product_barcode, product_quantity, status",
+        partner[0].mobile,
+        lowerLimit,
+        upperLimit
+      );
+
+      // Parse
+      productDetail = JSON.stringify(productDetail);
+      productDetail = JSON.parse(productDetail);
+
+      // Increase Lower Limit
+      lowerLimit = lowerLimit + upperLimit;
+
+      if (productDetail.length === 0) stop = false;
+      else if (productDetail.length < upperLimit) {
+        iterateNewStoreProduct(partner[0].mobile, productDetail, storeId);
+        logicProductSync(partner[0].partner_id, storeId, productDetail);
+        stop = false;
+      } else {
+        iterateNewStoreProduct(partner[0].mobile, productDetail, storeId);
+        logicProductSync(partner[0].partner_id, storeId, productDetail);
+      }
+    }
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Iterate Product Detail
+const iterateNewStoreProduct = async (
+  partnerMobile,
+  productDetail,
+  storeId
+) => {
+  try {
+    return productDetail.map(async (product, index) => {
+      databaseStoreProduct(
+        partnerMobile,
+        storeId,
+        product.product_barcode,
+        product.product_quantity,
+        product.status
+      );
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Logic Product Sync
+const logicProductSync = async (partnerId, storeId, productDetail) => {
+  try {
+    let syncArray = [];
+
+    productDetail.map(async product => {
+      syncArray.push(product.product_barcode);
+    });
+
+    let recentKey = await partnerSyncModel.keepProductSync(
+      partnerId,
+      JSON.stringify(syncArray)
+    );
+
+    if (Array.isArray(recentKey)) recentKey = recentKey[0].insertId;
+    else recentKey = recentKey.insertId;
+
+    const record = await storeSyncModel.readProductSync(
+      "id",
+      storeId,
+      recentKey,
+      1
+    );
+    if (record.length === 0)
+      storeSyncModel.keepProductSync(storeId, recentKey, 1);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
 // Logic Keep Warehouse Detail
 module.exports.logicKeepWarehouseDetail = async (warehouses, id) => {
   try {
@@ -1331,33 +1436,55 @@ const logicStoreProduct = async (
         partnerMobile,
         store.store_id
       );
-      let productRecord = await databaseController.readStoreProduct(
-        "product_id",
+
+      databaseStoreProduct(
         partnerMobile,
         store.store_id,
-        barcode
+        barcode,
+        quantity,
+        status
       );
-
-      // Parse
-      productRecord = JSON.stringify(productRecord);
-      productRecord = JSON.parse(productRecord);
-
-      if (productRecord.length === 0)
-        databaseController.keepStoreProduct(
-          partnerMobile,
-          store.store_id,
-          barcode,
-          quantity,
-          status
-        );
-      else
-        databaseController.updateStoreProduct(
-          partnerMobile,
-          store.store_id,
-          status,
-          productRecord[0].product_id
-        );
     });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Database Store Product
+const databaseStoreProduct = async (
+  partnerMobile,
+  storeId,
+  barcode,
+  quantity,
+  status
+) => {
+  try {
+    let productRecord = await databaseController.readStoreProduct(
+      "product_id",
+      partnerMobile,
+      storeId,
+      barcode
+    );
+
+    // Parse
+    productRecord = JSON.stringify(productRecord);
+    productRecord = JSON.parse(productRecord);
+
+    if (productRecord.length === 0)
+      databaseController.keepStoreProduct(
+        partnerMobile,
+        storeId,
+        barcode,
+        quantity,
+        status
+      );
+    else
+      databaseController.updateStoreProduct(
+        partnerMobile,
+        storeId,
+        status,
+        productRecord[0].product_id
+      );
   } catch (error) {
     return Promise.reject(error);
   }
