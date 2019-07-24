@@ -126,9 +126,10 @@ module.exports.requestKeepWarehouseDetail = (req, res) => {
     res.userKey !== undefined &&
     res.userKey !== ""
   ) {
+  
     // Validate Warehouse Detail Parameter
     const validate = validateController.warehouseDetail(req.body.warehouses);
-
+  
     if (!validate.success) return res.status(400).send(validate.msg);
 
     // Logic Keep Warehouse Detail
@@ -163,6 +164,7 @@ module.exports.requestKeepWarehouseProduct = (req, res) => {
     req.body.products !== undefined &&
     req.body.products !== ""
   ) {
+   
     // Validate Warehouse Product Detail Parameter
     const validate = validateController.warehouseProductDetail(
       req.body.products
@@ -412,6 +414,7 @@ module.exports.requestStoreStock = (req, res) => {
     return posWarehouseController
       .logicStoreStock(res.userKey)
       .then(response => {
+      
         return res
           .status(200)
           .send(
@@ -467,6 +470,8 @@ module.exports.requestWarehouseStock = (req, res) => {
     req.body.stocks !== undefined &&
     req.body.stocks !== ""
   ) {
+    
+   
     // Validate warehouse Stocks Parameter
     const validate = validateController.validateStoreStock(req.body.stocks);
 
@@ -504,6 +509,8 @@ module.exports.requestWarehouseStockLog = (req, res) => {
     req.body.stocks !== undefined &&
     req.body.stocks !== ""
   ) {
+    
+   
     // Validate Stocks Log Parameter
     const validate = validateController.validateStockLog(
       req.body.stocks,
@@ -583,6 +590,7 @@ module.exports.requestSupplierInvoice = (req, res) => {
     req.body.supplier_invoice !== undefined &&
     req.body.supplier_invoice !== ""
   ) {
+   
     // Validate Supplier Invoice Parameter
     const validate = validateController.validateSupplierInvoice(
       req.body.supplier_invoice

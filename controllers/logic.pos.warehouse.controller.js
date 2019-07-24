@@ -722,7 +722,7 @@ const iterateKeepStoreDetail = async (stores, partner) => {
     // Parse
      productCount = JSON.stringify(productCount);
      productCount = JSON.parse(productCount);
-  console.log(productCount[0].count);
+  
     stores.map(async (store, index) => {
 
       const reform = shareController.reformStoresDetail(
@@ -803,7 +803,7 @@ const logicNewStoreProduct = async (storeId, partner) => {
     let upperLimit = 3000;
 
     while (stop) {
-      console.log("While");
+
       // Count Warehouse Product
       let productDetail = await databaseController.readWarehouseProductByLimit(
         "product_barcode, product_quantity, status",
@@ -818,8 +818,6 @@ const logicNewStoreProduct = async (storeId, partner) => {
 
       // Increase Lower Limit
       lowerLimit = lowerLimit + upperLimit;
-      
-  
       
       if (productDetail.length === 0) stop = false;
       else if (productDetail.length < upperLimit) {
@@ -849,9 +847,6 @@ const iterateNewStoreProduct = async (
         storeId
       );
     
-    console.log(storeId)
-    console.log("iterateNewStoreProduct");
-    
     return productDetail.map(async (product, index) => {
       databaseStoreProduct(
         partnerMobile,
@@ -870,9 +865,6 @@ const iterateNewStoreProduct = async (
 const logicProductSync = async (partnerId, storeId, productDetail) => {
   try {
     
-     console.log(storeId)
-     console.log("logicProductSync");
-     
     let syncArray = [];
 
     productDetail.map(async product => {
@@ -1290,10 +1282,11 @@ const jsonKeepWarehouseProduct = async (
   storeRecord
 ) => {
   try {
+  
     let count = 0;
     let syncArray = [];
     let max = products.length;
-    let packageStatus = "INSERT";
+    // let packageStatus = "INSERT";
 
     // Check or Create Warehouse and Store Product Tables
     await Promise.all([
@@ -1302,26 +1295,27 @@ const jsonKeepWarehouseProduct = async (
     ]);
 
     // Read Partner Product Sync Record
-    let syncModel = await partnerSyncModel.readProductSync(
-      "*",
-      partnerRecord[0].partner_id,
-      "DESC"
-    );
+    // let syncModel = await partnerSyncModel.readProductSync(
+    //   "*",
+    //   partnerRecord[0].partner_id,
+    //   "DESC"
+    // );
 
-    // Parse
-    syncModel = JSON.stringify(syncModel);
-    syncModel = JSON.parse(syncModel);
+    // // Parse
+    // syncModel = JSON.stringify(syncModel);
+    // syncModel = JSON.parse(syncModel);
 
-    if (syncModel.length > 0) {
-      if (syncModel[0].attributes.length < max) {
-        count = syncModel[0].attributes.length;
-        syncArray = syncModel[0].attributes;
-        packageStatus = "UPDATE";
-      }
-    } else {
-      count = 0;
-      packageStatus = "INSERT";
-    }
+    // if (syncModel.length > 0) {
+    //   if (syncModel[0].attributes.length < max) {
+       
+    //     count = syncModel[0].attributes.length;
+    //     syncArray = syncModel[0].attributes;
+    //     packageStatus = "UPDATE";
+    //   }  
+    // } else {
+    //   count = 0;
+    //   packageStatus = "INSERT";
+    // }
 
     return products.map(async (product, index) => {
       logicStoreProduct(
@@ -1406,23 +1400,27 @@ const jsonKeepWarehouseProduct = async (
         count = count + 1;
       }
 
-      if (packageStatus === "UPDATE") {
+      // if (packageStatus === "UPDATE") {
+        
+      //   if (count === max) {
+       
+      //     count = 0;
+      //     packageStatus = "INSERT";
+      //     partnerSyncModel.updateAttributesSync(
+      //       JSON.stringify(syncArray),
+      //       syncModel[0].sync_id
+      //     );
+      //     logicSyncBundleInStore(storeRecord, syncModel[0].sync_id);
+      //     syncArray = [];
+      //   }
+      // } else {
+        
         if (count === max) {
-          count = 0;
-          packageStatus = "INSERT";
-          partnerSyncModel.updateAttributesSync(
-            JSON.stringify(syncArray),
-            syncModel[0].sync_id
-          );
-          logicSyncBundleInStore(storeRecord, syncModel[0].sync_id);
-          syncArray = [];
-        }
-      } else {
-        if (count === max) {
+        
           count = 0;
           const copyArray = syncArray;
           syncArray = [];
-          packageStatus = "INSERT";
+          // packageStatus = "INSERT";
           const lastId = await partnerSyncModel.keepProductSync(
             partnerRecord[0].partner_id,
             JSON.stringify(copyArray)
@@ -1431,7 +1429,7 @@ const jsonKeepWarehouseProduct = async (
             logicSyncBundleInStore(storeRecord, lastId[0].insertId);
           else logicSyncBundleInStore(storeRecord, lastId.insertId);
         }
-      }
+      //}
     });
   } catch (error) {
     return Promise.reject(error);
@@ -1830,7 +1828,7 @@ const readInvoices = async partnerRecord => {
   try {
     let parallel = await Promise.all([
       invoiceModel.readInvoiceByPartner(
-        "invoices.id, invoices.invoice_no, invoices.store_counter_id, invoices.warehouse_user_id, partner_stores.store_code, CASE WHEN invoices.customer_name <> 'NULL' THEN invoices.customer_name ELSE '' END AS customer_name, invoices.customer_mobile, invoices.membership_code, invoices.total_amount, invoices.invoice_cashback, invoices.invoice_total_saving, invoices.invoice_loyalty_used, invoices.invoice_sodexo_amount, invoices.invoice_total_amount, CASE WHEN invoices.gstin_name <> 'NULL' THEN invoices.gstin_name ELSE '' END AS gstin_name, CASE WHEN invoices.gstin_number <> 'NULL' THEN invoices.gstin_number ELSE '' END AS gstin_number, invoices.invoice_created_date, invoices.invoice_updated_date, invoices.home_delivery,invoices.round_off_amount, invoices.return_status, invoices.status",
+        "invoices.id, invoices.invoice_no, invoices.store_counter_id, invoices.warehouse_user_id, partner_stores.store_code, CASE WHEN invoices.customer_name <> 'NULL' THEN invoices.customer_name ELSE '' END AS customer_name, invoices.customer_mobile, CONVERT(invoices.membership_code, CHAR), invoices.total_amount, invoices.invoice_cashback, invoices.invoice_total_saving, invoices.invoice_loyalty_used, invoices.invoice_sodexo_amount, invoices.invoice_total_amount, CASE WHEN invoices.gstin_name <> 'NULL' THEN invoices.gstin_name ELSE '' END AS gstin_name, CASE WHEN invoices.gstin_number <> 'NULL' THEN invoices.gstin_number ELSE '' END AS gstin_number, invoices.invoice_created_date, invoices.invoice_updated_date, invoices.home_delivery,invoices.round_off_amount, invoices.return_status, invoices.status",
         partnerRecord[0].partner_id,
         1
       ),
@@ -1951,7 +1949,7 @@ const createInvoiceJson = async invoiceJson => {
 
       let parallel = await Promise.all([
         invoiceCouponModel.readInvoiceCoupon(
-          "coupon_code AS code, CASE WHEN applicable_on <> 'NULL' THEN applicable_on ELSE '' END AS applicable, discount, cashback, status",
+          "CONVERT(coupon_code, CHAR) AS code, CASE WHEN applicable_on <> 'NULL' THEN applicable_on ELSE '' END AS applicable, discount, cashback, status",
           invoice.id
         ),
         invoicePaymentModel.readInvoicePayment(
@@ -1959,7 +1957,7 @@ const createInvoiceJson = async invoiceJson => {
           invoice.id
         ),
         invoiceProductModel.readInvoiceProductByNo(
-          "CASE WHEN product_name <> 'NULL' THEN product_name ELSE '' END AS name, product_barcode AS barcode, CASE WHEN product_unit <> 'NULL' THEN product_unit ELSE '' END AS unit, product_quantity AS quantity, product_sgst AS sgst, product_cgst AS cgst, product_igst AS igst, product_price AS price, product_discount AS discount, product_discount_price AS discount_price, product_sub_total AS sub_total, hsn_code, return_status, status",
+          "CASE WHEN product_name <> 'NULL' THEN product_name ELSE '' END AS name, CONVERT(product_barcode, CHAR) AS barcode, CASE WHEN product_unit <> 'NULL' THEN product_unit ELSE '' END AS unit, product_quantity AS quantity, product_sgst AS sgst, product_cgst AS cgst, product_igst AS igst, product_price AS price, product_discount AS discount, product_discount_price AS discount_price, product_sub_total AS sub_total, hsn_code, return_status, status",
           invoice.id
         ),
         manualDiscountModel.readManualDiscountByNo(
@@ -2106,7 +2104,7 @@ const getStoreStock = async partnerRecord => {
 
     while (stop) {
       let store = await storeStockModel.readStockForWarehouse(
-        "store_stocks.barcode, store_stocks.quantity, store_stocks.status, partner_stores.store_code AS branch_store",
+        "CONVERT(store_stocks.barcode, CHAR) AS barcode, store_stocks.quantity, store_stocks.status, partner_stores.store_code AS branch_store",
         partnerRecord[0].partner_id,
         1,
         lowerLimit,
@@ -2651,7 +2649,7 @@ module.exports.logicGetStoreSupplierInvoice = async id => {
 const getStoreSupplierInvoice = async partnerRecord => {
   try {
     const invoices = await storeSupplierInvoiceModel.readStoreSupplierInvoiceById(
-      "store_supplier_invoices.id, store_supplier_invoices.invoice_number, store_supplier_invoices.supplier_name, store_supplier_invoices.address_one, store_supplier_invoices.address_two, store_supplier_invoices.landmark, store_supplier_invoices.state, store_supplier_invoices.city, store_supplier_invoices.country, store_supplier_invoices.pincode, store_supplier_invoices.mobile, store_supplier_invoices.email, store_supplier_invoices.gstin, store_supplier_invoices.cin, store_supplier_invoices.pan, store_supplier_invoices.note, store_supplier_invoices.inv_no, store_supplier_invoices.invoice_date,store_supplier_invoices.sn_name, store_supplier_invoices.rt_name, store_supplier_invoices.sm_phone,store_supplier_invoices.del_date, store_supplier_invoices.invoice_total_amount, store_supplier_invoices.payment_status, store_supplier_invoices.payment_type,  store_supplier_invoices.payment_date, store_supplier_invoices.payment_reference_number,  store_supplier_invoices.e_way_bill, store_supplier_invoices.s_note, store_supplier_invoices.warehouse_user_id, store_supplier_invoices.status, partner_stores.store_code",
+      "store_supplier_invoices.id, CONVERT(store_supplier_invoices.invoice_number, CHAR) AS invoice_number, store_supplier_invoices.supplier_name, store_supplier_invoices.address_one, store_supplier_invoices.address_two, store_supplier_invoices.landmark, store_supplier_invoices.state, store_supplier_invoices.city, store_supplier_invoices.country, store_supplier_invoices.pincode, store_supplier_invoices.mobile, store_supplier_invoices.email, store_supplier_invoices.gstin, store_supplier_invoices.cin, store_supplier_invoices.pan, store_supplier_invoices.note, store_supplier_invoices.inv_no, store_supplier_invoices.invoice_date,store_supplier_invoices.sn_name, store_supplier_invoices.rt_name, store_supplier_invoices.sm_phone,store_supplier_invoices.del_date, store_supplier_invoices.invoice_total_amount, store_supplier_invoices.payment_status, store_supplier_invoices.payment_type,  store_supplier_invoices.payment_date, store_supplier_invoices.payment_reference_number,  store_supplier_invoices.e_way_bill, store_supplier_invoices.s_note, store_supplier_invoices.warehouse_user_id, store_supplier_invoices.status, partner_stores.store_code",
       partnerRecord[0].partner_id,
       1
     );
@@ -2733,7 +2731,7 @@ const createSupplierInvoiceJson = async invoices => {
       obj.status = invoice.status;
 
       const invoiceProduct = await storeSupplierInvoiceProductModel.readStoreSupplierInvoiceProduct(
-        "product_code, product_type, product_name, hsn_code, mrp, quantity, free_quantity, rate, unit_value, unit, pri_sch, sec_sch, spl_disc, cgst, sgst, igst, margin, total_amount",
+        "CONVERT(product_code, CHAR) AS product_code, product_type, product_name, hsn_code, mrp, quantity, free_quantity, rate, unit_value, unit, pri_sch, sec_sch, spl_disc, cgst, sgst, igst, margin, total_amount",
         invoice.id,
         1
       );

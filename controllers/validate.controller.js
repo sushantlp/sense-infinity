@@ -838,8 +838,8 @@ module.exports.warehouseProductDetail = products => {
       if (
         !products[i].hasOwnProperty("product_barcode") ||
         isNaN(products[i].product_barcode) ||
-        products[i].product_name === null ||
-        products[i].product_name === ""
+        products[i].product_barcode === null ||
+        products[i].product_barcode === ""
       )
         return {
           success: false,

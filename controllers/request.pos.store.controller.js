@@ -70,6 +70,8 @@ module.exports.requestWarehouseRecord = (req, res) => {
     return posStoreController
       .logicWarehouseRecord(res.userKey)
       .then(response => {
+        
+      
         return res
           .status(200)
           .send(
@@ -132,6 +134,7 @@ module.exports.requestStoreProduct = (req, res) => {
     return posStoreController
       .logicStoreProduct(res.userKey, req.params.storeCode)
       .then(response => {
+      
         return res
           .status(200)
           .send(
@@ -349,10 +352,12 @@ module.exports.requestNewMembershipCard = (req, res) => {
     res.userKey !== "" &&
     req.params.hasOwnProperty("storeCode")
   ) {
+    
     // Logic Get New Membership Card
     return posStoreController
       .logicMembershipCard(res.userKey, req.params.storeCode)
       .then(response => {
+      
         return res
           .status(200)
           .send(
@@ -448,11 +453,13 @@ module.exports.requestPostCustomers = (req, res) => {
     req.body.customers !== "" &&
     req.params.hasOwnProperty("storeCode")
   ) {
+    
+   
     // Validate Store Customer Parameter
     const validate = validateController.validateStoreCustomer(
       req.body.customers
     );
- console.log(validate.msg)
+
     if (!validate.success) return res.status(400).send(validate.msg);
  
     // Logic Post Customers Detail
@@ -488,6 +495,7 @@ module.exports.requestStoreStock = (req, res) => {
     req.body.stocks !== "" &&
     req.params.hasOwnProperty("storeCode")
   ) {
+    
     // Validate Store Stocks Parameter
     const validate = validateController.validateStoreStock(req.body.stocks);
 
@@ -526,6 +534,8 @@ module.exports.requestStoreStockLog = (req, res) => {
     req.body.stocks !== "" &&
     req.params.hasOwnProperty("storeCode")
   ) {
+    
+   
     // Validate Stocks Log Parameter
     const validate = validateController.validateStockLog(
       req.body.stocks,
@@ -612,8 +622,7 @@ module.exports.requestSupplierInvoice = (req, res) => {
     req.params.hasOwnProperty("storeCode")
   ) {
     
-    console.log(req.body.supplier_invoice)
-    console.log(req.body.supplier_invoice.length)
+   
     // Validate Supplier Invoice Parameter
     const validate = validateController.validateSupplierInvoice(
       req.body.supplier_invoice

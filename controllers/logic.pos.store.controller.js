@@ -406,7 +406,7 @@ const getWarehouseProduct = async (sync, mobile) => {
     if (attribute.length !== 0) {
       // Read Warehouse Product Record By Array
       productRecord = await databaseController.readWarehouseProductArray(
-        `product_barcode AS barcode, IFNULL(product_name,'') as product_name, IFNULL(brand_name,'') as brand_name, IFNULL(description,'') as description, global_category_id AS category_id, global_sub_category_id AS sub_category_id, global_sub_sub_category_id AS sub_sub_category_id, product_unit_id AS unit_id, product_sub_unit_id AS sub_unit_id, product_size, selling_price, product_margin, actual_price, sgst, cgst, igst, hsn, sodexo, status`,
+        `CONVERT(product_barcode, CHAR) AS barcode, IFNULL(product_name,'') as product_name, IFNULL(brand_name,'') as brand_name, IFNULL(description,'') as description, global_category_id AS category_id, global_sub_category_id AS sub_category_id, global_sub_sub_category_id AS sub_sub_category_id, product_unit_id AS unit_id, product_sub_unit_id AS sub_unit_id, product_size, selling_price, product_margin, actual_price, sgst, cgst, igst, hsn, sodexo, status`,
         mobile,
         quesmarks,
         attribute
@@ -488,7 +488,7 @@ const readDiscount = async (partnerRecord, storeRecord) => {
   try {
     const parallel = await Promise.all([
       billDiscountModel.readBillDiscount(
-        "bill_discounts.bill_discount_id AS key_id, bill_discounts.discount_base_id AS discount_base_key, partner_stores.store_code AS branch_id, bill_discounts.name AS discount_name, bill_discounts.start_date, bill_discounts.end_date, bill_discounts.start_time, bill_discounts.end_time, bill_discounts.min_amount AS minimum_amount, bill_discounts.max_discount_amount AS Maximum_amount, bill_discounts.bill_offer_value AS value, bill_discounts.status",
+        "bill_discounts.bill_discount_id AS key_id, bill_discounts.discount_base_id AS discount_base_key, partner_stores.store_code AS branch_id, bill_discounts.name AS discount_name, bill_discounts.start_date, bill_discounts.end_date, bill_discounts.start_time, bill_discounts.end_time, bill_discounts.min_amount AS minimum_amount, bill_discounts.max_discount_amount AS Maximum_amount, CONVERT(bill_discounts.bill_offer_value, CHAR) AS value, bill_discounts.status",
         storeRecord[0].store_id,
         1
       ),
@@ -612,7 +612,7 @@ const createDiscountJson = async json => {
 
         if (discount.discount_base_id === 5) {
           obj.free_products = await freeDiscountModel.readFreeOffer(
-            "id AS key_id, buy_product_barcode AS buy_barcode, buy_product_quantity AS buy_quantity, free_product_barcode AS free_barcode, free_product_quantity AS free_quantity, status",
+            "id AS key_id, CONVERT(buy_product_barcode, CHAR) AS buy_barcode, buy_product_quantity AS buy_quantity, CONVERT(free_product_barcode, CHAR) AS free_barcode, free_product_quantity AS free_quantity, status",
             discount.id
           );
 
@@ -622,7 +622,7 @@ const createDiscountJson = async json => {
           discount.discount_base_id === 4
         ) {
           obj.value_products = await valueDiscountModel.readValueOffer(
-            "id AS key_id, product_barcode AS barcode, buy_product_quantity AS buy_quantity, offer_value AS value, status",
+            "id AS key_id, CONVERT(product_barcode, CHAR) AS barcode, buy_product_quantity AS buy_quantity, CONVERT(offer_value, CHAR) AS value, status",
             discount.id
           );
 
@@ -1058,7 +1058,8 @@ module.exports.logicMembershipCard = async (id, code) => {
       };
 
     const cards = await checkNewCardGeneration(partnerRecord, storeRecord);
-
+    
+    
     if (cards.data.length === 0)
       return {
         success: true,
@@ -1079,7 +1080,7 @@ module.exports.logicMembershipCard = async (id, code) => {
           id: cards.id
         },
         msg: "Successful",
-        count: cards.length
+        count: cards.data.length
       };
   } catch (error) {
     return Promise.reject(error);
@@ -1089,7 +1090,9 @@ module.exports.logicMembershipCard = async (id, code) => {
 // Check New Membership Card Generation
 const checkNewCardGeneration = async (partnerRecord, storeRecord) => {
   try {
+   
     let syncRecord = await membershipSyncModel.readMembershipSync(
+      "*",
       partnerRecord[0].partner_id,
       storeRecord[0].store_id,
       1,
@@ -1109,7 +1112,7 @@ const checkNewCardGeneration = async (partnerRecord, storeRecord) => {
       };
 
     let cardRecord = await membershipCardModel.readMembershipBetween(
-      "membership_card_number AS card_number",
+      "CONVERT(membership_card_number, CHAR) AS card_number",
       syncRecord[0].membership_start_id,
       syncRecord[0].membership_end_id,
       1
@@ -1206,7 +1209,7 @@ const getCustomerDetail = async () => {
 
     while (stop) {
       let record = await customerModel.readCustomerByLimit(
-        "CASE WHEN customer_information_data.first_name <> 'fake' THEN customer_information_data.first_name ELSE '' END AS first_name, CASE WHEN customer_information_data.last_name <> 'fake' THEN customer_information_data.last_name ELSE '' END AS last_name, CASE WHEN customer_information_data.email <> 'NULL' THEN customer_information_data.email ELSE '' END AS email, customer_information_data.mobile, IFNULL(membership_cards.membership_card_number, 0) AS card_number",
+        "CASE WHEN customer_information_data.first_name <> 'fake' THEN customer_information_data.first_name ELSE '' END AS first_name, CASE WHEN customer_information_data.last_name <> 'fake' THEN customer_information_data.last_name ELSE '' END AS last_name, CASE WHEN customer_information_data.email <> 'NULL' THEN customer_information_data.email ELSE '' END AS email, customer_information_data.mobile, CONVERT(IFNULL(membership_cards.membership_card_number, 0), CHAR) AS card_number",
         lowerLimit,
         upperLimit,
         1
@@ -2018,13 +2021,13 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Bill Level Discount",
         store_coupon_sub_type_id: 1,
         store_coupon_sub_type_name: "Cash",
-        store_coupon_code: "100021900112345689",
-        store_coupon_expiry_date: "2019-06-25",
+        store_coupon_code: "801111111111111120",
+        store_coupon_expiry_date: "2019-07-25",
         store_coupon_expiry_time: "17:00",
         bill_json: {
-          coupon_minimum_amount: 2000,
-          coupon_maximum_amount: 3000,
-          coupon_value: 1111
+          coupon_minimum_amount: 1000,
+          coupon_maximum_amount: 2500,
+          coupon_value: "350"
         },
         product_json: {},
         category_json: {},
@@ -2036,13 +2039,13 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Bill Level Discount",
         store_coupon_sub_type_id: 2,
         store_coupon_sub_type_name: "Cashback",
-        store_coupon_code: "100021900122345689",
-        store_coupon_expiry_date: "2019-06-26",
+        store_coupon_code: "801111111111111121",
+        store_coupon_expiry_date: "2019-07-26",
         store_coupon_expiry_time: "17:00",
         bill_json: {
           coupon_minimum_amount: 1000,
-          coupon_maximum_amount: 4500,
-          coupon_value: 500
+          coupon_maximum_amount: 2500,
+          coupon_value: "400"
         },
         product_json: {},
         category_json: {},
@@ -2054,13 +2057,13 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Bill Level Discount",
         store_coupon_sub_type_id: 3,
         store_coupon_sub_type_name: "Complementary Product",
-        store_coupon_code: "100021900132345689",
-        store_coupon_expiry_date: "2019-06-27",
+        store_coupon_code: "801111111111111122",
+        store_coupon_expiry_date: "2019-07-27",
         store_coupon_expiry_time: "20:00",
         bill_json: {
           coupon_minimum_amount: 1000,
-          coupon_maximum_amount: 6000,
-          coupon_value: 205000003645179
+          coupon_maximum_amount: 2500,
+          coupon_value: "7073"
         },
         product_json: {},
         category_json: {},
@@ -2072,14 +2075,14 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Product Level Discount",
         store_coupon_sub_type_id: 4,
         store_coupon_sub_type_name: "Cash Discount On Product",
-        store_coupon_code: "100021900142345689", 
-        store_coupon_expiry_date: "2019-06-28",
+        store_coupon_code: "801111111111111123",
+        store_coupon_expiry_date: "2019-07-28",
         store_coupon_expiry_time: "20:00",
         bill_json: {},
         product_json: {
-          barcode: 914141535142018,
+          barcode: "1388",
           buy_quantity: 1,
-          coupon_value: 200,
+          coupon_value: "30",
           free_quantity: 0
         },
         category_json: {},
@@ -2091,14 +2094,14 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Product Level Discount",
         store_coupon_sub_type_id: 5,
         store_coupon_sub_type_name: "Cashback On Product",
-        store_coupon_code: "100021900152345689",
-        store_coupon_expiry_date: "2019-06-28",
+        store_coupon_code: "801111111111111124",
+        store_coupon_expiry_date: "2019-07-28",
         store_coupon_expiry_time: "20:00",
         bill_json: {},
         product_json: {
-          barcode: 50164561123051,
-          buy_quantity: 2,
-          coupon_value: 500,
+          barcode: "8011",
+          buy_quantity: 1,
+          coupon_value: "50",
           free_quantity: 0
         },
         category_json: {},
@@ -2110,15 +2113,15 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Product Level Discount",
         store_coupon_sub_type_id: 6,
         store_coupon_sub_type_name: "Complementary On Product",
-        store_coupon_code: "100021900162345689",
-        store_coupon_expiry_date: "2019-06-29",
+        store_coupon_code: "801111111111111125",
+        store_coupon_expiry_date: "2019-07-29",
         store_coupon_expiry_time: "10:00",
         bill_json: {},
         product_json: {
-          barcode: 89060064390477,
-          buy_quantity: 2,
-          coupon_value: 36073440618710,
-          free_quantity: 4
+          barcode: "51000012104",
+          buy_quantity: 1,
+          coupon_value: "3233",
+          free_quantity: 1
         },
         category_json: {},
         combo_json: {},
@@ -2129,17 +2132,17 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Product Level Discount",
         store_coupon_sub_type_id: 7,
         store_coupon_sub_type_name: "Cash Discount On Category",
-        store_coupon_code: "100021900172345689",
-        store_coupon_expiry_date: "2019-06-27",
+        store_coupon_code: "801111111111111126",
+        store_coupon_expiry_date: "2019-07-27",
         store_coupon_expiry_time: "12:00",
         bill_json: {},
         product_json: {},
         category_json: {
           category_id: 1,
           sub_category_id: 1,
-          sub_sub_category_id: 1,
+          sub_sub_category_id: 3,
           buy_quantity: 2,
-          coupon_value: 20,
+          coupon_value: "30",
           free_quantity: 0
         },
         combo_json: {},
@@ -2150,17 +2153,17 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Product Level Discount",
         store_coupon_sub_type_id: 8,
         store_coupon_sub_type_name: "Cashback On Category",
-        store_coupon_code: "100021900182345689",
-        store_coupon_expiry_date: "2019-06-21",
+        store_coupon_code: "801111111111111127",
+        store_coupon_expiry_date: "2019-07-21",
         store_coupon_expiry_time: "12:00",
         bill_json: {},
         product_json: {},
         category_json: {
           category_id: 1,
           sub_category_id: 1,
-          sub_sub_category_id: 1,
+          sub_sub_category_id: 7,
           buy_quantity: 2,
-          coupon_value: 50,
+          coupon_value: "50",
           free_quantity: 0
         },
         combo_json: {},
@@ -2171,8 +2174,170 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Product Level Discount",
         store_coupon_sub_type_id: 9,
         store_coupon_sub_type_name: "Complementary On Category",
-        store_coupon_code: "100021900192345689", 
-        store_coupon_expiry_date: "2019-06-21",
+        store_coupon_code: "801111111111111128",
+        store_coupon_expiry_date: "2019-07-21",
+        store_coupon_expiry_time: "12:00",
+        bill_json: {},
+        product_json: {},
+        category_json: {
+          category_id: 1,
+          sub_category_id: 3,
+          sub_sub_category_id: 20,
+          buy_quantity: 2,
+          coupon_value: "2510",
+          free_quantity: 1
+        },
+        combo_json: {},
+        status: 1
+      },
+      {
+        store_coupon_type_id: 2,
+        store_coupon_type_name: "Product Level Discount",
+        store_coupon_sub_type_id: 10,
+        store_coupon_sub_type_name: "Product Combo",
+        store_coupon_code: "801111111111111129",
+        store_coupon_expiry_date: "2019-07-30",
+        store_coupon_expiry_time: "22:00",
+        bill_json: {},
+        product_json: {},
+        category_json: {},
+        combo_json: {
+          buy_product: [
+            {
+              buy_barcode: "51000025494",
+              buy_quantity: 1
+            },
+            {
+              buy_barcode: "8901042967110",
+              buy_quantity: 1
+            }],
+          free_product: [
+            {
+              free_barcode: "676363025617",
+              free_quantity: 1
+            }
+          ]
+        },
+        status: 1
+      },
+ {
+        store_coupon_type_id: 1,
+        store_coupon_type_name: "Bill Level Discount",
+        store_coupon_sub_type_id: 1,
+        store_coupon_sub_type_name: "Cash",
+        store_coupon_code: "801111111111111110",
+        store_coupon_expiry_date: "2019-07-25",
+        store_coupon_expiry_time: "17:00",
+        bill_json: {
+          coupon_minimum_amount: 2000,
+          coupon_maximum_amount: 3000,
+          coupon_value: "500"
+        },
+        product_json: {},
+        category_json: {},
+        combo_json: {},
+        status: 1
+      },
+      {
+        store_coupon_type_id: 1,
+        store_coupon_type_name: "Bill Level Discount",
+        store_coupon_sub_type_id: 2,
+        store_coupon_sub_type_name: "Cashback",
+        store_coupon_code: "801111111111111111",
+        store_coupon_expiry_date: "2019-07-26",
+        store_coupon_expiry_time: "17:00",
+        bill_json: {
+          coupon_minimum_amount: 1000,
+          coupon_maximum_amount: 4500,
+          coupon_value: "500"
+        },
+        product_json: {},
+        category_json: {},
+        combo_json: {},
+        status: 1
+      },
+      {
+        store_coupon_type_id: 1,
+        store_coupon_type_name: "Bill Level Discount",
+        store_coupon_sub_type_id: 3,
+        store_coupon_sub_type_name: "Complementary Product",
+        store_coupon_code: "801111111111111112",
+        store_coupon_expiry_date: "2019-07-27",
+        store_coupon_expiry_time: "20:00",
+        bill_json: {
+          coupon_minimum_amount: 1000,
+          coupon_maximum_amount: 3000,
+          coupon_value: "4204"
+        },
+        product_json: {},
+        category_json: {},
+        combo_json: {},
+        status: 1
+      },
+      {
+        store_coupon_type_id: 2,
+        store_coupon_type_name: "Product Level Discount",
+        store_coupon_sub_type_id: 4,
+        store_coupon_sub_type_name: "Cash Discount On Product",
+        store_coupon_code: "801111111111111113",
+        store_coupon_expiry_date: "2019-07-28",
+        store_coupon_expiry_time: "20:00",
+        bill_json: {},
+        product_json: {
+          barcode: "7073",
+          buy_quantity: 1,
+          coupon_value: "80",
+          free_quantity: 0
+        },
+        category_json: {},
+        combo_json: {},
+        status: 1
+      },
+      {
+        store_coupon_type_id: 2,
+        store_coupon_type_name: "Product Level Discount",
+        store_coupon_sub_type_id: 5,
+        store_coupon_sub_type_name: "Cashback On Product",
+        store_coupon_code: "801111111111111114",
+        store_coupon_expiry_date: "2019-07-28",
+        store_coupon_expiry_time: "20:00",
+        bill_json: {},
+        product_json: {
+          barcode: "4572",
+          buy_quantity: 2,
+          coupon_value: "50",
+          free_quantity: 0
+        },
+        category_json: {},
+        combo_json: {},
+        status: 1
+      },
+      {
+        store_coupon_type_id: 2,
+        store_coupon_type_name: "Product Level Discount",
+        store_coupon_sub_type_id: 6,
+        store_coupon_sub_type_name: "Complementary On Product",
+        store_coupon_code: "801111111111111115",
+        store_coupon_expiry_date: "2019-07-29",
+        store_coupon_expiry_time: "10:00",
+        bill_json: {},
+        product_json: {
+          barcode: "40034",
+          buy_quantity: 2,
+          coupon_value: "43280",
+          free_quantity: 1
+        },
+        category_json: {},
+        combo_json: {},
+        status: 1
+      },
+      {
+        store_coupon_type_id: 2,
+        store_coupon_type_name: "Product Level Discount",
+        store_coupon_sub_type_id: 7,
+        store_coupon_sub_type_name: "Cash Discount On Category",
+        store_coupon_code: "801111111111111116",
+        store_coupon_expiry_date: "2019-07-27",
         store_coupon_expiry_time: "12:00",
         bill_json: {},
         product_json: {},
@@ -2181,7 +2346,49 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
           sub_category_id: 1,
           sub_sub_category_id: 1,
           buy_quantity: 2,
-          coupon_value: 89060064390477,
+          coupon_value: "20",
+          free_quantity: 0
+        },
+        combo_json: {},
+        status: 1
+      },
+      {
+        store_coupon_type_id: 2,
+        store_coupon_type_name: "Product Level Discount",
+        store_coupon_sub_type_id: 8,
+        store_coupon_sub_type_name: "Cashback On Category",
+        store_coupon_code: "801111111111111117",
+        store_coupon_expiry_date: "2019-07-21",
+        store_coupon_expiry_time: "12:00",
+        bill_json: {},
+        product_json: {},
+        category_json: {
+          category_id: 1,
+          sub_category_id: 1,
+          sub_sub_category_id: 3,
+          buy_quantity: 2,
+          coupon_value: "50",
+          free_quantity: 0
+        },
+        combo_json: {},
+        status: 1
+      },
+      {
+        store_coupon_type_id: 2,
+        store_coupon_type_name: "Product Level Discount",
+        store_coupon_sub_type_id: 9,
+        store_coupon_sub_type_name: "Complementary On Category",
+        store_coupon_code: "801111111111111118",
+        store_coupon_expiry_date: "2019-07-21",
+        store_coupon_expiry_time: "12:00",
+        bill_json: {},
+        product_json: {},
+        category_json: {
+          category_id: 2,
+          sub_category_id: 14,
+          sub_sub_category_id: 85,
+          buy_quantity: 2,
+          coupon_value: "4893049000423",
           free_quantity: 3
         },
         combo_json: {},
@@ -2192,8 +2399,8 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         store_coupon_type_name: "Product Level Discount",
         store_coupon_sub_type_id: 10,
         store_coupon_sub_type_name: "Product Combo",
-        store_coupon_code: "100021900113345689",
-        store_coupon_expiry_date: "2019-06-30",
+        store_coupon_code: "801111111111111119",
+        store_coupon_expiry_date: "2019-07-30",
         store_coupon_expiry_time: "22:00",
         bill_json: {},
         product_json: {},
@@ -2201,26 +2408,26 @@ module.exports.logicGetStoreCoupon = async (id, code) => {
         combo_json: {
           buy_product: [
             {
-              buy_barcode: 9556085302771,
+              buy_barcode: "8850291105852",
               buy_quantity: 2
             },
             {
-              buy_barcode: 9556085318321,
-              buy_quantity: 1
+              buy_barcode: "8901042967110",
+              buy_quantity: 2
             },
             {
-              buy_barcode: 9556085319328,
-              buy_quantity: 3
+              buy_barcode: "8901042967172",
+              buy_quantity: 2
             }
           ],
           free_product: [
             {
-              free_barcode: 9556023442293,
+              free_barcode: "8901234567883",
               free_quantity: 1
             },
             {
-              free_barcode: 9556006060513,
-              free_quantity: 5
+              free_barcode: "8901713015898",
+              free_quantity: 2
             }
           ]
         },
