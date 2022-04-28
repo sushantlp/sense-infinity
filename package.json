@@ -16,7 +16,7 @@
     "eslint": "eslint **/*.js"
   },
   "dependencies": {
-    "async": "^2.6.2",
+    "async": "^2.6.4",
     "axios": "^0.18.1",
     "bcrypt": "^3.0.6",
     "bluebird": "^3.5.5",
