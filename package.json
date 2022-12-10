@@ -27,7 +27,7 @@
     "cron": "^1.7.1",
     "dotenv": "^4.0.0",
     "errorhandler": "^1.5.1",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-flash": "0.0.2",
     "express-robots": "^0.1.6",
     "express-session": "^1.16.1",
